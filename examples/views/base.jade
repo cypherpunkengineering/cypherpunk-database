@@ -1,0 +1,19 @@
+!!! 5
+html
+	head
+		meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
+		title= pengiTitle
+		link(rel='stylesheet', href='/_css/base.css')
+		block pengiCSS
+		link(rel='shortcut icon', href='/_img/site/favicon.png')
+		meta(name='description', content= pengiDescription)
+		meta(name='keywords', content= pengiKeywords)
+		meta(name='robots', content='index, follow')
+		- for jsFile in pengiJS
+			script(src=jsFile, type='text/javascript')
+		block pengiJS
+	body
+		block pengiBody
+	br
+	br
+	#copydiv='&copy; '+pengiCopyright 

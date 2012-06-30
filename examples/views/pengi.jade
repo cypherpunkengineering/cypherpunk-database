@@ -1,0 +1,48 @@
+!!! 5
+html
+	head
+		meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
+		title= pengiTitle
+		link(rel='stylesheet', href='/_css/pengi.css')
+		block pengiCSS
+		link(rel='shortcut icon', href='/_img/site/favicon.png')
+		meta(name='description', content= pengiDescription)
+		meta(name='keywords', content= pengiKeywords)
+		meta(name='robots', content='index, follow')
+		- for jsFile in pengiJS
+			script(src=jsFile, type='text/javascript')
+		block pengiJS
+	body
+		#wrapper
+			#toby_wrapper
+				#toby_left
+				#toby_right
+					#toby_right_logo
+						#toby_right_inside= pengiHeader
+			#sid_wrapper
+				- if (pengiAuth)
+					ul(id='nav')
+						- for module in pengiNav
+							li
+								a(href='javascript:void(0)')=module.title
+								ul
+									- for resource in module.resources
+										li
+										a(href=resource.path)=resource.title
+						li
+							a(href='/logout')='logout'
+				- else
+					ul(id='nav')
+						li
+							a(href='/')='login'
+			#ivan_wrapper
+				#ivan_left
+					#ivan_left_content
+						block pengiBody
+							#pengiBody=pengiBody
+				#ivan_right
+					#ivan_right_content_one= pengiLeftBox
+					#ivan_right_content_two= pengiRightBox
+			#edgar_wrapper
+				#edgar_left= pengiMsg
+				#edgar_right='&copy; '+pengiCopyright

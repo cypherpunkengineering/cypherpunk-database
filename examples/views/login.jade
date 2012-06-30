@@ -1,0 +1,18 @@
+extends base
+
+block pengiCSS
+	link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Nixie+One')
+	link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Paytone+One')
+
+block pengiBody
+	div(id='wrapper', class='container')
+		div(id='logo')
+			img(src='/_img/site/pengi2.png')
+		form#login(method='post', action='/login', class='form rounded-5 shadow')
+			input(type='text', id='username', name='username', class='rounded-1', placeholder='Username')
+			input(type='password', id='password', name='password', class='rounded-1', placeholder='Password')
+			input(type='submit', class='button submit rounded-1', value='Login')
+		div(id='loginMessage', class='message rounded-5 shadow')
+			img(src='/_img/site/loginError.png')
+			span
+				Login Failed!
