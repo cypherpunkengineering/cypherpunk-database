@@ -13,8 +13,8 @@
     "coffee-script": "1.2.x",
     "connect": "2.3.x",
     "express": "2.5.x",
-    "jade": "0.20.x",
-    "mongodb": "0.9.x",
+    "jade": "0.26.x",
+    "mongodb": "1.0.x",
     "mysql": "0.9.x",
     "connect-redis": "1.2.x"
   },
