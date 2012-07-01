@@ -60,8 +60,8 @@ class wizportal.server extends wizfrontend.server
 		res.render 'pengi', page
 
 portal = new wizportal.server()
-#require './module1'
-#module1 = new wizportal.module1(portal)
+require './module1'
+module1 = new wizportal.module1(portal)
 portal.start()
 
 # vim: foldmethod=marker wrap
