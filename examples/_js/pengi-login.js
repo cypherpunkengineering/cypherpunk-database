@@ -26,7 +26,7 @@ $(document).ready(function()
 		$('#loginMessage').slideDown();
 		$('#loginMessage').addClass('error');
 		$('#loginMessage').removeClass('success');
-		$('#loginMessage').html('<img src="/_img/site/loginError.png" /><span>Login Failed!</span>');
+		$('#loginMessage').html('<img src="/_img/site/loginError.png" /><span style="position: relative; top: -20px">Login Failed!</span>');
 	}
 	$('.form input').focus(function()
 		{
