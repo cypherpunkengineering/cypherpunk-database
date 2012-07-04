@@ -13,8 +13,8 @@
 # GNU General Public License for more details.
 
 # wiz-framework
-require '../wiz-framework'
-require '../wiz-framework/wizfrontend'
+require '..'
+require '../wizfrontend'
 
 # wizportal package
 wizpackage 'wizportal'
