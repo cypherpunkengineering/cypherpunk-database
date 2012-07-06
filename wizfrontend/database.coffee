@@ -38,34 +38,26 @@ class wizfrontend.mysql
 		@client.user = @config.username
 		@client.password = @config.password
 
-class wizfrontend.mongo
+class wizfrontend.mongo extends wizdb.mongo
 	client : null
-	config : null
-	serverOptions : null
-	dbOptions : null
 
 	constructor : (@config, @serverOptions, @dbOptions) ->
-		@wizmongo = new wizdb.mongo()
-		@wizmongo.mongoInit @config, @serverOptions, @dbOptions, (err, client) =>
-			if not client and not err
-				err = 'unable to connect to database'
-			if err
-				wizlog.err @constructor.name, err
-				return null
-			@connect (client) =>
-				@mongo = client
+		super()
+		@init()
 
-	connect : (cb) =>
-		@wizmongo.mongoConnectDB (err, client) =>
+	init: () =>
+		super (err, @client) =>
+			if not client and not err
+				err = "failed connecting to database #{@config.database}"
 			if err
-				wizlog.err @constructor.name, err
+				wizlog.err @constructor.name, 'init: ' + err
 				return null
-			cb client
+			wizlog.debug @constructor.name, "connected to database #{@config.database}"
 
 	collection : (res, collectionName, cb) =>
-		@wizmongo.mongoGetCollection @mongo, collectionName, true, (err, collection) =>
+		super @client, collectionName, true, (err, collection) =>
 			if err
-				wizlog.err @constructor.name, err
+				wizlog.err @constructor.name, "unable to retrieve collection #{@config.database}.#{collectionName}: #{err}"
 				res.send err, 500
 				return null
 			cb collection
