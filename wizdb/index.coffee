@@ -39,18 +39,18 @@ class wizdb.mongo
 	# connect and auth to mongo database
 	mongoConnectDB : (cb) =>
 		unless mongoServer = new mongodb.Server @mongoConfig.hostname, 27017, @mongoServerOptions
-			return cb 'mongodb.Server() failed'
+			return cb "mongodb.Server(#{@mongoConfig.hostname}) failed: #{err}"
 
 		unless mongoDB = new mongodb.Db @mongoConfig.database, mongoServer, @mongoDbOptions
-			return cb 'mongodb.Db() failed'
+			return cb "mongodb.Db(#{@mongoConfig.hostname}) failed: #{err}"
 
 		mongoDB.open (err, client) =>
 			if err or not client
-				return cb 'mongoDB.open() failed: ' + err
+				return cb "mongoDB.open(#{@mongoConfig.hostname}) failed: #{err}"
 
 			client.authenticate @mongoConfig.username, @mongoConfig.password, (err, auth) =>
 				if err or not auth
-					return cb 'client.authenticate() failed: ' + err
+					return cb "client.authenticate(#{@mongoConfig.username}, #{@mongoConfig.hostname}) failed: #{err}"
 
 				cb null, client
 
@@ -62,7 +62,7 @@ class wizdb.mongo
 
 		# retreive the collection
 		unless collection = new mongodb.Collection(client, collectionName)
-			return cb 'mongodb.Collection returned null'
+			return cb "mongodb.Collection(#{@collectionName}) returned null"
 
 		# call the cb
 		cb null, collection
