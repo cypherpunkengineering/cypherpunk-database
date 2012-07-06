@@ -29,26 +29,26 @@ class wizdb.mongo
 
 	mongoInit : (mongoConfig, mongoServerOptions, mongoDbOptions, cb) =>
 
-		this.mongoConfig = mongoConfig
-		this.mongoServerOptions = mongoServerOptions
-		this.mongoDbOptions = mongoDbOptions
+		@mongoConfig = mongoConfig
+		@mongoServerOptions = mongoServerOptions
+		@mongoDbOptions = mongoDbOptions
 
-		this.mongoConnectDB (err, client) =>
+		@mongoConnectDB (err, client) =>
 			cb err, client
 
 	# connect and auth to mongo database
 	mongoConnectDB : (cb) =>
-		unless mongoServer = new mongodb.Server this.mongoConfig.hostname, 27017, this.mongoServerOptions
+		unless mongoServer = new mongodb.Server @mongoConfig.hostname, 27017, @mongoServerOptions
 			return cb 'mongodb.Server() failed'
 
-		unless mongoDB = new mongodb.Db this.mongoConfig.database, mongoServer, this.mongoDbOptions
+		unless mongoDB = new mongodb.Db @mongoConfig.database, mongoServer, @mongoDbOptions
 			return cb 'mongodb.Db() failed'
 
 		mongoDB.open (err, client) =>
 			if err or not client
 				return cb 'mongoDB.open() failed: ' + err
 
-			client.authenticate this.mongoConfig.username, this.mongoConfig.password, (err, auth) =>
+			client.authenticate @mongoConfig.username, @mongoConfig.password, (err, auth) =>
 				if err or not auth
 					return cb 'client.authenticate() failed: ' + err
 

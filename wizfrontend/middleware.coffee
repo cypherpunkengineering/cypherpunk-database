@@ -77,7 +77,7 @@ class wizfrontend.middleware
 
 	checkDeveloper : (req, res) =>
 		ip = @getIP req
-		if this.developerList.indexOf(ip) != -1 # paranthesis needed
+		if @developerList.indexOf(ip) != -1 # paranthesis needed
 			return true
 		return false
 
@@ -87,7 +87,7 @@ class wizfrontend.middleware
 	# filter requests to trusted ips only
 	checkIP : (req, res, next) =>
 		ip = @getIP req
-		if this.accessList.indexOf(ip) is -1 # paranthesis needed
+		if @accessList.indexOf(ip) is -1 # paranthesis needed
 			wizlog.info @constructor.name, "#{@errorstr[403]}"
 			res.send @errorstr[403], 200
 			return false
