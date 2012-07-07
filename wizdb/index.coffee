@@ -69,6 +69,9 @@ class wizdb.mongo
 	disconnect : (client) =>
 		client.close()
 
+	code : (func) =>
+		return new mongodb.Code(func)
+
 	dateFromID : (id) =>
 		try
 			ts = id.toString().substring(0,8)
