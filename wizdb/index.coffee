@@ -63,7 +63,11 @@ class wizdb.mongo
 		cb null, collection
 
 		# close the db connection unless told not to
-		client.close() unless stayOpen
+		if not stayOpen
+			@disconnect(client)
+
+	disconnect : (client) =>
+		client.close()
 
 	dateFromID : (id) =>
 		try
