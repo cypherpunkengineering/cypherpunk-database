@@ -48,7 +48,10 @@ class wizbackend.mongo extends wizdb.mongo
 
 	# date like this: 2012.04.01.09
 	dayhourFromDate : (date) ->
-		key = dayFromDate(date)
+		# key = dayFromDate(date)
+		key = date.getFullYear()
+		key += '.' + ('0' + date.getMonth()).slice(-2)
+		key += '.' + ('0' + date.getDate()).slice(-2)
 		key += '.' + ('0' + date.getHours()).slice(-2)
 		return key
 
