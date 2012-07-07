@@ -41,7 +41,7 @@ class wizlog
 		ts = @ts()
 		facility = pkgname + '.' + tag
 		prionum = @priorities[priority]
-		if typeof msg == 'string'
+		if typeof msg == 'string' and msg.length > 0
 			while msg[msg.length - 1].charCodeAt(0) == 10
 				msg = msg.slice(0, msg.length - 1)
 		console.log "#{ts} #{facility}(#{priority}): #{msg}"
