@@ -65,12 +65,12 @@ class wizdb.mongo
 		# close the db connection unless told not to
 		client.close() unless stayOpen
 
-	idToTS : (id) =>
+	dateFromID : (id) =>
 		try
-			tsraw = id.toString().substring(0,8)
-			tsdate = new Date(parseInt(tsraw, 16) * 1000)
+			ts = id.toString().substring(0,8)
+			date = new Date(parseInt(ts, 16) * 1000)
 		catch e
 			return new Date(-1)
-		return tsdate
+		return date
 
 # vim: foldmethod=marker wrap

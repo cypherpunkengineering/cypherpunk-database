@@ -47,17 +47,16 @@ class wizfrontend.mongo extends wizdb.mongo
 
 	init: () =>
 		super (err, @client) =>
-			if not client and not err
-				err = "failed connecting to database #{@config.database}"
-			if err
-				wizlog.err @constructor.name, 'init: ' + err
+			if not client or err
+				wizlog.err @constructor.name, "failed connecting to database #{@config.database} #{err}"
 				return null
 			wizlog.debug @constructor.name, "connected to database #{@config.database}"
 
 	collection : (res, collectionName, cb) =>
 		super @client, collectionName, true, (err, collection) =>
-			if err
-				wizlog.err @constructor.name, "unable to retrieve collection #{@config.database}.#{collectionName}: #{err}"
+			# only call cb if we have collection
+			if err or not collection
+				wizlog.err @constructor.name, "unable to retrieve collection #{@config.database}.#{collectionName} #{err}"
 				res.send err, 500
 				return null
 			cb collection
