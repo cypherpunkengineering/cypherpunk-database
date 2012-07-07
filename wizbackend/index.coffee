@@ -69,6 +69,10 @@ class wizbackend.looper
 		setTimeout @onAllTasksCompleted, 500
 
 	onAllTasksCompleted : () =>
+		if @pending > 0
+			# more tasks were scheduled! keep waiting...
+			return
+
 		wizlog.info @constructor.name, 'all tasks completed'
 		@finish()
 
