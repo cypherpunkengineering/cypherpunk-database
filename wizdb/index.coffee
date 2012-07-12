@@ -19,6 +19,22 @@ require '..'
 wizpackage 'wizdb'
 
 # native mongodb driver
+MySQL = require 'mysql'
+
+class wizdb.mysql
+	client : null
+	config :
+		host : ''
+		user : ''
+		password : ''
+
+	constructor : (@config) ->
+		@client = new MySQL.Client()
+		@client.host = @config.hostname
+		@client.user = @config.username
+		@client.password = @config.password
+
+# native mysql driver
 mongodb = require 'mongodb'
 
 class wizdb.mongo

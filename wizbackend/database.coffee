@@ -5,7 +5,9 @@ require '../wizdb'
 # wizbackend package
 wizpackage 'wizbackend'
 
-# manager configuration
+# mysql class
+class wizbackend.mysql extends wizdb.mysql
+# mongo class
 class wizbackend.mongo extends wizdb.mongo
 
 	verbose : false

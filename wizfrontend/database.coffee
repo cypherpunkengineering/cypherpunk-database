@@ -22,21 +22,7 @@ wizpackage 'wizfrontend'
 # node frameworks
 connect = require 'connect'
 
-# database drivers
-MySQL = require 'mysql'
-
-class wizfrontend.mysql
-	client : null
-	config :
-		host : ''
-		user : ''
-		password : ''
-
-	constructor : (@config) ->
-		@client = new MySQL.Client()
-		@client.host = @config.hostname
-		@client.user = @config.username
-		@client.password = @config.password
+class wizfrontend.mysql extends wizdb.mysql
 
 class wizfrontend.mongo extends wizdb.mongo
 	client : null
