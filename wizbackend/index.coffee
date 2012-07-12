@@ -8,8 +8,8 @@ require './database'
 # zero message queue
 zmq = require 'zmq'
 
-# loop for tasks
-class wizbackend.looper
+# worker loop for tasks
+class wizbackend.worker
 	running : false
 	interval : 30 * 1000
 	rundelay : 3 * 1000
@@ -18,10 +18,10 @@ class wizbackend.looper
 	waited : 0
 
 	constructor : (@parent) ->
-		wizlog.debug @constructor.name, 'Creating looper...'
+		# wizlog.debug @constructor.name, 'creating worker...'
 
 	init : (listenOnSocket) =>
-		# setup looper to run every X secs and manually start first run
+		# setup worker to run every X secs and manually start first run
 		if @rundelay > 0
 			setTimeout @run, @rundelay
 		if @interval > 0
@@ -30,7 +30,7 @@ class wizbackend.looper
 	onDeadlock : () =>
 		wizlog.alert @constructor.name, 'deadlock!!'
 
-	# looper main method
+	# worker main method
 	run : () =>
 		# ensure only one call at a time
 		if @running
@@ -44,7 +44,7 @@ class wizbackend.looper
 			@waited = 0
 
 		# start
-		wizlog.debug @constructor.name, 'looper start'
+		wizlog.debug @constructor.name, 'worker started'
 		@running = true
 		setTimeout @work, 500
 
@@ -69,19 +69,16 @@ class wizbackend.looper
 		setTimeout @onAllTasksCompleted, 500
 
 	onAllTasksCompleted : () =>
-		if @pending > 0
-			# more tasks were scheduled! keep waiting...
-			return
-
+		return if not @running or @pending > 0
 		wizlog.info @constructor.name, 'all tasks completed'
 		@finish()
 
 	# called from work() when all work is completed
 	finish : () =>
-		wizlog.debug @constructor.name, 'looper end'
-		@pending = 0
-		@cleanup()
+		return if not @running or @pending > 0
+		wizlog.debug @constructor.name, 'worker finished'
 		@running = false
+		@cleanup()
 
 	# called from finish() to cleanup between runs
 	cleanup : () => {}
@@ -135,23 +132,23 @@ class wizbackend.listener
 		@responder.on 'message', @onMessage
 		@responder.bind @sock, (err) =>
 			if err
-				wizlog.crit @constructor.name, "Cannot bind to socket #{@sock}: #{err}"
+				wizlog.crit @constructor.name, "cannot bind to socket #{@sock}: #{err}"
 				process.exit()
 
-		wizlog.info @constructor.name, "Bound to #{@sock}"
+		wizlog.info @constructor.name, "bound to #{@sock}"
 
 # main manager object
 class wizbackend.manager
 
 	constructor : () ->
-		wizlog.debug @constructor.name, 'Creating manager...'
+		# wizlog.debug @constructor.name, 'creating manager...'
 		unless @listener
 			@listener = new wizbackend.listener(@)
-		unless @looper
-			@looper = new wizbackend.looper(@)
+		unless @worker
+			@worker = new wizbackend.worker(@)
 
 	init : () =>
 		setTimeout @listener.init, 1500
-		setTimeout @looper.init, 3000
+		setTimeout @worker.init, 3000
 
 # vim: foldmethod=marker wrap
