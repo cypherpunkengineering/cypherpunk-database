@@ -43,7 +43,8 @@ class wizutil.wizstring
 
 	# convert dotted quad ipv4 address to 32 bit integer
 	@inet4_aton : (ip) ->
-		d = ip.split('.');
+		return 0 unless @inet4_valid(ip)
+		d = ip.split('.')
 		return ((((((+d[0])*256)+(+d[1]))*256)+(+d[2]))*256)+(+d[3])
 
 	# compare two strings insensitively
