@@ -4,9 +4,7 @@ require '..'
 # wizbackend package
 wizpackage 'wizbackend'
 require './database'
-
-# zero message queue
-zmq = require 'zmq'
+require './messaging'
 
 # worker loop for tasks
 class wizbackend.worker
@@ -114,41 +112,5 @@ class wizbackend.worker
 				client.close()
 			catch e
 				wizlog.err @constructor.name, 'onAllTasksCompleted: exception while disconnecting from database: ' + e.toString()
-
-# listen on a zmq socket
-class wizbackend.listener
-
-	sock : 'tcp://*:0'
-
-	constructor : (@parent, @sock) ->
-		# allocate a socket for listening
-		@responder = zmq.socket 'rep'
-
-	onMessage : (msg) =>
-		wizlog.debug @constructor.name, "onMessage: #{msg}"
-
-	init : () =>
-		# listen for messages
-		@responder.on 'message', @onMessage
-		@responder.bind @sock, (err) =>
-			if err
-				wizlog.crit @constructor.name, "cannot bind to socket #{@sock}: #{err}"
-				process.exit()
-
-		wizlog.info @constructor.name, "bound to #{@sock}"
-
-# main manager object
-class wizbackend.manager
-
-	constructor : () ->
-		# wizlog.debug @constructor.name, 'creating manager...'
-		unless @listener
-			@listener = new wizbackend.listener(@)
-		unless @worker
-			@worker = new wizbackend.worker(@)
-
-	init : () =>
-		setTimeout @listener.init, 1500
-		setTimeout @worker.init, 3000
 
 # vim: foldmethod=marker wrap
