@@ -41,12 +41,8 @@ class wizbackend.requester
 		@requester = zmq.socket('req')
 
 	init : () =>
-		# listen for messages
 		@requester.on 'message', @onMessage
-		@requester.bind @sock, (err) =>
-			if err
-				wizlog.crit @constructor.name, "cannot bind to socket #{@sock}: #{err}"
-				process.exit()
+		@requester.connect(@sock)
 
 		wizlog.info @constructor.name, "bound to #{@sock}"
 
