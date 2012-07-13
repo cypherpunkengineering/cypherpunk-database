@@ -7,8 +7,7 @@ wizpackage 'wizbackend'
 # zero message queue
 zmq = require 'zmq'
 
-# listen on a zmq socket
-class wizbackend.listener
+class wizbackend.responder
 
 	sock : 'tcp://*:0'
 
@@ -28,6 +27,35 @@ class wizbackend.listener
 
 	onMessage : (msg) =>
 		wizlog.debug @constructor.name, "onMessage: #{msg}"
+
+	send : (msg) =>
+		# wizlog.debug @constructor.name, "send: #{msg}"
+		@responder.send(msg)
+
+class wizbackend.requester
+
+	sock : 'tcp://*:0'
+
+	constructor : (@parent, @sock) ->
+		# allocate a socket for listening
+		@requester = zmq.socket('req')
+
+	init : () =>
+		# listen for messages
+		@requester.on 'message', @onMessage
+		@requester.bind @sock, (err) =>
+			if err
+				wizlog.crit @constructor.name, "cannot bind to socket #{@sock}: #{err}"
+				process.exit()
+
+		wizlog.info @constructor.name, "bound to #{@sock}"
+
+	onMessage : (msg) =>
+		wizlog.debug @constructor.name, "onMessage: #{msg}"
+
+	send : (msg) =>
+		# wizlog.debug @constructor.name, "send: #{msg}"
+		@requester.send(msg)
 
 class wizbackend.publisher
 
