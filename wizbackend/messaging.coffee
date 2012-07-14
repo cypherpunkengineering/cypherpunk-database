@@ -7,80 +7,50 @@ wizpackage 'wizbackend'
 # zero message queue
 zmq = require 'zmq'
 
-class wizbackend.responder
+class wizbackend.zmqsock
+	binding : 'tcp://*:0'
+	type : ''
 
-	sock : 'tcp://*:0'
-
-	constructor : (@parent, @sock) ->
-		# allocate a socket for listening
-		@responder = zmq.socket('rep')
-
+	constructor : (@type, @binding) ->
+		@sock = zmq.socket(@type)
 	init : () =>
-		# listen for messages
-		@responder.on 'message', @onMessage
-		@responder.bind @sock, (err) =>
-			if err
-				wizlog.crit @constructor.name, "cannot bind to socket #{@sock}: #{err}"
-				process.exit()
-
-		wizlog.info @constructor.name, "bound to #{@sock}"
-
+		@sock.on 'message', @onMessage
 	onMessage : (msg) =>
 		wizlog.debug @constructor.name, "onMessage: #{msg}"
-
 	send : (msg) =>
 		# wizlog.debug @constructor.name, "send: #{msg}"
-		@responder.send(msg)
+		@sock.send(msg)
 
-class wizbackend.requester
-
-	sock : 'tcp://*:0'
-
-	constructor : (@parent, @sock) ->
-		# allocate a socket for listening
-		@requester = zmq.socket('req')
-
+class wizbackend.zmqserver extends wizbackend.zmqsock
 	init : () =>
-		@requester.on 'message', @onMessage
-		@requester.connect(@sock)
-
-		wizlog.info @constructor.name, "bound to #{@sock}"
-
-	onMessage : (msg) =>
-		wizlog.debug @constructor.name, "onMessage: #{msg}"
-
-	send : (msg) =>
-		# wizlog.debug @constructor.name, "send: #{msg}"
-		@requester.send(msg)
-
-class wizbackend.publisher
-
-	sock : 'tcp://*:0'
-
-	constructor : (@parent, @sock) ->
-		@publisher = zmq.socket('pub')
-
-	init : () =>
-		@publisher.bind @sock, (err) =>
+		super()
+		wizlog.info @constructor.name, "binding to #{@binding}"
+		@sock.bind @binding, (err) =>
 			if err
-				wizlog.crit @constructor.name, "cannot bind to socket #{@sock}: #{err}"
+				wizlog.crit @constructor.name, "cannot bind socket to #{@binding}: #{err}"
 				process.exit()
+			# wizlog.info @constructor.name, "bound to #{@binding}"
 
-	send: (msg) =>
-		wizlog.debug @constructor.name, "sendMessage: #{msg}"
-		@publisher.send(msg)
-
-class wizbackend.subscriber
-
-	sock : 'tcp://*:0'
-
-	constructor : (@parent, @sock) ->
-		@subscriber = zmq.socket('sub')
-
+class wizbackend.zmqclient extends wizbackend.zmqsock
 	init : () =>
-		@subscriber.on 'message', @onMessage
-		@subscriber.connect(@sock)
-		@subscriber.subscribe("")
+		super()
+		@sock.connect @binding
 
-	onMessage : (msg) =>
-		wizlog.debug @constructor.name, "onMessage: #{msg}"
+class wizbackend.responder extends wizbackend.zmqserver
+	constructor : (@parent, @binding) ->
+		super('rep', @binding)
+class wizbackend.requester extends wizbackend.zmqclient
+	constructor : (@parent, @binding) ->
+		super('req', @binding)
+
+class wizbackend.publisher extends wizbackend.zmqserver
+	constructor : (@parent, @binding) ->
+		super('pub', @binding)
+class wizbackend.subscriber extends wizbackend.zmqclient
+	constructor : (@parent, @binding) ->
+		super('sub', @binding)
+	init : () =>
+		super()
+		@sock.subscribe("")
+
+# vim: foldmethod=marker wrap
