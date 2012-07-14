@@ -40,11 +40,14 @@ class wizbackend.zmqsock
 		wizlog.debug @constructor.name, "RECV MSG TS#{msg.datum.ts}: #{msg.datum.cmd}"
 		# console.log msg
 	send : (msg) =>
-		if not msg or not msg.datum.ts or not msg.datum.cmd
-			wizlog.err @constructor.name, "SEND MSG ERROR: #{rawmsg}"
-			return
-		wizlog.debug @constructor.name, "SEND MSG TS#{msg.datum.ts}: #{msg.datum.cmd}"
-		@sock.send(msg.toJSON())
+		if not msg
+			msg = 'OK'
+		if msg.datum
+			wizlog.debug @constructor.name, "SEND MSG TS#{msg.datum.ts}: #{msg.datum.cmd}"
+			@sock.send(msg.toJSON())
+		else
+			wizlog.debug @constructor.name, "SEND MSG RAW: #{msg}"
+			@sock.send(msg)
 
 class wizbackend.zmqserver extends wizbackend.zmqsock
 	init : () =>
