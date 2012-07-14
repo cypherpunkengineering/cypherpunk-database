@@ -57,7 +57,7 @@ class wizbackend.publisher
 
 	sock : 'tcp://*:0'
 
-	constructor : () ->
+	constructor : (@parent, @sock) ->
 		@publisher = zmq.socket('pub')
 
 	init : () =>
@@ -74,7 +74,7 @@ class wizbackend.subscriber
 
 	sock : 'tcp://*:0'
 
-	constructor : () ->
+	constructor : (@parent, @sock) ->
 		@subscriber = zmq.socket('sub')
 
 	init : () =>
