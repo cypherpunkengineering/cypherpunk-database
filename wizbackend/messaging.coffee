@@ -33,12 +33,24 @@ class wizbackend.zmqsock
 		msg = new wizbackend.message(rawmsg)
 		if not msg or not msg.datum or not msg.datum.ts or not msg.datum.cmd
 			wizlog.err @constructor.name, "RECV MSG ERROR: #{rawmsg}"
-			@send 'ERR'
+			@sendERR()
 			return
+		if msg.datum.cmd == 'ERR' # avoid infinite loop by flagging socket error
+			@err = true
 		@onMessage(msg)
 	onMessage: (msg) =>
 		wizlog.debug @constructor.name, "RECV MSG TS#{msg.datum.ts}: #{msg.datum.cmd}"
 		# console.log msg
+	sendERR: () =>
+		return if @err # only send error msg once to avoid infinite loop
+		@err = true
+		err = new wizbackend.message()
+		err.datum.cmd = 'ERR'
+		@send(err)
+	sendOK: () =>
+		ok = new wizbackend.message()
+		ok.datum.cmd = 'OK'
+		@send(ok)
 	send : (msg) =>
 		if not msg
 			msg = 'OK'
@@ -88,11 +100,10 @@ class wizbackend.message
 				@datum = JSON.parse(rawmsg.toString())
 			catch e
 				wizlog.err @constructor.name, "error parsing msg #{rawmsg}"
-				@send 'ERR'
 				return
 		else
 			@datum = {}
-			@datum.ts = Math.round((new Date()).getTime() / 1000)
+			@datum.ts = (new Date()).getTime()
 
 	toJSON: () =>
 		return JSON.stringify(@datum)
