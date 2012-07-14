@@ -28,12 +28,23 @@ class wizbackend.zmqsock
 	constructor : (@type, @binding) ->
 		@sock = zmq.socket(@type)
 	init : () =>
-		@sock.on 'message', @onMessage
-	onMessage : (msg) =>
-		wizlog.debug @constructor.name, "onMessage: #{msg}"
+		@sock.on 'message', @onRawMessage
+	onRawMessage : (rawmsg) =>
+		msg = new wizbackend.message(rawmsg)
+		if not msg or not msg.datum or not msg.datum.ts or not msg.datum.cmd
+			wizlog.err @constructor.name, "RECV MSG ERROR: #{rawmsg}"
+			@send 'ERR'
+			return
+		@onMessage(msg)
+	onMessage: (msg) =>
+		wizlog.debug @constructor.name, "RECV MSG TS#{msg.datum.ts}: #{msg.datum.cmd}"
+		# console.log msg
 	send : (msg) =>
-		# wizlog.debug @constructor.name, "send: #{msg}"
-		@sock.send(msg)
+		if not msg or not msg.datum.ts or not msg.datum.cmd
+			wizlog.err @constructor.name, "SEND MSG ERROR: #{rawmsg}"
+			return
+		wizlog.debug @constructor.name, "SEND MSG TS#{msg.datum.ts}: #{msg.datum.cmd}"
+		@sock.send(msg.toJSON())
 
 class wizbackend.zmqserver extends wizbackend.zmqsock
 	init : () =>
@@ -66,5 +77,21 @@ class wizbackend.subscriber extends wizbackend.zmqclient
 	init : () =>
 		super()
 		@sock.subscribe("")
+
+class wizbackend.message
+	constructor: (rawmsg) ->
+		if rawmsg
+			try
+				@datum = JSON.parse(rawmsg.toString())
+			catch e
+				wizlog.err @constructor.name, "error parsing msg #{rawmsg}"
+				@send 'ERR'
+				return
+		else
+			@datum = {}
+			@datum.ts = Math.round((new Date()).getTime() / 1000)
+
+	toJSON: () =>
+		return JSON.stringify(@datum)
 
 # vim: foldmethod=marker wrap
