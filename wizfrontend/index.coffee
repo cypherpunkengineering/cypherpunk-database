@@ -241,9 +241,9 @@ class wizfrontend.server
 		return req.body.username is 'open' and req.body.password is 'sesame'
 
 	staticContent : [
-		'_css'
-		'_img'
-		'_js'
+		'css'
+		'img'
+		'js'
 	]
 
 	staticPath: (url, disk) =>
@@ -289,24 +289,22 @@ class wizfrontend.branch
 # for server modules
 class wizfrontend.module extends wizfrontend.branch
 
+	resource: (path, title) =>
+		@branches[path] = new wizfrontend.resource this, path, title
+		return @branches[path]
+
 	initStatic: () =>
 		# module-level static folders
 		for staticDir in @parent.staticContent
 			path = @getPath()
 			if path != '/'
 				path = path + '/'
-			path = path + staticDir + '/'
+			path = path + '_' + staticDir + '/'
 			@parent.staticPath path, rootpath + path
+			@initStaticDir(path, staticDir)
 
-	resource: (path, title) =>
-		@branches[path] = new wizfrontend.resource this, path, title
-		return @branches[path]
-
-	js: (file) =>
-		path = @getPath()
-		if path != '/'
-			path = path + '/'
-		return path + '_js/' + file + '.js'
+	initStaticDir: (path, dir) =>
+		this[dir] = (file) => return path + file
 
 # resources in a module
 class wizfrontend.resource extends wizfrontend.branch
