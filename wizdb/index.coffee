@@ -36,6 +36,7 @@ class wizdb.mysql
 
 # native mysql driver
 mongodb = require 'mongodb'
+BSON = mongodb.BSONPure
 
 class wizdb.mongo
 
@@ -95,5 +96,8 @@ class wizdb.mongo
 		catch e
 			return new Date(-1)
 		return date
+
+	oid: (id) =>
+		return new BSON.ObjectID(id)
 
 # vim: foldmethod=marker wrap
