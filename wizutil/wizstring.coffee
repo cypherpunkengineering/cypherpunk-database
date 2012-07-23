@@ -29,9 +29,14 @@ class wizutil.wizstring
 
 	# check if valid ipv4 address
 	@inet4_valid : (ip) ->
-		octet = '(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])'
-		ipRegex = '(?:' + octet + '\\.){3}' + octet
-		return (new RegExp( '^' + ipRegex + '$' )).test(ip)
+		ipv4octet = '(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])'
+		ipv4Regex = '(?:' + ipv4octet + '\\.){3}' + ipv4octet
+		return (new RegExp( '^' + ipv4Regex + '$' )).test(ip)
+
+	# check if valid ipv6 address
+	@inet6_valid : (ip) ->
+		ipv6Regex = '(\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*)'
+		return (new RegExp( '^' + ipv6Regex + '$' )).test(ip)
 
 	# convert 32 bit integer to dotted quad ipv4 address
 	@inet4_ntoa : (int) ->
@@ -46,6 +51,11 @@ class wizutil.wizstring
 		return 0 unless @inet4_valid(ip)
 		d = ip.split('.')
 		return ((((((+d[0])*256)+(+d[1]))*256)+(+d[2]))*256)+(+d[3])
+
+	# check if valid fqdn
+	@fqdn_valid : (host) ->
+		fqdnRegex = '^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$'
+		return (new RegExp( '^' + fqdnRegex + '$' )).test(host)
 
 	# compare two strings insensitively
 	@strncmp : (str1, str2, n) ->
