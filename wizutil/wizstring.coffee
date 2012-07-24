@@ -57,6 +57,15 @@ class wizutil.wizstring
 		fqdnRegex = '^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$'
 		return (new RegExp( '^' + fqdnRegex + '$' )).test(host)
 
+	# check if valid string
+	@str_valid : (str) ->
+		strRegex = '..*'
+		return (new RegExp( '^' + strRegex + '$' )).test(str)
+
+	# check if valid integer
+	@int_valid : (i) ->
+		return (!isNaN(i) && i % 1 == 0)
+
 	# compare two strings insensitively
 	@strncmp : (str1, str2, n) ->
 		str1 = str1.substring 0, n
