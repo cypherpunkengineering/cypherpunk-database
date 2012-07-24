@@ -64,7 +64,7 @@ class wizutil.wizstring
 
 	# check if valid integer
 	@int_valid : (i) ->
-		return (!isNaN(i) && i % 1 == 0)
+		return parseFloat(i) == parseInt(i) && (!isNaN(i) && i % 1 == 0)
 
 	# compare two strings insensitively
 	@strncmp : (str1, str2, n) ->
