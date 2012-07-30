@@ -97,9 +97,6 @@ class wizfrontend.server
 		@core = @module '/', 'core'
 		@home = @core.resource '/', 'home'
 
-		# add on-the-fly coffee-script compilation
-		@home.method 'https', 'get', '/js/:script.js', @middleware.baseSession(), @compileJS
-
 		# add core methods
 		@home.method 'https', 'get', '/', @middleware.baseSession(), @handleRoot
 		@home.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @handleHome
@@ -186,21 +183,6 @@ class wizfrontend.server
 	error: (err, req, res) =>
 		wizlog.err @constructor.name, err
 		res.send 500
-
-	compileJS: (req, res) =>
-		res.header 'Content-Type', 'application/x-javascript'
-		fn = "#{rootpath}/js/#{req.params.script}.coffee"
-		fs.readFile fn, 'utf8', (err, data) ->
-			if err
-				res.send 404
-				return false
-			try
-				js = coffee.compile data,
-					bare: true
-				res.send js
-			catch e
-				wizlog.err @constructor.name, "coffee-script compilation failed for #{fn}: #{e.toString()}"
-				res.send e.toString(), 500
 
 	handleRoot: (req, res) =>
 		res.send 'this is the root'
@@ -290,6 +272,12 @@ class wizfrontend.branch
 
 		return path
 
+	getPathSlashed: () =>
+		path = @getPath()
+		if path != '/'
+			path = path + '/'
+		return path
+
 	getTitle : () =>
 		return @title
 
@@ -302,6 +290,33 @@ class wizfrontend.branch
 # for server modules
 class wizfrontend.module extends wizfrontend.branch
 
+	coffeeDir: '_coffee'
+	coffeeExt: '.coffee'
+
+	init: () =>
+		cof = new wizfrontend.method this, 'https', 'get', '/' + @coffeeDir + '/:script' + @coffeeExt, @parent.middleware.baseSession(), @coffeeCompile
+		cof.init()
+		super()
+
+	coffee: (file) =>
+		return @getPathSlashed() + @coffeeDir + '/' + file + @coffeeExt
+
+	coffeeCompile: (req, res) =>
+		res.header 'Content-Type', 'application/x-javascript'
+		fn = rootpath + @getPathSlashed() + @coffeeDir + '/' + req.params.script + @coffeeExt
+		fs.readFile fn, 'utf8', (err, data) ->
+			if err
+				wizlog.err @constructor.name, "coffee-script file not found #{fn}"
+				res.send 404
+				return false
+			try
+				js = coffee.compile data,
+					bare: true
+				res.send js
+			catch e
+				wizlog.err @constructor.name, "coffee-script compilation failed for #{fn}: #{e.toString()}"
+				res.send e.toString(), 500
+
 	resource: (path, title) =>
 		@branches[path] = new wizfrontend.resource this, path, title
 		return @branches[path]
@@ -309,10 +324,7 @@ class wizfrontend.module extends wizfrontend.branch
 	initStatic: () =>
 		# module-level static folders
 		for staticDir in @parent.staticContent
-			path = @getPath()
-			if path != '/'
-				path = path + '/'
-			path = path + '_' + staticDir + '/'
+			path = @getPathSlashed() + '_' + staticDir + '/'
 			@parent.staticPath path, rootpath + path
 			@initStaticDir(path, staticDir)
 
@@ -336,6 +348,10 @@ class wizfrontend.method extends wizfrontend.branch
 			@path = @path.slice(0, @path.length - 1)
 		@init = () =>
 			wizlog.debug @constructor.name, "adding #{@protocol} #{@method} " + @getPath()
-			@parent.parent.parent[@protocol][@method](@getPath(), @middleware, @handler)
+			if @parent.constructor.name is 'module'
+				server = @parent.parent
+			else
+				server = @parent.parent.parent
+			server[@protocol][@method](@getPath(), @middleware, @handler)
 
 # vim: foldmethod=marker wrap
