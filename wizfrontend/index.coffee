@@ -51,6 +51,7 @@ require './database'
 require './middleware'
 
 # node frameworks
+coffee = require 'coffee-script'
 connect = require 'connect'
 express = require 'express'
 jade = require 'jade'
@@ -95,6 +96,16 @@ class wizfrontend.server
 		@modules = {}
 		@core = @module '/', 'core'
 		@home = @core.resource '/', 'home'
+
+		@home.method 'https', 'get', '/js/:script.js', @middleware.baseSession(), (req, res) =>
+			res.header 'Content-Type', 'application/x-javascript'
+			fs.readFile "#{rootpath}/js/#{req.params.script}.coffee", 'utf8', (err, data) ->
+				if err
+					res.send 404
+					return false
+				js = coffee.compile data,
+					bare: true
+				res.send js
 
 		# add core methods
 		@home.method 'https', 'get', '/', @middleware.baseSession(), @handleRoot
