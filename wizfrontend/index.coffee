@@ -97,15 +97,8 @@ class wizfrontend.server
 		@core = @module '/', 'core'
 		@home = @core.resource '/', 'home'
 
-		@home.method 'https', 'get', '/js/:script.js', @middleware.baseSession(), (req, res) =>
-			res.header 'Content-Type', 'application/x-javascript'
-			fs.readFile "#{rootpath}/js/#{req.params.script}.coffee", 'utf8', (err, data) ->
-				if err
-					res.send 404
-					return false
-				js = coffee.compile data,
-					bare: true
-				res.send js
+		# add on-the-fly coffee-script compilation
+		@home.method 'https', 'get', '/js/:script.js', @middleware.baseSession(), @compileJS
 
 		# add core methods
 		@home.method 'https', 'get', '/', @middleware.baseSession(), @handleRoot
@@ -193,6 +186,21 @@ class wizfrontend.server
 	error: (err, req, res) =>
 		wizlog.err @constructor.name, err
 		res.send 500
+
+	compileJS: (req, res) =>
+		res.header 'Content-Type', 'application/x-javascript'
+		fn = "#{rootpath}/js/#{req.params.script}.coffee"
+		fs.readFile fn, 'utf8', (err, data) ->
+			if err
+				res.send 404
+				return false
+			try
+				js = coffee.compile data,
+					bare: true
+				res.send js
+			catch e
+				wizlog.err @constructor.name, "coffee-script compilation failed for #{fn}: #{e.toString()}"
+				res.send e.toString(), 500
 
 	handleRoot: (req, res) =>
 		res.send 'this is the root'
