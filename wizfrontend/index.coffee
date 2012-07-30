@@ -192,7 +192,7 @@ class wizfrontend.server
 
 	error: (err, req, res) =>
 		wizlog.err @constructor.name, err
-		@redirect req, res, null, '/'
+		res.send 500
 
 	handleRoot: (req, res) =>
 		res.send 'this is the root'
@@ -238,13 +238,7 @@ class wizfrontend.server
 		return true
 
 	catchall: (req, res) =>
-		ip = @middleware.getIP req
-		if req.url is '/'
-			wizlog.err @constructor.name, "recursive redirect: #{ip}"
-			res.send 'recursive redirect'
-			return false
-		wizlog.debug @constructor.name, "catchall redirect: #{ip}"
-		@redirect req, res, null, '/'
+		res.send 404
 		return true
 
 	# probably want to override this
