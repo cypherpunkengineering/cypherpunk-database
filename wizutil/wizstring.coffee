@@ -72,4 +72,19 @@ class wizutil.wizstring
 		str2 = str2.substring 0, n
 		return ( str1 == str2 ) ? 0 : (( str1 > str2 ) ? 1 : -1 )
 
+	@validate: (argtype, value) =>
+		switch argtype
+			when 'fqdn'
+				return @fqdn_valid(value)
+			when 'inet4'
+				return @inet4_valid(value)
+			when 'inet6'
+				return @inet6_valid(value)
+			when 'str'
+				return @str_valid(value)
+			when 'int'
+				return @int_valid(value)
+			else # unknown
+				return false
+
 # vim: foldmethod=marker wrap
