@@ -12,20 +12,22 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-global.wizlog = require './wizlog'
+# wiz-framework
+require '..'
+require '../wizdb'
+require '../wizutil/wizstring'
 
-global.rootpath = process.cwd()
-global.pkgname = 'wiz-framework'
+# wizfrontend package
+wizpackage 'wizfrontend'
 
-global.wizpackage = (name) ->
-	global[name] = global[name] or {}
-	global.pkgname = name
+class wizfrontend.tablemanager
 
-process.on 'SIGINT', =>
-	process.exit()
+	validate: (argtype, value) => #{{{
+		return wizutil.wizstring.validate(argtype, t.value)
+	#}}}
 
-global.wizassert = (expr, tag, err) ->
-	return if expr
-	wizlog.err tag, "ASSERTION FAIL! #{err}"
+	insert: (req, res) =>
+	modify: (req, res) =>
+	drop: (req, res) =>
 
 # vim: foldmethod=marker wrap

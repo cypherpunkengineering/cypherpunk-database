@@ -40,9 +40,13 @@ class wizportal.server extends wizfrontend.server
 			pengiRightBox : ''
 			pengiMsg : ''
 			pengiCopyright : '2012 Pengi K.K.'
-			pengiJS : [
-				@core.js 'pengi'
+			pengiCSS : [
+				@core.css 'pengi.css'
 			]
+			pengiJS : [
+				@core.js 'pengi.js'
+			]
+			pengiDumpJS: []
 		return page
 
 	handleRoot : (req, res) =>
@@ -50,18 +54,18 @@ class wizportal.server extends wizfrontend.server
 			@redirect req, res, null, '/home'
 			return
 		page = @pengiPage 'wizportal', req
-		page.pengiJS.push @core.js('jquery.min')
-		page.pengiJS.push @core.js('pengi-login')
+		page.pengiJS.push @core.js('jquery.min.js')
+		page.pengiJS.push @core.js('pengi-login.js')
 		res.render 'login', page
 
-	handleHome : (req, res) ->
+	handleHome : (req, res) =>
 		page = @pengiPage 'wizportal', req
 		page.pengiBody = 'hello world'
 		res.render 'pengi', page
 
 portal = new wizportal.server()
 require './module1'
-module1 = new wizportal.module1(portal)
+portal.module(new wizportal.module1(portal, 'module1', 'Example Module'))
 portal.start()
 
 # vim: foldmethod=marker wrap

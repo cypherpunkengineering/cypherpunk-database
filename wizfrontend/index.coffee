@@ -94,8 +94,8 @@ class wizfrontend.server
 
 		# add module list, core module, and home resource
 		@modules = {}
-		@core = @module '/', 'core'
-		@home = @core.resource '/', 'home'
+		@core = @module(new wizfrontend.module(@, '/', 'core'))
+		@home = @core.resource(new wizfrontend.resource(@core, '/', 'home'))
 
 		# add core methods
 		@home.method 'https', 'get', '/', @middleware.baseSession(), @handleRoot
@@ -103,8 +103,9 @@ class wizfrontend.server
 		@home.method 'https', 'post', '/login', @middleware.baseSession(), @handleLogin
 		@home.method 'https', 'get', '/logout', @middleware.baseSession(), @handleLogout
 
-	module: (path, title) =>
-		@modules[path] = new wizfrontend.module this, path, title
+	module: (mod) =>
+		path = mod.path
+		@modules[path] = mod
 		return @modules[path]
 
 	init: () =>
@@ -249,8 +250,11 @@ class wizfrontend.server
 class wizfrontend.branch
 
 	constructor: (@parent, @path, @title) ->
-		# wizlog.debug @constructor.name, "creating #{@constructor.name} " + @getPath()
 		@branches = {}
+		# wizlog.debug @constructor.name, "creating #{@constructor.name} " + @getPath()
+		wizassert(false, @constructor.name, "invalid @parent: #{@parent}") if not @parent or typeof @parent != 'object'
+		wizassert(false, @constructor.name, "invalid @path: #{@path}") if not @path or typeof @path != 'string'
+		wizassert(false, @constructor.name, "invalid @title: #{@title}") if not @title or typeof @title != 'string'
 
 	getPath: () =>
 		if not @parent or not @parent.getPath # if top-level
@@ -294,7 +298,7 @@ class wizfrontend.module extends wizfrontend.branch
 	coffeeExt: '.coffee'
 
 	init: () =>
-		cof = new wizfrontend.method this, 'https', 'get', '/' + @coffeeDir + '/:script' + @coffeeExt, @parent.middleware.baseSession(), @coffeeCompile
+		cof = new wizfrontend.method this, @parent, 'https', 'get', '/' + @coffeeDir + '/:script' + @coffeeExt, @parent.middleware.baseSession(), @coffeeCompile
 		cof.init()
 		super()
 
@@ -317,8 +321,9 @@ class wizfrontend.module extends wizfrontend.branch
 				wizlog.err @constructor.name, "coffee-script compilation failed for #{fn}: #{e.toString()}"
 				res.send e.toString(), 500
 
-	resource: (path, title) =>
-		@branches[path] = new wizfrontend.resource this, path, title
+	resource: (res) =>
+		path = res.path
+		@branches[path] = res
 		return @branches[path]
 
 	initStatic: () =>
@@ -335,23 +340,20 @@ class wizfrontend.module extends wizfrontend.branch
 class wizfrontend.resource extends wizfrontend.branch
 
 	method: (protocol, method, path, middleware, handler) =>
-		@branches[path] = new wizfrontend.method this, protocol, method, path, middleware, handler
+		@branches[path] = new wizfrontend.method this, @parent.parent, protocol, method, path, middleware, handler
 		return @branches[path]
 
 # methods in a resource
 class wizfrontend.method extends wizfrontend.branch
 
-	constructor: (@parent, @protocol, @method, @path, @middleware, @handler) ->
+	constructor: (@parent, @server, @protocol, @method, @path, @middleware, @handler) ->
 		# wizlog.debug @constructor.name, @path
 		# strip trailing / from request path
 		if @path[@path.length - 1] == '/'
 			@path = @path.slice(0, @path.length - 1)
 		@init = () =>
-			wizlog.debug @constructor.name, "adding #{@protocol} #{@method} " + @getPath()
-			if @parent.constructor.name is 'module'
-				server = @parent.parent
-			else
-				server = @parent.parent.parent
-			server[@protocol][@method](@getPath(), @middleware, @handler)
+			# wizlog.debug @constructor.name, "adding #{@protocol} #{@method} " + @getPath()
+			wizassert(false, @constructor.name, "invalid @server: #{@server}") if not @server
+			@server[@protocol][@method](@getPath(), @middleware, @handler)
 
 # vim: foldmethod=marker wrap

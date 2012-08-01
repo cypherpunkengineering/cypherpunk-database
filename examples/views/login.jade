@@ -1,10 +1,6 @@
 extends base
 
-block pengiCSS
-	link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Nixie+One')
-	link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Paytone+One')
-
-block pengiBody
+block baseBody
 	div(id='wrapper', class='container')
 		div(id='logo')
 			img(src='/_img/site/pengi2.png')
@@ -16,3 +12,6 @@ block pengiBody
 			img(src='/_img/site/loginError.png')
 			span
 				Login Failed!
+	br
+	br
+	#copydiv='&copy; '+pengiCopyright

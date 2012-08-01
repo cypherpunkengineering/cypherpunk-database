@@ -23,7 +23,7 @@ require '../../wizutil/wizstring'
 # wizfrontend package
 wizpackage 'wizportal'
 
-class wizportal.module1
+class wizportal.module1 extends wizfrontend.module
 
 	#{{{ database config
 	mysqlConfig :
@@ -45,28 +45,24 @@ class wizportal.module1
 	    reaper : true
 	#}}}
 
-	constructor: (portal) ->
+	init: () =>
 		@mysql = new wizfrontend.mysql(@mysqlConfig)
 		@mongo = new wizfrontend.mongo(@mongoConfig, @mongoServerOptions, @mongoDbOptions)
 
-		#{{{ MODULE /module1
-		module1 = portal.module 'module1', 'Example Module'
-		#}}}
-
 		#{{{ RESOURCE /stats1
-		stats = module1.resource '/stats1', 'Example Chart 1'
+		stats = @resource(new wizfrontend.resource(@, '/stats1', 'Example Chart 1'))
 		#}}}
 		#{{{ METHOD		GET		/
-		stats.method 'https', 'get', '/', portal.middleware.baseSessionAuth(), (req, res) =>
-			page = portal.pengiPage 'Example Chart 1', req
-			page.pengiJS.push portal.core.js('jquery.min')
-			page.pengiJS.push portal.core.js('highcharts')
-			page.pengiJS.push portal.core.js('highcharts-grid')
-			page.pengiJS.push module1.js('stats1')
+		stats.method 'https', 'get', '/', @parent.middleware.baseSessionAuth(), (req, res) =>
+			page = @parent.pengiPage 'Example Chart 1', req
+			page.pengiJS.push @parent.core.js('jquery.min.js')
+			page.pengiJS.push @parent.core.js('highcharts.js')
+			page.pengiJS.push @parent.core.js('highcharts-grid.js')
+			page.pengiJS.push @js('stats1.js')
 			res.render 'stats', page
 		#}}}
 		#{{{ METHOD		GET		/:ip/:interval
-		stats.method 'https', 'get', '/:ip/:interval', portal.middleware.baseSessionAuthDatatable(), (req, res) =>
+		stats.method 'https', 'get', '/:ip/:interval', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
 
 			statsDataResponse = {}
 			#{{{ statsDataResponse.statsData
@@ -86,31 +82,31 @@ class wizportal.module1
 		#}}}
 
 		#{{{ RESOURCE /stats2
-		stats = module1.resource '/stats2', 'Example Chart 2'
+		stats = @resource(new wizfrontend.resource(@, '/stats2', 'Example Chart 2'))
 		#}}}
 		#{{{ METHOD		GET		/
-		stats.method 'https', 'get', '/', portal.middleware.baseSessionAuth(), (req, res) =>
-			page = portal.pengiPage 'Example Chart 2', req
-			page.pengiJS.push portal.core.js('jquery.min')
-			page.pengiJS.push portal.core.js('highcharts')
-			page.pengiJS.push portal.core.js('highcharts-grid')
-			page.pengiJS.push module1.js('stats2')
+		stats.method 'https', 'get', '/', @parent.middleware.baseSessionAuth(), (req, res) =>
+			page = @parent.pengiPage 'Example Chart 2', req
+			page.pengiJS.push @parent.core.js('jquery.min.js')
+			page.pengiJS.push @parent.core.js('highcharts.js')
+			page.pengiJS.push @parent.core.js('highcharts-grid.js')
+			page.pengiJS.push @js('stats2.js')
 			res.render 'stats', page
 		#}}}
 
 		#{{{ RESOURCE /logs
-		logs = module1.resource '/logs', 'Example MongoDB Table'
+		logs = @resource(new wizfrontend.resource(@, '/logs', 'Example MongoDB Table'))
 		#}}}
 		#{{{ METHOD		GET		/
-		logs.method 'https', 'get', '/', portal.middleware.baseSessionAuth(), (req, res) =>
-			page = portal.pengiPage 'Example MongoDB Table', req
-			page.pengiJS.push portal.core.js('jquery.min')
-			page.pengiJS.push portal.core.js('jquery.dataTables.min')
-			page.pengiJS.push module1.js('logs')
+		logs.method 'https', 'get', '/', @parent.middleware.baseSessionAuth(), (req, res) =>
+			page = @parent.pengiPage 'Example MongoDB Table', req
+			page.pengiJS.push @parent.core.js('jquery.min.js')
+			page.pengiJS.push @parent.core.js('jquery.dataTables.min.js')
+			page.pengiJS.push @js('logs.js')
 			res.render 'logs', page
 		#}}}
 		#{{{ METHOD		GET		/distinctip
-		logs.method 'https', 'get', '/distinctip', portal.middleware.baseSessionAuthDatatable(), (req, res) =>
+		logs.method 'https', 'get', '/distinctip', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
 			@mongo.collection res, 'relaylog', (collection) =>
 				collection.distinct 'ip', (err, results) =>
 					try
@@ -120,7 +116,7 @@ class wizportal.module1
 					res.send sresults
 		#}}}
 		#{{{ METHOD		GET		/logdata
-		logs.method 'https', 'get', '/logdata', portal.middleware.baseSessionAuthDatatable(), (req, res) =>
+		logs.method 'https', 'get', '/logdata', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
 			searchArg = if req.query.sSearch then { ip : req.query.sSearch } else {}
 			skipArg = if req.query.iDisplayStart then req.query.iDisplayStart else 0
 			limitArg = if req.query.iDisplayLength > 0 and req.query.iDisplayLength < 200 then req.query.iDisplayLength else 25
@@ -168,19 +164,19 @@ class wizportal.module1
 		#}}}
 
 		#{{{ RESOURCE /hosts
-		hosts = module1.resource '/hosts', 'Example MySQL Data Table'
+		hosts = @resource(new wizfrontend.resource(@, '/hosts', 'Example MySQL Data Table'))
 		#}}}
 		#{{{ METHOD 	GET		/
-		hosts.method 'https', 'get', '/', portal.middleware.baseSessionAuth(), (req, res) =>
-			page = portal.pengiPage 'Example MySQL Data Table', req
-			page.pengiJS.push portal.core.js('jquery.min')
-			page.pengiJS.push portal.core.js('jquery.dataTables.min')
-			page.pengiJS.push portal.core.js('jquery.jeditable.mini')
-			page.pengiJS.push module1.js('hosts')
+		hosts.method 'https', 'get', '/', @parent.middleware.baseSessionAuth(), (req, res) =>
+			page = @parent.pengiPage 'Example MySQL Data Table', req
+			page.pengiJS.push @parent.core.js('jquery.min.js')
+			page.pengiJS.push @parent.core.js('jquery.dataTables.min.js')
+			page.pengiJS.push @parent.core.js('jquery.jeditable.mini.js')
+			page.pengiJS.push @js('hosts.js')
 			res.render 'hosts', page
 		#}}}
 		#{{{ METHOD		GET		/list
-		hosts.method 'https', 'get', '/list', portal.middleware.baseSessionAuthDatatable(), (req, res) =>
+		hosts.method 'https', 'get', '/list', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
 			sortArg = 'NetworkIP'
 			sortDir = if req.query.sSortDir_0 == 'asc' then 'ASC' else 'DESC'
 			if req.query.iSortCol_0
@@ -208,7 +204,7 @@ class wizportal.module1
 					aaData : networkData
 		#}}}
 		#{{{ METHOD		POST /modify
-		hosts.method 'https', 'post', '/modify', portal.middleware.baseSessionAuthDatatable(), (req, res) =>
+		hosts.method 'https', 'post', '/modify', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
 			unless req.body and req.body.row_id and req.body.value
 				return res.send 'Missing arguments', 400
 
@@ -223,19 +219,19 @@ class wizportal.module1
 		#}}}
 
 		#{{{ RESOURCE	/quotas
-		quotas = module1.resource '/quotas', 'Example MySQL Data Table 2'
+		quotas = @resource(new wizfrontend.resource(@, '/quotas', 'Example MySQL Data Table 2'))
 		#}}}
 		#{{{ METHOD		GET		/
-		quotas.method 'https', 'get', '/', portal.middleware.baseSessionAuth(), (req, res) ->
-			page = portal.pengiPage 'Example MySQL Data Table 2', req
-			page.pengiJS.push portal.core.js('jquery.min')
-			page.pengiJS.push portal.core.js('jquery.dataTables.min')
-			page.pengiJS.push portal.core.js('jquery.jeditable.mini')
-			page.pengiJS.push module1.js('quotas')
+		quotas.method 'https', 'get', '/', @parent.middleware.baseSessionAuth(), (req, res) ->
+			page = @parent.pengiPage 'Example MySQL Data Table 2', req
+			page.pengiJS.push @parent.core.js('jquery.min.js')
+			page.pengiJS.push @parent.core.js('jquery.dataTables.min.js')
+			page.pengiJS.push @parent.core.js('jquery.jeditable.mini.js')
+			page.pengiJS.push @js('quotas.js')
 			res.render 'quotas', page
 		#}}}
 		#{{{ METHOD		GET		/list
-		quotas.method 'https', 'get', '/list', portal.middleware.baseSessionAuthDatatable(), (req, res) =>
+		quotas.method 'https', 'get', '/list', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
 			sortArg = 'QuotaName'
 			sortDir = if req.query.sSortDir_0 == 'asc' then 'ASC' else 'DESC'
 			if req.query.iSortCol_0
@@ -271,5 +267,7 @@ class wizportal.module1
 					iTotalDisplayRecords : quotaData.length
 					aaData : quotaData
 		#}}}
+
+		super()
 
 # vim: foldmethod=marker wrap
