@@ -352,7 +352,7 @@ class wizfrontend.method extends wizfrontend.branch
 		if @path[@path.length - 1] == '/'
 			@path = @path.slice(0, @path.length - 1)
 		@init = () =>
-			# wizlog.debug @constructor.name, "adding #{@protocol} #{@method} " + @getPath()
+			wizlog.debug @constructor.name, "adding #{@protocol} #{@method} " + @getPath()
 			wizassert(false, @constructor.name, "invalid @server: #{@server}") if not @server
 			@server[@protocol][@method](@getPath(), @middleware, @handler)
 
