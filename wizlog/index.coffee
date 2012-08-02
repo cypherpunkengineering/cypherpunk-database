@@ -41,15 +41,17 @@ class wizlog
 		ts = @ts()
 		try
 			stack = new Error().stack
-			frame3 = stack.split('at')[3]
-			facility = frame3.split(' ')[1]
+			.replace(/^\s+at\s+/gm, '')
+			.replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
+			.split('\n')
+			facility = stack[3].split(' ')[0]
 		catch e
 			facility = tag
 		prionum = @priorities[priority]
 		if typeof msg == 'string' and msg.length > 0
 			while msg[msg.length - 1].charCodeAt(0) == 10
 				msg = msg.slice(0, msg.length - 1)
-		console.log "#{ts} #{facility}(#{priority}): #{msg}"
+		console.log "#{ts} #{priority.toUpperCase()} #{facility}: #{msg}"
 		# TODO: log to system syslog as well
 
 module.exports = new wizlog()
