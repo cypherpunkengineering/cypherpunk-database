@@ -22,9 +22,11 @@ wizpackage 'wizfrontend'
 
 class wizfrontend.tablemanager
 
-	validate: (argtype, value) => #{{{
-		return wizutil.wizstring.validate(argtype, t.value)
-	#}}}
+	constructor: (@parent) ->
+		wizassert(false, "invalid @parent: #{@parent}") if not @parent
+
+	validateInputType: (inputType, inputValue) =>
+		return wizutil.wizstring.validate(inputType, inputValue)
 
 	insert: (req, res) =>
 	modify: (req, res) =>
