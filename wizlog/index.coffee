@@ -39,7 +39,12 @@ class wizlog
 
 	msg: (tag, priority, msg) ->
 		ts = @ts()
-		facility = pkgname + '.' + tag
+		try
+			stack = new Error().stack
+			frame3 = stack.split('at')[3]
+			facility = frame3.split(' ')[1]
+		catch e
+			facility = tag
 		prionum = @priorities[priority]
 		if typeof msg == 'string' and msg.length > 0
 			while msg[msg.length - 1].charCodeAt(0) == 10
