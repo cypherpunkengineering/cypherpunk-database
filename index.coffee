@@ -15,11 +15,14 @@
 global.wizlog = require './wizlog'
 
 global.rootpath = process.cwd()
-global.pkgname = 'wiz-framework'
 
 global.wizpackage = (name) ->
-	global[name] = global[name] or {}
-	global.pkgname = name
+	levels = name.split '.'
+	space = global
+	for ns, i in levels
+		# console.log levels[0..i].join('.')
+		space[ns] = space[ns] or {}
+		space = space[ns]
 
 process.on 'SIGINT', =>
 	process.exit()
