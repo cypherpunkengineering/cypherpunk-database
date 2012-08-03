@@ -43,7 +43,7 @@ class wizfrontend.mongo extends wizdb.mongo
 			# only call cb if we have collection
 			if err or not collection
 				wizlog.err @constructor.name, "unable to retrieve collection #{@config.database}.#{collectionName} #{err}"
-				res.send err, 500
+				res.send 500
 				return null
 			cb collection
 
