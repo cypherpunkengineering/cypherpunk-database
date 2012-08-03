@@ -137,9 +137,10 @@ class wizfrontend.server
 					path: @modules[module].getPath()
 					resources: {}
 				for resource of @modules[module].branches
-					@nav[module].resources[resource] =
-						title: @modules[module].branches[resource].getTitle()
-						path: @modules[module].branches[resource].getPath()
+					if @modules[module].branches[resource].getTitle()
+						@nav[module].resources[resource] =
+							title: @modules[module].branches[resource].getTitle()
+							path: @modules[module].branches[resource].getPath()
 
 		# finally, add catchall at the end
 		@http.all '*', @middleware.base(), @redirect
@@ -254,7 +255,6 @@ class wizfrontend.branch
 		# wizlog.debug @constructor.name, "creating #{@constructor.name} " + @getPath()
 		wizassert(false, @constructor.name, "invalid @parent: #{@parent}") if not @parent or typeof @parent != 'object'
 		wizassert(false, @constructor.name, "invalid @path: #{@path}") if not @path or typeof @path != 'string'
-		wizassert(false, @constructor.name, "invalid @title: #{@title}") if not @title or typeof @title != 'string'
 
 	getPath: () =>
 		if not @parent or not @parent.getPath # if top-level
