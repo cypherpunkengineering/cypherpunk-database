@@ -66,6 +66,14 @@ class wizutil.wizstring
 	@int_valid : (i) ->
 		return parseFloat(i) == parseInt(i) && (!isNaN(i) && i % 1 == 0)
 
+	# check if valid ascii
+	@ascii_valid : (str) ->
+		for c, i in str
+			code = str.charCodeAt(i)
+			if code < 32 or code > 127
+				return false
+		return true
+
 	# compare two strings insensitively
 	@strncmp : (str1, str2, n) ->
 		str1 = str1.substring 0, n
@@ -73,7 +81,14 @@ class wizutil.wizstring
 		return ( str1 == str2 ) ? 0 : (( str1 > str2 ) ? 1 : -1 )
 
 	@validate: (argtype, value) =>
+		return false unless typeof value == 'string'
 		switch argtype
+			when 'ascii'
+				return @ascii_valid(value)
+			when 'asciiNoQuote'
+				return (@ascii_valid(value) && value.indexOf('"') == -1 && value.indexOf("'") == -1)
+			when 'fqdnOrAt'
+				return (@fqdn_valid(value) || value == '@')
 			when 'fqdn'
 				return @fqdn_valid(value)
 			when 'inet4'
