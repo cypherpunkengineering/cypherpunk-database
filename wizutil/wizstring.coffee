@@ -54,8 +54,13 @@ class wizutil.wizstring
 
 	# check if valid fqdn
 	@fqdn_valid : (host) ->
-		fqdnRegex = '^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$'
-		return (new RegExp( '^' + fqdnRegex + '$' )).test(host)
+		fqdnRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]).)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])'
+		return (new RegExp('^' + fqdnRegex + '$' )).test(host)
+
+	# check if valid fqdn and contains dot
+	@fqdnDot_valid : (host) ->
+		fqdnDotRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]).)*(\\.)([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])'
+		return (new RegExp('^' + fqdnDotRegex + '$' )).test(host)
 
 	# check if valid string
 	@str_valid : (str) ->
@@ -89,6 +94,8 @@ class wizutil.wizstring
 				return (@ascii_valid(value) && value.indexOf('"') == -1 && value.indexOf("'") == -1)
 			when 'fqdnOrAt'
 				return (@fqdn_valid(value) || value == '@')
+			when 'fqdnDot'
+				return @fqdnDot_valid(value)
 			when 'fqdn'
 				return @fqdn_valid(value)
 			when 'inet4'
