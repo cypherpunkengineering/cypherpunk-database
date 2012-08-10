@@ -54,12 +54,12 @@ class wizutil.wizstring
 
 	# check if valid fqdn
 	@fqdn_valid : (host) ->
-		fqdnRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]).)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])'
+		fqdnRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])'
 		return (new RegExp('^' + fqdnRegex + '$' )).test(host)
 
-	# check if valid fqdn and contains dot
+	# same as above fqdn but make require first half of regex
 	@fqdnDot_valid : (host) ->
-		fqdnDotRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]).)*(\\.)([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])'
+		fqdnDotRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])'
 		return (new RegExp('^' + fqdnDotRegex + '$' )).test(host)
 
 	# check if valid string
@@ -70,6 +70,11 @@ class wizutil.wizstring
 	# check if valid integer
 	@int_valid : (i) ->
 		return parseFloat(i) == parseInt(i) && (!isNaN(i) && i % 1 == 0)
+
+	# check if valid integer
+	@ttl_valid : (ttl) ->
+		return false unless @int_valid(ttl)
+		return (ttl >= 60 and ttl <= (60 * 60 * 24 * 7))
 
 	# check if valid ascii
 	@ascii_valid : (str) ->
@@ -102,10 +107,12 @@ class wizutil.wizstring
 				return @inet4_valid(value)
 			when 'inet6'
 				return @inet6_valid(value)
-			when 'str'
-				return @str_valid(value)
 			when 'int'
 				return @int_valid(value)
+			when 'str'
+				return @str_valid(value)
+			when 'ttl'
+				return @ttl_valid(value)
 			else # unknown
 				return false
 
