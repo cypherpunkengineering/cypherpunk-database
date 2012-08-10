@@ -18,15 +18,26 @@ class wizlog
 
 	priorities: # from syslog(3)
 
-		emerg:		0 # system is unusable
-		alert:		1 # action must be taken immediately
-		crit:		2 # critical conditions
-		err:		3 # error conditions
-		warn:		4 # warning conditions
-		warning:	4 # warning conditions
-		notice:		5 # normal but significant condition
-		info:		6 # informational
-		debug:		7 # debug-level messages
+		# system is unusable
+		emerg:		0
+		# action must be taken immediately
+		alert:		1
+		# critical conditions
+		critical:	2
+		crit:		2
+		# error conditions
+		err:		3
+		error:		3
+		# warning conditions
+		warn:		4
+		warning:	4
+		# normal but significant condition
+		notice:		5
+		# informational
+		info:		6
+		# debug-level messages
+		debug:		7
+		trace:		7
 
 	constructor: () ->
 		# add each priority as a method
@@ -64,8 +75,9 @@ class wizlog
 
 		if priority == 'warning' then priority = 'warn'
 		if priority == 'debug' then priority = 'info'
+		if priority == 'err' then priority = 'error'
 		console[priority] @ts() + " #{priority.toUpperCase()} #{facility}: #{msg}"
-		@syslog[priority] msg if @syslog
+		@syslog[priority] msg if @syslog[priority]
 
 module.exports = new wizlog()
 
