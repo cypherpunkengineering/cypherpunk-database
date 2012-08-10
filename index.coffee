@@ -16,6 +16,10 @@ global.wizlog = require './wizlog'
 
 global.rootpath = process.cwd()
 
+global.wizapp = (appname) ->
+	global.appname = appname
+	global.wizlog.init()
+
 global.wizpackage = (name) ->
 	levels = name.split '.'
 	space = global

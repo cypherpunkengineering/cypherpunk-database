@@ -12,6 +12,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
+ain2 = require 'ain2'
+
 class wizlog
 
 	priorities: # from syslog(3)
@@ -20,6 +22,7 @@ class wizlog
 		alert:		1 # action must be taken immediately
 		crit:		2 # critical conditions
 		err:		3 # error conditions
+		warn:		4 # warning conditions
 		warning:	4 # warning conditions
 		notice:		5 # normal but significant condition
 		info:		6 # informational
@@ -27,32 +30,42 @@ class wizlog
 
 	constructor: () ->
 		# add each priority as a method
+		@stacklevel = 4
+		@syslog = null
 		for prio of @priorities
 			@addprio prio
 
-	addprio : (prio) ->
+	init: () =>
+		@syslog = new ain2
+			tag: global.appname
+			facility: 'local0'
+
+	addprio : (prio) =>
 		this[prio] = (tag, msg) =>
 			@msg(tag, prio, msg)
 
-	ts: () ->
+	ts: () =>
 		return new Date().toISOString()
 
-	msg: (tag, priority, msg) ->
-		ts = @ts()
+	msg: (tag, priority, msg) =>
 		try
 			stack = new Error().stack
 			.replace(/^\s+at\s+/gm, '')
 			.replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
 			.split('\n')
-			facility = stack[3].split(' ')[0]
+			facility = stack[@stacklevel].split(' ')[0]
 		catch e
 			facility = tag
+
 		prionum = @priorities[priority]
 		if typeof msg == 'string' and msg.length > 0
 			while msg[msg.length - 1].charCodeAt(0) == 10
 				msg = msg.slice(0, msg.length - 1)
-		console.log "#{ts} #{priority.toUpperCase()} #{facility}: #{msg}"
-		# TODO: log to system syslog as well
+
+		if priority == 'warning' then priority = 'warn'
+		if priority == 'debug' then priority = 'info'
+		console[priority] @ts() + " #{priority.toUpperCase()} #{facility}: #{msg}"
+		@syslog[priority] msg if @syslog
 
 module.exports = new wizlog()
 
