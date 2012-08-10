@@ -65,10 +65,10 @@ class wizfrontend.serverConfig
 	sessionSecret : 'ChangeMeBecauseThisDefaultIsNotSecret'
 	requestLimit : '2mb'
 
-	httpHost: '::'
+	httpHost: '0.0.0.0'
 	httpPort: 10080
 
-	httpsHost: '::'
+	httpsHost: '0.0.0.0'
 	httpsPort: 10443
 	httpsKey: rootpath + '/ssl/wizkey.pem'
 	httpsCert: rootpath + '/ssl/wizcert.pem'

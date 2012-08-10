@@ -121,7 +121,7 @@ class wizfrontend.middleware
 			@checkHostHeader
 
 			# check IP before handling errors
-			@checkIP
+			# @checkIP
 
 			# log requests
 			express.logger
