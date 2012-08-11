@@ -16,10 +16,10 @@
 require '..'
 
 # wizutil package
-wizpackage 'wizutil'
+wizpackage 'wizutil.datetime'
 
-# wiz utilities
-require './wizstring'
-require './datetime'
+class wizutil.datetime
+	@unixTS: () ->
+		return Math.round((new Date()).getTime() / 1000)
 
 # vim: foldmethod=marker wrap
