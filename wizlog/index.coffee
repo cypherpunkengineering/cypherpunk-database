@@ -77,7 +77,7 @@ class wizlog
 		if priority == 'debug' then priority = 'info'
 		if priority == 'err' then priority = 'error'
 		console[priority] @ts() + " #{priority.toUpperCase()} #{facility}: #{msg}"
-		@syslog[priority] msg if @syslog[priority]
+		@syslog[priority] msg if @syslog and @syslog[priority]
 
 module.exports = new wizlog()
 
