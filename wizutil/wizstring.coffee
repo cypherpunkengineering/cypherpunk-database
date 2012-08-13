@@ -20,6 +20,9 @@ wizpackage 'wizutil'
 
 class wizutil.wizstring
 
+	@str_to_digits : (str) ->
+		return (str.charCodeAt(c) for c of str).join('')
+
 	# trim ipv4 in ipv6 prefix
 	@inet6_prefix_trim : (ip) ->
 		ipv6prefix = '::ffff:'
