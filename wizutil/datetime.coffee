@@ -19,6 +19,8 @@ require '..'
 wizpackage 'wizutil.datetime'
 
 class wizutil.datetime
+	@unixFullTS: () ->
+		return (new Date()).getTime()
 	@unixTS: () ->
 		return Math.round((new Date()).getTime() / 1000)
 
