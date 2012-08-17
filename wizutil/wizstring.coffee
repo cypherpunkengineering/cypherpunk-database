@@ -112,6 +112,8 @@ class wizutil.wizstring
 				return @inet6_valid(value)
 			when 'int'
 				return @int_valid(value)
+			when 'int8b'
+				return @int_valid(value) && value >= 0 && value <= 255
 			when 'str'
 				return @str_valid(value)
 			when 'ttl'
