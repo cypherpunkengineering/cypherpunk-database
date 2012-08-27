@@ -57,12 +57,12 @@ class wizutil.wizstring
 
 	# check if valid fqdn
 	@fqdn_valid : (host) ->
-		fqdnRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])'
+		fqdnRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9_][a-zA-Z0-9\-]*[a-zA-Z0-9])\\.)*([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9])'
 		return (new RegExp('^' + fqdnRegex + '$' )).test(host)
 
 	# same as above fqdn but make require first half of regex
 	@fqdnDot_valid : (host) ->
-		fqdnDotRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])'
+		fqdnDotRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9_][a-zA-Z0-9\-]*[a-zA-Z0-9])\\.)+([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9])'
 		return (new RegExp('^' + fqdnDotRegex + '$' )).test(host)
 
 	# check if valid string
