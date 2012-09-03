@@ -108,6 +108,13 @@ class wizfrontend.middleware
 		return next() if next
 		return true
 
+	# initialize all session variables
+	sessionInit: (req, res, next) =>
+		req.session.wizfrontendAuth ?= false
+		req.session.wizfrontendMask ?= wizutil.bitmask.set(0, wizfrontend.navMask.public)
+		return next() if next
+		return true
+
 	# absolute minimum middleware
 	base : () =>
 		return [
@@ -157,6 +164,8 @@ class wizfrontend.middleware
 				# important! set secure flag on cookies!
 				cookie:
 					secure: true
+
+			@sessionInit
 		]
 
 	# baseSession with required authentication
