@@ -111,7 +111,8 @@ class wizfrontend.middleware
 	# initialize all session variables
 	sessionInit: (req, res, next) =>
 		req.session.wizfrontendAuth ?= false
-		req.session.wizfrontendMask ?= wizutil.bitmask.set(0, wizfrontend.navMask.public)
+		req.session.wizfrontendMask ?= wizutil.bitmask.set(0, @parent.powerMask.public)
+		req.session.wizfrontendLevel ?= @parent.powerLevel.stranger
 		return next() if next
 		return true
 

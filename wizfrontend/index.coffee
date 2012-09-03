@@ -49,6 +49,7 @@ require '..'
 wizpackage 'wizfrontend'
 require './database'
 require './middleware'
+require '../wizutil/bitmask'
 
 # node frameworks
 coffee = require 'coffee-script'
@@ -73,16 +74,24 @@ class wizfrontend.serverConfig
 	httpsKey: rootpath + '/ssl/wizkey.pem'
 	httpsCert: rootpath + '/ssl/wizcert.pem'
 
-class wizfrontend.navMask
-	@always: 1
-	@public: 2
-	@auth: 3
+class wizfrontend.powerMask
+	unknown: 0
+	always: 1
+	public: 2
+	auth: 3
+
+class wizfrontend.powerLevel
+	unknown: 0
+	stranger: 1
+	friend: 1001
 
 # main server class
 class wizfrontend.server
 
 	config : new wizfrontend.serverConfig()
-	navMask : new wizfrontend.navMask()
+	powerMask : new wizfrontend.powerMask()
+	powerLevel : new wizfrontend.powerLevel()
+
 	constructor: () ->
 		wizlog.notice @constructor.name, 'Server starting...'
 
@@ -102,12 +111,12 @@ class wizfrontend.server
 		@modules = {}
 
 		# special core module and home resource
-		@core = @module(new wizfrontend.module(@, '/', 'Home', wizfrontend.navMask.public))
-		@root = @core.resource(new wizfrontend.resource(@core, '/', '', wizfrontend.navMask.always))
+		@core = @module(new wizfrontend.module(@, '/', 'Home', @powerMask.public, @powerLevel.stranger))
+		@root = @core.resource(new wizfrontend.resource(@core, '/', '', @powerMask.always, @powerLevel.stranger))
 
 		# login and logout modules
-		@login = @module(new wizfrontend.module(@, '/login', 'Login', wizfrontend.navMask.public))
-		@logout = @module(new wizfrontend.module(@, '/logout', 'Logout', wizfrontend.navMask.auth))
+		@login = @module(new wizfrontend.module(@, '/login', 'Login', @powerMask.public, @powerLevel.stranger))
+		@logout = @module(new wizfrontend.module(@, '/logout', 'Logout', @powerMask.auth, @powerLevel.stranger))
 
 		# public methods
 		@root.method 'https', 'get', '/', @middleware.baseSession(), @handleRoot
@@ -118,6 +127,27 @@ class wizfrontend.server
 		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @handleHome
 		@root.method 'https', 'get', '/logout', @middleware.baseSessionAuth(), @handleLogout
 
+	nav: (req) =>
+		um = @userMask(req)
+		ul = @userLevel(req)
+		result = {}
+		console.log @navViews
+		console.log "User's mask: " + um.toString(2)
+		for bit of @powerMask when typeof @powerMask[bit] is 'number'
+			b = @powerMask[bit]
+			nv = @navViews[b]
+			console.log "Checking bit: #{b}"
+			if nv and wizutil.bitmask.check(um, b)
+				console.log "User matches #{b}"
+				for n of nv
+					console.log "ul is #{ul}, module requires #{nv[n].level}"
+					if ul >= nv[n].level
+						console.log "Adding #{n} to user's nav"
+						result[n] = nv[n]
+						result[n].resourceCount = 0
+						result[n].resourceCount += 1 for x of nv[n].resources
+
+		return result
 
 	module: (mod) =>
 		path = mod.path
@@ -131,7 +161,7 @@ class wizfrontend.server
 
 		# data filled in from child modules
 		@viewsFolders = []
-		@nav = {}
+		@navViews = {}
 
 		# then proceed to init all child modules
 		for module of @modules
@@ -146,16 +176,17 @@ class wizfrontend.server
 			# do normal init
 			@modules[module].init()
 
-			# calculate nav tree for non-root modules
+			# add nav tree for given view
 			view = @modules[module].view
-			@nav[view] ?= {}
-			@nav[view][module] =
+			@navViews[view] ?= {}
+			@navViews[view][module] =
 				title: @modules[module].getTitle()
 				path: @modules[module].getPath()
+				level: @modules[module].getLevel()
 				resources: {}
 			for resource of @modules[module].branches
 				if @modules[module].branches[resource].getTitle()
-					@nav[view][module].resources[resource] =
+					@navViews[view][module].resources[resource] =
 						title: @modules[module].branches[resource].getTitle()
 						path: @modules[module].branches[resource].getPath()
 
@@ -217,33 +248,39 @@ class wizfrontend.server
 		if @validateLogin req, res
 			# log them in and redirect home
 			wizlog.debug @constructor.name, "Logging in and redirecting..."
-			@doLogin(req, res)
-			@redirect req, res, null, '/'
+			@doLogin(req)
+			@redirect(req, res, null, '/')
 		else
 			# login failed
 			wizlog.debug @constructor.name, "login-failed redirect"
-			@redirect req, res, null, '/?fail=1'
+			@redirect(req, res, null, '/?fail=1')
 
-	doLogin: (req, res) =>
+	doLogin: (req) =>
 		req.session.wizfrontendAuth = true
 		req.session.wizfrontendMask = 0
-		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, wizfrontend.navMask.always)
-		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, wizfrontend.navMask.auth)
+		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, @powerMask.always)
+		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, @powerMask.auth)
+		if req.session.wizfrontendLevel < @powerLevel.friend
+			req.session.wizfrontendLevel = @powerLevel.friend
 
-	doLogout: (req, res) =>
+	doLogout: (req) =>
 		req.session.wizfrontendAuth = false
 		req.session.wizfrontendMask = 0
-		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, wizfrontend.navMask.always)
-		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, wizfrontend.navMask.public)
+		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, @powerMask.always)
+		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, @powerMask.public)
+		req.session.wizfrontendLevel = @powerLevel.stranger
 
-	getMask: (req, res) =>
+	userMask: (req) =>
 		return req.session.wizfrontendMask ? 0
+
+	userLevel: (req) =>
+		return req.session.wizfrontendLevel ? 0
 
 	handleLogout: (req, res) =>
 		# log them out and redirect home
 		wizlog.debug @constructor.name, "Logging out and redirecting..."
 		@doLogout(req, res)
-		@redirect req, res, null, '/?out=1'
+		@redirect(req, res, null, '/?out=1')
 
 	listen: () =>
 		if @config.httpPort
@@ -286,7 +323,7 @@ class wizfrontend.server
 # base branch class, extended by modules/resources/methods below
 class wizfrontend.branch
 
-	constructor: (@parent, @path, @title, @view = 0) ->
+	constructor: (@parent, @path, @title = '', @view = 0, @level = 9000) ->
 		@branches = {}
 		# wizlog.debug @constructor.name, "creating #{@constructor.name} " + @getPath()
 		wizassert(false, @constructor.name, "invalid @parent: #{@parent}") if not @parent or typeof @parent != 'object'
@@ -321,6 +358,9 @@ class wizfrontend.branch
 	getTitle : () =>
 		return @title
 
+	getLevel : () =>
+		return @level
+
 	init: () =>
 		# init all resources
 		for branch of @branches
@@ -334,8 +374,11 @@ class wizfrontend.module extends wizfrontend.branch
 	coffeeExt: '.coffee'
 
 	init: () =>
-		cof = new wizfrontend.method this, @parent, 'https', 'get', '/' + @coffeeDir + '/:script' + @coffeeExt, @parent.middleware.baseSession(), @coffeeCompile
-		cof.init()
+		tdir = rootpath + @getPathSlashed() + @coffeeDir
+		if fs.existsSync(tdir)
+			cpath = "/#{@coffeeDir}/:script#{@coffeeExt}"
+			cof = new wizfrontend.method this, @parent, 'https', 'get', cpath, @parent.middleware.baseSession(), @coffeeCompile
+			cof.init()
 		super()
 
 	coffee: (file) =>
