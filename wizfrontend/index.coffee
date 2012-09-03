@@ -73,12 +73,18 @@ class wizfrontend.serverConfig
 	httpsKey: rootpath + '/ssl/wizkey.pem'
 	httpsCert: rootpath + '/ssl/wizcert.pem'
 
+class wizfrontend.navMask
+	@always: 1
+	@public: 2
+	@auth: 3
+
 # main server class
 class wizfrontend.server
 
 	config : new wizfrontend.serverConfig()
+	navMask : new wizfrontend.navMask()
 	constructor: () ->
-		wizlog.warning @constructor.name, 'Server starting...'
+		wizlog.notice @constructor.name, 'Server starting...'
 
 		# create middleware structure
 		@sessionRedisStore = new RedisStore()
@@ -92,16 +98,26 @@ class wizfrontend.server
 			key: fs.readFileSync @config.httpsKey
 			cert: fs.readFileSync @config.httpsCert
 
-		# add module list, core module, and home resource
+		# create empty module list
 		@modules = {}
-		@core = @module(new wizfrontend.module(@, '/', 'core'))
-		@home = @core.resource(new wizfrontend.resource(@core, '/', 'home'))
 
-		# add core methods
-		@home.method 'https', 'get', '/', @middleware.baseSession(), @handleRoot
-		@home.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @handleHome
-		@home.method 'https', 'post', '/login', @middleware.baseSession(), @handleLogin
-		@home.method 'https', 'get', '/logout', @middleware.baseSession(), @handleLogout
+		# special core module and home resource
+		@core = @module(new wizfrontend.module(@, '/', 'Home', wizfrontend.navMask.public))
+		@root = @core.resource(new wizfrontend.resource(@core, '/', '', wizfrontend.navMask.always))
+
+		# login and logout modules
+		@login = @module(new wizfrontend.module(@, '/login', 'Login', wizfrontend.navMask.public))
+		@logout = @module(new wizfrontend.module(@, '/logout', 'Logout', wizfrontend.navMask.auth))
+
+		# public methods
+		@root.method 'https', 'get', '/', @middleware.baseSession(), @handleRoot
+		@root.method 'https', 'get', '/login', @middleware.baseSession(), @handleLogin
+		@root.method 'https', 'post', '/postlogin', @middleware.baseSession(), @postLogin
+
+		# for logged in users
+		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @handleHome
+		@root.method 'https', 'get', '/logout', @middleware.baseSessionAuth(), @handleLogout
+
 
 	module: (mod) =>
 		path = mod.path
@@ -131,16 +147,17 @@ class wizfrontend.server
 			@modules[module].init()
 
 			# calculate nav tree for non-root modules
-			if @modules[module].getPath() != '/'
-				@nav[module] =
-					title: @modules[module].getTitle()
-					path: @modules[module].getPath()
-					resources: {}
-				for resource of @modules[module].branches
-					if @modules[module].branches[resource].getTitle()
-						@nav[module].resources[resource] =
-							title: @modules[module].branches[resource].getTitle()
-							path: @modules[module].branches[resource].getPath()
+			view = @modules[module].view
+			@nav[view] ?= {}
+			@nav[view][module] =
+				title: @modules[module].getTitle()
+				path: @modules[module].getPath()
+				resources: {}
+			for resource of @modules[module].branches
+				if @modules[module].branches[resource].getTitle()
+					@nav[view][module].resources[resource] =
+						title: @modules[module].branches[resource].getTitle()
+						path: @modules[module].branches[resource].getPath()
 
 		# finally, add catchall at the end
 		@http.all '*', @middleware.base(), @redirect
@@ -192,22 +209,40 @@ class wizfrontend.server
 	handleHome: (req, res) =>
 		res.send 'home'
 
-	handleLogin : (req, res) =>
+	handleLogin: (req, res) =>
+		res.send 'implement login here'
+
+	postLogin : (req, res) =>
 		# check if valid login
 		if @validateLogin req, res
 			# log them in and redirect home
-			req.session.wizfrontendAuth = true
-			wizlog.debug @constructor.name, "login-ok redirect"
+			wizlog.debug @constructor.name, "Logging in and redirecting..."
+			@doLogin(req, res)
 			@redirect req, res, null, '/'
 		else
 			# login failed
 			wizlog.debug @constructor.name, "login-failed redirect"
 			@redirect req, res, null, '/?fail=1'
 
+	doLogin: (req, res) =>
+		req.session.wizfrontendAuth = true
+		req.session.wizfrontendMask = 0
+		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, wizfrontend.navMask.always)
+		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, wizfrontend.navMask.auth)
+
+	doLogout: (req, res) =>
+		req.session.wizfrontendAuth = false
+		req.session.wizfrontendMask = 0
+		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, wizfrontend.navMask.always)
+		req.session.wizfrontendMask = wizutil.bitmask.set(req.session.wizfrontendMask, wizfrontend.navMask.public)
+
+	getMask: (req, res) =>
+		return req.session.wizfrontendMask ? 0
+
 	handleLogout: (req, res) =>
 		# log them out and redirect home
-		req.session.wizfrontendAuth = false
-		wizlog.debug @constructor.name, "logout-ok redirect"
+		wizlog.debug @constructor.name, "Logging out and redirecting..."
+		@doLogout(req, res)
 		@redirect req, res, null, '/?out=1'
 
 	listen: () =>
@@ -244,13 +279,14 @@ class wizfrontend.server
 	]
 
 	staticPath: (url, disk) =>
+		return unless fs.existsSync disk
 		wizlog.debug @constructor.name, "adding static folder #{url} -> #{disk}"
 		@https.use url, express.static(disk)
 
 # base branch class, extended by modules/resources/methods below
 class wizfrontend.branch
 
-	constructor: (@parent, @path, @title) ->
+	constructor: (@parent, @path, @title, @view = 0) ->
 		@branches = {}
 		# wizlog.debug @constructor.name, "creating #{@constructor.name} " + @getPath()
 		wizassert(false, @constructor.name, "invalid @parent: #{@parent}") if not @parent or typeof @parent != 'object'
