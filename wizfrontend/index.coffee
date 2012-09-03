@@ -131,18 +131,18 @@ class wizfrontend.server
 		um = @userMask(req)
 		ul = @userLevel(req)
 		result = {}
-		console.log @navViews
-		console.log "User's mask: " + um.toString(2)
+		# console.log @navViews
+		# console.log "User's mask: " + um.toString(2)
 		for bit of @powerMask when typeof @powerMask[bit] is 'number'
 			b = @powerMask[bit]
 			nv = @navViews[b]
-			console.log "Checking bit: #{b}"
+			# console.log "Checking bit: #{b}"
 			if nv and wizutil.bitmask.check(um, b)
-				console.log "User matches #{b}"
+				# console.log "User matches #{b}"
 				for n of nv
-					console.log "ul is #{ul}, module requires #{nv[n].level}"
+					# console.log "ul is #{ul}, module requires #{nv[n].level}"
 					if ul >= nv[n].level
-						console.log "Adding #{n} to user's nav"
+						# console.log "Adding #{n} to user's nav"
 						result[n] = nv[n]
 						result[n].resourceCount = 0
 						result[n].resourceCount += 1 for x of nv[n].resources
