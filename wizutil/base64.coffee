@@ -12,13 +12,11 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# wiz-framework
 require '..'
 
-# wizutil package
-wizpackage 'wizutil.base64'
+wizpackage 'wiz.util'
 
-class wizutil.base64 # this code copyright by rwz from https://github.com/rwz/base64.coffee
+class wiz.util.base64 # this code copyright by rwz from https://github.com/rwz/base64.coffee
 
 	CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
 	fromCharCode = String.fromCharCode

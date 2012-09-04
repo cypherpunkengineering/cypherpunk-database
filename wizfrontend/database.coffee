@@ -12,19 +12,17 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# wiz-framework
 require '..'
 require '../wizdb'
 
-# wizfrontend package
-wizpackage 'wizfrontend'
+wizpackage 'wiz.frontend'
 
 # node frameworks
 connect = require 'connect'
 
-class wizfrontend.mysql extends wizdb.mysql
+class wiz.frontend.mysql extends wiz.db.mysql
 
-class wizfrontend.mongo extends wizdb.mongo
+class wiz.frontend.mongo extends wiz.db.mongo
 	client : null
 
 	constructor : (@config, @serverOptions, @dbOptions) ->

@@ -12,17 +12,15 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# wiz-framework
 require '..'
 require '../wizdb'
 
-# wizbackend package
-wizpackage 'wizbackend'
+wizpackage 'wiz.backend'
 
 # mysql class
-class wizbackend.mysql extends wizdb.mysql
+class wiz.backend.mysql extends wiz.db.mysql
 # mongo class
-class wizbackend.mongo extends wizdb.mongo
+class wiz.backend.mongo extends wiz.db.mongo
 
 	verbose : false
 

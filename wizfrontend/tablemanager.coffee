@@ -12,21 +12,19 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# wiz-framework
 require '..'
 require '../wizdb'
 require '../wizutil/wizstring'
 
-# wizfrontend package
-wizpackage 'wizfrontend'
+wizpackage 'wiz.frontend'
 
-class wizfrontend.tablemanager
+class wiz.frontend.tablemanager
 
 	constructor: (@parent) ->
 		wizassert(false, "invalid @parent: #{@parent}") if not @parent
 
 	validateInputType: (inputType, inputValue) =>
-		return wizutil.wizstring.validate(inputType, inputValue)
+		return wiz.util.strval(inputType, inputValue)
 
 	insert: (req, res) =>
 	modify: (req, res) =>

@@ -12,13 +12,11 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# wiz-framework
 require '..'
 
-# wizutil package
-wizpackage 'wizutil'
+wizpackage 'wiz.util'
 
-class wizutil.bitmask
+class wiz.util.bitmask
 	@check: (n, mask) ->
     	return (n >> mask) % 2 != 0
 

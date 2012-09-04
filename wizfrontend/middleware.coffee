@@ -12,18 +12,16 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# wiz-framework
 require '..'
-require '../wizutil'
+require '../wizutil/wizstring'
+require '../wizutil/datetime'
 
-# wizfrontend package
-wizpackage 'wizfrontend'
+wizpackage 'wiz.frontend'
 
-# our middleware is for express framework
 express = require 'express'
 
-# normally created from wizfrontend.server constructor
-class wizfrontend.middleware
+# created from wiz.frontend.server constructor
+class wiz.frontend.middleware
 
 	# allow access from these hosts
 	accessList : [
@@ -82,7 +80,7 @@ class wizfrontend.middleware
 		return false
 
 	getIP : (req) =>
-		return wizutil.wizstring.inet6_prefix_trim req.connection.remoteAddress
+		return wiz.util.strval.inet6_prefix_trim req.connection.remoteAddress
 
 	# filter requests to trusted ips only
 	checkIP : (req, res, next) =>
@@ -111,7 +109,7 @@ class wizfrontend.middleware
 	# initialize all session variables
 	sessionInit: (req, res, next) =>
 		req.session.wizfrontendAuth ?= false
-		req.session.wizfrontendMask ?= wizutil.bitmask.set(0, @parent.powerMask.public)
+		req.session.wizfrontendMask ?= wiz.util.bitmask.set(0, @parent.powerMask.public)
 		req.session.wizfrontendLevel ?= @parent.powerLevel.stranger
 		return next() if next
 		return true

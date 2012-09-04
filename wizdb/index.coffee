@@ -12,16 +12,14 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# wiz-framework
 require '..'
 
-# database package
-wizpackage 'wizdb'
+wizpackage 'wiz.db'
 
 # native mongodb driver
 MySQL = require 'mysql'
 
-class wizdb.mysql
+class wiz.db.mysql
 	client : null
 	config :
 		host : ''
@@ -38,7 +36,7 @@ class wizdb.mysql
 mongodb = require 'mongodb'
 BSON = mongodb.BSONPure
 
-class wizdb.mongo
+class wiz.db.mongo
 
 	config : {}
 	serverOptions : {}

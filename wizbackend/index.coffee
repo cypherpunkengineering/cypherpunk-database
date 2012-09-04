@@ -12,16 +12,14 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# wiz-framework
 require '..'
-
-# wizbackend package
-wizpackage 'wizbackend'
 require './database'
 require './messaging'
 
+wizpackage 'wiz.backend'
+
 # worker loop for tasks
-class wizbackend.worker
+class wiz.backend.worker
 	running : false
 	interval : 30 * 1000
 	rundelay : 3 * 1000

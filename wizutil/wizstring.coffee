@@ -12,13 +12,11 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# wiz-framework
 require '..'
 
-# wizutil package
-wizpackage 'wizutil'
+wizpackage 'wiz.util'
 
-class wizutil.wizstring
+class wiz.util.strval
 
 	@str_to_digits : (str) ->
 		return (str.charCodeAt(c) for c of str).join('')

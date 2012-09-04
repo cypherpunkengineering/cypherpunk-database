@@ -12,13 +12,11 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# wiz-framework
 require '..'
 
-# wizutil package
-wizpackage 'wizutil.datetime'
+wizpackage 'wiz.util'
 
-class wizutil.datetime
+class wiz.util.datetime
 	@unixFullTS: () ->
 		return (new Date()).getTime()
 	@unixTS: () ->
