@@ -102,6 +102,8 @@ class wiz.util.strval
 				return (@fqdn_valid(value) || value == '@')
 			when 'fqdnDot'
 				return @fqdnDot_valid(value)
+			when 'fqdnDotOrDot'
+				return (@fqdnDot_valid(value) || value == '.')
 			when 'fqdn'
 				return @fqdn_valid(value)
 			when 'inet4'
