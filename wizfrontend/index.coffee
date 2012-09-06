@@ -120,10 +120,10 @@ class wiz.frontend.server
 		@root.method 'https', 'get', '/', @middleware.baseSession(), @handleRoot
 		@root.method 'https', 'get', '/login', @middleware.baseSession(), @handleLogin
 		@root.method 'https', 'post', '/postlogin', @middleware.baseSession(), @postLogin
+		@root.method 'https', 'get', '/logout', @middleware.baseSession(), @handleLogout
 
 		# for logged in users
 		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @handleHome
-		@root.method 'https', 'get', '/logout', @middleware.baseSessionAuth(), @handleLogout
 
 	nav: (req) =>
 		um = @userMask(req)
@@ -278,7 +278,7 @@ class wiz.frontend.server
 		# log them out and redirect home
 		wizlog.debug @constructor.name, "Logging out and redirecting..."
 		@doLogout(req, res)
-		@redirect(req, res, null, '/?out=1')
+		@redirect(req, res, null, '/login?out=1')
 
 	listen: () =>
 		if @config.httpPort
@@ -293,7 +293,7 @@ class wiz.frontend.server
 		@listen()
 		wizlog.warning @constructor.name, "Server ready!"
 
-	redirect: (req, res, next, url = req.url, code = 302) =>
+	redirect: (req, res, next, url = req.url, code = 303) =>
 		unless @middleware.checkHostHeader req, res
 			return false
 		res.redirect "https://#{req.headers["host"]}#{url}", code

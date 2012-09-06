@@ -56,21 +56,19 @@ class wiz.frontend.middleware
 			return next() if next
 			return true
 		if next
-			wizlog.debug @constructor.name, "unauthorized redirect"
-			@parent.redirect req, res, null, '/'
+			wizlog.info @constructor.name, "unauthorized request"
+			@parent.redirect req, res, null, '/logout', 307
 		return false
 
-	checkAuthDatatable : (req, res, next) =>
+	checkAuthAjax : (req, res, next) =>
 		# if auth, proceed
-		if req.session.wizfrontendAuth
+		if req and req.session and req.session.wizfrontendAuth
 			return next() if next
 			return true
-		# otherwise send null response
-		res.send
-			sEcho : req.query.sEcho
-			iTotalRecords : 0
-			iTotalDisplayRecords : 0
-			aaData : []
+		# otherwise send 401
+		if next
+			wizlog.info @constructor.name, "unauthorized ajax request"
+			res.send 401
 		return false
 
 	checkDeveloper : (req, res) =>
@@ -179,10 +177,10 @@ class wiz.frontend.middleware
 		]
 
 	# baseSessionAuth for jQuery.datatable ajax requests
-	baseSessionAuthDatatable : () =>
+	baseSessionAuthAjax : () =>
 		return [
 			@baseSession()
-			@checkAuthDatatable
+			@checkAuthAjax
 		]
 
 

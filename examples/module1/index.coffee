@@ -62,7 +62,7 @@ class wizportal.module1 extends wizfrontend.module
 			res.render 'stats', page
 		#}}}
 		#{{{ METHOD		GET		/:ip/:interval
-		stats.method 'https', 'get', '/:ip/:interval', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
+		stats.method 'https', 'get', '/:ip/:interval', @parent.middleware.baseSessionAuthAjax(), (req, res) =>
 
 			statsDataResponse = {}
 			#{{{ statsDataResponse.statsData
@@ -106,7 +106,7 @@ class wizportal.module1 extends wizfrontend.module
 			res.render 'logs', page
 		#}}}
 		#{{{ METHOD		GET		/distinctip
-		logs.method 'https', 'get', '/distinctip', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
+		logs.method 'https', 'get', '/distinctip', @parent.middleware.baseSessionAuthAjax(), (req, res) =>
 			@mongo.collection res, 'relaylog', (collection) =>
 				collection.distinct 'ip', (err, results) =>
 					try
@@ -116,7 +116,7 @@ class wizportal.module1 extends wizfrontend.module
 					res.send sresults
 		#}}}
 		#{{{ METHOD		GET		/logdata
-		logs.method 'https', 'get', '/logdata', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
+		logs.method 'https', 'get', '/logdata', @parent.middleware.baseSessionAuthAjax(), (req, res) =>
 			searchArg = if req.query.sSearch then { ip : req.query.sSearch } else {}
 			skipArg = if req.query.iDisplayStart then req.query.iDisplayStart else 0
 			limitArg = if req.query.iDisplayLength > 0 and req.query.iDisplayLength < 200 then req.query.iDisplayLength else 25
@@ -176,7 +176,7 @@ class wizportal.module1 extends wizfrontend.module
 			res.render 'hosts', page
 		#}}}
 		#{{{ METHOD		GET		/list
-		hosts.method 'https', 'get', '/list', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
+		hosts.method 'https', 'get', '/list', @parent.middleware.baseSessionAuthAjax(), (req, res) =>
 			sortArg = 'NetworkIP'
 			sortDir = if req.query.sSortDir_0 == 'asc' then 'ASC' else 'DESC'
 			if req.query.iSortCol_0
@@ -204,7 +204,7 @@ class wizportal.module1 extends wizfrontend.module
 					aaData : networkData
 		#}}}
 		#{{{ METHOD		POST /modify
-		hosts.method 'https', 'post', '/modify', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
+		hosts.method 'https', 'post', '/modify', @parent.middleware.baseSessionAuthAjax(), (req, res) =>
 			unless req.body and req.body.row_id and req.body.value
 				return res.send 'Missing arguments', 400
 
@@ -231,7 +231,7 @@ class wizportal.module1 extends wizfrontend.module
 			res.render 'quotas', page
 		#}}}
 		#{{{ METHOD		GET		/list
-		quotas.method 'https', 'get', '/list', @parent.middleware.baseSessionAuthDatatable(), (req, res) =>
+		quotas.method 'https', 'get', '/list', @parent.middleware.baseSessionAuthAjax(), (req, res) =>
 			sortArg = 'QuotaName'
 			sortDir = if req.query.sSortDir_0 == 'asc' then 'ASC' else 'DESC'
 			if req.query.iSortCol_0
