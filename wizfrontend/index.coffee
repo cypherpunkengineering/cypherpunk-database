@@ -296,7 +296,8 @@ class wiz.frontend.server
 	redirect: (req, res, next, url = req.url, code = 303) =>
 		unless @middleware.checkHostHeader req, res
 			return false
-		res.redirect "https://#{req.headers["host"]}#{url}", code
+		host = @host ? req.headers.host
+		res.redirect "https://#{host}#{url}", code
 		return true
 
 	catchall: (req, res) =>
