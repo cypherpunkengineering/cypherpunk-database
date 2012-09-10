@@ -255,26 +255,40 @@ class wiz.frontend.server
 			wizlog.debug @constructor.name, "login-failed redirect"
 			@redirect(req, res, null, '/?fail=1')
 
+	# initialize all session variables
+	sessionCreate: (req, res, next) =>
+		req.session.wiz ?= {}
+		return next() if next
+		return true
+
+	sessionDestroy: (req) =>
+		req.session.wiz = {}
+
+	sessionInit: (req, res, next) =>
+		req.session.wiz.auth ?= false
+		req.session.wiz.mask ?= wiz.util.bitmask.set(0, @powerMask.public)
+		req.session.wiz.level ?= @powerLevel.stranger
+		return next() if next
+		return true
+
 	doLogin: (req) =>
-		req.session.wizfrontendAuth = true
-		req.session.wizfrontendMask = 0
-		req.session.wizfrontendMask = wiz.util.bitmask.set(req.session.wizfrontendMask, @powerMask.always)
-		req.session.wizfrontendMask = wiz.util.bitmask.set(req.session.wizfrontendMask, @powerMask.auth)
-		if req.session.wizfrontendLevel < @powerLevel.friend
-			req.session.wizfrontendLevel = @powerLevel.friend
+		req.session.wiz.auth = true
+		req.session.wiz.mask = 0
+		req.session.wiz.mask = wiz.util.bitmask.set(req.session.wiz.mask, @powerMask.always)
+		req.session.wiz.mask = wiz.util.bitmask.set(req.session.wiz.mask, @powerMask.auth)
+		if req.session.wiz.level < @powerLevel.friend
+			req.session.wiz.level = @powerLevel.friend
 
 	doLogout: (req) =>
-		req.session.wizfrontendAuth = false
-		req.session.wizfrontendMask = 0
-		req.session.wizfrontendMask = wiz.util.bitmask.set(req.session.wizfrontendMask, @powerMask.always)
-		req.session.wizfrontendMask = wiz.util.bitmask.set(req.session.wizfrontendMask, @powerMask.public)
-		req.session.wizfrontendLevel = @powerLevel.stranger
+		@sessionDestroy(req)
+		@sessionCreate(req)
+		@sessionInit(req)
 
 	userMask: (req) =>
-		return req.session.wizfrontendMask ? 0
+		return req.session.wiz.mask ? 0
 
 	userLevel: (req) =>
-		return req.session.wizfrontendLevel ? 0
+		return req.session.wiz.level ? 0
 
 	handleLogout: (req, res) =>
 		# log them out and redirect home

@@ -52,7 +52,7 @@ class wiz.frontend.middleware
 	constructor: (@parent) ->
 
 	checkAuth : (req, res, next) =>
-		if req and req.session and req.session.wizfrontendAuth
+		if req and req.session and req.session.wiz and req.session.wiz.auth
 			return next() if next
 			return true
 		if next
@@ -62,7 +62,7 @@ class wiz.frontend.middleware
 
 	checkAuthAjax : (req, res, next) =>
 		# if auth, proceed
-		if req and req.session and req.session.wizfrontendAuth
+		if req and req.session and req.session.wiz and req.session.wiz.auth
 			return next() if next
 			return true
 		# otherwise send 401
@@ -101,14 +101,6 @@ class wiz.frontend.middleware
 	# remove x-powered-by header from express lib
 	hideHeader : (req, res, next) =>
 		res.removeHeader "X-Powered-By"
-		return next() if next
-		return true
-
-	# initialize all session variables
-	sessionInit: (req, res, next) =>
-		req.session.wizfrontendAuth ?= false
-		req.session.wizfrontendMask ?= wiz.util.bitmask.set(0, @parent.powerMask.public)
-		req.session.wizfrontendLevel ?= @parent.powerLevel.stranger
 		return next() if next
 		return true
 
@@ -166,7 +158,8 @@ class wiz.frontend.middleware
 				cookie:
 					secure: true
 
-			@sessionInit
+			@parent.sessionCreate
+			@parent.sessionInit
 		]
 
 	# baseSession with required authentication
