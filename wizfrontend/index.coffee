@@ -66,9 +66,11 @@ class wiz.frontend.serverConfig
 
 	httpHost: '0.0.0.0'
 	httpPort: 10080
+	httpPortActual: 80
 
 	httpsHost: '0.0.0.0'
 	httpsPort: 10443
+	httpsPortActual: 443
 	httpsKey: rootpath + '/ssl/wizkey.pem'
 	httpsCert: rootpath + '/ssl/wizcert.pem'
 
@@ -297,7 +299,9 @@ class wiz.frontend.server
 		unless @middleware.checkHostHeader req, res
 			return false
 		host = @host ? req.headers.host
-		res.redirect "https://#{host}#{url}", code
+		port = ''
+		port = ":#{@config.httpsPortActual}" if @config.httpsPortActual != 443
+		res.redirect "https://#{host}" + port + url, code
 		return true
 
 	catchall: (req, res) =>
