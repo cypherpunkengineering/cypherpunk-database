@@ -253,7 +253,7 @@ class wiz.frontend.server
 		else
 			# login failed
 			wizlog.debug @constructor.name, "login-failed redirect"
-			@redirect(req, res, null, '/?fail=1')
+			@redirect(req, res, null, '/login?fail=1')
 
 	# initialize all session variables
 	sessionCreate: (req, res, next) =>
