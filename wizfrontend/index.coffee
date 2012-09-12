@@ -244,16 +244,14 @@ class wiz.frontend.server
 		res.send 'implement login here'
 
 	postLogin : (req, res) =>
-		# check if valid login
-		if @validateLogin req, res
-			# log them in and redirect home
-			wizlog.debug @constructor.name, "Logging in and redirecting..."
-			@doLogin(req)
-			@redirect(req, res, null, '/')
-		else
-			# login failed
-			wizlog.debug @constructor.name, "login-failed redirect"
-			@redirect(req, res, null, '/login?fail=1')
+		@validateLogin req, res, (result) =>
+			if result
+				# login okay, do login and and redirect home
+				@doLogin(req)
+				@redirect(req, res, null, '/')
+			else
+				# login failed, redirect back to login screen
+				@redirect(req, res, null, '/login?fail=1')
 
 	# initialize all session variables
 	sessionCreate: (req, res, next) =>
@@ -323,8 +321,10 @@ class wiz.frontend.server
 		return true
 
 	# probably want to override this
-	validateLogin: (req, res) =>
-		return req.body.username is 'open' and req.body.password is 'sesame'
+	validateLogin: (req, res, cb) =>
+		result = req.body.username is 'open' and req.body.password is 'sesame'
+		cb result
+		return
 
 	staticContent : [
 		'css'
