@@ -10,7 +10,6 @@
     "node": "0.8.x"
   },
   "dependencies": {
-    "ain2": "1.1.x",
     "coffee-script": "1.2.x",
     "connect": "2.3.x",
     "express": "2.5.x",

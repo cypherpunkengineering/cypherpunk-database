@@ -12,7 +12,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-ain2 = require 'ain2'
+ain2 = require '../../_deps/ain'
 
 class wizlog
 
