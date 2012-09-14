@@ -10,6 +10,7 @@
     "node": "0.8.x"
   },
   "dependencies": {
+    "base32": "0.0.x",
     "coffee-script": "1.2.x",
     "connect": "2.3.x",
     "express": "2.5.x",

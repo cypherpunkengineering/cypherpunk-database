@@ -17,14 +17,18 @@ require '..'
 wizpackage 'wiz.util'
 
 crypto = require 'crypto'
+base32 = require 'base32'
 
 class wiz.util.hash
 
 	# foo = { bar: 1, baz: 2 }
 	# digest(foo)
-	@digest: (obj, hash = 'sha512', encoding = 'base64') ->
+	@digest: (obj, hash = 'sha256', encoding = 'base32') ->
 		shasum = crypto.createHash hash
 		shasum.update JSON.stringify(obj)
-		return shasum.digest encoding
+		if encoding is 'base32'
+			return base32.encode shasum.digest()
+		else
+			return shasum.digest encoding
 
 # vim: foldmethod=marker wrap
