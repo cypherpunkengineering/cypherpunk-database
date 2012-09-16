@@ -14,12 +14,12 @@
 
 require '..'
 
-wizpackage 'wiz.util'
+wizpackage 'wiz.framework.util'
 
 crypto = require 'crypto'
 base32 = require 'base32'
 
-class wiz.util.hash
+class wiz.framework.util.hash
 
 	# foo = { bar: 1, baz: 2 }
 	# digest(foo)

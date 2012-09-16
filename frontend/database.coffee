@@ -13,16 +13,16 @@
 # GNU General Public License for more details.
 
 require '..'
-require '../wizdb'
+require '../db'
 
-wizpackage 'wiz.frontend'
+wizpackage 'wiz.framework.frontend'
 
 # node frameworks
 connect = require 'connect'
 
-class wiz.frontend.mysql extends wiz.db.mysql
+class wiz.framework.frontend.mysql extends wiz.framework.db.mysql
 
-class wiz.frontend.mongo extends wiz.db.mongo
+class wiz.framework.frontend.mongo extends wiz.framework.db.mongo
 	client : null
 
 	constructor : (@config, @serverOptions, @dbOptions) ->

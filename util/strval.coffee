@@ -14,9 +14,9 @@
 
 require '..'
 
-wizpackage 'wiz.util'
+wizpackage 'wiz.framework.util'
 
-class wiz.util.strval
+class wiz.framework.util.strval
 
 	@str_to_digits : (str) ->
 		return (str.charCodeAt(c) for c of str).join('')

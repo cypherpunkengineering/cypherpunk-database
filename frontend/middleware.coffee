@@ -13,15 +13,15 @@
 # GNU General Public License for more details.
 
 require '..'
-require '../wizutil/wizstring'
-require '../wizutil/datetime'
+require '../util/strval'
+require '../util/datetime'
 
-wizpackage 'wiz.frontend'
+wizpackage 'wiz.framework.frontend'
 
 express = require 'express'
 
-# created from wiz.frontend.server constructor
-class wiz.frontend.middleware
+# created from wiz.framework.frontend.server constructor
+class wiz.framework.frontend.middleware
 
 	# allow access from these hosts
 	accessList : [
@@ -78,7 +78,7 @@ class wiz.frontend.middleware
 		return false
 
 	getIP : (req) =>
-		return wiz.util.strval.inet6_prefix_trim req.connection.remoteAddress
+		return wiz.framework.util.strval.inet6_prefix_trim req.connection.remoteAddress
 
 	# filter requests to trusted ips only
 	checkIP : (req, res, next) =>

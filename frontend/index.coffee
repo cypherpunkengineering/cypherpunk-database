@@ -45,9 +45,9 @@
 require '..'
 require './database'
 require './middleware'
-require '../wizutil/bitmask'
+require '../util/bitmask'
 
-wizpackage 'wiz.frontend'
+wizpackage 'wiz.framework.frontend'
 
 # node frameworks
 coffee = require 'coffee-script'
@@ -60,7 +60,7 @@ fs = require 'fs'
 RedisStore = require('connect-redis')(connect)
 
 # server config object
-class wiz.frontend.serverConfig
+class wiz.framework.frontend.serverConfig
 	sessionSecret : 'ChangeMeBecauseThisDefaultIsNotSecret'
 	requestLimit : '2mb'
 
@@ -74,30 +74,30 @@ class wiz.frontend.serverConfig
 	httpsKey: rootpath + '/ssl/wizkey.pem'
 	httpsCert: rootpath + '/ssl/wizcert.pem'
 
-class wiz.frontend.powerMask
+class wiz.framework.frontend.powerMask
 	unknown: 0
 	always: 1
 	public: 2
 	auth: 3
 
-class wiz.frontend.powerLevel
+class wiz.framework.frontend.powerLevel
 	unknown: 0
 	stranger: 1
 	friend: 1001
 
 # main server class
-class wiz.frontend.server
+class wiz.framework.frontend.server
 
-	config : new wiz.frontend.serverConfig()
-	powerMask : new wiz.frontend.powerMask()
-	powerLevel : new wiz.frontend.powerLevel()
+	config : new wiz.framework.frontend.serverConfig()
+	powerMask : new wiz.framework.frontend.powerMask()
+	powerLevel : new wiz.framework.frontend.powerLevel()
 
 	constructor: () ->
 		wizlog.notice @constructor.name, 'Server starting...'
 
 		# create middleware structure
 		@sessionRedisStore = new RedisStore()
-		@middleware = new wiz.frontend.middleware(@)
+		@middleware = new wiz.framework.frontend.middleware(@)
 
 		# create http server for redirecting non-ssl requests to https: url
 		@http = express.createServer()
@@ -111,12 +111,12 @@ class wiz.frontend.server
 		@modules = {}
 
 		# special core module and home resource
-		@core = @module(new wiz.frontend.module(@, '/', 'Home', @powerMask.public, @powerLevel.stranger))
-		@root = @core.resource(new wiz.frontend.resource(@core, '/', '', @powerMask.always, @powerLevel.stranger))
+		@core = @module(new wiz.framework.frontend.module(@, '/', 'Home', @powerMask.public, @powerLevel.stranger))
+		@root = @core.resource(new wiz.framework.frontend.resource(@core, '/', '', @powerMask.always, @powerLevel.stranger))
 
 		# login and logout modules
-		@login = @module(new wiz.frontend.module(@, '/login', 'Login', @powerMask.public, @powerLevel.stranger))
-		@logout = @module(new wiz.frontend.module(@, '/logout', 'Logout', @powerMask.auth, @powerLevel.stranger))
+		@login = @module(new wiz.framework.frontend.module(@, '/login', 'Login', @powerMask.public, @powerLevel.stranger))
+		@logout = @module(new wiz.framework.frontend.module(@, '/logout', 'Logout', @powerMask.auth, @powerLevel.stranger))
 
 		# public methods
 		@root.method 'https', 'get', '/', @middleware.baseSession(), @handleRoot
@@ -137,7 +137,7 @@ class wiz.frontend.server
 			b = @powerMask[bit]
 			nv = @navViews[b]
 			# console.log "Checking bit: #{b}"
-			if nv and wiz.util.bitmask.check(um, b)
+			if nv and wiz.framework.util.bitmask.check(um, b)
 				# console.log "User matches #{b}"
 				for n of nv
 					# console.log "ul is #{ul}, module requires #{nv[n].level}"
@@ -264,7 +264,7 @@ class wiz.frontend.server
 
 	sessionInit: (req, res, next) =>
 		req.session.wiz.auth ?= false
-		req.session.wiz.mask ?= wiz.util.bitmask.set(0, @powerMask.public)
+		req.session.wiz.mask ?= wiz.framework.util.bitmask.set(0, @powerMask.public)
 		req.session.wiz.level ?= @powerLevel.stranger
 		return next() if next
 		return true
@@ -272,8 +272,8 @@ class wiz.frontend.server
 	doLogin: (req) =>
 		req.session.wiz.auth = true
 		req.session.wiz.mask = 0
-		req.session.wiz.mask = wiz.util.bitmask.set(req.session.wiz.mask, @powerMask.always)
-		req.session.wiz.mask = wiz.util.bitmask.set(req.session.wiz.mask, @powerMask.auth)
+		req.session.wiz.mask = wiz.framework.util.bitmask.set(req.session.wiz.mask, @powerMask.always)
+		req.session.wiz.mask = wiz.framework.util.bitmask.set(req.session.wiz.mask, @powerMask.auth)
 		if req.session.wiz.level < @powerLevel.friend
 			req.session.wiz.level = @powerLevel.friend
 
@@ -338,7 +338,7 @@ class wiz.frontend.server
 		@https.use url, express.static(disk)
 
 # base branch class, extended by modules/resources/methods below
-class wiz.frontend.branch
+class wiz.framework.frontend.branch
 
 	constructor: (@parent, @path, @title = '', @view = 0, @level = 9000) ->
 		@branches = {}
@@ -385,7 +385,7 @@ class wiz.frontend.branch
 			@branches[branch].init()
 
 # for server modules
-class wiz.frontend.module extends wiz.frontend.branch
+class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 
 	coffeeDir: '_coffee'
 	coffeeExt: '.coffee'
@@ -394,7 +394,7 @@ class wiz.frontend.module extends wiz.frontend.branch
 		tdir = rootpath + @getPathSlashed() + @coffeeDir
 		if fs.existsSync(tdir)
 			cpath = "/#{@coffeeDir}/:script#{@coffeeExt}"
-			cof = new wiz.frontend.method this, @parent, 'https', 'get', cpath, @parent.middleware.baseSession(), @coffeeCompile
+			cof = new wiz.framework.frontend.method this, @parent, 'https', 'get', cpath, @parent.middleware.baseSession(), @coffeeCompile
 			cof.init()
 		super()
 
@@ -433,14 +433,14 @@ class wiz.frontend.module extends wiz.frontend.branch
 		this[dir] = (file) => return path + file
 
 # resources in a module
-class wiz.frontend.resource extends wiz.frontend.branch
+class wiz.framework.frontend.resource extends wiz.framework.frontend.branch
 
 	method: (protocol, method, path, middleware, handler) =>
-		@branches[path] = new wiz.frontend.method this, @parent.parent, protocol, method, path, middleware, handler
+		@branches[path] = new wiz.framework.frontend.method this, @parent.parent, protocol, method, path, middleware, handler
 		return @branches[path]
 
 # methods in a resource
-class wiz.frontend.method extends wiz.frontend.branch
+class wiz.framework.frontend.method extends wiz.framework.frontend.branch
 
 	constructor: (@parent, @server, @protocol, @method, @path, @middleware, @handler) ->
 		# wizlog.debug @constructor.name, @path

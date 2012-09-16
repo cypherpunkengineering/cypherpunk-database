@@ -14,9 +14,9 @@
 
 require '..'
 
-wizpackage 'wiz.util'
+wizpackage 'wiz.framework.util'
 
-class wiz.util.datetime
+class wiz.framework.util.datetime
 	@unixFullTS: () ->
 		return (new Date()).getTime()
 	@unixTS: () ->

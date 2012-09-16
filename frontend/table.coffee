@@ -13,19 +13,20 @@
 # GNU General Public License for more details.
 
 require '..'
-require '../wizdb'
-require '../wizutil/wizstring'
+require '../db'
+require '../util/strval'
 
-wizpackage 'wiz.frontend'
+wizpackage 'wiz.framework.frontend.table'
 
-class wiz.frontend.tablemanager
+class wiz.framework.frontend.table.base
 
 	constructor: (@parent) ->
 		wizassert(false, "invalid @parent: #{@parent}") if not @parent
 
 	validateInputType: (inputType, inputValue) =>
-		return wiz.util.strval(inputType, inputValue)
+		return wiz.framework.util.strval(inputType, inputValue)
 
+	list: (req, res) =>
 	insert: (req, res) =>
 	modify: (req, res) =>
 	drop: (req, res) =>

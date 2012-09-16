@@ -14,9 +14,9 @@
 
 require '..'
 
-wizpackage 'wiz.util'
+wizpackage 'wiz.framework.util'
 
-class wiz.util.bitmask
+class wiz.framework.util.bitmask
 	@check: (n, mask) ->
     	return (n >> mask) % 2 != 0
 

@@ -18,7 +18,7 @@
 # wiz-framework
 require '../..'
 require '../../wizfrontend'
-require '../../wizutil/wizstring'
+require '../../util/strval'
 
 # wizfrontend package
 wizpackage 'wizportal'

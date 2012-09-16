@@ -13,14 +13,14 @@
 # GNU General Public License for more details.
 
 require '..'
-require '../wizdb'
+require '../db'
 
-wizpackage 'wiz.backend'
+wizpackage 'wiz.framework.backend'
 
 # mysql class
-class wiz.backend.mysql extends wiz.db.mysql
+class wiz.framework.backend.mysql extends wiz.framework.db.mysql
 # mongo class
-class wiz.backend.mongo extends wiz.db.mongo
+class wiz.framework.backend.mongo extends wiz.framework.db.mongo
 
 	verbose : false
 

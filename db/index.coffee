@@ -14,12 +14,12 @@
 
 require '..'
 
-wizpackage 'wiz.db'
+wizpackage 'wiz.framework.db'
 
 # native mongodb driver
 MySQL = require 'mysql'
 
-class wiz.db.mysql
+class wiz.framework.db.mysql
 	client : null
 	config :
 		host : ''
@@ -36,7 +36,7 @@ class wiz.db.mysql
 mongodb = require 'mongodb'
 BSON = mongodb.BSONPure
 
-class wiz.db.mongo
+class wiz.framework.db.mongo
 
 	config : {}
 	serverOptions : {}

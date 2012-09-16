@@ -16,10 +16,10 @@ require '..'
 require './database'
 require './messaging'
 
-wizpackage 'wiz.backend'
+wizpackage 'wiz.framework.backend'
 
 # worker loop for tasks
-class wiz.backend.worker
+class wiz.framework.backend.worker
 	running : false
 	interval : 30 * 1000
 	rundelay : 3 * 1000

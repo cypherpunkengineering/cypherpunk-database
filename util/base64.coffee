@@ -14,9 +14,9 @@
 
 require '..'
 
-wizpackage 'wiz.util'
+wizpackage 'wiz.framework.util'
 
-class wiz.util.base64 # this code copyright by rwz from https://github.com/rwz/base64.coffee
+class wiz.framework.util.base64 # this code copyright by rwz from https://github.com/rwz/base64.coffee
 
 	CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
 	fromCharCode = String.fromCharCode

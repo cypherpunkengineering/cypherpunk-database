@@ -14,12 +14,12 @@
 
 require '..'
 
-wizpackage 'wiz.backend'
+wizpackage 'wiz.framework.backend'
 
 # zero message queue
 zmq = require 'zmq'
 
-class wiz.backend.zmqsock
+class wiz.framework.backend.zmqsock
 	binding : 'tcp://*:0'
 	type : ''
 
@@ -28,7 +28,7 @@ class wiz.backend.zmqsock
 	init : () =>
 		@sock.on 'message', @onRawMessage
 	onRawMessage : (rawmsg) =>
-		msg = new wiz.backend.message(rawmsg)
+		msg = new wiz.framework.backend.message(rawmsg)
 		if not msg or not msg.datum or not msg.datum.ts or not msg.datum.cmd
 			wizlog.err @constructor.name, "RECV MSG ERROR: #{rawmsg}"
 			@sendERR()
@@ -42,11 +42,11 @@ class wiz.backend.zmqsock
 	sendERR: () =>
 		return if @err # only send error msg once to avoid infinite loop
 		@err = true
-		err = new wiz.backend.message()
+		err = new wiz.framework.backend.message()
 		err.datum.cmd = 'ERR'
 		@send(err)
 	sendOK: () =>
-		ok = new wiz.backend.message()
+		ok = new wiz.framework.backend.message()
 		ok.datum.cmd = 'OK'
 		@send(ok)
 	send : (msg) =>
@@ -59,7 +59,7 @@ class wiz.backend.zmqsock
 			wizlog.debug @constructor.name, "SEND MSG RAW: #{msg}"
 			@sock.send(msg)
 
-class wiz.backend.zmqserver extends wiz.backend.zmqsock
+class wiz.framework.backend.zmqserver extends wiz.framework.backend.zmqsock
 	init : () =>
 		super()
 		wizlog.info @constructor.name, "binding to #{@binding}"
@@ -69,29 +69,29 @@ class wiz.backend.zmqserver extends wiz.backend.zmqsock
 				process.exit()
 			# wizlog.info @constructor.name, "bound to #{@binding}"
 
-class wiz.backend.zmqclient extends wiz.backend.zmqsock
+class wiz.framework.backend.zmqclient extends wiz.framework.backend.zmqsock
 	init : () =>
 		super()
 		@sock.connect @binding
 
-class wiz.backend.responder extends wiz.backend.zmqserver
+class wiz.framework.backend.responder extends wiz.framework.backend.zmqserver
 	constructor : (@parent, @binding) ->
 		super('rep', @binding)
-class wiz.backend.requester extends wiz.backend.zmqclient
+class wiz.framework.backend.requester extends wiz.framework.backend.zmqclient
 	constructor : (@parent, @binding) ->
 		super('req', @binding)
 
-class wiz.backend.publisher extends wiz.backend.zmqserver
+class wiz.framework.backend.publisher extends wiz.framework.backend.zmqserver
 	constructor : (@parent, @binding) ->
 		super('pub', @binding)
-class wiz.backend.subscriber extends wiz.backend.zmqclient
+class wiz.framework.backend.subscriber extends wiz.framework.backend.zmqclient
 	constructor : (@parent, @binding) ->
 		super('sub', @binding)
 	init : () =>
 		super()
 		@sock.subscribe("")
 
-class wiz.backend.message
+class wiz.framework.backend.message
 	constructor: (rawmsg) ->
 		if rawmsg
 			try
