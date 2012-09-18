@@ -100,7 +100,8 @@ class wiz.framework.frontend.middleware
 
 	# remove x-powered-by header from express lib
 	hideHeader : (req, res, next) =>
-		res.removeHeader "X-Powered-By"
+		res.removeHeader 'X-Powered-By'
+		res.setHeader 'X-Powered-By', 'wiz'
 		return next() if next
 		return true
 
