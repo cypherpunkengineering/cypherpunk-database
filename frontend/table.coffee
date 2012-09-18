@@ -71,6 +71,15 @@ class wiz.framework.frontend.table.base #{{{
 class wiz.framework.frontend.table.baseArray extends wiz.framework.frontend.table.base #{{{
 
 	arrayKey: ''
+	elementKey: ''
+
+	getDocKeyWithElementID: (docID, elementID) =>
+		doc = {}
+		doc[@docKey] = docID
+		doc[@arrayKey] = {}
+		doc[@arrayKey].$elemMatch = {}
+		doc[@arrayKey].$elemMatch[@elementKey] = elementID
+		return doc
 
 	getArrayKey: () =>
 		select = {}
@@ -99,6 +108,18 @@ class wiz.framework.frontend.table.baseArray extends wiz.framework.frontend.tabl
 		options =
 			upsert: true
 		return options
+
+	findElementByID: (req, res, docID, elementID, cb) =>
+		return cb(null) if not docID or not elementID
+		@findElementByCustom(req, res, @getDocKeyWithElementID(docID, elementID), @getArrayKey(), @elementKey, elementID, cb)
+
+	findElementByCustom: (req, res, where, select, elementKey, elementID, cb) =>
+		@findOne req, res, where, select, (err, result) =>
+			if result and result[@arrayKey]
+				for ri of result[@arrayKey] when r = result[@arrayKey][ri]
+					if r[elementKey] == elementID
+						return cb(r)
+			return cb(null)
 
 	insertOne: (req, res, docID, objToInsert) =>
 		@mongo.collection res, @collectionName, (collection) =>
