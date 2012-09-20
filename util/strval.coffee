@@ -68,6 +68,11 @@ class wiz.framework.util.strval
 		strRegex = '..*'
 		return (new RegExp( '^' + strRegex + '$' )).test(str)
 
+	# check if valid string
+	@email_valid : (str) ->
+		strRegex = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+		return (new RegExp( '^' + strRegex + '$' )).test(str)
+
 	# check if valid integer
 	@int_valid : (i) ->
 		return parseFloat(i) == parseInt(i) && (!isNaN(i) && i % 1 == 0)
@@ -114,6 +119,8 @@ class wiz.framework.util.strval
 				return @int_valid(value)
 			when 'int8b'
 				return @int_valid(value) && value >= 0 && value <= 255
+			when 'email'
+				return @email_valid(value)
 			when 'str'
 				return @str_valid(value)
 			when 'ttl'
