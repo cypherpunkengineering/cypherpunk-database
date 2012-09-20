@@ -42,6 +42,8 @@ class wiz.framework.frontend.table.dbobj #{{{
 
 class wiz.framework.frontend.table.base #{{{
 
+	debug: false
+
 	constructor: (@parent, @mongo) ->
 		wizassert(false, "invalid @parent: #{@parent}") if not @parent
 		wizassert(false, "invalid @mongo: #{@mongo}") if not @mongo
@@ -49,14 +51,31 @@ class wiz.framework.frontend.table.base #{{{
 	collectionName: ''
 	docKey: ''
 
+	init: () =>
+
 	getDocKey: (id) =>
 		doc = {}
 		doc[@docKey] = id
 		return doc
 
 	findOne: (req, res, doc, select, cb) =>
+		wizlog.debug @constructor.name, "#{@collectionName}.findOne(#{JSON.stringify(doc)}, #{JSON.stringify(select)})" if @debug
 		@mongo.collection res, @collectionName, (collection) =>
 			collection.findOne(doc, select, cb)
+
+	updateCustom: (req, res, doc, update, options, cb) =>
+		debugstr = "#{@collectionName}.update(#{JSON.stringify(doc)}, #{JSON.stringify(update)}, #{JSON.stringify(options)})"
+		wizlog.debug @constructor.name, debugstr if @debug
+		@mongo.collection res, @collectionName, (collection) =>
+			collection.update doc, update, options, (err, result) =>
+				if err
+					wizlog.err @constructor.name, "UPDATE FAILED: #{debugstr} -> #{err}"
+					return cb false if cb
+					return res.send 500
+
+				wizlog.info @constructor.name, "UPDATE OK: #{debugstr}"
+				return cb true if cb
+				return res.send 200
 
 	listResponse: (req, res, data) =>
 		data = [] if not data or data not instanceof Array
@@ -71,34 +90,35 @@ class wiz.framework.frontend.table.base #{{{
 class wiz.framework.frontend.table.baseArray extends wiz.framework.frontend.table.base #{{{
 
 	arrayKey: ''
-	elementKey: ''
+	elementKey: 'id'
 
 	getDocKeyWithElementID: (docID, elementID) =>
-		doc = {}
-		doc[@docKey] = docID
+		doc = @getDocKey(docID)
 		doc[@arrayKey] = {}
 		doc[@arrayKey].$elemMatch = {}
 		doc[@arrayKey].$elemMatch[@elementKey] = elementID
 		return doc
 
-	getArrayKey: () =>
+	getArrayKey: (keys = [ @arrayKey ]) =>
 		select = {}
-		select[@arrayKey] = 1
+		select[key] = 1 for key in keys
 		return select
 
-	getUpdatePushArray: (req, objToPush) =>
+	getUpdatePushArray: (req, objToPush, pushKey) =>
+		pushKey ?= @arrayKey
 		toPush = {}
-		toPush[@arrayKey] = objToPush.toDB(req)
+		toPush[pushKey] = objToPush.toDB(req)
 		update =
 			'$set' : { updated: wiz.framework.util.datetime.unixFullTS() }
 			'$push': toPush
 		return update
 
-	getUpdatePullArray: (req, objsToPull) =>
+	getUpdatePullArray: (req, objToPull, pullKey) =>
+		pullKey ?= @arrayKey
 		toPull = {}
-		toPull[@arrayKey] =
-			id: objsToPull
-			immutable: false # if not-admin
+		toPull[pullKey] = {}
+		toPull[pullKey][@elementKey] = objToPull
+		toPull[pullKey].immutable = false # if not-admin
 		update =
 			'$set' : { updated: wiz.framework.util.datetime.unixFullTS() }
 			'$pull': toPull
@@ -122,26 +142,16 @@ class wiz.framework.frontend.table.baseArray extends wiz.framework.frontend.tabl
 			return cb(null)
 
 	insertOne: (req, res, docID, objToInsert) =>
-		@mongo.collection res, @collectionName, (collection) =>
-			doc = @getDocKey docID
-			update = @getUpdatePushArray req, objToInsert
-			options = @getUpdateOptions()
-			collection.update doc, update, options, (err, result) =>
-				if err
-					wizlog.err @constructor.name, "UPDATE FAILED: PUSH #{JSON.stringify(doc)}, #{JSON.stringify(update)}, #{JSON.stringify(options)} -> #{err}"
-					return res.send 500
-
-				wizlog.info @constructor.name, "UPDATE OK: PUSH #{objToInsert.id}"
-				return res.send 200
+		doc = @getDocKey docID
+		update = @getUpdatePushArray req, objToInsert
+		options = @getUpdateOptions()
+		@updateCustom(req, res, doc, update, options)
 
 	modifyOne: (req, res, docID, objToModify) =>
 		res.send 501
 
-	dropMany: (req, res, docID, objsToDelete) =>
+	dropMany: (req, res, docID, elementID, objsToDelete, pullKey = null) =>
 		@mongo.collection res, @collectionName, (collection) =>
-			doc = @getDocKey(docID)
-			options = @getUpdateOptions()
-
 			# count records to drop
 			pending = 0
 			for t, toDelete of objsToDelete
@@ -149,12 +159,14 @@ class wiz.framework.frontend.table.baseArray extends wiz.framework.frontend.tabl
 
 			# for each type in object, make query with given array
 			for t, toDelete of objsToDelete
-				update = @getUpdatePullArray req, toDelete
-				collection.update doc, update, options, (err, result) =>
-					if err
-						wizlog.err @constructor.name, "UPDATE FAILED: #{JSON.stringify(doc)}, #{JSON.stringify(update)}, #{JSON.stringify(options)} -> #{err}"
-					else
-						wizlog.info @constructor.name, "UPDATE OK: PULL #{toDelete}"
+				# TODO: check permissions!!
+				if elementID
+					doc = @getDocKeyWithElementID(docID, elementID)
+				else
+					doc = @getDocKey(docID)
+				update = @getUpdatePullArray(req, toDelete, pullKey)
+				options = @getUpdateOptions()
+				@updateCustom req, res, doc, update, options, (result) =>
 					res.send 200 if (pending -= 1) == 0
 #}}}
 
