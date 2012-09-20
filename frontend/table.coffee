@@ -43,6 +43,7 @@ class wiz.framework.frontend.table.dbobj #{{{
 class wiz.framework.frontend.table.base #{{{
 
 	debug: false
+	upsert: true
 
 	constructor: (@parent, @mongo) ->
 		wizassert(false, "invalid @parent: #{@parent}") if not @parent
@@ -126,7 +127,7 @@ class wiz.framework.frontend.table.baseArray extends wiz.framework.frontend.tabl
 
 	getUpdateOptions: () =>
 		options =
-			upsert: true
+			upsert: @upsert
 		return options
 
 	findElementByID: (req, res, docID, elementID, cb) =>
