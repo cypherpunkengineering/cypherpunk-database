@@ -59,10 +59,64 @@ class wiz.framework.frontend.table.base #{{{
 		doc[@docKey] = id
 		return doc
 
-	findOne: (req, res, doc, select, cb) =>
-		wizlog.debug @constructor.name, "#{@collectionName}.findOne(#{JSON.stringify(doc)}, #{JSON.stringify(select)})" if @debug
+	count: (req, res, doc, select, cb) =>
+		debugstr = "#{@collectionName}.count(#{JSON.stringify(doc)}, #{JSON.stringify(select)})"
+		wizlog.debug @constructor.name, debugstr if @debug
 		@mongo.collection res, @collectionName, (collection) =>
-			collection.findOne(doc, select, cb)
+			collection.find(doc, select).count (err, count) =>
+				if err
+					wizlog.err @constructor.name, "COUNT FAILED: #{debugstr} -> #{err}"
+					return cb null if cb
+					return res.send 500
+
+				wizlog.info @constructor.name, "COUNT OK: #{debugstr}"
+				return cb count if cb
+				return res.send 200
+
+	find: (req, res, doc, select, sortby, cb) =>
+		debugstr = "#{@collectionName}.find(#{JSON.stringify(doc)}, #{JSON.stringify(select)}, #{JSON.stringify(sortby)})"
+		wizlog.debug @constructor.name, debugstr if @debug
+		@mongo.collection res, @collectionName, (collection) =>
+			found = collection.find(doc, select)
+			found = found.sort(sortby) if sortby
+			found.toArray (err, results) =>
+				if err
+					wizlog.err @constructor.name, "FIND FAILED: #{debugstr} -> #{err}"
+					return cb null if cb
+					return res.send 500
+
+				wizlog.info @constructor.name, "FIND OK: #{debugstr}"
+				return cb results if cb
+				return res.send 200
+
+	findOne: (req, res, doc, select, cb) =>
+		debugstr = "#{@collectionName}.findOne(#{JSON.stringify(doc)}, #{JSON.stringify(select)})"
+		wizlog.debug @constructor.name, debugstr if @debug
+		@mongo.collection res, @collectionName, (collection) =>
+			collection.findOne doc, select, (err, result) =>
+				if err
+					wizlog.err @constructor.name, "FINDONE FAILED: #{debugstr} -> #{err}"
+					return cb null if cb
+					return res.send 500
+
+				wizlog.info @constructor.name, "FINDONE OK: #{debugstr}"
+				# wizlog.debug @constructor.name, "FINDONE RESULT: #{JSON.stringify(result)}" if @debug
+				return cb result if cb
+				return res.send 200
+
+	insert: (req, res, doc, cb) =>
+		debugstr = "#{@collectionName}.insert(#{JSON.stringify(doc)})"
+		wizlog.debug @constructor.name, debugstr if @debug
+		@mongo.collection res, @collectionName, (collection) =>
+			collection.insert doc.toJSON(), (err, doc) =>
+				if err
+					wizlog.err @constructor.name, "INSERT FAILED: #{debugstr} -> #{err}"
+					return cb null if cb
+					return res.send 500
+
+				wizlog.info @constructor.name, "INSERT OK: #{debugstr}"
+				return cb doc if cb
+				return res.send 200
 
 	updateCustom: (req, res, doc, update, options, cb) =>
 		debugstr = "#{@collectionName}.update(#{JSON.stringify(doc)}, #{JSON.stringify(update)}, #{JSON.stringify(options)})"
@@ -71,19 +125,20 @@ class wiz.framework.frontend.table.base #{{{
 			collection.update doc, update, options, (err, result) =>
 				if err
 					wizlog.err @constructor.name, "UPDATE FAILED: #{debugstr} -> #{err}"
-					return cb false if cb
+					return cb null if cb
 					return res.send 500
 
 				wizlog.info @constructor.name, "UPDATE OK: #{debugstr}"
-				return cb true if cb
+				return cb result if cb
 				return res.send 200
 
-	listResponse: (req, res, data) =>
+	listResponse: (req, res, data, recordCount) =>
 		data = [] if not data or data not instanceof Array
+		recordCount ?= data.length
 		res.send
 			sEcho : req.query.sEcho
-			iTotalRecords : data.length
-			iTotalDisplayRecords : data.length
+			iTotalRecords : recordCount
+			iTotalDisplayRecords : recordCount
 			aaData : data
 
 #}}}
@@ -135,7 +190,7 @@ class wiz.framework.frontend.table.baseArray extends wiz.framework.frontend.tabl
 		@findElementByCustom(req, res, @getDocKeyWithElementID(docID, elementID), @getArrayKey(), @elementKey, elementID, cb)
 
 	findElementByCustom: (req, res, where, select, elementKey, elementID, cb) =>
-		@findOne req, res, where, select, (err, result) =>
+		@findOne req, res, where, select, (result) =>
 			if result and result[@arrayKey]
 				for ri of result[@arrayKey] when r = result[@arrayKey][ri]
 					if r[elementKey] == elementID
