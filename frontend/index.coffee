@@ -307,13 +307,14 @@ class wiz.framework.frontend.server
 		@listen()
 		wizlog.warning @constructor.name, "Server ready!"
 
-	redirect: (req, res, next, url = req.url, code = 303) =>
-		unless @middleware.checkHostHeader req, res
+	redirect: (req, res, next, url = req.url, numeric = 303) =>
+		if not @middleware.checkHostHeader req, res
 			return false
-		host = @host ? req.headers.host
-		port = ''
-		port = ":#{@config.httpsPortActual}" if @config.httpsPortActual != 443
-		res.redirect "https://#{host}" + port + url, code
+		host = req.headers.host
+		host = host.split(':')[0] if host.indexOf ':' != -1
+		host += ":#{@config.httpsPortActual}" if @config.httpsPortActual != 443
+		target = 'https://' + host + url
+		res.redirect target, numeric
 		return true
 
 	catchall: (req, res) =>
