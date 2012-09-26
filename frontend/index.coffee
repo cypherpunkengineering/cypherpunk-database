@@ -111,21 +111,21 @@ class wiz.framework.frontend.server
 		@modules = {}
 
 		# special core module and home resource
-		@core = @module(new wiz.framework.frontend.module(@, '/', 'Home', @powerMask.public, @powerLevel.stranger))
-		@root = @core.resource(new wiz.framework.frontend.resource(@core, '/', '', @powerMask.always, @powerLevel.stranger))
+		@core = @module(new wiz.framework.frontend.module(@, @, '/', 'Home', @powerMask.public, @powerLevel.stranger))
+		@root = @core.resource(new wiz.framework.frontend.resource(@, @core, '/', '', @powerMask.always, @powerLevel.stranger))
 
 		# login and logout modules
-		@login = @module(new wiz.framework.frontend.module(@, '/login', 'Login', @powerMask.public, @powerLevel.stranger))
-		@logout = @module(new wiz.framework.frontend.module(@, '/logout', 'Logout', @powerMask.auth, @powerLevel.stranger))
+		@login = @module(new wiz.framework.frontend.module(@, @, '/login', 'Login', @powerMask.public, @powerLevel.stranger))
+		@logout = @module(new wiz.framework.frontend.module(@, @, '/logout', 'Logout', @powerMask.auth, @powerLevel.stranger))
 
 		# public methods
-		@root.method 'https', 'get', '/', @middleware.baseSession(), @handleRoot
-		@root.method 'https', 'get', '/login', @middleware.baseSession(), @handleLogin
-		@root.method 'https', 'post', '/postlogin', @middleware.baseSession(), @postLogin
-		@root.method 'https', 'get', '/logout', @middleware.baseSession(), @handleLogout
+		@root.method 'https', 'get', '/', @middleware.baseSession(), @powerLevel.stranger, @handleRoot
+		@root.method 'https', 'get', '/login', @middleware.baseSession(), @powerLevel.stranger, @handleLogin
+		@root.method 'https', 'post', '/postlogin', @middleware.baseSession(), @powerLevel.stranger, @postLogin
+		@root.method 'https', 'get', '/logout', @middleware.baseSession(), @powerLevel.stranger, @handleLogout
 
 		# for logged in users
-		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @handleHome
+		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @powerLevel.stranger, @handleHome
 
 	nav: (req) =>
 		um = @userMask(req)
@@ -143,9 +143,19 @@ class wiz.framework.frontend.server
 					# console.log "ul is #{ul}, module requires #{nv[n].level}"
 					if ul >= nv[n].level
 						# console.log "Adding #{n} to user's nav"
-						result[n] = nv[n]
+						result[n] = {}
 						result[n].resourceCount = 0
-						result[n].resourceCount += 1 for x of nv[n].resources
+						for x of nv[n]
+							if x isnt 'resources'
+								result[n][x] = nv[n][x]
+							else
+								result[n][x] = {}
+								for r of nv[n][x] when resource = nv[n][x][r]
+									# console.log resource
+									if ul >= resource.level
+										# console.log "adding #{resource.path}"
+										result[n][x][r] = resource
+										result[n].resourceCount += 1
 
 		return result
 
@@ -189,6 +199,7 @@ class wiz.framework.frontend.server
 					@navViews[view][module].resources[resource] =
 						title: @modules[module].branches[resource].getTitle()
 						path: @modules[module].branches[resource].getPath()
+						level: @modules[module].branches[resource].getLevel()
 
 		# finally, add catchall at the end
 		@http.all '*', @middleware.base(), @redirect
@@ -341,7 +352,7 @@ class wiz.framework.frontend.server
 # base branch class, extended by modules/resources/methods below
 class wiz.framework.frontend.branch
 
-	constructor: (@parent, @path, @title = '', @view = 0, @level = 9000) ->
+	constructor: (@server, @parent, @path, @title = '', @view = 0, @level = 9000) ->
 		@branches = {}
 		# wizlog.debug @constructor.name, "creating #{@constructor.name} " + @getPath()
 		wizassert(false, @constructor.name, "invalid @parent: #{@parent}") if not @parent or typeof @parent != 'object'
@@ -395,7 +406,7 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 		tdir = rootpath + @getPathSlashed() + @coffeeDir
 		if fs.existsSync(tdir)
 			cpath = "/#{@coffeeDir}/:script#{@coffeeExt}"
-			cof = new wiz.framework.frontend.method this, @parent, 'https', 'get', cpath, @parent.middleware.baseSession(), @coffeeCompile
+			cof = new wiz.framework.frontend.method @parent, this, 'https', 'get', cpath, @parent.middleware.baseSession(), @server.powerLevel.stranger, @coffeeCompile
 			cof.init()
 		super()
 
@@ -436,14 +447,14 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 # resources in a module
 class wiz.framework.frontend.resource extends wiz.framework.frontend.branch
 
-	method: (protocol, method, path, middleware, handler) =>
-		@branches[path] = new wiz.framework.frontend.method this, @parent.parent, protocol, method, path, middleware, handler
+	method: (protocol, method, path, middleware, powerLevel, handler) =>
+		@branches[path] = new wiz.framework.frontend.method @parent.parent, this, protocol, method, path, middleware, powerLevel, handler
 		return @branches[path]
 
 # methods in a resource
 class wiz.framework.frontend.method extends wiz.framework.frontend.branch
 
-	constructor: (@parent, @server, @protocol, @method, @path, @middleware, @handler) ->
+	constructor: (@server, @parent, @protocol, @method, @path, @middleware, @level, @handler) ->
 		# wizlog.debug @constructor.name, @path
 		# strip trailing / from request path
 		if @path[@path.length - 1] == '/'
@@ -451,6 +462,9 @@ class wiz.framework.frontend.method extends wiz.framework.frontend.branch
 		@init = () =>
 			wizlog.debug @constructor.name, "adding #{@protocol} #{@method} " + @getPath()
 			wizassert(false, @constructor.name, "invalid @server: #{@server}") if not @server
-			@server[@protocol][@method](@getPath(), @middleware, @handler)
+			@server[@protocol][@method](@getPath(), @middleware, (req, res) =>
+				return res.send 404 unless req.session.wiz.level >= @getLevel()
+				@handler(req, res)
+			)
 
 # vim: foldmethod=marker wrap

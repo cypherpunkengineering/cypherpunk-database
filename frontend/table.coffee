@@ -45,7 +45,7 @@ class wiz.framework.frontend.table.base #{{{
 	debug: false
 	upsert: true
 
-	constructor: (@parent, @mongo) ->
+	constructor: (@server, @parent, @mongo) ->
 		wizassert(false, "invalid @parent: #{@parent}") if not @parent
 		wizassert(false, "invalid @mongo: #{@mongo}") if not @mongo
 
