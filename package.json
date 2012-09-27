@@ -10,6 +10,9 @@
     "node": "0.8.x"
   },
   "dependencies": {
+	"ezcrypto": "0.0.3",
+	"thirty-two": "0.0.1",
+
     "base32": "0.0.x",
     "coffee-script": "1.2.x",
     "connect": "2.3.x",
@@ -19,6 +22,7 @@
     "mysql": "0.9.x",
     "connect-redis": "1.2.x",
     "zmq": "2.1.x"
+
   },
   "devDependencies": {},
   "optionalDependencies": {},
