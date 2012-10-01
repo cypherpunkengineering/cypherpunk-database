@@ -190,12 +190,6 @@ class wiz.framework.util.otp
 
 		baseURL = 'https:#chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl='
 
-		# generate some qr codes if requested
-		if (qr_codes)
-			SecretKey.qr_code_ascii = baseURL + encodeURIComponent(SecretKey.ascii)
-			SecretKey.qr_code_hex = baseURL + encodeURIComponent(SecretKey.hex)
-			SecretKey.qr_code_base32 = baseURL + encodeURIComponent(SecretKey.base32)
-
 		# generate a QR code for use in Google Authenticator if requested
 		# (Google Authenticator has a special style and requires base32)
 		if (google_auth_qr)
