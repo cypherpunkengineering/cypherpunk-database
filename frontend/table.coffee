@@ -160,6 +160,14 @@ class wiz.framework.frontend.table.baseArray extends wiz.framework.frontend.tabl
 		select[key] = 1 for key in keys
 		return select
 
+	getUpdateSetObj: (req, objToSet, objKey) =>
+		setKey = @arrayKey + '.$.' + objKey
+		update = {}
+		update['$set'] = {}
+		update['$set'][setKey] = objToSet
+		update['$set'][setKey].updated = wiz.framework.util.datetime.unixFullTS()
+		return update
+
 	getUpdatePushArray: (req, objToPush, pushKey) =>
 		pushKey ?= @arrayKey
 		toPush = {}
