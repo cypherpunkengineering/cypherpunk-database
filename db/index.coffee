@@ -58,6 +58,9 @@ class wiz.framework.db.mongo
 			if err or not client
 				return cb "mongoDB.open(#{@config.hostname}) failed: #{err}"
 
+			if @server and @server.config and @server.config.mongoDoAuth is false
+				return cb null, client
+
 			client.authenticate @config.username, @config.password, (err, auth) =>
 				if err or not auth
 					return cb "client.authenticate(#{@config.username}, #{@config.hostname}) failed: #{err}"

@@ -21,11 +21,12 @@ wizpackage 'wiz.framework.frontend'
 connect = require 'connect'
 
 class wiz.framework.frontend.mysql extends wiz.framework.db.mysql
+	constructor : (@server, @parent, @config) ->
 
 class wiz.framework.frontend.mongo extends wiz.framework.db.mongo
 	client : null
 
-	constructor : (@config, @serverOptions, @dbOptions) ->
+	constructor : (@server, @parent, @config, @serverOptions, @dbOptions) ->
 		super()
 		@init()
 
