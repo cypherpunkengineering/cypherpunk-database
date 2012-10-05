@@ -26,7 +26,7 @@ class wiz.framework.util.otp
 		key = options.key
 		counter = options.counter
 		length = options.length || 6
-		encoding = options.encoding || 'ascii'
+		encoding = options.encoding || 'base32'
 
 		# preprocessing: convert to ascii if it's not
 		if (encoding == 'hex')
@@ -98,7 +98,7 @@ class wiz.framework.util.otp
 		# set vars
 		key = options.key
 		length = options.length || 6
-		encoding = options.encoding || 'ascii'
+		encoding = options.encoding || 'base32'
 		step = options.step || 30
 		initial_time = options.initial_time || 0; # unix epoch by default
 
