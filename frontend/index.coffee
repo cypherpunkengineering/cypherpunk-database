@@ -115,13 +115,12 @@ class wiz.framework.frontend.server
 		@root = @core.resource(new wiz.framework.frontend.resource(@, @core, '/', '', @powerMask.always, @powerLevel.stranger))
 
 		# login and logout modules
-		@login = @module(new wiz.framework.frontend.module(@, @, '/login', 'Login', @powerMask.public, @powerLevel.stranger))
-		@logout = @module(new wiz.framework.frontend.module(@, @, '/logout', 'Logout', @powerMask.auth, @powerLevel.stranger))
+		@login = @module(new wiz.framework.frontend.module(@, @, '/login', null, @powerMask.public, @powerLevel.stranger))
+		@logout = @module(new wiz.framework.frontend.module(@, @, '/logout', null, @powerMask.auth, @powerLevel.stranger))
 
 		# public methods
 		@root.method 'https', 'get', '/', @middleware.baseSession(), @powerLevel.stranger, @handleRoot
-		@root.method 'https', 'get', '/login', @middleware.baseSession(), @powerLevel.stranger, @handleLogin
-		@root.method 'https', 'post', '/postlogin', @middleware.baseSession(), @powerLevel.stranger, @postLogin
+		@root.method 'https', 'post', '/login', @middleware.baseSession(), @powerLevel.stranger, @handleLogin
 		@root.method 'https', 'get', '/logout', @middleware.baseSession(), @powerLevel.stranger, @handleLogout
 
 		# for logged in users
@@ -251,18 +250,21 @@ class wiz.framework.frontend.server
 	handleHome: (req, res) =>
 		res.send 'home'
 
-	handleLogin: (req, res) =>
-		res.send 'implement login here'
-
-	postLogin : (req, res) =>
+	handleLogin : (req, res) =>
 		@validateLogin req, res, (result) =>
 			if result
 				# login okay, do login and and redirect home
 				@doLogin(req)
-				@redirect(req, res, null, '/')
+				res.send 200
 			else
-				# login failed, redirect back to login screen
-				@redirect(req, res, null, '/login?fail=1')
+				# login failed
+				res.send 400
+
+	handleLogout: (req, res) =>
+		# log them out and redirect home
+		wizlog.debug @constructor.name, "Logging out and redirecting..."
+		@doLogout(req, res)
+		res.send 200
 
 	# initialize all session variables
 	sessionCreate: (req, res, next) =>
@@ -298,12 +300,6 @@ class wiz.framework.frontend.server
 
 	userLevel: (req) =>
 		return req.session.wiz.level ? 0
-
-	handleLogout: (req, res) =>
-		# log them out and redirect home
-		wizlog.debug @constructor.name, "Logging out and redirecting..."
-		@doLogout(req, res)
-		@redirect(req, res, null, '/login?out=1')
 
 	listen: () =>
 		if @config.httpPort
