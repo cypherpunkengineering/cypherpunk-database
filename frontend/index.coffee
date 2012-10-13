@@ -47,7 +47,7 @@ require './database'
 require './middleware'
 require '../util/bitmask'
 
-wizpackage 'wiz.framework.frontend'
+wiz.package 'wiz.framework.frontend'
 
 # node frameworks
 coffee = require 'coffee-script'
@@ -93,7 +93,7 @@ class wiz.framework.frontend.server
 	powerLevel : new wiz.framework.frontend.powerLevel()
 
 	constructor: () ->
-		wizlog.notice @constructor.name, 'Server starting...'
+		wiz.log.notice 'Server starting...'
 
 		# create middleware structure
 		@sessionRedisStore = new RedisStore()
@@ -241,7 +241,7 @@ class wiz.framework.frontend.server
 		express.view.lookup = lookup
 
 	error: (err, req, res) =>
-		wizlog.err @constructor.name, err
+		wiz.log.err err
 		res.send 500
 
 	handleRoot: (req, res) =>
@@ -262,7 +262,7 @@ class wiz.framework.frontend.server
 
 	handleLogout: (req, res) =>
 		# log them out and redirect home
-		wizlog.debug @constructor.name, "Logging out and redirecting..."
+		wiz.log.debug "Logging out and redirecting..."
 		@doLogout(req, res)
 		res.send 200
 
@@ -303,16 +303,16 @@ class wiz.framework.frontend.server
 
 	listen: () =>
 		if @config.httpPort
-			wizlog.warning @constructor.name, "HTTP listening on [#{@config.httpHost}]:#{@config.httpPort}"
+			wiz.log.warning "HTTP listening on [#{@config.httpHost}]:#{@config.httpPort}"
 			@http.listen @config.httpPort, @config.httpHost
 		if @config.httpsPort
-			wizlog.warning @constructor.name, "HTTPS listening on [#{@config.httpsHost}]:#{@config.httpsPort}"
+			wiz.log.warning "HTTPS listening on [#{@config.httpsHost}]:#{@config.httpsPort}"
 			@https.listen @config.httpsPort, @config.httpsHost
 
 	start: () =>
 		@init()
 		@listen()
-		wizlog.warning @constructor.name, "Server ready!"
+		wiz.log.warning "Server ready!"
 
 	redirect: (req, res, next, url = req.url, numeric = 303) =>
 		if not @middleware.checkHostHeader req, res
@@ -342,7 +342,7 @@ class wiz.framework.frontend.server
 
 	staticPath: (url, disk) =>
 		return unless fs.existsSync disk
-		wizlog.debug @constructor.name, "adding static folder #{url} -> #{disk}"
+		wiz.log.debug "adding static folder #{url} -> #{disk}"
 		@https.use url, express.static(disk)
 
 # base branch class, extended by modules/resources/methods below
@@ -350,9 +350,9 @@ class wiz.framework.frontend.branch
 
 	constructor: (@server, @parent, @path, @title = '', @view = 0, @level = 9000) ->
 		@branches = {}
-		# wizlog.debug @constructor.name, "creating #{@constructor.name} " + @getPath()
-		wizassert(false, @constructor.name, "invalid @parent: #{@parent}") if not @parent or typeof @parent != 'object'
-		wizassert(false, @constructor.name, "invalid @path: #{@path}") if not @path or typeof @path != 'string'
+		# wiz.log.debug "creating #{@constructor.name} " + @getPath()
+		wiz.assert(false, "invalid @parent: #{@parent}") if not @parent or typeof @parent != 'object'
+		wiz.assert(false, "invalid @path: #{@path}") if not @path or typeof @path != 'string'
 
 	getPath: () =>
 		if not @parent or not @parent.getPath # if top-level
@@ -389,7 +389,7 @@ class wiz.framework.frontend.branch
 	init: () =>
 		# init all resources
 		for branch of @branches
-			# wizlog.debug @constructor.name, "initializing #{@constructor.name} " + branch
+			# wiz.log.debug "initializing #{@constructor.name} " + branch
 			@branches[branch].init()
 
 # for server modules
@@ -414,7 +414,7 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 		fn = rootpath + @getPathSlashed() + @coffeeDir + '/' + req.params.script + @coffeeExt
 		fs.readFile fn, 'utf8', (err, data) ->
 			if err
-				wizlog.err @constructor.name, "coffee-script file not found #{fn}"
+				wiz.log.err "coffee-script file not found #{fn}"
 				res.send 404
 				return false
 			try
@@ -422,7 +422,7 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 					bare: true
 				res.send js
 			catch e
-				wizlog.err @constructor.name, "coffee-script compilation failed for #{fn}: #{e.toString()}"
+				wiz.log.err "coffee-script compilation failed for #{fn}: #{e.toString()}"
 				res.send e.toString(), 500
 
 	resource: (res) =>
@@ -451,13 +451,13 @@ class wiz.framework.frontend.resource extends wiz.framework.frontend.branch
 class wiz.framework.frontend.method extends wiz.framework.frontend.branch
 
 	constructor: (@server, @parent, @protocol, @method, @path, @middleware, @level, @handler) ->
-		# wizlog.debug @constructor.name, @path
+		# wiz.log.debug @path
 		# strip trailing / from request path
 		if @path[@path.length - 1] == '/'
 			@path = @path.slice(0, @path.length - 1)
 		@init = () =>
-			wizlog.debug @constructor.name, "adding #{@protocol} #{@method} " + @getPath()
-			wizassert(false, @constructor.name, "invalid @server: #{@server}") if not @server
+			wiz.log.debug "adding #{@protocol} #{@method} " + @getPath()
+			wiz.assert(false, "invalid @server: #{@server}") if not @server
 			@server[@protocol][@method](@getPath(), @middleware, (req, res) =>
 				return res.send 404 unless req.session.wiz.level >= @getLevel()
 				@handler(req, res)

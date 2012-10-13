@@ -16,7 +16,7 @@ require '..'
 require '../util/strval'
 require '../util/datetime'
 
-wizpackage 'wiz.framework.frontend'
+wiz.package 'wiz.framework.frontend'
 
 express = require 'express'
 
@@ -35,13 +35,13 @@ class wiz.framework.frontend.middleware
 		'::1'
 	]
 
-	# log format passed to express.logger and logged to wizlog()
+	# log format passed to express.logger and logged to wiz.log()
 	logFormat : '[:remote-addr] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent'
 
-	# for wizlog() use
+	# for wiz.log() use
 	logStream:
 		write: (str) ->
-			wizlog.debug 'weblog', str
+			wiz.log.debug str
 
 	# useful error strings
 	errorstr :
@@ -56,7 +56,7 @@ class wiz.framework.frontend.middleware
 			return next() if next
 			return true
 		if next
-			wizlog.info @constructor.name, "unauthorized request"
+			wiz.log.info "unauthorized request"
 			@parent.redirect req, res, null, '/logout', 307
 		return false
 
@@ -67,7 +67,7 @@ class wiz.framework.frontend.middleware
 			return true
 		# otherwise send 401
 		if next
-			wizlog.info @constructor.name, "unauthorized ajax request"
+			wiz.log.info "unauthorized ajax request"
 			res.send 401
 		return false
 
@@ -84,7 +84,7 @@ class wiz.framework.frontend.middleware
 	checkIP : (req, res, next) =>
 		ip = @getIP req
 		if @accessList.indexOf(ip) is -1 # paranthesis needed
-			wizlog.info @constructor.name, "#{@errorstr[403]}"
+			wiz.log.info "#{@errorstr[403]}"
 			res.send @errorstr[403], 200
 			return false
 		return next() if next
@@ -92,7 +92,7 @@ class wiz.framework.frontend.middleware
 
 	checkHostHeader : (req, res, next) =>
 		unless 'host' of req.headers
-			wizlog.info @constructor.name, "#{@errorstr.hosthdr}"
+			wiz.log.info "#{@errorstr.hosthdr}"
 			res.send @errorstr.hosthdr, 400
 			return false
 		return next() if next
@@ -126,7 +126,7 @@ class wiz.framework.frontend.middleware
 				# use custom format
 				format: @logFormat
 
-				# log to wizlog()
+				# log to wiz.log()
 				stream: @logStream
 
 			express.compress()

@@ -14,7 +14,7 @@
 
 require '..'
 
-wizpackage 'wiz.framework.util'
+wiz.package 'wiz.framework.util'
 
 class wiz.framework.util.base64 # this code copyright by rwz from https://github.com/rwz/base64.coffee
 

@@ -14,7 +14,7 @@
 
 require '..'
 
-wizpackage 'wiz.framework.db'
+wiz.package 'wiz.framework.db'
 
 # native mongodb driver
 MySQL = require 'mysql'

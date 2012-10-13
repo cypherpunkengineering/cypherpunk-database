@@ -16,7 +16,7 @@ require '..'
 require './database'
 require './messaging'
 
-wizpackage 'wiz.framework.backend'
+wiz.package 'wiz.framework.backend'
 
 # worker loop for tasks
 class wiz.framework.backend.worker
@@ -28,7 +28,7 @@ class wiz.framework.backend.worker
 	waited : 0
 
 	constructor : (@parent) ->
-		# wizlog.debug @constructor.name, 'creating worker...'
+		# wiz.log.debug 'creating worker...'
 
 	init : (listenOnSocket) =>
 		# setup worker to run every X secs and manually start first run
@@ -38,14 +38,14 @@ class wiz.framework.backend.worker
 			setInterval @run, @interval
 
 	onDeadlock : () =>
-		wizlog.alert @constructor.name, 'deadlock!!'
+		wiz.log.alert 'deadlock!!'
 
 	# worker main method
 	run : () =>
 		# ensure only one call at a time
 		if @running
 			@waited += 1
-			wizlog.err @constructor.name, 'waiting! previous call still running!'
+			wiz.log.err 'waiting! previous call still running!'
 			if @waited >= @waitmax
 				@onDeadlock()
 				return
@@ -54,7 +54,7 @@ class wiz.framework.backend.worker
 			@waited = 0
 
 		# start
-		wizlog.debug @constructor.name, 'worker started'
+		wiz.log.debug 'worker started'
 		@running = true
 		setTimeout @work, 500
 
@@ -63,30 +63,30 @@ class wiz.framework.backend.worker
 		@finish()
 
 	queueTask : (taskName, task) =>
-		wizlog.info @constructor.name, "queueing task #{taskName}"
+		wiz.log.info "queueing task #{taskName}"
 		setTimeout task, 100
 		@pending += 1
 
 	onTaskCompleted : (taskName) =>
-		wizlog.debug @constructor.name, "completed task #{taskName}"
+		wiz.log.debug "completed task #{taskName}"
 		@pending -= 1
 
 		# check if any pending tasks
 		if @pending > 0
-			wizlog.debug @constructor.name, "waiting on #{@pending} pending tasks"
+			wiz.log.debug "waiting on #{@pending} pending tasks"
 			return
 
 		setTimeout @onAllTasksCompleted, 500
 
 	onAllTasksCompleted : () =>
 		return if not @running or @pending > 0
-		wizlog.info @constructor.name, 'all tasks completed'
+		wiz.log.info 'all tasks completed'
 		@finish()
 
 	# called from work() when all work is completed
 	finish : () =>
 		return if not @running or @pending > 0
-		wizlog.debug @constructor.name, 'worker finished'
+		wiz.log.debug 'worker finished'
 		@running = false
 		@cleanup()
 
@@ -108,7 +108,7 @@ class wiz.framework.backend.worker
 
 		# check for error
 		if err
-			wizlog.err @constructor.name, "mapReduce error for #{output.out}: #{err}"
+			wiz.log.err "mapReduce error for #{output.out}: #{err}"
 			console.log err
 			@onAllMapReduceTasksCompleted client
 			return
@@ -117,12 +117,12 @@ class wiz.framework.backend.worker
 			@onAllMapReduceTasksCompleted client
 
 	onAllMapReduceTasksCompleted : (client) =>
-		wizlog.debug @constructor.name, 'all mapReduce tasks completed'
+		wiz.log.debug 'all mapReduce tasks completed'
 		# disconnect from database
 		if client
 			try
 				client.close()
 			catch e
-				wizlog.err @constructor.name, 'onAllTasksCompleted: exception while disconnecting from database: ' + e.toString()
+				wiz.log.err 'onAllTasksCompleted: exception while disconnecting from database: ' + e.toString()
 
 # vim: foldmethod=marker wrap

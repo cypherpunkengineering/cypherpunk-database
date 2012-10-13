@@ -12,27 +12,30 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-global.wizlog = require './log'
+class global.wiz
+
+	@package: (name) ->
+		levels = name.split '.'
+		space = global
+		for ns, i in levels
+			# console.log levels[0..i].join('.')
+			space[ns] = space[ns] or {}
+			space = space[ns]
+
+	@app: (name) ->
+		global.appname = name
+		wiz.log = new wiz.logger()
+		wiz.log.init()
+
+	@assert: (expr, err) ->
+		return if expr
+		wiz.log.err "ASSERTION FAIL! #{err}"
+
+require './log'
 
 global.rootpath = process.cwd()
 
-global.wizapp = (appname) ->
-	global.appname = appname
-	global.wizlog.init()
-
-global.wizpackage = (name) ->
-	levels = name.split '.'
-	space = global
-	for ns, i in levels
-		# console.log levels[0..i].join('.')
-		space[ns] = space[ns] or {}
-		space = space[ns]
-
 process.on 'SIGINT', =>
 	process.exit()
-
-global.wizassert = (expr, tag, err) ->
-	return if expr
-	wizlog.err tag, "ASSERTION FAIL! #{err}"
 
 # vim: foldmethod=marker wrap

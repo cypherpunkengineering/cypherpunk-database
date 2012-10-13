@@ -16,7 +16,7 @@ require '..'
 require '../db'
 require '../util/strval'
 
-wizpackage 'wiz.framework.frontend.table'
+wiz.package 'wiz.framework.frontend.table'
 
 class wiz.framework.frontend.table.dbobj #{{{
 
@@ -46,8 +46,8 @@ class wiz.framework.frontend.table.base #{{{
 	upsert: true
 
 	constructor: (@server, @parent, @mongo) ->
-		wizassert(false, "invalid @parent: #{@parent}") if not @parent
-		wizassert(false, "invalid @mongo: #{@mongo}") if not @mongo
+		wiz.assert(false, "invalid @parent: #{@parent}") if not @parent
+		wiz.assert(false, "invalid @mongo: #{@mongo}") if not @mongo
 
 	collectionName: ''
 	docKey: ''
@@ -61,74 +61,74 @@ class wiz.framework.frontend.table.base #{{{
 
 	count: (req, res, doc, select, cb) =>
 		debugstr = "#{@collectionName}.count(#{JSON.stringify(doc)}, #{JSON.stringify(select)})"
-		wizlog.debug @constructor.name, debugstr if @debug
+		wiz.log.debug debugstr if @debug
 		@mongo.collection res, @collectionName, (collection) =>
 			collection.find(doc, select).count (err, count) =>
 				if err
-					wizlog.err @constructor.name, "COUNT FAILED: #{debugstr} -> #{err}"
+					wiz.log.err "COUNT FAILED: #{debugstr} -> #{err}"
 					return cb null if cb
 					return res.send 500
 
-				wizlog.info @constructor.name, "COUNT OK: #{debugstr}"
+				wiz.log.info "COUNT OK: #{debugstr}"
 				return cb count if cb
 				return res.send 200
 
 	find: (req, res, doc, select, sortby, cb) =>
 		debugstr = "#{@collectionName}.find(#{JSON.stringify(doc)}, #{JSON.stringify(select)}, #{JSON.stringify(sortby)})"
-		wizlog.debug @constructor.name, debugstr if @debug
+		wiz.log.debug debugstr if @debug
 		@mongo.collection res, @collectionName, (collection) =>
 			found = collection.find(doc, select)
 			found = found.sort(sortby) if sortby
 			found.toArray (err, results) =>
 				if err
-					wizlog.err @constructor.name, "FIND FAILED: #{debugstr} -> #{err}"
+					wiz.log.err "FIND FAILED: #{debugstr} -> #{err}"
 					return cb null if cb
 					return res.send 500
 
-				wizlog.info @constructor.name, "FIND OK: #{debugstr}"
+				wiz.log.info "FIND OK: #{debugstr}"
 				return cb results if cb
 				return res.send 200
 
 	findOne: (req, res, doc, select, cb) =>
 		debugstr = "#{@collectionName}.findOne(#{JSON.stringify(doc)}, #{JSON.stringify(select)})"
-		wizlog.debug @constructor.name, debugstr if @debug
+		wiz.log.debug debugstr if @debug
 		@mongo.collection res, @collectionName, (collection) =>
 			collection.findOne doc, select, (err, result) =>
 				if err
-					wizlog.err @constructor.name, "FINDONE FAILED: #{debugstr} -> #{err}"
+					wiz.log.err "FINDONE FAILED: #{debugstr} -> #{err}"
 					return cb null if cb
 					return res.send 500
 
-				wizlog.info @constructor.name, "FINDONE OK: #{debugstr}"
-				# wizlog.debug @constructor.name, "FINDONE RESULT: #{JSON.stringify(result)}" if @debug
+				wiz.log.info "FINDONE OK: #{debugstr}"
+				# wiz.log.debug "FINDONE RESULT: #{JSON.stringify(result)}" if @debug
 				return cb result if cb
 				return res.send 200
 
 	insert: (req, res, doc, cb) =>
 		debugstr = "#{@collectionName}.insert(#{JSON.stringify(doc)})"
-		wizlog.debug @constructor.name, debugstr if @debug
+		wiz.log.debug debugstr if @debug
 		@mongo.collection res, @collectionName, (collection) =>
 			collection.insert doc.toJSON(), (err, doc) =>
 				if err
-					wizlog.err @constructor.name, "INSERT FAILED: #{debugstr} -> #{err}"
+					wiz.log.err "INSERT FAILED: #{debugstr} -> #{err}"
 					return cb null if cb
 					return res.send 500
 
-				wizlog.info @constructor.name, "INSERT OK: #{debugstr}"
+				wiz.log.info "INSERT OK: #{debugstr}"
 				return cb doc if cb
 				return res.send 200
 
 	updateCustom: (req, res, doc, update, options, cb) =>
 		debugstr = "#{@collectionName}.update(#{JSON.stringify(doc)}, #{JSON.stringify(update)}, #{JSON.stringify(options)})"
-		wizlog.debug @constructor.name, debugstr if @debug
+		wiz.log.debug debugstr if @debug
 		@mongo.collection res, @collectionName, (collection) =>
 			collection.update doc, update, options, (err, result) =>
 				if err
-					wizlog.err @constructor.name, "UPDATE FAILED: #{debugstr} -> #{err}"
+					wiz.log.err "UPDATE FAILED: #{debugstr} -> #{err}"
 					return cb null if cb
 					return res.send 500
 
-				wizlog.info @constructor.name, "UPDATE OK: #{debugstr}"
+				wiz.log.info "UPDATE OK: #{debugstr}"
 				return cb result if cb
 				return res.send 200
 

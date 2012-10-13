@@ -17,7 +17,7 @@ require '..'
 require '../wizfrontend'
 
 # wizportal package
-wizpackage 'wizportal'
+wiz.package 'wizportal'
 
 class wizportal.serverConfig extends wizfrontend.serverConfig
 	sessionSecret: '242tbjiv45y8tfbj75edtesxcvg5rghj'

@@ -21,7 +21,7 @@ require '../../wizfrontend'
 require '../../util/strval'
 
 # wizfrontend package
-wizpackage 'wizportal'
+wiz.package 'wizportal'
 
 class wizportal.module1 extends wizfrontend.module
 

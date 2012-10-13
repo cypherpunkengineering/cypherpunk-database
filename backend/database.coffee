@@ -15,7 +15,7 @@
 require '..'
 require '../db'
 
-wizpackage 'wiz.framework.backend'
+wiz.package 'wiz.framework.backend'
 
 # mysql class
 class wiz.framework.backend.mysql extends wiz.framework.db.mysql
@@ -32,26 +32,26 @@ class wiz.framework.backend.mongo extends wiz.framework.db.mongo
 		# just test database connection
 		super (err, client) =>
 			if client
-				if @verbose then wizlog.debug @constructor.name, 'initial database connection OK'
+				if @verbose then wiz.log.debug 'initial database connection OK'
 				@disconnect(client)
 
 	connect : (cb) =>
-		if @verbose then wizlog.debug @constructor.name, "connecting to mongo database #{@config.database}"
+		if @verbose then wiz.log.debug "connecting to mongo database #{@config.database}"
 		super (err, client) =>
 			# call cb even if err
 			if not client or err
-				wizlog.err @constructor.name, "unable to connect to mongo database #{@config.database} #{err}"
+				wiz.log.err "unable to connect to mongo database #{@config.database} #{err}"
 			cb err, client
 
 	disconnect : (client) =>
-		if @verbose then wizlog.debug @constructor.name, "disconnecting from mongo database #{@config.database}"
+		if @verbose then wiz.log.debug "disconnecting from mongo database #{@config.database}"
 		super (client)
 
 	collection : (client, collectionName, stayOpen, cb) =>
 		super client, collectionName, stayOpen, (err, collection) =>
 			# only call cb if we have collection
 			if not collection or err
-				wizlog.err @constructor.name, "unable to retrieve collection #{@config.database}.#{collectionName} #{err}"
+				wiz.log.err "unable to retrieve collection #{@config.database}.#{collectionName} #{err}"
 				return
 			cb err, collection
 
@@ -73,11 +73,11 @@ class wiz.framework.backend.mongo extends wiz.framework.db.mongo
 
 	# for storing javascript methods in database
 	saveJS : (methodsToSave) =>
-		wizlog.debug @constructor.name, 'preparing to save JS to database'
+		wiz.log.debug 'preparing to save JS to database'
 		@connect (err, client) =>
 			@collection client, 'system.js', false, (err, systemJS) =>
 				for methodName, methodCode of methodsToSave
-					wizlog.debug @constructor.name, "saving #{methodName} to database"
+					wiz.log.debug "saving #{methodName} to database"
 					# save db methods as stored JS
 					systemJS.save
 						'_id' : methodName

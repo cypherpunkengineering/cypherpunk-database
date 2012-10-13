@@ -15,7 +15,7 @@
 require '..'
 require '../db'
 
-wizpackage 'wiz.framework.frontend'
+wiz.package 'wiz.framework.frontend'
 
 # node frameworks
 connect = require 'connect'
@@ -33,15 +33,15 @@ class wiz.framework.frontend.mongo extends wiz.framework.db.mongo
 	init: () =>
 		super (err, @client) =>
 			if not client or err
-				wizlog.err @constructor.name, "failed connecting to database #{@config.database} #{err}"
+				wiz.log.err "failed connecting to database #{@config.database} #{err}"
 				return null
-			wizlog.debug @constructor.name, "connected to database #{@config.database}"
+			wiz.log.debug "connected to database #{@config.database}"
 
 	collection : (res, collectionName, cb) =>
 		super @client, collectionName, true, (err, collection) =>
 			# only call cb if we have collection
 			if err or not collection
-				wizlog.err @constructor.name, "unable to retrieve collection #{@config.database}.#{collectionName} #{err}"
+				wiz.log.err "unable to retrieve collection #{@config.database}.#{collectionName} #{err}"
 				res.send 500
 				return null
 			cb collection

@@ -14,7 +14,7 @@
 
 require '..'
 
-wizpackage 'wiz.framework.util'
+wiz.package 'wiz.framework.util'
 
 crypto = require 'crypto'
 base32 = require 'base32'

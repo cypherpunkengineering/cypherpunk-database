@@ -4,7 +4,7 @@
 
 require('..')
 
-wizpackage('wiz.framework.util.otp')
+wiz.package('wiz.framework.util.otp')
 
 crypto = require('crypto')
 ezcrypto = require('ezcrypto').Crypto

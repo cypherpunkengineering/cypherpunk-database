@@ -12,9 +12,13 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
+require '..'
+
+wiz.package 'wiz.log'
+
 ain2 = require '../../_deps/ain'
 
-class wizlog
+class wiz.logger
 
 	priorities: # from syslog(3)
 
@@ -52,13 +56,13 @@ class wizlog
 			facility: 'local0'
 
 	addprio : (prio) =>
-		this[prio] = (tag, msg) =>
-			@msg(tag, prio, msg)
+		this[prio] = (msg) =>
+			@msg(prio, msg)
 
 	ts: () =>
 		return new Date().toISOString()
 
-	msg: (tag, priority, msg) =>
+	msg: (priority, msg) =>
 		try
 			stack = new Error().stack
 			.replace(/^\s+at\s+/gm, '')
@@ -66,7 +70,7 @@ class wizlog
 			.split('\n')
 			facility = stack[@stacklevel].split(' ')[0]
 		catch e
-			facility = tag
+			facility = 'unknown'
 
 		prionum = @priorities[priority]
 		if typeof msg == 'string' and msg.length > 0
@@ -78,7 +82,5 @@ class wizlog
 		if priority == 'err' then priority = 'error'
 		(console[priority] or console.error)(@ts() + " #{priority.toUpperCase()} #{facility}: #{msg}")
 		@syslog[priority] msg if @syslog and @syslog[priority]
-
-module.exports = new wizlog()
 
 # vim: foldmethod=marker wrap
