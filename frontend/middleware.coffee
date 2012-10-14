@@ -57,7 +57,7 @@ class wiz.framework.frontend.middleware
 			return true
 		if next
 			wiz.log.info "unauthorized request"
-			@parent.redirect req, res, null, '/logout', 307
+			@parent.redirect req, res, null, '/login?for=' + escape(req.url), 307
 		return false
 
 	checkAuthAjax : (req, res, next) =>

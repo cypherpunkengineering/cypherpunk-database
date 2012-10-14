@@ -120,8 +120,10 @@ class wiz.framework.frontend.server
 
 		# public methods
 		@root.method 'https', 'get', '/', @middleware.baseSession(), @powerLevel.stranger, @handleRoot
-		@root.method 'https', 'post', '/login', @middleware.baseSession(), @powerLevel.stranger, @handleLogin
-		@root.method 'https', 'get', '/logout', @middleware.baseSession(), @powerLevel.stranger, @handleLogout
+		@root.method 'https', 'get', '/login', @middleware.baseSession(), @powerLevel.stranger, @getLogin
+		@root.method 'https', 'post', '/login', @middleware.baseSession(), @powerLevel.stranger, @postLogin
+		@root.method 'https', 'get', '/logout', @middleware.baseSession(), @powerLevel.stranger, @getLogout
+		@root.method 'https', 'post', '/logout', @middleware.baseSession(), @powerLevel.stranger, @postLogout
 
 		# for logged in users
 		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @powerLevel.stranger, @handleHome
@@ -250,7 +252,11 @@ class wiz.framework.frontend.server
 	handleHome: (req, res) =>
 		res.send 'home'
 
-	handleLogin : (req, res) =>
+	getLogin: (req, res) =>
+		res.send 'login page'
+		# implement a login page in child class
+
+	postLogin : (req, res) =>
 		@validateLogin req, res, (result) =>
 			if result
 				# login okay, do login and and redirect home
@@ -260,9 +266,15 @@ class wiz.framework.frontend.server
 				# login failed
 				res.send 400
 
-	handleLogout: (req, res) =>
+	getLogout: (req, res) =>
 		# log them out and redirect home
-		wiz.log.debug "Logging out and redirecting..."
+		wiz.log.debug "Logging out, sending redirect"
+		@doLogout(req, res)
+		@redirect req, res, null, '/'
+
+	postLogout: (req, res) =>
+		# log them out and redirect home
+		wiz.log.debug "Logging out, sending 200 OK"
 		@doLogout(req, res)
 		res.send 200
 
@@ -390,7 +402,10 @@ class wiz.framework.frontend.branch
 		# init all resources
 		for branch of @branches
 			# wiz.log.debug "initializing #{@constructor.name} " + branch
-			@branches[branch].init()
+			if @branches[branch] instanceof Array
+				b.init() for b in @branches[branch]
+			else
+				@branches[branch].init()
 
 # for server modules
 class wiz.framework.frontend.module extends wiz.framework.frontend.branch
@@ -444,7 +459,8 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 class wiz.framework.frontend.resource extends wiz.framework.frontend.branch
 
 	method: (protocol, method, path, middleware, powerLevel, handler) =>
-		@branches[path] = new wiz.framework.frontend.method @parent.parent, this, protocol, method, path, middleware, powerLevel, handler
+		@branches[path] ?= []
+		@branches[path].push(new wiz.framework.frontend.method(@parent.parent, this, protocol, method, path, middleware, powerLevel, handler))
 		return @branches[path]
 
 # methods in a resource
