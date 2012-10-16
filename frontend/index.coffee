@@ -71,8 +71,11 @@ class wiz.framework.frontend.serverConfig
 	httpsHost: '0.0.0.0'
 	httpsPort: 10443
 	httpsPortActual: 443
-	httpsKey: rootpath + '/ssl/wizkey.pem'
-	httpsCert: rootpath + '/ssl/wizcert.pem'
+
+	express:
+		key: ''
+		cert: ''
+		ca: ''
 
 class wiz.framework.frontend.powerMask
 	unknown: 0
@@ -103,9 +106,7 @@ class wiz.framework.frontend.server
 		@http = express.createServer()
 
 		# create https server with local key/cert
-		@https = express.createServer
-			key: fs.readFileSync @config.httpsKey
-			cert: fs.readFileSync @config.httpsCert
+		@https = express.createServer @config.express
 
 		# create empty module list
 		@modules = {}
