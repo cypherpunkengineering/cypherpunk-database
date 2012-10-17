@@ -23,7 +23,9 @@ class global.wiz
 			space = space[ns]
 
 	@app: (name) ->
-		global.appname = name
+		wiz.app =
+			name: name
+			style: ''
 		wiz.log = new wiz.logger()
 		wiz.log.init()
 

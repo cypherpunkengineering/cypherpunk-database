@@ -52,7 +52,7 @@ class wiz.logger
 
 	init: () =>
 		@syslog = new ain2
-			tag: global.appname
+			tag: wiz.app.name
 			facility: 'local0'
 
 	addprio : (prio) =>
@@ -80,7 +80,14 @@ class wiz.logger
 		if priority == 'warning' then priority = 'warn'
 		if priority == 'debug' then priority = 'info'
 		if priority == 'err' then priority = 'error'
-		(console[priority] or console.error)(@ts() + " #{priority.toUpperCase()} #{facility}: #{msg}")
+
+		logmsg = @ts() + ' '
+		logmsg += wiz.app.style + ' ' if wiz.app and wiz.app.style
+		logmsg += priority.toUpperCase() + ' ' if priority
+		logmsg += facility + ': ' if facility
+		logmsg += msg if msg
+		(console[priority] or console.error)(logmsg)
+
 		@syslog[priority] msg if @syslog and @syslog[priority]
 
 # vim: foldmethod=marker wrap
