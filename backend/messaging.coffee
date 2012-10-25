@@ -16,10 +16,11 @@ require '..'
 
 wiz.package 'wiz.framework.backend'
 
-# zero message queue
-zmq = require 'zmq'
+zmq = require 'zmq' # zero message queue
+os = require 'os'
 
 class wiz.framework.backend.zmqsock
+	debug: true
 	quiet: false
 	binding: 'tcp://*:0'
 	type: ''
@@ -43,14 +44,25 @@ class wiz.framework.backend.zmqsock
 		if msg.datum.cmd == 'ERR' # avoid infinite loop by flagging socket error
 			@err = true
 
+		@logMessage 'RECV', msg
 		@onMessage msg
 
+	logMessage: (tag, msg) =>
+		switch msg.datum.cmd
+			when 'OK'
+				return unless @debug
+			when 'PING'
+				return unless @debug
+			when 'PONG'
+				return unless @debug
+
+		wiz.log.info "#{tag} #{msg.datum.from} #{msg.datum.cmd} #{msg.datum.ts}" unless @quiet
+
 	onMessage: (msg) =>
-		if not @quiet
-			wiz.log.debug "RECV MSG TS#{msg.datum.ts}: #{msg.datum.cmd}" unless msg.datum.cmd == 'OK'
+		# for child class
 
 	onPong: (msg) =>
-		# do nothing
+		# for child class
 
 	sendERR: () =>
 		return if @err # only send error msg once to avoid infinite loop
@@ -75,16 +87,14 @@ class wiz.framework.backend.zmqsock
 		@send pong
 
 	send: (msg) =>
-		if not msg
-			msg = 'OK'
-		if msg.datum
-			if not @quiet and msg.datum.cmd isnt 'OK' and msg.datum.cmd isnt 'PING'
-				wiz.log.debug "SEND MSG TS#{msg.datum.ts}: #{msg.datum.cmd}"
-			@sock.send msg.toJSON()
-		else
-			if not @quiet
-				wiz.log.debug "SEND MSG RAW: #{msg}"
-			@sock.send msg
+		msg ?= 'OK'
+
+		if not msg.datum
+			wiz.log.debug "SEND MSG RAW: #{msg}" unless @quiet
+			return @sock.send msg
+
+		@logMessage 'SEND', msg
+		@sock.send msg.toJSON()
 
 class wiz.framework.backend.zmqserver extends wiz.framework.backend.zmqsock
 	init: () =>
@@ -130,8 +140,9 @@ class wiz.framework.backend.message
 				wiz.log.err "error parsing msg #{rawmsg}"
 				return
 		else
-			@datum = {}
-			@datum.ts = (new Date()).getTime()
+			@datum =
+				ts: (new Date()).getTime()
+				from: os.hostname()
 
 	toJSON: () =>
 		return JSON.stringify(@datum)
