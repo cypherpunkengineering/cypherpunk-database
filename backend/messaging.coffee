@@ -36,8 +36,10 @@ class wiz.framework.backend.zmqsock
 			wiz.log.err "RECV MSG ERROR: #{rawmsg}"
 			@sendERR()
 			return
-		if msg.datum.cmd == 'PING'
-			return @sendOK()
+
+		return @sendPong() if msg.datum.cmd == 'PING'
+		return @onPong msg if msg.datum.cmd == 'PONG'
+
 		if msg.datum.cmd == 'ERR' # avoid infinite loop by flagging socket error
 			@err = true
 
@@ -46,6 +48,9 @@ class wiz.framework.backend.zmqsock
 	onMessage: (msg) =>
 		if not @quiet
 			wiz.log.debug "RECV MSG TS#{msg.datum.ts}: #{msg.datum.cmd}" unless msg.datum.cmd == 'OK'
+
+	onPong: (msg) =>
+		# do nothing
 
 	sendERR: () =>
 		return if @err # only send error msg once to avoid infinite loop
@@ -63,6 +68,11 @@ class wiz.framework.backend.zmqsock
 		ping = new wiz.framework.backend.message()
 		ping.datum.cmd = 'PING'
 		@send ping
+
+	sendPong: () =>
+		pong = new wiz.framework.backend.message()
+		pong.datum.cmd = 'PONG'
+		@send pong
 
 	send: (msg) =>
 		if not msg

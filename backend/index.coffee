@@ -31,7 +31,7 @@ class wiz.framework.backend.worker
 	constructor : (@parent) ->
 		# wiz.log.debug 'creating worker...'
 
-	init : (listenOnSocket) =>
+	init : () =>
 		# setup worker to run every X secs and manually start first run
 		if @rundelay > 0
 			setTimeout @run, @rundelay
