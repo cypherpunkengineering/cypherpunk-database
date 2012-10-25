@@ -20,6 +20,7 @@ wiz.package 'wiz.framework.backend'
 
 # worker loop for tasks
 class wiz.framework.backend.worker
+	quiet: false
 	running : false
 	interval : 30 * 1000
 	rundelay : 3 * 1000
@@ -54,7 +55,7 @@ class wiz.framework.backend.worker
 			@waited = 0
 
 		# start
-		wiz.log.debug 'worker started'
+		wiz.log.debug 'worker started' unless @quiet
 		@running = true
 		setTimeout @work, 500
 
@@ -86,7 +87,7 @@ class wiz.framework.backend.worker
 	# called from work() when all work is completed
 	finish : () =>
 		return if not @running or @pending > 0
-		wiz.log.debug 'worker finished'
+		wiz.log.debug 'worker finished' unless @quiet
 		@running = false
 		@cleanup()
 
