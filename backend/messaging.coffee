@@ -20,7 +20,7 @@ zmq = require 'zmq' # zero message queue
 os = require 'os'
 
 class wiz.framework.backend.zmqsock
-	debug: true
+	debug: false
 	quiet: false
 	binding: 'tcp://*:0'
 	type: ''
@@ -56,8 +56,10 @@ class wiz.framework.backend.zmqsock
 			when 'OK'
 				return unless @debug
 			when 'PING'
+				return if tag is 'SEND'
 				return unless @debug
 			when 'PONG'
+				return if tag is 'SEND'
 				return unless @debug
 
 		wiz.log.info "#{tag} #{msg.datum.from} #{msg.datum.cmd} #{msg.datum.ts}" unless @quiet
