@@ -38,13 +38,17 @@ class wiz.framework.backend.zmqsock
 			@sendERR()
 			return
 
-		return @sendPong() if msg.datum.cmd == 'PING'
-		return @onPong msg if msg.datum.cmd == 'PONG'
-
-		if msg.datum.cmd == 'ERR' # avoid infinite loop by flagging socket error
-			@err = true
-
 		@logMessage 'RECV', msg
+
+		switch msg.datum.cmd
+			when 'PING'
+				return @sendPong()
+			when 'PONG'
+				return @onPong msg
+			when 'ERR'
+				# avoid infinite loop by flagging socket error
+				@err = true
+
 		@onMessage msg
 
 	logMessage: (tag, msg) =>
