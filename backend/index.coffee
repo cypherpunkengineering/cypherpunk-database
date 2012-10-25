@@ -38,6 +38,9 @@ class wiz.framework.backend.worker
 		if @interval > 0
 			setInterval @run, @interval
 
+	onRunWait: () =>
+		wiz.log.err 'waiting! previous call still running!'
+
 	onDeadlock : () =>
 		wiz.log.alert 'deadlock!!'
 
@@ -46,7 +49,7 @@ class wiz.framework.backend.worker
 		# ensure only one call at a time
 		if @running
 			@waited += 1
-			wiz.log.err 'waiting! previous call still running!'
+			@onRunWait()
 			if @waited >= @waitmax
 				@onDeadlock()
 				return

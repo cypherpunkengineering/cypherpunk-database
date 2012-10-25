@@ -26,10 +26,18 @@ class wiz.framework.backend.zmqsock
 	type: ''
 
 	constructor: (@type, @binding) ->
-		@sock = zmq.socket(@type)
 
 	init: () =>
+		@sock = zmq.socket @type
+		@sock.on 'error', @onError
 		@sock.on 'message', @onRawMessage
+
+	reinit: () =>
+		@sock.close()
+		@init()
+
+	onError: (msg) =>
+		wiz.log.debug "Error event #{msg}"
 
 	onRawMessage: (rawmsg) =>
 		msg = new wiz.framework.backend.message rawmsg
@@ -135,7 +143,7 @@ class wiz.framework.backend.subscriber extends wiz.framework.backend.zmqclient
 
 	init: () =>
 		super()
-		@sock.subscribe("")
+		@sock.subscribe ""
 
 class wiz.framework.backend.message
 	constructor: (rawmsg) ->
