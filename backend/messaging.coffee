@@ -20,6 +20,7 @@ zmq = require 'zmq' # zero message queue
 os = require 'os'
 
 class wiz.framework.backend.zmqsock
+	linger: 0
 	debug: false
 	quiet: false
 	binding: 'tcp://*:0'
@@ -29,6 +30,7 @@ class wiz.framework.backend.zmqsock
 
 	init: () =>
 		@sock = zmq.socket @type
+		@sock.linger = @linger
 		@sock.on 'error', @onError
 		@sock.on 'message', @onRawMessage
 
