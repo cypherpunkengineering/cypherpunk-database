@@ -85,7 +85,7 @@ class wiz.framework.frontend.table.base #{{{
 					return cb null if cb
 					return res.send 500
 
-				wiz.log.info "FIND OK: #{debugstr}"
+				wiz.log.info "FIND OK: #{debugstr}" if @debug
 				return cb results if cb
 				return res.send 200
 
@@ -99,7 +99,7 @@ class wiz.framework.frontend.table.base #{{{
 					return cb null if cb
 					return res.send 500
 
-				wiz.log.info "FINDONE OK: #{debugstr}"
+				wiz.log.info "FINDONE OK: #{debugstr}" if @debug
 				# wiz.log.debug "FINDONE RESULT: #{JSON.stringify(result)}" if @debug
 				return cb result if cb
 				return res.send 200
