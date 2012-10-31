@@ -91,10 +91,25 @@ class wiz.framework.frontend.middleware
 		return true
 
 	checkHostHeader : (req, res, next) =>
-		unless 'host' of req.headers
-			wiz.log.info "#{@errorstr.hosthdr}"
-			res.send @errorstr.hosthdr, 400
-			return false
+		# validate host header as valid host, strip port off if necessary
+		return @parent.error 'missing host header', req, res, 400 unless req.headers.host
+		return next() if next
+		return true
+
+	parseHostHeader : (req, res, next) =>
+		if (
+			not hostar = req.headers.host.split ':'
+		) or (
+			not host = hostar[0]
+		) or (
+			not wiz.framework.util.strval.validate 'fqdnDot', host
+		)
+
+			return @parent.error 'invalid host header', req, res, 404
+
+		if req and req.session and req.session.wiz
+			req.session.wiz.host = host
+
 		return next() if next
 		return true
 
@@ -160,6 +175,9 @@ class wiz.framework.frontend.middleware
 					secure: true
 
 			@parent.sessionCreate
+
+			@parseHostHeader
+
 			@parent.sessionInit
 		]
 
