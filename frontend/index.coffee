@@ -309,7 +309,6 @@ class wiz.framework.frontend.server
 	doLogout: (req) =>
 		@sessionDestroy req
 		@sessionCreate req
-		@sessionInit req
 
 	userMask: (req) =>
 		return req.session.wiz.mask ? 0
