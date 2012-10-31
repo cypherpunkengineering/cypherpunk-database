@@ -130,8 +130,8 @@ class wiz.framework.frontend.server
 		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @powerLevel.stranger, @handleHome
 
 	nav: (req) =>
-		um = @userMask(req)
-		ul = @userLevel(req)
+		um = @userMask req
+		ul = @userLevel req
 		result = {}
 		# console.log @navViews
 		# console.log "User's mask: " + um.toString(2)
@@ -243,9 +243,11 @@ class wiz.framework.frontend.server
 
 		express.view.lookup = lookup
 
-	error: (err, req, res) =>
+	error: (err, req, res, code) =>
 		wiz.log.err err
-		res.send 500
+		return false unless res
+		return res.send err, code if code
+		return res.send 500
 
 	handleRoot: (req, res) =>
 		res.send 'this is the root'
@@ -258,25 +260,26 @@ class wiz.framework.frontend.server
 		# implement a login page in child class
 
 	postLogin : (req, res) =>
-		@validateLogin req, res, (result) =>
-			if result
-				# login okay, do login and and redirect home
-				@doLogin(req)
-				res.send 200
-			else
-				# login failed
-				res.send 400
+		@validateLogin req, res, (err, ok) =>
+			if err
+				wiz.log.err "login failed: #{err}"
+				res.send err, 400
+				return
+
+			# login okay, do login and and redirect home
+			@doLogin req if ok
+			res.send 200
 
 	getLogout: (req, res) =>
 		# log them out and redirect home
 		wiz.log.debug "Logging out, sending redirect"
-		@doLogout(req, res)
+		@doLogout req, res
 		@redirect req, res, null, '/'
 
 	postLogout: (req, res) =>
 		# log them out and redirect home
 		wiz.log.debug "Logging out, sending 200 OK"
-		@doLogout(req, res)
+		@doLogout req, res
 		res.send 200
 
 	# initialize all session variables
@@ -298,15 +301,15 @@ class wiz.framework.frontend.server
 	doLogin: (req) =>
 		req.session.wiz.auth = true
 		req.session.wiz.mask = 0
-		req.session.wiz.mask = wiz.framework.util.bitmask.set(req.session.wiz.mask, @powerMask.always)
-		req.session.wiz.mask = wiz.framework.util.bitmask.set(req.session.wiz.mask, @powerMask.auth)
+		req.session.wiz.mask = wiz.framework.util.bitmask.set req.session.wiz.mask, @powerMask.always
+		req.session.wiz.mask = wiz.framework.util.bitmask.set req.session.wiz.mask, @powerMask.auth
 		if req.session.wiz.level < @powerLevel.friend
 			req.session.wiz.level = @powerLevel.friend
 
 	doLogout: (req) =>
-		@sessionDestroy(req)
-		@sessionCreate(req)
-		@sessionInit(req)
+		@sessionDestroy req
+		@sessionCreate req
+		@sessionInit req
 
 	userMask: (req) =>
 		return req.session.wiz.mask ? 0
@@ -328,8 +331,7 @@ class wiz.framework.frontend.server
 		wiz.log.warning "Server ready!"
 
 	redirect: (req, res, next, url = req.url, numeric = 303) =>
-		if not @middleware.checkHostHeader req, res
-			return false
+		return false unless @middleware.checkHostHeader req, res
 		host = req.headers.host
 		host = host.split(':')[0] if host.indexOf ':' != -1
 		host += ":#{@config.httpsPortActual}" if @config.httpsPortActual != 443
@@ -343,9 +345,9 @@ class wiz.framework.frontend.server
 
 	# probably want to override this
 	validateLogin: (req, res, cb) =>
-		result = req.body.username is 'open' and req.body.password is 'sesame'
-		cb result
-		return
+		if not req.body.username is 'open' or not req.body.password is 'sesame'
+			return cb 'login failed'
+		cb null, true
 
 	staticContent : [
 		'css'
@@ -477,7 +479,7 @@ class wiz.framework.frontend.method extends wiz.framework.frontend.branch
 			wiz.assert(false, "invalid @server: #{@server}") if not @server
 			@server[@protocol][@method](@getPath(), @middleware, (req, res) =>
 				return res.send 404 unless req.session.wiz.level >= @getLevel()
-				@handler(req, res)
+				@handler req, res
 			)
 
 # vim: foldmethod=marker wrap
