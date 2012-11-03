@@ -15,6 +15,7 @@
 require '..'
 require '../util/strval'
 require '../util/datetime'
+require '../util/embargo'
 
 wiz.package 'wiz.framework.frontend'
 
@@ -22,12 +23,6 @@ express = require 'express'
 
 # created from wiz.framework.frontend.server constructor
 class wiz.framework.frontend.middleware
-
-	# allow access from these hosts
-	accessList : [
-		'127.0.0.1'
-		'::1'
-	]
 
 	# display middleware errors to these hosts
 	developerlist : [
@@ -83,9 +78,9 @@ class wiz.framework.frontend.middleware
 	# filter requests to trusted ips only
 	checkIP : (req, res, next) =>
 		ip = @getIP req
-		if @accessList.indexOf(ip) is -1 # paranthesis needed
-			wiz.log.info "#{@errorstr[403]}"
-			res.send @errorstr[403], 200
+		if wiz.framework.util.embargo.isEmbargo ip
+			wiz.log.info "EMBARGO ON #{ip}"
+			res.send 404
 			return false
 		return next() if next
 		return true
@@ -133,7 +128,7 @@ class wiz.framework.frontend.middleware
 			@checkHostHeader
 
 			# check IP before handling errors
-			# @checkIP
+			@checkIP
 
 			# log requests
 			express.logger
