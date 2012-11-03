@@ -138,6 +138,7 @@ class wiz.framework.frontend.server
 		# for logged in users
 		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @powerLevel.stranger, @handleHome
 
+		@preinit()
 		@init()
 		@listen()
 
@@ -178,7 +179,7 @@ class wiz.framework.frontend.server
 		@modules[path] = mod
 		return @modules[path]
 
-	portal: () =>
+	preinit: () =>
 		# implement in child class
 
 	init: () =>
@@ -189,9 +190,6 @@ class wiz.framework.frontend.server
 		# data filled in from child modules
 		@viewsFolders = []
 		@navViews = {}
-
-		# add portal modules in child class
-		@portal()
 
 		# then proceed to init all child modules
 		for module of @modules
