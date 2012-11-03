@@ -52,9 +52,11 @@ wiz.package 'wiz.framework.frontend'
 # node frameworks
 coffee = require 'coffee-script'
 connect = require 'connect'
+cluster = require 'cluster'
 express = require 'express'
 jade = require 'jade'
 fs = require 'fs'
+os = require 'os'
 
 # session storage
 RedisStore = require('connect-redis')(connect)
@@ -95,8 +97,15 @@ class wiz.framework.frontend.server
 	powerMask : new wiz.framework.frontend.powerMask()
 	powerLevel : new wiz.framework.frontend.powerLevel()
 
-	constructor: () ->
-		wiz.log.notice 'Server starting...'
+	children: []
+
+	master: () =>
+		wiz.log.notice "*** MASTER #{process.pid} START"
+		for i in [1..2]
+			@children.push cluster.fork()
+
+	worker: () =>
+		wiz.log.notice "*** WORKER #{process.pid} START"
 
 		# create middleware structure
 		@sessionRedisStore = new RedisStore()
@@ -128,6 +137,9 @@ class wiz.framework.frontend.server
 
 		# for logged in users
 		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @powerLevel.stranger, @handleHome
+
+		@init()
+		@listen()
 
 	nav: (req) =>
 		um = @userMask req
@@ -166,6 +178,9 @@ class wiz.framework.frontend.server
 		@modules[path] = mod
 		return @modules[path]
 
+	portal: () =>
+		# implement in child class
+
 	init: () =>
 		# first, add static directories
 		for module of @modules
@@ -174,6 +189,9 @@ class wiz.framework.frontend.server
 		# data filled in from child modules
 		@viewsFolders = []
 		@navViews = {}
+
+		# add portal modules in child class
+		@portal()
 
 		# then proceed to init all child modules
 		for module of @modules
@@ -325,9 +343,8 @@ class wiz.framework.frontend.server
 			@https.listen @config.httpsPort, @config.httpsHost
 
 	start: () =>
-		@init()
-		@listen()
-		wiz.log.warning "Server ready!"
+		@master() if cluster.isMaster
+		@worker() if cluster.isWorker
 
 	redirect: (req, res, next, url = req.url, numeric = 303) =>
 		return false unless @middleware.checkHostHeader req, res
@@ -356,7 +373,7 @@ class wiz.framework.frontend.server
 
 	staticPath: (url, disk) =>
 		return unless fs.existsSync disk
-		wiz.log.debug "adding static folder #{url} -> #{disk}"
+		#wiz.log.debug "adding static folder #{url} -> #{disk}"
 		@https.use url, express.static(disk)
 
 # base branch class, extended by modules/resources/methods below
@@ -474,7 +491,7 @@ class wiz.framework.frontend.method extends wiz.framework.frontend.branch
 		if @path[@path.length - 1] == '/'
 			@path = @path.slice(0, @path.length - 1)
 		@init = () =>
-			wiz.log.debug "adding #{@protocol} #{@method} " + @getPath()
+			# wiz.log.debug "adding #{@protocol} #{@method} " + @getPath()
 			wiz.assert(false, "invalid @server: #{@server}") if not @server
 			@server[@protocol][@method](@getPath(), @middleware, (req, res) =>
 				return res.send 404 unless req.session.wiz.level >= @getLevel()

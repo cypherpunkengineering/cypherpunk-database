@@ -82,6 +82,7 @@ class wiz.logger
 		if priority == 'err' then priority = 'error'
 
 		logmsg = @ts() + ' '
+		logmsg += process.pid + ' '
 		logmsg += wiz.app.style + ' ' if wiz.app and wiz.app.style
 		logmsg += priority.toUpperCase() + ' ' if priority
 		logmsg += facility + ': ' if facility
