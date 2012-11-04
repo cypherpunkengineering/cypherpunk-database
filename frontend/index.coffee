@@ -115,7 +115,10 @@ class wiz.framework.frontend.server
 		@http = express.createServer()
 
 		# create https server with local key/cert
-		@https = express.createServer @config.express
+		if @config.express
+			@https = express.createServer @config.express
+		else
+			@https = express.createServer()
 
 		# create empty module list
 		@modules = {}
