@@ -179,7 +179,7 @@ class wiz.framework.frontend.middleware
 				secret: @parent.config.sessionSecret
 
 				# use RedisStore from parent object
-				store: @parent.sessionRedisStore
+				store: @parent.createSessionStore()
 
 				# important! set secure flag on cookies!
 				cookie:

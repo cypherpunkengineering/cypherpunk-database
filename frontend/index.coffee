@@ -58,13 +58,15 @@ jade = require 'jade'
 fs = require 'fs'
 os = require 'os'
 
-# session storage
-RedisStore = require('connect-redis')(connect)
+# riak driver
+riak = require '../_deps/riak-js'
+RiakStore = require('../_deps/connect-riak')(express)
 
 # server config object
 class wiz.framework.frontend.serverConfig
 	sessionSecret : 'ChangeMeBecauseThisDefaultIsNotSecret'
 	requestLimit : '2mb'
+	riak: {}
 
 	httpHost: '0.0.0.0'
 	httpPort: 10080
@@ -108,7 +110,7 @@ class wiz.framework.frontend.server
 		wiz.log.notice "*** WORKER #{process.pid} START"
 
 		# create middleware structure
-		@sessionRedisStore = new RedisStore()
+		@sessionStore = new @createSessionStore()
 		@middleware = new wiz.framework.frontend.middleware(@)
 
 		# create http server for redirecting non-ssl requests to https: url
@@ -144,6 +146,9 @@ class wiz.framework.frontend.server
 		@preinit()
 		@init()
 		@listen()
+
+	createSessionStore: () =>
+		return new RiakStore @config.riak
 
 	nav: (req) =>
 		um = @userMask req

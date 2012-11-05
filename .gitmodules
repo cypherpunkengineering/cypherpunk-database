@@ -1,0 +1,6 @@
+[submodule "_deps/riak-js"]
+	path = _deps/riak-js
+	url = https://github.com/jmaurice/riak-js
+[submodule "_deps/connect-riak"]
+	path = _deps/connect-riak
+	url = https://github.com/jmaurice/connect-riak
