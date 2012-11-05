@@ -109,9 +109,19 @@ class wiz.framework.frontend.middleware
 		return true
 
 	# remove x-powered-by header from express lib
-	hideHeader : (req, res, next) =>
+	hideHeader: (req, res, next) =>
 		res.removeHeader 'X-Powered-By'
 		res.setHeader 'X-Powered-By', 'wiz'
+		return next() if next
+		return true
+
+	addHSTS: (req, res, next) =>
+		res.header 'Strict-Transport-Security', 'max-age=16070400; includeSubDomains'
+		return next() if next
+		return true
+
+	addProxySecure: (req, res, next) =>
+		req.connection.proxySecure = true if req.connection.remoteAddress is '127.0.0.1' and req.headers['x-forwarded-for']
 		return next() if next
 		return true
 
@@ -120,6 +130,12 @@ class wiz.framework.frontend.middleware
 		return [
 			# remove express header
 			@hideHeader
+
+			# add strict transport security header
+			@addHSTS
+
+			# tell express to set cookie as secure when reverse proxy is being used
+			@addProxySecure
 
 			# maximum request size
 			express.limit @parent.config.requestLimit
