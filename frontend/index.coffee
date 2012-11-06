@@ -504,7 +504,7 @@ class wiz.framework.frontend.method extends wiz.framework.frontend.branch
 		if @path[@path.length - 1] == '/'
 			@path = @path.slice(0, @path.length - 1)
 		@init = () =>
-			wiz.log.debug "adding #{@protocol} #{@method} " + @getPath()
+			# wiz.log.debug "adding #{@protocol} #{@method} " + @getPath()
 			wiz.assert(false, "invalid @server: #{@server}") if not @server
 			@server[@protocol][@method](@getPath(), @middleware, (req, res) =>
 				# wiz.log.debug "#{@server.userLevel(req)} and #{@getLevel()}"
