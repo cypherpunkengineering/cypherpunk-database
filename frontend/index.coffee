@@ -143,6 +143,7 @@ class wiz.framework.frontend.server
 		# for logged in users
 		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @powerLevel.stranger, @handleHome
 
+		# init
 		@preinit()
 		@init()
 		@listen()
@@ -298,6 +299,9 @@ class wiz.framework.frontend.server
 		# log them out and redirect home
 		wiz.log.debug "Logging out, sending redirect"
 		@doLogout req, res
+		@redirectToRoot req, res
+
+	redirectToRoot: (req, res) =>
 		@redirect req, res, null, '/'
 
 	postLogout: (req, res) =>
@@ -335,9 +339,11 @@ class wiz.framework.frontend.server
 		@sessionCreate req
 
 	userMask: (req) =>
+		return 0 if not req.session or not req.session.wiz
 		return req.session.wiz.mask ? 0
 
 	userLevel: (req) =>
+		return 0 if not req.session or not req.session.wiz
 		return req.session.wiz.level ? 0
 
 	listen: () =>
@@ -354,7 +360,7 @@ class wiz.framework.frontend.server
 
 	redirect: (req, res, next, url = req.url, numeric = 303) =>
 		return false unless @middleware.checkHostHeader req, res
-		host = req.headers.host
+		host = req.headers.host ? ''
 		host = host.split(':')[0] if host.indexOf ':' != -1
 		host += ":#{@config.httpsPortActual}" if @config.httpsPortActual != 443
 		target = 'https://' + host + url
@@ -498,10 +504,11 @@ class wiz.framework.frontend.method extends wiz.framework.frontend.branch
 		if @path[@path.length - 1] == '/'
 			@path = @path.slice(0, @path.length - 1)
 		@init = () =>
-			# wiz.log.debug "adding #{@protocol} #{@method} " + @getPath()
+			wiz.log.debug "adding #{@protocol} #{@method} " + @getPath()
 			wiz.assert(false, "invalid @server: #{@server}") if not @server
 			@server[@protocol][@method](@getPath(), @middleware, (req, res) =>
-				return res.send 404 unless req.session.wiz.level >= @getLevel()
+				# wiz.log.debug "#{@server.userLevel(req)} and #{@getLevel()}"
+				return res.send 404 unless @server.userLevel(req) >= @getLevel()
 				@handler req, res
 			)
 
