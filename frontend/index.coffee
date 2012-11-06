@@ -373,6 +373,7 @@ class wiz.framework.frontend.server
 
 	staticContent : [
 		'css'
+		'fonts'
 		'img'
 		'js'
 	]
