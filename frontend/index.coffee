@@ -157,6 +157,10 @@ class wiz.framework.frontend.server
 		result = {}
 		# console.log @navViews
 		# console.log "User's mask: " + um.toString(2)
+
+		if req.wizMethodPublic
+			return @navViews[@powerMask.public]
+
 		for bit of @powerMask when typeof @powerMask[bit] is 'number'
 			b = @powerMask[bit]
 			nv = @navViews[b]
