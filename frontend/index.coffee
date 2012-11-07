@@ -134,14 +134,14 @@ class wiz.framework.frontend.server
 		@logout = @module(new wiz.framework.frontend.module(@, @, '/logout', null, @powerMask.auth, @powerLevel.stranger))
 
 		# public methods
-		@root.method 'https', 'get', '/', @middleware.baseSession(), @powerLevel.stranger, @handleRoot
-		@root.method 'https', 'get', '/login', @middleware.baseSession(), @powerLevel.stranger, @getLogin
-		@root.method 'https', 'post', '/login', @middleware.baseSession(), @powerLevel.stranger, @postLogin
-		@root.method 'https', 'get', '/logout', @middleware.baseSession(), @powerLevel.stranger, @getLogout
-		@root.method 'https', 'post', '/logout', @middleware.baseSession(), @powerLevel.stranger, @postLogout
+		@root.method 'https', 'get', '/', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @handleRoot
+		@root.method 'https', 'get', '/login', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @getLogin
+		@root.method 'https', 'post', '/login', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @postLogin
+		@root.method 'https', 'get', '/logout', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @getLogout
+		@root.method 'https', 'post', '/logout', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @postLogout
 
 		# for logged in users
-		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @powerLevel.stranger, @handleHome
+		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @powerMask.always, @powerLevel.stranger, @handleHome
 
 		# init
 		@preinit()
@@ -430,6 +430,9 @@ class wiz.framework.frontend.branch
 	getLevel : () =>
 		return @level
 
+	getMask : () =>
+		return @mask
+
 	init: () =>
 		# init all resources
 		for branch of @branches
@@ -449,7 +452,7 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 		tdir = rootpath + @getPathSlashed() + @coffeeDir
 		if fs.existsSync(tdir)
 			cpath = "/#{@coffeeDir}/:script#{@coffeeExt}"
-			cof = new wiz.framework.frontend.method @parent, this, 'https', 'get', cpath, @parent.middleware.baseSession(), @server.powerLevel.stranger, @coffeeCompile
+			cof = new wiz.framework.frontend.method @parent, this, 'https', 'get', cpath, @parent.middleware.baseSession(), @server.powerMask.always, @server.powerLevel.stranger, @coffeeCompile
 			cof.init()
 		super()
 
@@ -490,15 +493,15 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 # resources in a module
 class wiz.framework.frontend.resource extends wiz.framework.frontend.branch
 
-	method: (protocol, method, path, middleware, powerLevel, handler) =>
+	method: (protocol, method, path, middleware, powerMask, powerLevel, handler) =>
 		@branches[path] ?= []
-		@branches[path].push(new wiz.framework.frontend.method(@parent.parent, this, protocol, method, path, middleware, powerLevel, handler))
+		@branches[path].push(new wiz.framework.frontend.method(@parent.parent, this, protocol, method, path, middleware, powerMask, powerLevel, handler))
 		return @branches[path]
 
 # methods in a resource
 class wiz.framework.frontend.method extends wiz.framework.frontend.branch
 
-	constructor: (@server, @parent, @protocol, @method, @path, @middleware, @level, @handler) ->
+	constructor: (@server, @parent, @protocol, @method, @path, @middleware, @mask, @level, @handler) ->
 		# wiz.log.debug @path
 		# strip trailing / from request path
 		if @path[@path.length - 1] == '/'
@@ -509,6 +512,9 @@ class wiz.framework.frontend.method extends wiz.framework.frontend.branch
 			@server[@protocol][@method](@getPath(), @middleware, (req, res) =>
 				# wiz.log.debug "#{@server.userLevel(req)} and #{@getLevel()}"
 				return res.send 404 unless @server.userLevel(req) >= @getLevel()
+				req.wizMethodLevel = @getLevel()
+				req.wizMethodMask = @getMask()
+				req.wizMethodPublic = req.wizMethodMask < @server.powerMask.auth and req.wizMethodLevel < @server.powerLevel.friend
 				@handler req, res
 			)
 
