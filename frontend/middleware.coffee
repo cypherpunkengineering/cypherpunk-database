@@ -31,7 +31,7 @@ class wiz.framework.frontend.middleware
 	]
 
 	# log format passed to express.logger and logged to wiz.log()
-	logFormat : '[:remote-addr] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent'
+	logFormat : '[:req[X-Forwarded-For]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent'
 
 	# for wiz.log() use
 	logStream:
