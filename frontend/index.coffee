@@ -159,33 +159,37 @@ class wiz.framework.frontend.server
 		# console.log "User's mask: " + um.toString(2)
 
 		if req.wizMethodPublic
-			return @navViews[@powerMask.public]
-
-		for bit of @powerMask when typeof @powerMask[bit] is 'number'
-			b = @powerMask[bit]
-			nv = @navViews[b]
-			# console.log "Checking bit: #{b}"
-			if nv and wiz.framework.util.bitmask.check(um, b)
-				# console.log "User matches #{b}"
-				for n of nv
-					# console.log "ul is #{ul}, module requires #{nv[n].level}"
-					if ul >= nv[n].level
-						# console.log "Adding #{n} to user's nav"
-						result[n] = {}
-						result[n].resourceCount = 0
-						for x of nv[n]
-							if x isnt 'resources'
-								result[n][x] = nv[n][x]
-							else
-								result[n][x] = {}
-								for r of nv[n][x] when resource = nv[n][x][r]
-									# console.log resource
-									if ul >= resource.level
-										# console.log "adding #{resource.path}"
-										result[n][x][r] = resource
-										result[n].resourceCount += 1
+			@navView result, ul, @navViews[@powerMask.public]
+			@navView result, ul, @navViews[@powerMask.always]
+		else
+			for bit of @powerMask when typeof @powerMask[bit] is 'number'
+				b = @powerMask[bit]
+				nv = @navViews[b]
+				# console.log "Checking bit: #{b}"
+				if nv and wiz.framework.util.bitmask.check(um, b)
+					# console.log "User matches #{b}"
+					@navView result, ul, nv
 
 		return result
+
+	navView: (result, ul, nv) =>
+		for n of nv
+			# console.log "ul is #{ul}, module requires #{nv[n].level}"
+			if ul >= nv[n].level
+				# console.log "Adding #{n} to user's nav"
+				result[n] = {}
+				result[n].resourceCount = 0
+				for x of nv[n]
+					if x isnt 'resources'
+						result[n][x] = nv[n][x]
+					else
+						result[n][x] = {}
+						for r of nv[n][x] when resource = nv[n][x][r]
+							# console.log resource
+							if ul >= resource.level
+								# console.log "adding #{resource.path}"
+								result[n][x][r] = resource
+								result[n].resourceCount += 1
 
 	module: (mod) =>
 		path = mod.path
