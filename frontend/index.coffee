@@ -407,11 +407,14 @@ class wiz.framework.frontend.branch
 		wiz.assert(false, "invalid @path: #{@path}") if not @path or typeof @path != 'string'
 
 	getPath: () =>
+		return @path if @path[0..3] == 'http'
+
 		if not @parent or not @parent.getPath # if top-level
 
 			path = @path
 
 		else # not top-level
+
 			path = @parent.getPath() # start with parent path
 
 			# don't append extra leading slash for root module
