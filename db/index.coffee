@@ -16,7 +16,7 @@ require '..'
 
 wiz.package 'wiz.framework.db'
 
-# native mongodb driver
+# native mysql driver
 MySQL = require 'mysql'
 
 class wiz.framework.db.mysql
@@ -32,7 +32,7 @@ class wiz.framework.db.mysql
 		@client.user = @config.username
 		@client.password = @config.password
 
-# native mysql driver
+# native mongodb driver
 mongodb = require 'mongodb'
 BSON = mongodb.BSONPure
 
@@ -100,5 +100,21 @@ class wiz.framework.db.mongo
 
 	oid: (id) =>
 		return new BSON.ObjectID(id)
+
+# native riak driver
+riakJS = require '../_deps/riak-js'
+
+class wiz.framework.db.riak
+	client: null
+	config:
+		host: 'localhost'
+		port: 8098
+
+	constructor: (@config) ->
+
+	init: () =>
+		@client = riakJS.getClient
+			host: @config.host
+			port: @config.port
 
 # vim: foldmethod=marker wrap
