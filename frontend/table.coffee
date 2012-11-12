@@ -40,7 +40,7 @@ class wiz.framework.frontend.table.dbobj #{{{
 		return this
 #}}}
 
-class wiz.framework.frontend.table.base #{{{
+class wiz.framework.frontend.table.mongo #{{{
 
 	debug: false
 	upsert: true
@@ -143,7 +143,7 @@ class wiz.framework.frontend.table.base #{{{
 
 #}}}
 
-class wiz.framework.frontend.table.baseArray extends wiz.framework.frontend.table.base #{{{
+class wiz.framework.frontend.table.mongoArray extends wiz.framework.frontend.table.mongo #{{{
 
 	arrayKey: ''
 	elementKey: 'id'
