@@ -112,6 +112,7 @@ class wiz.framework.frontend.server
 		# create middleware structure
 		@sessionStore = new @createSessionStore()
 		@middleware = new wiz.framework.frontend.middleware(@)
+		@expressMultiViews express # enable multiple views directories
 
 		# create http server for redirecting non-ssl requests to https: url
 		@http = express.createServer()
@@ -121,6 +122,17 @@ class wiz.framework.frontend.server
 			@https = express.createServer @config.express
 		else
 			@https = express.createServer()
+
+		for b in @middleware.base()
+			@http.use b
+			@https.use b
+
+		# Jade configuration
+		@https.set 'views', @viewsFolders
+		@https.set 'view engine', 'jade'
+		@https.set 'view options',
+			layout: false
+			pretty : true
 
 		# create empty module list
 		@modules = {}
@@ -200,6 +212,7 @@ class wiz.framework.frontend.server
 		# implement in child class
 
 	init: () =>
+
 		# first, add static directories
 		for module of @modules
 			@modules[module].initStatic()
@@ -237,16 +250,8 @@ class wiz.framework.frontend.server
 						level: @modules[module].branches[resource].getLevel()
 
 		# finally, add catchall at the end
-		@http.all '*', @middleware.base(), @redirect
+		@http.all '*', @redirect
 		@https.all '*', @middleware.baseSession(), @catchall
-
-		# Jade configuration
-		@expressMultiViews express # enable multiple views directories
-		@https.set 'views', @viewsFolders
-		@https.set 'view engine', 'jade'
-		@https.set 'view options',
-			layout: false
-			pretty : true
 
 		@https.use (err, req, res, next) =>
 			# pass errors to error handler
@@ -392,6 +397,11 @@ class wiz.framework.frontend.server
 		'js'
 	]
 
+	cdnContent: [
+		'download'
+		'static'
+	]
+
 	staticPath: (url, disk) =>
 		return unless fs.existsSync disk
 		#wiz.log.debug "adding static folder #{url} -> #{disk}"
@@ -495,6 +505,11 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 		# module-level static folders
 		for staticDir in @parent.staticContent
 			path = @getPathSlashed() + '_' + staticDir + '/'
+			@parent.staticPath path, rootpath + path
+			@initStaticDir(path, staticDir)
+
+		for staticDir in @parent.cdnContent
+			path = @getPathSlashed() + staticDir + '/'
 			@parent.staticPath path, rootpath + path
 			@initStaticDir(path, staticDir)
 
