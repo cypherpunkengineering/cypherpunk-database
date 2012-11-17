@@ -405,9 +405,10 @@ class wiz.framework.frontend.server
 		'static'
 	]
 
-	staticPath: (url, disk) =>
+	staticPath: (url, disk, directory) =>
 		return unless fs.existsSync disk
 		#wiz.log.debug "adding static folder #{url} -> #{disk}"
+		@https.use url, express.directory(disk) if directory
 		@https.use url, express.static(disk)
 
 # base branch class, extended by modules/resources/methods below
@@ -513,8 +514,7 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 
 		for staticDir in @parent.cdnContent
 			path = @getPathSlashed() + staticDir + '/'
-			@parent.staticPath path, rootpath + path
-			@initStaticDir(path, staticDir)
+			@parent.staticPath path, rootpath + path, true
 
 	initStaticDir: (path, dir) =>
 		this[dir] = (file) => return path + file
