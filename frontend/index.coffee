@@ -99,12 +99,15 @@ class wiz.framework.frontend.server
 	powerMask : new wiz.framework.frontend.powerMask()
 	powerLevel : new wiz.framework.frontend.powerLevel()
 
-	children: []
-
 	master: () =>
 		wiz.log.notice "*** MASTER #{process.pid} START"
+
+		cluster.on 'exit', (worker, code, signal) ->
+			wiz.log.crit "WORKER #{worker.process.pid} DIED! (SIGNAL #{code})"
+			setTimeout cluster.fork, 500
+
 		for i in [1..2]
-			@children.push cluster.fork()
+			cluster.fork()
 
 	worker: () =>
 		wiz.log.notice "*** WORKER #{process.pid} START"
@@ -112,7 +115,6 @@ class wiz.framework.frontend.server
 		# create middleware structure
 		@sessionStore = new @createSessionStore()
 		@middleware = new wiz.framework.frontend.middleware(@)
-		@expressMultiViews express # enable multiple views directories
 
 		# create http server for redirecting non-ssl requests to https: url
 		@http = express.createServer()
@@ -126,13 +128,6 @@ class wiz.framework.frontend.server
 		for b in @middleware.base()
 			@http.use b
 			@https.use b
-
-		# Jade configuration
-		@https.set 'views', @viewsFolders
-		@https.set 'view engine', 'jade'
-		@https.set 'view options',
-			layout: false
-			pretty : true
 
 		# create empty module list
 		@modules = {}
@@ -252,6 +247,14 @@ class wiz.framework.frontend.server
 		# finally, add catchall at the end
 		@http.all '*', @redirect
 		@https.all '*', @middleware.baseSession(), @catchall
+
+		# Jade configuration
+		@expressMultiViews express # enable multiple views directories
+		@https.set 'views', @viewsFolders
+		@https.set 'view engine', 'jade'
+		@https.set 'view options',
+			layout: false
+			pretty : true
 
 		@https.use (err, req, res, next) =>
 			# pass errors to error handler
