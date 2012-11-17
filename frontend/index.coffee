@@ -76,6 +76,8 @@ class wiz.framework.frontend.serverConfig
 	httpsPort: 10443
 	httpsPortActual: 443
 
+	favicon: ''
+
 	express:
 		key: ''
 		cert: ''
@@ -128,6 +130,8 @@ class wiz.framework.frontend.server
 		for b in @middleware.base()
 			@http.use b
 			@https.use b
+
+		@https.use express.favicon @config.favicon
 
 		# create empty module list
 		@modules = {}
