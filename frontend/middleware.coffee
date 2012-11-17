@@ -131,9 +131,6 @@ class wiz.framework.frontend.middleware
 			# remove express header
 			@hideHeader
 
-			# add strict transport security header
-			@addHSTS
-
 			# tell express to set cookie as secure when reverse proxy is being used
 			@addProxySecure
 

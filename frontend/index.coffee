@@ -68,13 +68,9 @@ class wiz.framework.frontend.serverConfig
 	requestLimit : '2mb'
 	riak: {}
 
-	httpHost: '0.0.0.0'
+	httpHost: '127.0.0.1'
 	httpPort: 10080
-	httpPortActual: 80
-
-	httpsHost: '0.0.0.0'
-	httpsPort: 10443
-	httpsPortActual: 443
+	httpPortActual: 10080
 
 	favicon: ''
 
@@ -118,20 +114,14 @@ class wiz.framework.frontend.server
 		@sessionStore = new @createSessionStore()
 		@middleware = new wiz.framework.frontend.middleware(@)
 
-		# create http server for redirecting non-ssl requests to https: url
-		@http = express.createServer()
-
-		# create https server with local key/cert
+		# pass express configuration if present
 		if @config.express
-			@https = express.createServer @config.express
+			@http = express.createServer @config.express
 		else
-			@https = express.createServer()
+			@http = express.createServer()
 
-		for b in @middleware.base()
-			@http.use b
-			@https.use b
-
-		@https.use express.favicon @config.favicon
+		@http.use b for b in @middleware.base()
+		@http.use express.favicon @config.favicon
 
 		# create empty module list
 		@modules = {}
@@ -145,14 +135,14 @@ class wiz.framework.frontend.server
 		@logout = @module(new wiz.framework.frontend.module(@, @, '/logout', null, @powerMask.auth, @powerLevel.stranger))
 
 		# public methods
-		@root.method 'https', 'get', '/', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @handleRoot
-		@root.method 'https', 'get', '/login', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @getLogin
-		@root.method 'https', 'post', '/login', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @postLogin
-		@root.method 'https', 'get', '/logout', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @getLogout
-		@root.method 'https', 'post', '/logout', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @postLogout
+		@root.method 'get', '/', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @handleRoot
+		@root.method 'get', '/login', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @getLogin
+		@root.method 'post', '/login', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @postLogin
+		@root.method 'get', '/logout', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @getLogout
+		@root.method 'post', '/logout', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @postLogout
 
 		# for logged in users
-		@root.method 'https', 'get', '/home', @middleware.baseSessionAuth(), @powerMask.always, @powerLevel.stranger, @handleHome
+		@root.method 'get', '/home', @middleware.baseSessionAuth(), @powerMask.always, @powerLevel.stranger, @handleHome
 
 		# init
 		@preinit()
@@ -249,18 +239,17 @@ class wiz.framework.frontend.server
 						level: @modules[module].branches[resource].getLevel()
 
 		# finally, add catchall at the end
-		@http.all '*', @redirect
-		@https.all '*', @middleware.baseSession(), @catchall
+		@http.all '*', @middleware.baseSession(), @catchall
 
 		# Jade configuration
 		@expressMultiViews express # enable multiple views directories
-		@https.set 'views', @viewsFolders
-		@https.set 'view engine', 'jade'
-		@https.set 'view options',
+		@http.set 'views', @viewsFolders
+		@http.set 'view engine', 'jade'
+		@http.set 'view options',
 			layout: false
 			pretty : true
 
-		@https.use (err, req, res, next) =>
+		@http.use (err, req, res, next) =>
 			# pass errors to error handler
 			return @error err, req, res
 
@@ -370,9 +359,6 @@ class wiz.framework.frontend.server
 		if @config.httpPort
 			wiz.log.warning "HTTP listening on [#{@config.httpHost}]:#{@config.httpPort}"
 			@http.listen @config.httpPort, @config.httpHost
-		if @config.httpsPort
-			wiz.log.warning "HTTPS listening on [#{@config.httpsHost}]:#{@config.httpsPort}"
-			@https.listen @config.httpsPort, @config.httpsHost
 
 	start: () =>
 		@master() if cluster.isMaster
@@ -382,7 +368,7 @@ class wiz.framework.frontend.server
 		return false unless @middleware.checkHostHeader req, res
 		host = req.headers.host ? ''
 		host = host.split(':')[0] if host.indexOf ':' != -1
-		host += ":#{@config.httpsPortActual}" if @config.httpsPortActual != 443
+		host += ":#{@config.httpPortActual}" if @config.httpPortActual != 443
 		target = 'https://' + host + url
 		res.redirect target, numeric
 		return true
@@ -412,8 +398,8 @@ class wiz.framework.frontend.server
 	staticPath: (url, disk, directory) =>
 		return unless fs.existsSync disk
 		#wiz.log.debug "adding static folder #{url} -> #{disk}"
-		@https.use url, express.directory(disk, { icons: true } ) if directory
-		@https.use url, express.static(disk)
+		@http.use url, express.directory(disk, { icons: true } ) if directory
+		@http.use url, express.static(disk)
 
 # base branch class, extended by modules/resources/methods below
 class wiz.framework.frontend.branch
@@ -481,7 +467,7 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 		tdir = rootpath + @getPathSlashed() + @coffeeDir
 		if fs.existsSync(tdir)
 			cpath = "/#{@coffeeDir}/:script#{@coffeeExt}"
-			cof = new wiz.framework.frontend.method @parent, this, 'https', 'get', cpath, @parent.middleware.baseSession(), @server.powerMask.always, @server.powerLevel.stranger, @coffeeCompile
+			cof = new wiz.framework.frontend.method @parent, this, 'get', cpath, @parent.middleware.baseSession(), @server.powerMask.always, @server.powerLevel.stranger, @coffeeCompile
 			cof.init()
 		super()
 
@@ -526,23 +512,23 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 # resources in a module
 class wiz.framework.frontend.resource extends wiz.framework.frontend.branch
 
-	method: (protocol, method, path, middleware, powerMask, powerLevel, handler) =>
+	method: (method, path, middleware, powerMask, powerLevel, handler) =>
 		@branches[path] ?= []
-		@branches[path].push(new wiz.framework.frontend.method(@parent.parent, this, protocol, method, path, middleware, powerMask, powerLevel, handler))
+		@branches[path].push(new wiz.framework.frontend.method(@parent.parent, this, method, path, middleware, powerMask, powerLevel, handler))
 		return @branches[path]
 
 # methods in a resource
 class wiz.framework.frontend.method extends wiz.framework.frontend.branch
 
-	constructor: (@server, @parent, @protocol, @method, @path, @middleware, @mask, @level, @handler) ->
+	constructor: (@server, @parent, @method, @path, @middleware, @mask, @level, @handler) ->
 		# wiz.log.debug @path
 		# strip trailing / from request path
 		if @path[@path.length - 1] == '/'
 			@path = @path.slice(0, @path.length - 1)
 		@init = () =>
-			# wiz.log.debug "adding #{@protocol} #{@method} " + @getPath()
+			# wiz.log.debug "adding #{@method} " + @getPath()
 			wiz.assert(false, "invalid @server: #{@server}") if not @server
-			@server[@protocol][@method](@getPath(), @middleware, (req, res) =>
+			@server.http[@method](@getPath(), @middleware, (req, res) =>
 				# wiz.log.debug "#{@server.userLevel(req)} and #{@getLevel()}"
 				return res.send 404 unless @server.userLevel(req) >= @getLevel()
 				req.wizMethodLevel = @getLevel()
