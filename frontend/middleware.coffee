@@ -152,8 +152,6 @@ class wiz.framework.frontend.middleware
 				# log to wiz.log()
 				stream: @logStream
 
-			express.compress()
-
 			express.staticCache()
 		]
 
