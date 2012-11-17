@@ -412,7 +412,7 @@ class wiz.framework.frontend.server
 	staticPath: (url, disk, directory) =>
 		return unless fs.existsSync disk
 		#wiz.log.debug "adding static folder #{url} -> #{disk}"
-		@https.use url, express.directory(disk) if directory
+		@https.use url, express.directory(disk, { icons: true } ) if directory
 		@https.use url, express.static(disk)
 
 # base branch class, extended by modules/resources/methods below
