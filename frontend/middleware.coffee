@@ -175,6 +175,7 @@ class wiz.framework.frontend.middleware
 
 				# important! set secure flag on cookies!
 				cookie:
+					maxAge: 7 * 24 * 60 * 60 * 1000
 					secure: true
 
 			@parent.sessionCreate
