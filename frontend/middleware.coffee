@@ -151,8 +151,6 @@ class wiz.framework.frontend.middleware
 
 				# log to wiz.log()
 				stream: @logStream
-
-			express.staticCache()
 		]
 
 	# normal use for requests needing session data
