@@ -78,10 +78,10 @@ class wiz.framework.frontend.middleware
 	# filter requests to trusted ips only
 	checkIP : (req, res, next) =>
 		ip = @getIP req
-		if wiz.framework.util.embargo.isEmbargo ip
-			wiz.log.info "EMBARGO ON #{ip}"
-			res.send 404
-			return false
+#		if wiz.framework.util.embargo.isEmbargo ip
+#			wiz.log.info "EMBARGO ON #{ip}"
+#			res.send 404
+#			return false
 		return next() if next
 		return true
 
