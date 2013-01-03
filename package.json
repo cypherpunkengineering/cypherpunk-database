@@ -13,6 +13,7 @@
 	"ezcrypto": "0.0.3",
 	"thirty-two": "0.0.1",
 
+    "aws-sdk": "0.9.x",
     "base32": "0.0.x",
     "coffee-script": "1.2.x",
     "connect": "2.3.x",
