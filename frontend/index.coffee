@@ -232,7 +232,7 @@ class wiz.framework.frontend.server
 				level: @modules[module].getLevel()
 				resources: {}
 			for resource of @modules[module].branches
-				if @modules[module].branches[resource].getTitle()
+				if @modules[module].branches[resource].getTitle and @modules[module].branches[resource].getTitle()
 					@navViews[view][module].resources[resource] =
 						title: @modules[module].branches[resource].getTitle()
 						path: @modules[module].branches[resource].getPath()
@@ -508,6 +508,11 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch
 
 	initStaticDir: (path, dir) =>
 		this[dir] = (file) => return path + file
+
+	method: (method, path, middleware, powerMask, powerLevel, handler) =>
+		@branches[path] ?= []
+		@branches[path].push(new wiz.framework.frontend.method(@parent, this, method, path, middleware, powerMask, powerLevel, handler))
+		return @branches[path]
 
 # resources in a module
 class wiz.framework.frontend.resource extends wiz.framework.frontend.branch
