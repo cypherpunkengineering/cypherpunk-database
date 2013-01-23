@@ -1,6 +1,9 @@
 [submodule "_deps/riak-js"]
 	path = _deps/riak-js
-	url = https://github.com/jmaurice/riak-js
+	url = https://github.com/basho-labs/riak-js
 [submodule "_deps/connect-riak"]
 	path = _deps/connect-riak
 	url = https://github.com/jmaurice/connect-riak
+[submodule "_deps/connect-s3store"]
+	path = _deps/connect-s3store
+	url = https://github.com/jmaurice/connect-s3store

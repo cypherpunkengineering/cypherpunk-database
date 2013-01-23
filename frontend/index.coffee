@@ -60,7 +60,7 @@ os = require 'os'
 
 # riak driver
 riak = require '../_deps/riak-js'
-RiakStore = require('../_deps/connect-riak')(express)
+S3Store = require('../_deps/connect-s3store')(express)
 
 # server config object
 class wiz.framework.frontend.serverConfig
@@ -150,7 +150,12 @@ class wiz.framework.frontend.server
 		@listen()
 
 	createSessionStore: () =>
-		return new RiakStore @config.riak
+		return new S3Store
+			bucket: @config.s3bucket
+			awsKey: @config.s3key
+			awsSecret: @config.s3secret
+			host: @config.s3host
+			port: @config.s3port
 
 	nav: (req) =>
 		um = @userMask req
