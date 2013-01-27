@@ -7,3 +7,7 @@
 [submodule "_deps/connect-s3store"]
 	path = _deps/connect-s3store
 	url = https://github.com/wiztechnologies/connect-s3store
+[submodule "_deps/knox"]
+	path = _deps/knox
+	url = https://github.com/wiztechnologies/knox
+
