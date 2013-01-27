@@ -117,4 +117,30 @@ class wiz.framework.db.riak
 			host: @config.host
 			port: @config.port
 
+# direct s3 driver
+knox = require '../_deps/knox'
+
+class wiz.framework.db.s3
+	client: null
+	config:
+		key: ''
+		secret: ''
+		bucket: ''
+
+	constructor : (@config) ->
+
+	init: () =>
+		@client = knox.createClient
+			key: @config.key
+			secret: @config.secret
+			bucket: @config.bucket
+			port: 8080
+
+	list: () =>
+		@client.list { prefix: '' }, (err, data) ->
+			console.log err
+			console.log data
+
+# weehee
+
 # vim: foldmethod=marker wrap

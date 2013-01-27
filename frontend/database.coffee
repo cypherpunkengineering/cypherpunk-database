@@ -48,4 +48,7 @@ class wiz.framework.frontend.mongo extends wiz.framework.db.mongo
 				return null
 			cb collection
 
+class wiz.framework.frontend.s3 extends wiz.framework.db.s3
+
+
 # vim: foldmethod=marker wrap
