@@ -58,10 +58,15 @@ class wiz.framework.util.strval
 		fqdnRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9_][a-zA-Z0-9\-]*[a-zA-Z0-9])\\.)*([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9])'
 		return (new RegExp('^' + fqdnRegex + '$' )).test(host)
 
-	# same as above fqdn but make require first half of regex
+	# same as fqdn but require at least one instance of the first half of the regex
 	@fqdnDot_valid : (host) ->
 		fqdnDotRegex = '(([a-zA-Z0-9]|[a-zA-Z0-9_][a-zA-Z0-9\-]*[a-zA-Z0-9])\\.)+([A-Za-z]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9])'
 		return (new RegExp('^' + fqdnDotRegex + '$' )).test(host)
+
+	# same as fqdn but allow wildcards
+	@fqdnWild_valid : (host) ->
+		fqdnWildRegex = '(([a-zA-Z0-9*]|[a-zA-Z0-9_][a-zA-Z0-9\-]*[a-zA-Z0-9*])\\.)*([A-Za-z*]|[A-Za-z_][A-Za-z0-9\-]*[A-Za-z0-9*])'
+		return (new RegExp('^' + fqdnWildRegex + '$' )).test(host)
 
 	# check if valid string
 	@str_valid : (str) ->
@@ -103,14 +108,16 @@ class wiz.framework.util.strval
 				return @ascii_valid(value)
 			when 'asciiNoQuote'
 				return (@ascii_valid(value) && value.indexOf('"') == -1 && value.indexOf("'") == -1)
+			when 'fqdn'
+				return @fqdn_valid(value)
 			when 'fqdnOrAt'
 				return (@fqdn_valid(value) || value == '@')
+			when 'fqdnWildOrAt'
+				return (@fqdnWild_valid(value) || value == '@')
 			when 'fqdnDot'
 				return @fqdnDot_valid(value)
 			when 'fqdnDotOrDot'
 				return (@fqdnDot_valid(value) || value == '.')
-			when 'fqdn'
-				return @fqdn_valid(value)
 			when 'inet4'
 				return @inet4_valid(value)
 			when 'inet6'
