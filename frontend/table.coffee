@@ -160,12 +160,13 @@ class wiz.framework.frontend.table.mongoArray extends wiz.framework.frontend.tab
 		select[key] = 1 for key in keys
 		return select
 
-	getUpdateSetObj: (req, objToSet, objKey) =>
-		setKey = @arrayKey + '.$.' + objKey
+	getUpdateSetObj: (req, objsToSet) =>
 		update = {}
 		update['$set'] = {}
-		update['$set'][setKey] = objToSet
-		update['$set'][setKey].updated = wiz.framework.util.datetime.unixFullTS()
+		for k, v of objsToSet
+			setKey = @arrayKey + '.$.' + k
+			update['$set'][setKey] = v
+			update['$set'][setKey].updated = wiz.framework.util.datetime.unixFullTS()
 		return update
 
 	getUpdatePushArray: (req, objToPush, pushKey) =>
