@@ -21,7 +21,7 @@
     "jade": "0.26.x",
     "mongodb": "1.0.x",
     "mysql": "0.9.x",
-    "zmq": "2.1.x"
+    "zmq": "2.4.x"
 
   },
   "devDependencies": {},
