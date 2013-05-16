@@ -97,7 +97,7 @@ class wiz.framework.util.otp
 	@totp: (options) =>
 		# set vars
 		key = options.key
-		length = options.length || 6
+		length = options.length || 9
 		encoding = options.encoding || 'base32'
 		step = options.step || 30
 		initial_time = options.initial_time || 0; # unix epoch by default
@@ -116,8 +116,8 @@ class wiz.framework.util.otp
 		# pass to hotp
 		code = this.hotp({key: key, length: length, encoding: encoding, counter: counter})
 
-		# return the code
-		return(code)
+		# return the code in custom wiz alphabet base32
+		return wiz.framework.util.otp.baseConvert code, 32, 0, ""
 
 	# wiz.framework.util.otp.hex_to_ascii(key)
 	#
@@ -219,5 +219,14 @@ class wiz.framework.util.otp
 			key += set.charAt(Math.floor(Math.random() * set.length))
 
 		return key
+
+	@baseConvert: (number, base, position, result) =>
+		symbols = "123456789ABCDEFGHJKLMNPRSTUVWXYZ"
+
+		if number < Math.pow(base, position + 1)
+			return symbols[(number / Math.pow(base, position))] + result
+
+		remainder = (number % Math.pow(base, position + 1))
+		return wiz.framework.util.otp.baseConvert(number - remainder, base, position + 1, symbols[remainder / ( Math.pow(base, position) )] + result)
 
 # vim: foldmethod=marker wrap
