@@ -61,6 +61,7 @@ os = require 'os'
 # riak driver
 riak = require '../_deps/riak-js'
 S3Store = require('../_deps/connect-s3store')(express)
+RedisStore = require('connect-redis')(connect)
 
 # server config object
 class wiz.framework.frontend.serverConfig
@@ -150,6 +151,7 @@ class wiz.framework.frontend.server
 		@listen()
 
 	createSessionStore: () =>
+		return new RedisStore()
 		return new S3Store
 			bucket: @config.s3bucket
 			awsKey: @config.s3key
