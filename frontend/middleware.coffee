@@ -121,7 +121,7 @@ class wiz.framework.frontend.middleware
 		return true
 
 	addProxySecure: (req, res, next) =>
-		req.connection.proxySecure = true if req.connection.remoteAddress[0..2] is '10.' and req.headers['x-forwarded-for']
+		req.connection.proxySecure = true and req.headers['x-forwarded-proto'] is 'https'
 		return next() if next
 		return true
 
