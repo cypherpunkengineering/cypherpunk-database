@@ -547,7 +547,7 @@ exports.batoString = baToString;
 //   new lines from PEM formatted RSA private key string.
 //
 
-function _rsapem_pemToBase64(sPEMPrivateKey) {
+function pemToBase64(sPEMPrivateKey) {
   var s = sPEMPrivateKey;
   s = s.replace("-----BEGIN RSA PRIVATE KEY-----", "");
   s = s.replace("-----END RSA PRIVATE KEY-----", "");
@@ -555,7 +555,7 @@ function _rsapem_pemToBase64(sPEMPrivateKey) {
   return s;
 }
 
-function _rsapem_getPosArrayOfChildrenFromHex(hPrivateKey) {
+function getPrivKeyPosArrayOfChildrenFromHex(hPrivateKey) {
   var a = new Array();
   var v1 = asn1hex.asnhex_getStartPosOfV_AtObj(hPrivateKey, 0);
   var n1 = asn1hex.asnhex_getPosOfNextSibling_AtObj(hPrivateKey, v1);
@@ -570,7 +570,7 @@ function _rsapem_getPosArrayOfChildrenFromHex(hPrivateKey) {
   return a;
 }
 
-function _rsapem_getHexValueArrayOfChildrenFromHex(hPrivateKey) {
+function getPrivKeyHexValueArrayOfChildrenFromHex(hPrivateKey) {
   var posArray = _rsapem_getPosArrayOfChildrenFromHex(hPrivateKey);
   var v =  asn1hex.asnhex_getHexOfV_AtObj(hPrivateKey, posArray[0]);
   var n =  asn1hex.asnhex_getHexOfV_AtObj(hPrivateKey, posArray[1]);
@@ -586,11 +586,34 @@ function _rsapem_getHexValueArrayOfChildrenFromHex(hPrivateKey) {
   return a;
 }
 
-function _rsapem_readPrivateKeyFromPEMString(keyPEM) {
-  var keyB64 = _rsapem_pemToBase64(keyPEM);
-  var keyHex = B64.b64tohex(keyB64) // depends base64.js
-  var a = _rsapem_getHexValueArrayOfChildrenFromHex(keyHex);
-  this.setPrivateEx(a[1],a[2],a[3],a[4],a[5],a[6],a[7],a[8]);
+function getPubKeyPosArrayOfChildrenFromHex(hPublicKey) {
+  var a = new Array();
+  var n1 = asn1hex.asnhex_getPosOfNextSibling_AtObj(hPublicKey, v1);
+  var e1 = asn1hex.asnhex_getPosOfNextSibling_AtObj(hPublicKey, n1);
+  a.push(n1, e1);
+  return a;
 }
 
-RSAKey.prototype.readPrivateKeyFromPEMString = _rsapem_readPrivateKeyFromPEMString;
+function getPubKeyHexValueArrayOfChildrenFromHex(hPublicKey) {
+  var posArray = getPubKeyPosArrayOfChildrenFromHex(hPublicKey);
+  var n =  asn1hex.asnhex_getHexOfV_AtObj(hPublicKey, posArray[1]);
+  var e =  asn1hex.asnhex_getHexOfV_AtObj(hPublicKey, posArray[2]);
+  var a = new Array();
+  a.push(v, n);
+  return a;
+}
+function readPrivateKeyFromPEMString(keyPEM) {
+  var keyB64 = pemToBase64(keyPEM);
+  var keyHex = B64.b64tohex(keyB64) // depends base64.js
+  var a = getPrivKeyHexValueArrayOfChildrenFromHex(keyHex);
+  this.setPrivateEx(a[1],a[2],a[3],a[4],a[5],a[6],a[7],a[8]);
+}
+function readPublicKeyFromPEMString(keyPEM) {
+  var keyB64 = pemToBase64(keyPEM);
+  var keyHex = B64.b64tohex(keyB64) // depends base64.js
+  var a = getPubKeyHexValueArrayOfChildrenFromHex(keyHex);
+  this.setPrivateEx(a[1],a[2]);
+}
+
+RSAKey.prototype.readPrivateKeyFromPEMString = readPrivateKeyFromPEMString;
+RSAKey.prototype.readPublicKeyFromPEMString = readPublicKeyFromPEMString;
