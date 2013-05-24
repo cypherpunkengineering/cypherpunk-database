@@ -115,7 +115,7 @@ function RSASetPublic(N, E) {
 		this.n = parseBigInt(N, 16);
 		this.e = parseInt(E, 16);
 	} else
-		alert("Invalid RSA public key");
+		console.log("Invalid RSA public key");
 }
 
 // Perform raw public operation on "x": return x^e (mod n)
@@ -571,7 +571,7 @@ function getPrivKeyPosArrayOfChildrenFromHex(hPrivateKey) {
 }
 
 function getPrivKeyHexValueArrayOfChildrenFromHex(hPrivateKey) {
-  var posArray = _rsapem_getPosArrayOfChildrenFromHex(hPrivateKey);
+  var posArray = getPrivKeyPosArrayOfChildrenFromHex(hPrivateKey);
   var v =  asn1hex.asnhex_getHexOfV_AtObj(hPrivateKey, posArray[0]);
   var n =  asn1hex.asnhex_getHexOfV_AtObj(hPrivateKey, posArray[1]);
   var e =  asn1hex.asnhex_getHexOfV_AtObj(hPrivateKey, posArray[2]);
@@ -588,7 +588,7 @@ function getPrivKeyHexValueArrayOfChildrenFromHex(hPrivateKey) {
 
 function getPubKeyPosArrayOfChildrenFromHex(hPublicKey) {
   var a = new Array();
-  var n1 = asn1hex.asnhex_getPosOfNextSibling_AtObj(hPublicKey, v1);
+  var n1 = asn1hex.asnhex_getStartPosOfV_AtObj(hPublicKey, 0);
   var e1 = asn1hex.asnhex_getPosOfNextSibling_AtObj(hPublicKey, n1);
   a.push(n1, e1);
   return a;
@@ -596,10 +596,10 @@ function getPubKeyPosArrayOfChildrenFromHex(hPublicKey) {
 
 function getPubKeyHexValueArrayOfChildrenFromHex(hPublicKey) {
   var posArray = getPubKeyPosArrayOfChildrenFromHex(hPublicKey);
-  var n =  asn1hex.asnhex_getHexOfV_AtObj(hPublicKey, posArray[1]);
-  var e =  asn1hex.asnhex_getHexOfV_AtObj(hPublicKey, posArray[2]);
+  var n =  asn1hex.asnhex_getHexOfV_AtObj(hPublicKey, posArray[0]);
+  var e =  asn1hex.asnhex_getHexOfV_AtObj(hPublicKey, posArray[1]);
   var a = new Array();
-  a.push(v, n);
+  a.push(n, e);
   return a;
 }
 function readPrivateKeyFromPEMString(keyPEM) {
@@ -609,10 +609,21 @@ function readPrivateKeyFromPEMString(keyPEM) {
   this.setPrivateEx(a[1],a[2],a[3],a[4],a[5],a[6],a[7],a[8]);
 }
 function readPublicKeyFromPEMString(keyPEM) {
-  var keyB64 = pemToBase64(keyPEM);
-  var keyHex = B64.b64tohex(keyB64) // depends base64.js
-  var a = getPubKeyHexValueArrayOfChildrenFromHex(keyHex);
-  this.setPrivateEx(a[1],a[2]);
+  var s = keyPEM;
+  s = s.replace(/^-----BEGIN PUBLIC KEY-----/, '');
+  s = s.replace(/-----END PUBLIC KEY-----/, '');
+  var sB64 = s.replace(/\s+/g, '')
+  var keyHex = B64.b64tohex(sB64) // depends base64.js
+  var a1 = asn1hex.getPosArrayOfChildren_AtObj(keyHex, 0);
+  var algIdTLV = asn1hex.getHexOfTLV_AtObj(keyHex, a1[0]);
+  if (algIdTLV != "300d06092a864886f70d0101010500") // AlgId rsaEncryption
+	throw "PKCS8 AlgorithmIdentifier is not rsaEnc: " + algIdTLV;
+  var octetStr = asn1hex.getHexOfTLV_AtObj(keyHex, a1[1]);
+  // Strip away the header of the BITSTRING object
+  // leaving only the Sequence of INTEGERs
+  octetStr = octetStr.replace(/^0382010f00/,'');
+  var a3 = getPubKeyHexValueArrayOfChildrenFromHex(octetStr);
+  this.setPublic(a3[0],a3[1]);
 }
 
 RSAKey.prototype.readPrivateKeyFromPEMString = readPrivateKeyFromPEMString;
