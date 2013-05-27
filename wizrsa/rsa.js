@@ -551,6 +551,8 @@ function pemToBase64(sPEMPrivateKey) {
   var s = sPEMPrivateKey;
   s = s.replace("-----BEGIN RSA PRIVATE KEY-----", "");
   s = s.replace("-----END RSA PRIVATE KEY-----", "");
+  s = s.replace("-----BEGIN PUBLIC KEY-----", "");
+  s = s.replace("-----END PUBLIC KEY-----", "");
   s = s.replace(/[ \n]+/g, "");
   return s;
 }
@@ -604,16 +606,13 @@ function getPubKeyHexValueArrayOfChildrenFromHex(hPublicKey) {
 }
 function readPrivateKeyFromPEMString(keyPEM) {
   var keyB64 = pemToBase64(keyPEM);
-  var keyHex = B64.b64tohex(keyB64) // depends base64.js
+  var keyHex = B64.b64tohex(keyB64); // depends base64.js
   var a = getPrivKeyHexValueArrayOfChildrenFromHex(keyHex);
   this.setPrivateEx(a[1],a[2],a[3],a[4],a[5],a[6],a[7],a[8]);
 }
 function readPublicKeyFromPEMString(keyPEM) {
-  var s = keyPEM;
-  s = s.replace(/^-----BEGIN PUBLIC KEY-----/, '');
-  s = s.replace(/-----END PUBLIC KEY-----/, '');
-  var sB64 = s.replace(/\s+/g, '')
-  var keyHex = B64.b64tohex(sB64) // depends base64.js
+  var keyB64 = pemToBase64(keyPEM);
+  var keyHex = B64.b64tohex(keyB64); // depends base64.js
   var a1 = asn1hex.getPosArrayOfChildren_AtObj(keyHex, 0);
   var algIdTLV = asn1hex.getHexOfTLV_AtObj(keyHex, a1[0]);
   if (algIdTLV != "300d06092a864886f70d0101010500") // AlgId rsaEncryption
