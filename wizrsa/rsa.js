@@ -547,13 +547,14 @@ exports.batoString = baToString;
 //   new lines from PEM formatted RSA private key string.
 //
 
-function pemToBase64(sPEMPrivateKey) {
+function pemToBase64(sPEMPrivateKey, public) {
   var s = sPEMPrivateKey;
   s = s.replace("-----BEGIN RSA PRIVATE KEY-----", "");
   s = s.replace("-----END RSA PRIVATE KEY-----", "");
   s = s.replace("-----BEGIN PUBLIC KEY-----", "");
   s = s.replace("-----END PUBLIC KEY-----", "");
   s = s.replace(/[ \n]+/g, "");
+  console.log(s);
   return s;
 }
 

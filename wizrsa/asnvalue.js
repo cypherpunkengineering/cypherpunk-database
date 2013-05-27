@@ -12,8 +12,6 @@ function setIntBuffer(value) {
 		}
 	}
 	this.value = value;
-	console.log("value:");
-	console.log(value);
 }
 
 function setSequence(value) {

@@ -8,8 +8,10 @@ asnvalue = require './asnvalue'
 wiz.package 'wiz.framework.wizrsa'
 
 TAG_INTEGER = new Buffer('02', 'hex')
-TAG_BITSTREAM = new Buffer('03','hex')
+TAG_BITSTRING = new Buffer('03','hex')
 TAG_SEQUENCE = new Buffer('30','hex')
+
+DER_ALGORITHM_ID = '300d06092a864886f70d0101010500'
 
 class wiz.framework.wizrsa
 
@@ -18,6 +20,12 @@ class wiz.framework.wizrsa
 
 	@ASNsequence: () =>
 		return new asnvalue.ASNValue(TAG_SEQUENCE)
+
+	@ASNbitString: () =>
+		return new asnvalue.ASNValue(TAG_BITSTRING)
+
+	@DERalgID: () =>
+		return new Buffer(DER_ALGORITHM_ID, 'hex')
 
 	@Version: () =>
 		version = new wiz.framework.wizrsa.ASNinteger()
@@ -37,10 +45,13 @@ class wiz.framework.wizrsa
 
 	@loadPublicKeyFromPEMstr: (publicPEM) =>
 		publicKey = new rsa.Key()
+		console.log publicPEM
 		publicKey.readPublicKeyFromPEMString(publicPEM)
 		return publicKey
 
-	@generateKeyPair: (bits = 2048, publicExponent = 65537) =>
+	# bits is base 10
+	# publicExponent is base 16
+	@generateKeyPair: (bits = 2048, publicExponent = "10001") =>
 		keypair = new rsa.Key()
 		keypair.generate(bits, publicExponent)
 		return keypair
@@ -166,17 +177,6 @@ class wiz.framework.wizrsa
 
 		return privateSequence
 
-	@getPrivateASNsequenceFromKey: (key) =>
-		privateASNsequence = new wiz.framework.wizrsa.ASNsequence()
-		privateSequence = wiz.framework.wizrsa.getPrivateSequenceFromKey(key)
-		privateASNsequence.setSequence(privateSequence)
-		return privateASNsequence
-
-	@getPrivateDERfromKey: (key) =>
-		privateASNsequence = wiz.framework.wizrsa.getPrivateASNsequenceFromKey(key)
-		privateDER = privateASNsequence.encode()
-		return privateDER
-
 	@getPublicSequenceFromKey: (key) =>
 		modulus = wiz.framework.wizrsa.getModulusAsASNValueFromKey(key)
 		publicExponent = wiz.framework.wizrsa.getPublicExponentAsASNValueFromKey(key)
@@ -188,6 +188,49 @@ class wiz.framework.wizrsa
 
 		return publicSequence
 
+	@getPrivateASNsequenceFromKey: (key) =>
+		privateASNsequence = new wiz.framework.wizrsa.ASNsequence()
+		privateSequence = wiz.framework.wizrsa.getPrivateSequenceFromKey(key)
+		privateASNsequence.setSequence(privateSequence)
+		return privateASNsequence
+
+	@getPublicASNsequenceFromKey: (key) =>
+		publicASNsequence = new wiz.framework.wizrsa.ASNsequence()
+		publicSequence = wiz.framework.wizrsa.getPublicSequenceFromKey(key)
+		publicASNsequence.setSequence(publicSequence)
+		return publicASNsequence
+
+	@getPrivateDERfromKey: (key) =>
+		privateASNsequence = wiz.framework.wizrsa.getPrivateASNsequenceFromKey(key)
+		privateDER = privateASNsequence.encode()
+		return privateDER
+
+	@getPublicBitStringFromKey: (key) =>
+		publicSequence = wiz.framework.wizrsa.getPublicASNsequenceFromKey(key)
+		publicBitString = publicSequence.encode()
+		return publicBitString
+
+	@getPublicDERfromKey: (key) =>
+		publicBitString = wiz.framework.wizrsa.getPublicBitStringFromKey(key)
+		algID = wiz.framework.wizrsa.DERalgID()
+		doubleZero = new Buffer("00", 'hex') # padding
+
+		publicBitStringSequence = new wiz.framework.wizrsa.ASNbitString()
+		publicBitStringSequence.value = Buffer.concat([
+			doubleZero
+			publicBitString
+		])
+
+		publicBitStringSequenceEncoded = publicBitStringSequence.encode()
+
+		publicDER = new wiz.framework.wizrsa.ASNsequence()
+		publicDER.value = Buffer.concat([
+			algID
+			publicBitStringSequenceEncoded
+		])
+
+		return publicDER.encode()
+
 	@getPrivatePEMfromKey: (key) =>
 		privateDER = wiz.framework.wizrsa.getPrivateDERfromKey(key)
 		privatePEM = rsa.linebrk(privateDER.toString('base64'),64)
@@ -195,4 +238,13 @@ class wiz.framework.wizrsa
 		privatePEMout += privatePEM + '\n'
 		privatePEMout += '-----END RSA PRIVATE KEY-----'
 		return privatePEMout
+
+	@getPublicPEMfromKey: (key) =>
+		publicDER = wiz.framework.wizrsa.getPublicDERfromKey(key)
+		publicPEM = rsa.linebrk(publicDER.toString('base64'),64)
+		publicPEMout = '-----BEGIN PUBLIC KEY-----\n'
+		publicPEMout += publicPEM + '\n'
+		publicPEMout += '-----END PUBLIC KEY-----'
+		return publicPEMout
+
 # vim: foldmethod=marker wrap
