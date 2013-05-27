@@ -2,10 +2,10 @@ function ASNValue(tag) {
 	this.tag = tag;
 }
 
-function setIntBuffer(value) {
+function setIntBuffer(value, isModulus) {
 	if (value.length > 1) {
 		var firstbyte = value[0];
-		if (firstbyte & 0x80) {
+		if (isModulus || firstbyte & 0x80) {
 			// First bit is set but it needs to be 0
 			var zerobit = new Buffer('00', 'hex');
 			value = Buffer.concat([zerobit, value]);

@@ -64,7 +64,9 @@ class wiz.framework.wizrsa
 	@getModulusAsASNValueFromKey: (key) =>
 		# extract modulus (n) from private key
 		modulus = new wiz.framework.wizrsa.ASNinteger()
-		modulus.setIntBuffer(wiz.framework.wizrsa.getModulusAsBufferFromKey(key))
+		modulus.setIntBuffer(wiz.framework.wizrsa.getModulusAsBufferFromKey(key), true)
+		console.log 'modulus is:'
+		console.log modulus.value
 		return modulus
 
 	@getPublicExponentAsBufferFromKey: (key) =>

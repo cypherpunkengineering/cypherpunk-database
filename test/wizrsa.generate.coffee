@@ -10,3 +10,4 @@ if key
 	console.log 'keys written to filesystem'
 else
 	console.log 'key generation failure'
+
