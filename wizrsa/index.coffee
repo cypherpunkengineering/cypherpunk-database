@@ -45,7 +45,6 @@ class wiz.framework.wizrsa
 
 	@loadPublicKeyFromPEMstr: (publicPEM) =>
 		publicKey = new rsa.Key()
-		console.log publicPEM
 		publicKey.readPublicKeyFromPEMString(publicPEM)
 		return publicKey
 

@@ -13,4 +13,7 @@ text = fs.readFileSync 'enc.out'
 enctext = text.toString('hex')
 
 dec = key.decrypt(enctext)
-console.log dec.toString('ascii')
+if dec
+	console.log dec.toString('ascii')
+else
+	console.log 'decryption failed'

@@ -13,3 +13,4 @@ enc = key.encrypt(text)
 encbuf = new Buffer(enc, 'hex')
 console.log encbuf.toString('base64')
 fs.writeFileSync 'enc.out', encbuf.toString('binary'), { encoding: 'binary' }
+

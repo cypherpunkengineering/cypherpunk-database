@@ -554,7 +554,6 @@ function pemToBase64(sPEMPrivateKey, public) {
   s = s.replace("-----BEGIN PUBLIC KEY-----", "");
   s = s.replace("-----END PUBLIC KEY-----", "");
   s = s.replace(/[ \n]+/g, "");
-  console.log(s);
   return s;
 }
 
