@@ -3,7 +3,6 @@
 require '..'
 
 rsa = require './rsa'
-asnvalue = require './asnvalue'
 
 wiz.package 'wiz.framework.wizrsa'
 
@@ -16,13 +15,13 @@ DER_ALGORITHM_ID = '300d06092a864886f70d0101010500'
 class wiz.framework.wizrsa
 
 	@ASNinteger: () =>
-		return new asnvalue.ASNValue(TAG_INTEGER)
+		return new wiz.framework.wizrsa.asnvalue(TAG_INTEGER)
 
 	@ASNsequence: () =>
-		return new asnvalue.ASNValue(TAG_SEQUENCE)
+		return new wiz.framework.wizrsa.asnvalue(TAG_SEQUENCE)
 
 	@ASNbitString: () =>
-		return new asnvalue.ASNValue(TAG_BITSTRING)
+		return new wiz.framework.wizrsa.asnvalue(TAG_BITSTRING)
 
 	@DERalgID: () =>
 		return new Buffer(DER_ALGORITHM_ID, 'hex')
@@ -247,5 +246,50 @@ class wiz.framework.wizrsa
 		publicPEMout += publicPEM + '\n'
 		publicPEMout += '-----END PUBLIC KEY-----'
 		return publicPEMout
+
+class wiz.framework.wizrsa.asnvalue
+	constructor: (@tag) ->
+
+	setIntBuffer: (value, isModulus) =>
+		if value.length > 1
+			firstbyte = value[0]
+			if isModulus or firstbyte & 0x80
+
+				# First bit is set but it needs to be 0
+				zerobit = new Buffer("00", "hex")
+				value = Buffer.concat([zerobit, value])
+		@value = value
+
+	setSequence: (value) =>
+		result = value[0].encode()
+		i = 1
+		while i < value.length
+			result = Buffer.concat([result, value[i].encode()])
+			i++
+		@value = result
+
+	encode: () =>
+		result = @tag
+		size = @value.length
+
+		# Calculate how many bytes are needed to store the value of size
+		if size < 127
+			sizehex = new Buffer("0" + size.toString(16), "hex")
+			result = Buffer.concat([result, sizehex])
+		else
+			hexstring = size.toString(16)
+
+			# pads the hexstring to always have even number of bytes
+			hexstring = "0" + hexstring	if hexstring.length % 2 is 1
+
+			# create new buffer
+			sizeBuf = new Buffer(hexstring, "hex")
+
+			# 0x80 + (2 or 3)
+			firstByte = 0x80 + sizeBuf.length
+			fb = new Buffer(firstByte.toString(16), "hex")
+			result = Buffer.concat([result, fb, sizeBuf])
+		result = Buffer.concat([result, @value])
+		return result
 
 # vim: foldmethod=marker wrap
