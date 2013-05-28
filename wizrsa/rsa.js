@@ -234,6 +234,9 @@ function RSAGenerate(B, E) {
 		if (phi.gcd(ee).compareTo(BigInteger.ONE) == 0) {
 			this.n = this.p.multiply(this.q);
 			this.d = ee.modInverse(phi);
+			// if modulus bitlength is not what was requested, start generate over
+			if (this.n.bitLength() != B)
+				continue;
 			this.dmp1 = this.d.mod(p1);
 			this.dmq1 = this.d.mod(q1);
 			this.coeff = this.q.modInverse(this.p);

@@ -63,7 +63,7 @@ class wiz.framework.wizrsa
 	@getModulusAsASNValueFromKey: (key) =>
 		# extract modulus (n) from private key
 		modulus = new wiz.framework.wizrsa.ASNinteger()
-		modulus.setIntBuffer(wiz.framework.wizrsa.getModulusAsBufferFromKey(key), true)
+		modulus.setIntBuffer(wiz.framework.wizrsa.getModulusAsBufferFromKey(key))
 		console.log 'modulus is:'
 		console.log modulus.value
 		return modulus
@@ -250,10 +250,10 @@ class wiz.framework.wizrsa
 class wiz.framework.wizrsa.asnvalue
 	constructor: (@tag) ->
 
-	setIntBuffer: (value, isModulus) =>
+	setIntBuffer: (value) =>
 		if value.length > 1
 			firstbyte = value[0]
-			if isModulus or firstbyte & 0x80
+			if firstbyte & 0x80
 
 				# First bit is set but it needs to be 0
 				zerobit = new Buffer("00", "hex")
