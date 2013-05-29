@@ -117,7 +117,8 @@ class wiz.framework.util.otp
 		code = this.hotp({key: key, length: length, encoding: encoding, counter: counter})
 
 		# return the code in custom wiz alphabet base32
-		return wiz.framework.util.otp.baseConvert code, 32, 0, ""
+		b32 = wiz.framework.util.otp.baseConvert code, 32, 0, ""
+		return wiz.framework.util.otp.padOutput(b32)
 
 	# wiz.framework.util.otp.hex_to_ascii(key)
 	#
@@ -228,5 +229,10 @@ class wiz.framework.util.otp
 
 		remainder = (number % Math.pow(base, position + 1))
 		return wiz.framework.util.otp.baseConvert(number - remainder, base, position + 1, symbols[remainder / ( Math.pow(base, position) )] + result)
+
+	@padOutput: (str) =>
+		str = str.toUpperCase()
+		str = '1' + str while str.length < 6
+		return str
 
 # vim: foldmethod=marker wrap
