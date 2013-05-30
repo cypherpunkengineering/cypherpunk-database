@@ -17,6 +17,7 @@
     "base32": "0.0.x",
     "coffee-script": "1.2.x",
     "connect": "2.3.x",
+    "connect-redis": "1.4.x",
     "express": "2.5.x",
     "jade": "0.26.x",
     "mongodb": "1.0.x",
