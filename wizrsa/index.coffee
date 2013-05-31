@@ -6,25 +6,28 @@ rsa = require './rsa'
 
 wiz.package 'wiz.framework.wizrsa'
 
-TAG_INTEGER = new Buffer('02', 'hex')
-TAG_BITSTRING = new Buffer('03','hex')
-TAG_SEQUENCE = new Buffer('30','hex')
-
-DER_ALGORITHM_ID = '300d06092a864886f70d0101010500'
-
 class wiz.framework.wizrsa
+	@TAG_INTEGER = new Buffer('02', 'hex')
+	@TAG_BITSTRING = new Buffer('03','hex')
+	@TAG_OID = new Buffer('06','hex')
+	@TAG_SEQUENCE = new Buffer('30','hex')
+
+	@DER_ALGORITHM_ID = '300d06092a864886f70d0101010500'
 
 	@ASNinteger: () =>
-		return new wiz.framework.wizrsa.asnvalue(TAG_INTEGER)
+		return new wiz.framework.wizrsa.asnvalue(wiz.framework.wizrsa.TAG_INTEGER)
 
 	@ASNsequence: () =>
-		return new wiz.framework.wizrsa.asnvalue(TAG_SEQUENCE)
+		return new wiz.framework.wizrsa.asnvalue(wiz.framework.wizrsa.TAG_SEQUENCE)
+
+	@ASNoid: () =>
+		return new wiz.framework.wizrsa.asnvalue(wiz.framework.wizrsa.TAG_OID)
 
 	@ASNbitString: () =>
-		return new wiz.framework.wizrsa.asnvalue(TAG_BITSTRING)
+		return new wiz.framework.wizrsa.asnvalue(wiz.framework.wizrsa.TAG_BITSTRING)
 
 	@DERalgID: () =>
-		return new Buffer(DER_ALGORITHM_ID, 'hex')
+		return new Buffer(wiz.framework.wizrsa.DER_ALGORITHM_ID, 'hex')
 
 	@Version: () =>
 		version = new wiz.framework.wizrsa.ASNinteger()
