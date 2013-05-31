@@ -11,6 +11,7 @@ class wiz.framework.wizrsa
 	@TAG_BITSTRING = new Buffer('03','hex')
 	@TAG_OID = new Buffer('06','hex')
 	@TAG_SEQUENCE = new Buffer('30','hex')
+	@TAG_NULL = new Buffer('05','hex')
 
 	@DER_ALGORITHM_ID = '300d06092a864886f70d0101010500'
 
