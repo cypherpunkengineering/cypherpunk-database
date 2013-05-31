@@ -59,6 +59,10 @@ class wiz.framework.frontend.table.mongo #{{{
 		doc[@docKey] = id
 		return doc
 
+	# allow child class to override
+	where: (req) =>
+		return {}
+
 	count: (req, res, doc, select, cb) =>
 		debugstr = "#{@collectionName}.count(#{JSON.stringify(doc)}, #{JSON.stringify(select)})"
 		wiz.log.debug debugstr if @debug
