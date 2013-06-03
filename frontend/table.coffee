@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 
 require '..'
-require '../db'
+require '../database/mongo'
 require '../util/strval'
 
 wiz.package 'wiz.framework.frontend.table'

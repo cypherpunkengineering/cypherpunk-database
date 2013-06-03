@@ -1,42 +1,13 @@
-# wiz-framework: J's HTML5/NodeJS web application framework
-#
-# Copyright 2012 J. Maurice <j@wiz.biz>
-# All rights reserved.
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of version 3 of the GNU General Public License as
-# published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# copyright 2013 wiz technologies inc.
 
 require '..'
 
-wiz.package 'wiz.framework.db'
-
-# native mysql driver
-MySQL = require 'mysql'
-
-class wiz.framework.db.mysql
-	client : null
-	config :
-		host : ''
-		user : ''
-		password : ''
-
-	constructor : (@config) ->
-		@client = new MySQL.Client()
-		@client.host = @config.hostname
-		@client.user = @config.username
-		@client.password = @config.password
-
-# native mongodb driver
 mongodb = require 'mongodb'
 BSON = mongodb.BSONPure
 
-class wiz.framework.db.mongo
+wiz.package 'wiz.framework.database.mongo'
+
+class wiz.framework.database.mongo
 
 	config : {}
 	serverOptions : {}
@@ -100,47 +71,5 @@ class wiz.framework.db.mongo
 
 	oid: (id) =>
 		return new BSON.ObjectID(id)
-
-# native riak driver
-riakJS = require '../_deps/riak-js'
-
-class wiz.framework.db.riak
-	client: null
-	config:
-		host: 'localhost'
-		port: 8098
-
-	constructor: (@config) ->
-
-	init: () =>
-		@client = riakJS.getClient
-			host: @config.host
-			port: @config.port
-
-# direct s3 driver
-knox = require '../_deps/knox'
-
-class wiz.framework.db.s3
-	client: null
-	config:
-		key: ''
-		secret: ''
-		bucket: ''
-
-	constructor : (@config) ->
-
-	init: () =>
-		@client = knox.createClient
-			key: @config.key
-			secret: @config.secret
-			bucket: @config.bucket
-			port: 8080
-
-	list: () =>
-		@client.list { prefix: '' }, (err, data) ->
-			console.log err
-			console.log data
-
-# weehee
 
 # vim: foldmethod=marker wrap
