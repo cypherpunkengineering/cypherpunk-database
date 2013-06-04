@@ -10,24 +10,19 @@ s3 = new wiz.framework.database.s3
 	key: ''
 	secret: ''
 
-s3.bucketList (res) =>
-	console.log res
-	if res and res.ListAllMyBucketsResult and res.ListAllMyBucketsResult.Buckets
-		for bucket in res.ListAllMyBucketsResult.Buckets
-			if bucket.Bucket
-				bucketList = bucket.Bucket
-				for b in bucket.Bucket
-					if b.Name
-						for n in b.Name
-							console.log n
-							s3.getParse n, '/', (res2) =>
-								console.log res2
-								if res2 and res2.ListBucketResult and res2.ListBucketResult.Contents
-									for i in res2.ListBucketResult.Contents
-										console.log i
-										fd = fs.createWriteStream i.Key[0], { flags: 'w', encoding: 'binary' }
-										s3.get n, i.Key[0], (res3) =>
-											console.log res3.headers['content-type']
-											res3.on 'end', (e) =>
-												fd.end()
-											res3.pipe fd
+# move this stuff into base class, make proper methods for everything
+s3.listAllMyBuckets (buckets) =>
+	for bucket in buckets
+		if bucket.Name
+			for bucketName in bucket.Name
+				console.log "Bucket found: #{bucketName}"
+				s3.listBucketContents bucketName, '/', (objects) => 
+					console.log objects
+					for obj in objects
+						objectName = obj.Key[0]
+						fd = fs.createWriteStream objectName, { flags: 'w', encoding: 'binary' }
+						s3.getStream bucketName, objectName, (res3) =>
+							console.log res3.headers['content-type']
+							res3.on 'end', (e) =>
+								fd.end()
+							res3.pipe fd

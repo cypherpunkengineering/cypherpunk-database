@@ -195,23 +195,34 @@ class wiz.framework.database.s3
 		reqSend req, reqBody
 	#}}}
 
-	bucketList: (cb) => # list objects in bucket {{{
-		@reqSend @reqCreate(@opts('GET', null, '/', null, null, 0), true, cb)
-	#}}}
-	bucketCreate: (bucket, cb) => # create a bucket {{{
+	createNewBucket: (bucket, cb) => # create a new bucket {{{
 		@reqSend @reqCreate(@opts('PUT', bucket, '/', null, null, 0), true, cb)
 	#}}}
-	bucketDelete: (bucket, cb) => # delete a bucket {{{
+	deleteEmptyBucket: (bucket, cb) => # delete an empty bucket {{{
 		@reqSend @reqCreate(@opts('DELETE', bucket, '/', null, null, 0), true, cb)
 	#}}}
+	listAllMyBuckets: (cb) => # list all my buckets {{{
+		req = @reqCreate @opts('GET', null, '/', null, null, 0), true, (res) =>
+			b = res?.ListAllMyBucketsResult?.Buckets
+			if b and b instanceof Array and b[0] and b[0].Bucket
+				return cb b[0].Bucket
+		@reqSend req
+	#}}}
+	listBucketContents: (bucket, path, cb) => # list objects in a bucket with given path {{{
+		req = @reqCreate @opts('GET', bucket, path, null, null, 0), true, (res) =>
+			c = res?.ListBucketResult?.Contents
+			if c and c instanceof Array
+				return cb c
+		@reqSend req
+	#}}}
 
-	putStream: (bucket, path, file, cb) => # store object in bucket {{{
+	putStream: (bucket, path, file, cb) => # store stream as object in bucket {{{
 		@reqSend @reqCreate(@opts('PUT', bucket, path, null, 0), true, cb), file
 	#}}}
-	getParse: (bucket, path, cb) => # get metadata from bucket {{{
+	getParse: (bucket, path, cb) => # get metadata about bucket {{{
 		@reqSend @reqCreate(@opts('GET', bucket, path, null, 0), true, cb)
 	#}}}
-	get: (bucket, path, cb) => # get object from bucket {{{
+	getStream: (bucket, path, cb) => # get object from bucket {{{
 		req = @reqCreate @opts('GET', bucket, path, null, 0), false, (res) =>
 			cb res
 		@reqSend req
