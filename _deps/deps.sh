@@ -1,5 +1,5 @@
 #!/bin/sh
-for i in connect-riak connect-s3store knox riak-js
+for i in knox
 do
 	cd $i
 	npm install -d

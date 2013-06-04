@@ -58,16 +58,12 @@ jade = require 'jade'
 fs = require 'fs'
 os = require 'os'
 
-# riak driver
-riak = require '../_deps/riak-js'
-S3Store = require('../_deps/connect-s3store')(express)
 RedisStore = require('connect-redis')(connect)
 
 # server config object
 class wiz.framework.frontend.serverConfig
 	sessionSecret : 'ChangeMeBecauseThisDefaultIsNotSecret'
 	requestLimit : '2mb'
-	riak: {}
 
 	httpHost: '127.0.0.1'
 	httpPort: 10080
@@ -152,12 +148,6 @@ class wiz.framework.frontend.server
 
 	createSessionStore: () =>
 		return new RedisStore()
-		return new S3Store
-			bucket: @config.s3bucket
-			awsKey: @config.s3key
-			awsSecret: @config.s3secret
-			host: @config.s3host
-			port: @config.s3port
 
 	nav: (req) =>
 		um = @userMask req
