@@ -115,15 +115,17 @@ class wiz.framework.database.s3
 
 		# create request
 		req = @client().request opts, (res) =>
+			#TODO: move this all into one leet reqParse method
 
 			return @error 'no response!', cb if not res
 
-			if res.statusCode != 200
-				@error "HTTP #{res.statusCode}", cb
-				return cb null
+			switch res.statusCode
+				when 400, 403, 404, 405, 500, 502, 503
+					@error "HTTP #{res.statusCode}", cb
 
-			return @resParse res, cb if parse
-			return cb res
+				else
+					return @resParse res, cb if parse
+					return cb res
 
 		return req
 	#}}}
@@ -167,9 +169,10 @@ class wiz.framework.database.s3
 
 					try
 						out = JSON.parse datum
-						return cb out
 					catch e
 						return @error "json parse error: #{e}", cb
+
+					return cb out
 
 				when 'application/xml'
 
@@ -193,22 +196,24 @@ class wiz.framework.database.s3
 			name: name
 			email: email
 
-		path = '/riak-cs/user/'
+		path = '/user/'
 
 		if userKey # reset credentials
 			path += userKey
 			reqBody.new_key_secret = true
 
-		opts = @optsAdmin @opts('POST', null, path, 'application/json', 0)
-		req = @reqCreate opts, (res) =>
-			@resParse res, cb
-		reqSend req, reqBody
+		opts = @optsAdmin @opts('POST', 'riak-cs', path, 'application/json', 0)
+		req = @reqCreate opts, true, (res) =>
+			cb res
+		@reqSend req, reqBody
 	#}}}
 
 	createNewBucket: (bucket, cb) => # create a new bucket {{{
-		@reqSend @reqCreate(@opts('PUT', bucket, '/', null, null, 0), true, cb)
+		wiz.assert bucket, 'bucket name'
+		@reqSend @reqCreate(@opts('PUT', bucket, '/', null, null, 0), false, cb)
 	#}}}
 	deleteEmptyBucket: (bucket, cb) => # delete an empty bucket {{{
+		wiz.assert bucket, 'bucket name'
 		@reqSend @reqCreate(@opts('DELETE', bucket, '/', null, null, 0), true, cb)
 	#}}}
 	listAllMyBuckets: (cb) => # list all my buckets {{{
@@ -220,6 +225,7 @@ class wiz.framework.database.s3
 		@reqSend req
 	#}}}
 	listBucketContents: (bucket, path = '/', cb) => # list objects in a bucket with given path {{{
+		wiz.assert bucket, 'bucket name'
 		req = @reqCreate @opts('GET', bucket, path, null, null, 0), true, (res) =>
 			c = res?.ListBucketResult?.Contents
 			if c and c instanceof Array
@@ -230,16 +236,20 @@ class wiz.framework.database.s3
 	#}}}
 
 	putStream: (bucket, path, file, cb) => # store stream as object in bucket {{{
+		wiz.assert bucket, 'bucket name'
 		@reqSend @reqCreate(@opts('PUT', bucket, path, null, 0), true, cb), file
 	#}}}
 	getParse: (bucket, path, cb) => # get metadata about bucket {{{
+		wiz.assert bucket, 'bucket name'
 		@reqSend @reqCreate(@opts('GET', bucket, path, null, 0), true, cb)
 	#}}}
 	getStream: (bucket, path, cb) => # get object from bucket {{{
+		wiz.assert bucket, 'bucket name'
 		req = @reqCreate @opts('GET', bucket, path, null, 0), false, cb
 		@reqSend req
 	#}}}
 	delete: (bucket, path, cb) => # delete object from bucket {{{
+		wiz.assert bucket, 'bucket name'
 		@reqSend @reqCreate(@opts('DELETE', bucket, path, null, 0), true, cb), file
 	#}}}
 

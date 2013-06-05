@@ -17,7 +17,7 @@ require '../database/mysql'
 require '../database/mongo'
 require '../database/s3'
 
-wiz.package 'wiz.framework.frontend'
+wiz.package 'wiz.framework.frontend.database'
 
 # node frameworks
 connect = require 'connect'
@@ -48,7 +48,19 @@ class wiz.framework.frontend.mongo extends wiz.framework.database.mongo
 				return null
 			cb collection
 
-class wiz.framework.frontend.s3 extends wiz.framework.database.s3
+class wiz.framework.frontend.database.s3 extends wiz.framework.database.s3
 
+	createNewBucket: (req, res, bucket) =>
+		super bucket, (out) =>
+			return res.send out.statusCode if out
+			wiz.log.error "S3 request failed"
+			return res.send 500
+
+	issueCredentials: (req, res, name, email, userKey, cb) =>
+		super name, email, userKey, (out) =>
+			if not out or not out.key_id or not out.key_secret
+				wiz.log.error "S3 request failed"
+				return res.send 500
+			cb out
 
 # vim: foldmethod=marker wrap
