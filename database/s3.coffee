@@ -24,12 +24,12 @@ class wiz.framework.database.s3
 		wiz.assert (@secret = options.secret), 'S3 secret'
 
 		wiz.assert (@host = options.host || 's3.wiz.biz'), 'S3 host'
-		wiz.assert (@port = options.port || 443), 'S3 port'
+		wiz.assert (@port = options.port || 8080), 'S3 port'
 
 		wiz.assert (@adminHost = options.adminHost || 's3.wiz.biz'), 'S3 adminHost'
 		wiz.assert (@adminPort = options.adminPort || 8000), 'S3 adminPort'
 
-		@ssl = if options.ssl is false then false else true
+		@ssl = if options.ssl is true then true else false
 	#}}}
 
 	client: () => # to ssl or not to ssl {{{
