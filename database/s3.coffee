@@ -16,17 +16,20 @@ class wiz.framework.database.s3
 
 		options ?= {}
 
-		@key = options.key
-		@secret = options.secret
+		# for testing
+		#options.key ?= ''
+		#options.secret ?= ''
 
-		@host = options.host || 's3.wiz.biz'
-		@port = options.port || 443
+		wiz.assert (@key = options.key), 'S3 key'
+		wiz.assert (@secret = options.secret), 'S3 secret'
 
-		@adminHost = options.adminHost || 's3.wiz.biz'
-		@adminPort = options.adminPort || 8000
+		wiz.assert (@host = options.host || 's3.wiz.biz'), 'S3 host'
+		wiz.assert (@port = options.port || 443), 'S3 port'
+
+		wiz.assert (@adminHost = options.adminHost || 's3.wiz.biz'), 'S3 adminHost'
+		wiz.assert (@adminPort = options.adminPort || 8000), 'S3 adminPort'
 
 		@ssl = if options.ssl is false then false else true
-
 	#}}}
 
 	client: () => # to ssl or not to ssl {{{
@@ -78,6 +81,11 @@ class wiz.framework.database.s3
 		return opts
 
 	#}}}
+	optsAdmin: (opts) => # set opts to use admin host/port #{{{
+		opts.host = @adminHost
+		opts.port = @adminPort
+		return opts
+	#}}}
 	sign: (ts, method, headers, resource, contentType = '', contentMD5 = '') => #{{{
 		hdrcat = ("#{x.toLowerCase()}:#{y}" for x, y of headers).join('\n')
 		hdrcat += '\n' if hdrcat != ''
@@ -111,7 +119,8 @@ class wiz.framework.database.s3
 			return @error 'no response!', cb if not res
 
 			if res.statusCode != 200
-				return @error "HTTP #{res.statusCode}", cb
+				@error "HTTP #{res.statusCode}", cb
+				return cb null
 
 			return @resParse res, cb if parse
 			return cb res
@@ -190,7 +199,8 @@ class wiz.framework.database.s3
 			path += userKey
 			reqBody.new_key_secret = true
 
-		req = @reqCreate @opts('POST', null, path, 'application/json', 0), (res) =>
+		opts = @optsAdmin @opts('POST', null, path, 'application/json', 0)
+		req = @reqCreate opts, (res) =>
 			@resParse res, cb
 		reqSend req, reqBody
 	#}}}
@@ -205,14 +215,17 @@ class wiz.framework.database.s3
 		req = @reqCreate @opts('GET', null, '/', null, null, 0), true, (res) =>
 			b = res?.ListAllMyBucketsResult?.Buckets
 			if b and b instanceof Array and b[0] and b[0].Bucket
-				return cb b[0].Bucket
+				buckets = b[0].Bucket
+				return cb buckets
 		@reqSend req
 	#}}}
-	listBucketContents: (bucket, path, cb) => # list objects in a bucket with given path {{{
+	listBucketContents: (bucket, path = '/', cb) => # list objects in a bucket with given path {{{
 		req = @reqCreate @opts('GET', bucket, path, null, null, 0), true, (res) =>
 			c = res?.ListBucketResult?.Contents
 			if c and c instanceof Array
 				return cb c
+			else
+				return cb []
 		@reqSend req
 	#}}}
 
@@ -223,8 +236,7 @@ class wiz.framework.database.s3
 		@reqSend @reqCreate(@opts('GET', bucket, path, null, 0), true, cb)
 	#}}}
 	getStream: (bucket, path, cb) => # get object from bucket {{{
-		req = @reqCreate @opts('GET', bucket, path, null, 0), false, (res) =>
-			cb res
+		req = @reqCreate @opts('GET', bucket, path, null, 0), false, cb
 		@reqSend req
 	#}}}
 	delete: (bucket, path, cb) => # delete object from bucket {{{
