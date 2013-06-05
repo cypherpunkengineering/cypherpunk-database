@@ -131,7 +131,7 @@ class wiz.framework.database.s3
 
 		# set request error handler
 		req.on 'error', (e) =>
-			@error e, cb
+			@error e
 
 		if not reqBody
 
