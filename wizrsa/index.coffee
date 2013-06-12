@@ -13,7 +13,7 @@ class wiz.framework.wizrsa
 	@TAG_SEQUENCE = new Buffer('30','hex')
 	@TAG_NULL = new Buffer('05','hex')
 
-	@DER_ALGORITHM_ID = '300d06092a864886f70d0101010500'
+	@DER_ALGORITHM_ID = '2a864886f70d010101'
 
 	@ASNinteger: () =>
 		return new wiz.framework.wizrsa.asnvalue(wiz.framework.wizrsa.TAG_INTEGER)
