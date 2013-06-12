@@ -6,8 +6,11 @@ class wiz.framework.list.doublyList
 	constructor: () ->
 		@nodes = 0
 		@head = null
+		@tail = null
 
 	push: (n) =>
+		if @nodes == 0
+			@tail = n
 		n.next = @head
 		@head = n
 		if n.next
@@ -19,6 +22,7 @@ class wiz.framework.list.doublyList
 		if n.prev
 			n.prev.next = n.next
 		else
+			@tail = n
 			@head = n.next
 			if n.next
 				n.next.prev = null
