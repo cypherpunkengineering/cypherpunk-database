@@ -8,27 +8,28 @@ class wiz.framework.list.doublyList
 		@head = null
 		@tail = null
 
+	# add a node to the start of the list
 	push: (n) =>
-		if @nodes == 0
-			@tail = n
 		n.next = @head
 		@head = n
-		if n.next
+		if n.next?
 			n.next.prev = n
+		else
+			@tail = n
 		@nodes = @nodes + 1
 		return n
 
+	# remove a node from anywhere in the list (note that n *must* be a valid node in the list)
 	remove: (n) =>
-		if n.prev
+		if n.prev?
 			n.prev.next = n.next
 		else
-			@tail = n
 			@head = n.next
-			if n.next
-				n.next.prev = null
 
-		if n.next
+		if n.next?
 			n.next.prev = n.prev
+		else
+			@tail = n.prev
 
 		@nodes = @nodes - 1
 
