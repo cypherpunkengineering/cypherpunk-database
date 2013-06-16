@@ -73,7 +73,7 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 				@error req, res, e
 
-		else if route?.handler?
+		else if route?.handler? and (route.method is 'ANY' or route.method is req.method)
 
 			try # handle the request if we can
 
@@ -83,7 +83,8 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 			catch e # otherwise send 500 error
 
-				@error req, res, e
+				console.log e.stack
+				@error req, res, e.toString()
 
 		else # 404 route not found
 
@@ -101,10 +102,10 @@ class wiz.framework.http.server extends wiz.base # base server object
 		ip = wiz.framework.util.strval.inet6_prefix_trim req.connection.remoteAddress
 		wiz.log.info "HTTP #{res.statusCode} -> [#{ip}] #{req.method} #{req.url}"
 	#}}}
-	error: (req, res, err) => #{{{ 500 handler
+	error: (req, res, err = 'internal server error') => #{{{ 500 handler
+		wiz.log.err err
 		res.statusCode = 500
-		res.write err or 'internal server error'
-		res.end()
+		res.end err
 	#}}}
 	catchall: (req, res, out) => #{{{ 404 handler
 		res.write 'file not found'
@@ -113,7 +114,7 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 class wiz.framework.http.router extends wiz.framework.list.tree
 
-	constructor: (@server, @parent, @path, @method = null, @middleware = null, @mask = null, @level = null) -> #{{{
+	constructor: (@server, @parent, @path = '', @method = 'GET') -> #{{{
 		super @parent
 		@method = @method.toUpperCase() if @method
 		@routeTable = {}
