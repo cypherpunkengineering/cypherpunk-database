@@ -10,6 +10,7 @@ wiz.package 'wiz.framework.http'
 
 class wiz.framework.http.config #{{{ base server config object
 	workers: 2
+	maxRequestLimit: 1024 * 1024 * 2 # 2mb
 	listeners: [
 		{ host: '127.0.0.1', port: 11080 }
 	]
@@ -27,13 +28,23 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 		# create server using NodeJS built-in http module
 		@server = http.createServer (req, res, out) =>
+
+			req.receivedBytes = 0
 			res.setHeader 'X-Powered-By', 'wiz'
+
+			req.on 'data', (chunk) =>
+				return if req.receivedBytes > @config.maxRequestLimit
+				req.receivedBytes += chunk.length
+				if req.receivedBytes > @config.maxRequestLimit
+					wiz.log.crit "#{@getIP(req)} max request limit of #{@config.maxRequestLimit} bytes exceeded!"
+					req.destroy()
+
 			res.on 'finish', () =>
 				# log the result of the request
 				@log req, res, out
 
-			req.level = 0
 			# route the request
+			req.level = 0
 			@router @root, req, res, out
 
 		# populate child branches in tree
@@ -98,9 +109,13 @@ class wiz.framework.http.server extends wiz.base # base server object
 			r.init()
 	#}}}
 
-	log: (req, res, out) => #{{{ http logger
-		ip = wiz.framework.util.strval.inet6_prefix_trim req.connection.remoteAddress
-		wiz.log.info "HTTP #{res.statusCode} -> [#{ip}] #{req.method} #{req.url}"
+	getIP: (req) =>
+		ip = req.connection.remoteAddress or ''
+		ip = wiz.framework.util.strval.inet6_prefix_trim ip
+		return ip
+
+	log: (req, res) => #{{{ http logger
+		wiz.log.info "HTTP #{res.statusCode} -> [#{@getIP(req)}] #{req.method} #{req.url} (#{req.headers['user-agent']})"
 	#}}}
 	error: (req, res, err = 'internal server error') => #{{{ 500 handler
 		wiz.log.err err
