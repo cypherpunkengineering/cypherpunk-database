@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "jade": "0.31.x",
+    "xml2js": "0.2.x",
     "mongodb": "1.0.x",
     "mysql": "0.9.x",
     "zmq": "2.4.x"
