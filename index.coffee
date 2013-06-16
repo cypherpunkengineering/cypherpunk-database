@@ -8,7 +8,7 @@ class global.wiz
 	@hostname: require('os').hostname()
 	@rootpath: process.cwd()
 
-	@app: (@name, @style = 'GANGNAM') =>
+	@app: (@name, @style = 'DEV') =>
 
 	@package: (name) ->
 		levels = name.split '.'
