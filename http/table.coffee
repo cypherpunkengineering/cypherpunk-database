@@ -1,24 +1,12 @@
-# wiz-framework: J's HTML5/NodeJS web application framework
-#
-# Copyright 2012 J. Maurice <j@wiz.biz>
-# All rights reserved.
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of version 3 of the GNU General Public License as
-# published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# copyright 2013 wiz technologies inc.
 
 require '..'
 require '../database/mongo'
 require '../util/strval'
 
-wiz.package 'wiz.framework.frontend.table'
+wiz.package 'wiz.framework.http.table'
 
-class wiz.framework.frontend.table.dbobj #{{{
+class wiz.framework.http.table.dbobj #{{{
 
 	constructor: () ->
 		# implement in child class
@@ -40,7 +28,7 @@ class wiz.framework.frontend.table.dbobj #{{{
 		return this
 #}}}
 
-class wiz.framework.frontend.table.mongo #{{{
+class wiz.framework.http.table.mongo #{{{
 
 	debug: false
 	upsert: true
@@ -147,7 +135,7 @@ class wiz.framework.frontend.table.mongo #{{{
 
 #}}}
 
-class wiz.framework.frontend.table.mongoArray extends wiz.framework.frontend.table.mongo #{{{
+class wiz.framework.http.table.mongoArray extends wiz.framework.http.table.mongo #{{{
 
 	arrayKey: ''
 	elementKey: 'id'

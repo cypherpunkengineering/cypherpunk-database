@@ -1,31 +1,19 @@
-# wiz-framework: J's HTML5/NodeJS web application framework
-#
-# Copyright 2012 J. Maurice <j@wiz.biz>
-# All rights reserved.
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of version 3 of the GNU General Public License as
-# published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# copyright 2013 wiz technologies inc.
 
 require '..'
 require '../database/mysql'
 require '../database/mongo'
 require '../database/s3'
 
-wiz.package 'wiz.framework.frontend.database'
+wiz.package 'wiz.framework.http.database'
 
 # node frameworks
 connect = require 'connect'
 
-class wiz.framework.frontend.mysql extends wiz.framework.database.mysql
+class wiz.framework.http.mysql extends wiz.framework.database.mysql
 	constructor : (@server, @parent, @config) ->
 
-class wiz.framework.frontend.mongo extends wiz.framework.database.mongo
+class wiz.framework.http.mongo extends wiz.framework.database.mongo
 	client : null
 
 	constructor : (@server, @parent, @config, @serverOptions, @dbOptions) ->
@@ -48,7 +36,7 @@ class wiz.framework.frontend.mongo extends wiz.framework.database.mongo
 				return null
 			cb collection
 
-class wiz.framework.frontend.database.s3 extends wiz.framework.database.s3
+class wiz.framework.http.database.s3 extends wiz.framework.database.s3
 
 	createNewBucket: (req, res, bucket) =>
 		super bucket, (out) =>
