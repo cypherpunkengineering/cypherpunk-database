@@ -176,15 +176,18 @@ class wiz.framework.database.s3
 
 				when 'application/xml'
 
-					parser = new xml2js.Parser()
-					parser.parseString datum, (err, out) =>
-						if err
-							return @error "xml parse error: #{err}", cb
-						if not out
-							return @error "xml response null?", cb
-						if out.Error
-							return @error "xml error response! #{JSON.stringify(out.Error)}", cb
-						return cb out
+					try
+						parser = new xml2js.Parser()
+						parser.parseString datum, (err, out) =>
+							if err
+								return @error "xml parse error: #{err}", cb
+							if not out
+								return @error "xml response null?", cb
+							if out.Error
+								return @error "xml error response! #{JSON.stringify(out.Error)}", cb
+							return cb out
+					catch e
+						return @error "xml parse error: #{e}", cb
 
 				else
 

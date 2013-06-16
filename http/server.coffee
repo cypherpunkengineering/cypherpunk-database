@@ -27,7 +27,13 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 		# create server using NodeJS built-in http module
 		@server = http.createServer (req, res, out) =>
+			res.setHeader 'X-Powered-By', 'wiz'
+			res.on 'finish', () =>
+				# log the result of the request
+				@log req, res, out
+
 			req.level = 0
+			# route the request
 			@router @root, req, res, out
 
 		# populate child branches in tree
@@ -72,8 +78,8 @@ class wiz.framework.http.server extends wiz.base # base server object
 			try # handle the request if we can
 
 				#wiz.log.debug "handling request"
-				route.handler req, res, out
 				res.statusCode = 200
+				route.handler req, res, out
 
 			catch e # otherwise send 500 error
 
@@ -84,12 +90,6 @@ class wiz.framework.http.server extends wiz.base # base server object
 			res.statusCode = 404
 			@catchall req, res, out
 
-		# finish response if not done already
-		res.end() unless res.headersSent
-
-		# finally log the result of the request
-		@log req, res, out
-
 	#}}}
 
 	init: () => #{{{
@@ -99,7 +99,7 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 	log: (req, res, out) => #{{{ http logger
 		ip = wiz.framework.util.strval.inet6_prefix_trim req.connection.remoteAddress
-		wiz.log.info "[#{ip}] #{res.statusCode} #{req.url}"
+		wiz.log.info "HTTP #{res.statusCode} -> [#{ip}] #{req.method} #{req.url}"
 	#}}}
 	error: (req, res, err) => #{{{ 500 handler
 		res.statusCode = 500
@@ -118,18 +118,16 @@ class wiz.framework.http.router extends wiz.framework.list.tree
 		@method = @method.toUpperCase() if @method
 		@routeTable = {}
 	#}}}
-
-	branchAdd: (m) => #{{{
-		super m
-		wiz.log.debug "added router for #{m.getFullPath()}"
-		wiz.log.debug "added handler for #{m.method} #{m.getFullPath()}" if m.handler?
-		@routeTable[m.path] = m
-	#}}}
-
 	init: () => #{{{
 		# for child class
 	#}}}
 
+	routeAdd: (m) => #{{{
+		wiz.log.debug "added router for #{m.getFullPath()}"
+		wiz.log.debug "added handler for #{m.method} #{m.getFullPath()}" if m.handler?
+		@routeTable[m.path] = m
+		@branchAdd m
+	#}}}
 	getFullPath: () => #{{{ recurse tree back to root to obtain full path
 		path = @path
 		parent = @parent
