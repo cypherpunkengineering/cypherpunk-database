@@ -2,13 +2,14 @@
 
 require '..'
 require './server'
+require './mime'
 
 fs = require 'fs'
 
 wiz.package 'wiz.framework.http.resource'
 
 class wiz.framework.http.resource.static extends wiz.framework.http.router
-	contentType: 'text/plain'
+	contentType: null
 	content: null
 	renderer: null
 	final: true
@@ -24,6 +25,12 @@ class wiz.framework.http.resource.static extends wiz.framework.http.router
 		catch e
 			@src = null
 			wiz.log.err "failed reading file #{@file}: #{e}"
+
+		try
+			ext = @file.split('.')
+			@contentType = wiz.framework.http.mime.getType ext[ext.length - 1]
+		catch e
+			@contentType = null
 	#}}}
 	compile: () => #{{{ returns function to render content
 		try
@@ -47,8 +54,8 @@ class wiz.framework.http.resource.static extends wiz.framework.http.router
 	handler: (req, res) => #{{{ send @content as http response
 		@load() unless @src
 		@render() unless @content
-		res.setHeader 'Content-Type', @contentType
-		res.setHeader 'Content-Length', @content.length
+		res.setHeader 'Content-Type', @contentType if @contentType
+		res.setHeader 'Content-Length', @content.length if @content and @content.length
 		if @final
 			res.end @content
 		else
