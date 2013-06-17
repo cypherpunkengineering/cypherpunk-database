@@ -115,12 +115,12 @@ class wiz.framework.http.server extends wiz.base # base server object
 		return ip
 
 	log: (req, res) => #{{{ http logger
-		wiz.log.info "HTTP #{res.statusCode} -> [#{@getIP(req)}] #{req.method} #{req.url} (#{req.headers['user-agent']})"
+		wiz.log.info "HTTP/#{req.httpVersion} #{res.statusCode} -> [#{@getIP(req)}] #{req.method} #{req.url} (#{req.headers['user-agent']})"
 	#}}}
-	error: (req, res, err = 'internal server error') => #{{{ 500 handler
+	error: (req, res, err) => #{{{ 500 handler
 		wiz.log.err err
 		res.statusCode = 500
-		res.end err
+		res.end(if wiz.style is 'DEV' then err else 'something bad happened')
 	#}}}
 	catchall: (req, res, out) => #{{{ 404 handler
 		res.write 'file not found'
