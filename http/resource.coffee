@@ -15,8 +15,8 @@ class wiz.framework.http.resource.static extends wiz.framework.http.router
 	final: true
 	dynamic: false
 
-	constructor: (@server, @parent, @path, @file) -> #{{{
-		super(@server, @parent, @path)
+	constructor: (@server, @parent, @path, @file, @method) -> #{{{
+		super(@server, @parent, @path, @method)
 	#}}}
 	load: () => #{{{ load src from filesystem
 		wiz.log.debug "reading file #{@file}"

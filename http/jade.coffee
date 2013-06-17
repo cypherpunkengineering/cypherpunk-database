@@ -11,8 +11,8 @@ class wiz.framework.http.resource.jadeTemplate extends wiz.framework.http.resour
 	contentType: 'text/html'
 	dynamic: true
 
-	constructor: (@server, @parent, @path, @file, @options = {}) -> #{{{ load resource from file
-		super(@server, @parent, @path, @file)
+	constructor: (@server, @parent, @path, @file, @options = {}, @method) -> #{{{ load resource from file
+		super(@server, @parent, @path, @file, @method)
 		@options.pretty = true if wiz.style is 'DEV' # pretty print for developers
 	#}}}
 	compiler: () => #{{{ compile using jade

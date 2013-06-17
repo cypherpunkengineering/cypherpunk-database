@@ -10,8 +10,8 @@ wiz.package 'wiz.framework.http.resource'
 class wiz.framework.http.resource.coffeeScript extends wiz.framework.http.resource.static
 	contentType: 'application/ecmascript'
 
-	constructor: (@server, @parent, @path, @file, @options = {}) -> #{{{ load resource from file
-		super(@server, @parent, @path, @file)
+	constructor: (@server, @parent, @path, @file, @options = {}, @method) -> #{{{ load resource from file
+		super(@server, @parent, @path, @file, @method)
 		@options.bare = true # don't add coffee-script's clojure wrapper
 	#}}}
 	load: () => #{{{ convert buffer to string
