@@ -8,29 +8,11 @@ fs = require 'fs'
 
 wiz.app 'testor'
 
-class text extends wiz.framework.http.router
-	init: () =>
-		@resource = new wiz.framework.http.resource.static __dirname, 'leet'
-	handler: (req, res) =>
-		@resource.serve req, res
-
-class html extends wiz.framework.http.router
-	init: () =>
-		@resource = new wiz.framework.http.resource.jadeTemplate __dirname, 'leet'
-	handler: (req, res) =>
-		@resource.serve req, res
-
-class ecmascript extends wiz.framework.http.router
-	init: () =>
-		@cs = new wiz.framework.http.resource.coffeeScript __dirname, 'leet'
-	handler: (req, res) =>
-		@cs.serve req, res
-
 class server extends wiz.framework.http.server
 	init: () =>
-		@root.routeAdd new text(this, @root, 'text')
-		@root.routeAdd new html(this, @root, 'html')
-		@root.routeAdd new ecmascript(this, @root, 'ecmascript')
+		@root.routeAdd new wiz.framework.http.resource.coffeeFolder(this, @root, '_coffee', __dirname)
+		@root.routeAdd new wiz.framework.http.resource.jadeFolder(this, @root, '_jade', __dirname)
+		@root.routeAdd new wiz.framework.http.resource.folder(this, @root, 'stuff', __dirname)
 		super()
 
 app = new server()

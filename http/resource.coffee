@@ -1,32 +1,31 @@
 # copyright 2013 wiz technologies inc.
 
 require '..'
+require './server'
 
 fs = require 'fs'
 
 wiz.package 'wiz.framework.http.resource'
 
-class wiz.framework.http.resource.static
-	contentFolder: '_text'
-	contentFileExt: '.txt'
+class wiz.framework.http.resource.static extends wiz.framework.http.router
 	contentType: 'text/plain'
 	content: null
 	renderer: null
 	final: true
 
-	constructor: (@parentDir, @id, @options) -> #{{{
-		@path = @parentDir + '/' + @contentFolder + '/' + @id + @contentFileExt
+	constructor: (@server, @parent, @path, @file) -> #{{{
+		super(@server, @parent, @path)
 	#}}}
 	load: () => #{{{ load src from filesystem
-		wiz.log.debug "reading file #{@path}"
+		wiz.log.debug "reading file #{@file}"
 
 		try
-			@src = fs.readFileSync @path
+			@src = fs.readFileSync @file
 		catch e
 			@src = null
-			wiz.log.err "failed reading file #{@path}: #{e}"
+			wiz.log.err "failed reading file #{@file}: #{e}"
 	#}}}
-	compile: () => #{{{
+	compile: () => #{{{ returns function to render content
 		try
 			@renderer = @compiler()
 		catch e
@@ -37,7 +36,7 @@ class wiz.framework.http.resource.static
 		() =>
 			return @src
 	#}}}
-	render: (args) => #{{{
+	render: (args) => #{{{ renders @content
 		@compile() unless @renderer
 		try
 			@content = @renderer args
@@ -45,7 +44,7 @@ class wiz.framework.http.resource.static
 			@content = null
 			wiz.log.err "failed rendering #{@id}: #{e}"
 	#}}}
-	serve: (req, res) => #{{{ send @content as http response
+	handler: (req, res) => #{{{ send @content as http response
 		@load() unless @src
 		@render() unless @content
 		res.setHeader 'Content-Type', @contentType
@@ -54,6 +53,23 @@ class wiz.framework.http.resource.static
 			res.end @content
 		else
 			res.write @content
+	#}}}
+
+class wiz.framework.http.resource.folder extends wiz.framework.http.router
+	resourceType: wiz.framework.http.resource.static
+
+	constructor: (@server, @parent, @path, @parentDir) -> #{{{
+		super(@server, @parent, @path)
+	#}}}
+	init: () => #{{{ scan folder for files, add them to route list
+		console.log "scanning #{@path}"
+		try
+			files = fs.readdirSync @path
+		catch e
+			wiz.log.err "unable to open resource folder #{@path}: #{e}"
+		for f in files
+			fullPath = @parentDir + '/' + @path + '/' + f
+			@routeAdd new @resourceType(@server, this, f, fullPath)
 	#}}}
 
 # vim: foldmethod=marker wrap
