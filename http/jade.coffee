@@ -9,8 +9,7 @@ wiz.package 'wiz.framework.http.resource'
 
 class wiz.framework.http.resource.jadeTemplate extends wiz.framework.http.resource.static
 	contentType: 'text/html'
-	contentFolder: '_jade'
-	contentFileExt: '.jade'
+	dynamic: true
 
 	constructor: (@server, @parent, @path, @file, @options = {}) -> #{{{ load resource from file
 		super(@server, @parent, @path, @file)

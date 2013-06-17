@@ -13,6 +13,7 @@ class wiz.framework.http.resource.static extends wiz.framework.http.router
 	content: null
 	renderer: null
 	final: true
+	dynamic: false
 
 	constructor: (@server, @parent, @path, @file) -> #{{{
 		super(@server, @parent, @path)
@@ -20,17 +21,20 @@ class wiz.framework.http.resource.static extends wiz.framework.http.router
 	load: () => #{{{ load src from filesystem
 		wiz.log.debug "reading file #{@file}"
 
+		# FIXME: change all file i/o to async
 		try
 			@src = fs.readFileSync @file
+			@stats = fs.statSync @file
 		catch e
 			@src = null
+			@stats = null
 			wiz.log.err "failed reading file #{@file}: #{e}"
 
 		try
 			ext = @file.split('.')
-			@contentType = wiz.framework.http.mime.getType ext[ext.length - 1]
+			@contentType = wiz.framework.http.mime.getType ext[ext.length - 1] unless @contentType
 		catch e
-			@contentType = null
+			@contentType = null unless @contentType
 	#}}}
 	compile: () => #{{{ returns function to render content
 		try
@@ -54,12 +58,30 @@ class wiz.framework.http.resource.static extends wiz.framework.http.router
 	handler: (req, res) => #{{{ send @content as http response
 		@load() unless @src
 		@render() unless @content
+
+		if not @dynamic
+			# FIXME: check etag header and if-none-match
+			notModified = undefined
+			if req.headers?['if-modified-since']?
+				try
+					ims = new Date(req.headers['if-modified-since'])
+					lmt = new Date(@stats.mtime)
+					notModified = (ims - lmt == 0)
+				catch e
+					wiz.log.debug "unable to compare last modified time and if-modified-since headers: #{e}"
+
+			# send 304 if cache is up to date
+			if notModified
+				return @server.respond req, res, 304
+
+			res.setHeader 'Last-Modified', @stats.mtime if @stats and @stats.mtime
+
 		res.setHeader 'Content-Type', @contentType if @contentType
 		res.setHeader 'Content-Length', @content.length if @content and @content.length
-		if @final
-			res.end @content
-		else
-			res.write @content
+
+		res.write @content
+
+		res.end() if @final
 	#}}}
 
 class wiz.framework.http.resource.folder extends wiz.framework.http.router
@@ -69,7 +91,7 @@ class wiz.framework.http.resource.folder extends wiz.framework.http.router
 		super(@server, @parent, @path)
 	#}}}
 	init: () => #{{{ scan folder for files, add them to route list
-		console.log "scanning #{@path}"
+		#wiz.log.debug "scanning #{@path}"
 		try
 			files = fs.readdirSync @path
 		catch e

@@ -30,7 +30,7 @@ class wiz.framework.http.server extends wiz.base # base server object
 		@server = http.createServer (req, res, out) =>
 
 			req.receivedBytes = 0
-			res.setHeader 'X-Powered-By', 'wiz'
+			res.setHeader 'X-Powered-By', 'wiz-framework'
 
 			req.on 'data', (chunk) =>
 				return if req.receivedBytes > @config.maxRequestLimit
@@ -42,6 +42,9 @@ class wiz.framework.http.server extends wiz.base # base server object
 			res.on 'finish', () =>
 				# log the result of the request
 				@log req, res, out
+
+			# FIXME: parse url params and body
+			#wiz.log.debug req.url
 
 			# route the request
 			req.level = 0
@@ -82,25 +85,23 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 			catch e # otherwise send 500 error
 
-				@error req, res, e
+				@respond req, res, 500, e
 
 		else if route?.handler? and (route.method is 'ANY' or route.method is req.method)
 
 			try # handle the request if we can
 
 				#wiz.log.debug "handling request"
-				res.statusCode = 200
 				route.handler req, res, out
 
 			catch e # otherwise send 500 error
 
 				console.log e.stack
-				@error req, res, e.toString()
+				@respond req, res, 500, e.toString()
 
 		else # 404 route not found
 
-			res.statusCode = 404
-			@catchall req, res, out
+			@respond req, res, 404, out
 
 	#}}}
 
@@ -117,13 +118,18 @@ class wiz.framework.http.server extends wiz.base # base server object
 	log: (req, res) => #{{{ http logger
 		wiz.log.info "HTTP/#{req.httpVersion} #{res.statusCode} -> [#{@getIP(req)}] #{req.method} #{req.url} (#{req.headers['user-agent']})"
 	#}}}
-	error: (req, res, err) => #{{{ 500 handler
-		wiz.log.err err
-		res.statusCode = 500
-		res.end(if wiz.style is 'DEV' then err else 'something bad happened')
-	#}}}
-	catchall: (req, res, out) => #{{{ 404 handler
-		res.write 'file not found'
+
+	respond: (req, res, numeric, err) => # generic http responder
+		res.statusCode = numeric
+		switch numeric
+			when 304
+				res.write 'not modified'
+			when 404
+				res.write 'file not found'
+			when 500
+				wiz.log.err "FAIL: #{err}"
+				res.write err if wiz.style is 'DEV'
+
 		res.end()
 	#}}}
 
