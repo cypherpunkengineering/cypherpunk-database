@@ -1,5 +1,5 @@
-require '..'
-require '../http/server'
+require '../..'
+require '../../http/server'
 
 wiz.app 'testor'
 
