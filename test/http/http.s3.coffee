@@ -1,6 +1,6 @@
-require '..'
-require '../http/server'
-require '../http/s3'
+require '../..'
+require '../../http/server'
+require '../../http/s3'
 
 fs = require 'fs'
 
