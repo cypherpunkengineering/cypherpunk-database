@@ -29,9 +29,8 @@ class wiz.framework.http.server extends wiz.base # base server object
 		# create server using NodeJS built-in http module
 		@server = http.createServer (req, res, out) =>
 
+			# limit request size
 			req.receivedBytes = 0
-			res.setHeader 'X-Powered-By', 'wiz-framework'
-
 			req.on 'data', (chunk) =>
 				return if req.receivedBytes > @config.maxRequestLimit
 				req.receivedBytes += chunk.length
@@ -39,12 +38,18 @@ class wiz.framework.http.server extends wiz.base # base server object
 					wiz.log.crit "#{@getIP(req)} max request limit of #{@config.maxRequestLimit} bytes exceeded!"
 					req.destroy()
 
+			# log all requests
 			res.on 'finish', () =>
 				# log the result of the request
 				@log req, res, out
 
-			# FIXME: parse url params and body
-			#wiz.log.debug req.url
+			# tell the world how awesome we are
+			res.setHeader 'X-Powered-By', 'wiz-framework'
+
+			# parse URL params
+			return unless @parseURL(req, res)
+
+			# TODO: parse req.body
 
 			# route the request
 			req.level = 0
@@ -55,6 +60,10 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 		# listen for requests
 		@listen()
+	#}}}
+	init: () => #{{{
+		@root.each (r) =>
+			r.init()
 	#}}}
 	listen: () => #{{{ listen for HTTP requests according to config
 		if not @config.listeners
@@ -104,22 +113,7 @@ class wiz.framework.http.server extends wiz.base # base server object
 			@respond req, res, 404, out
 
 	#}}}
-
-	init: () => #{{{
-		@root.each (r) =>
-			r.init()
-	#}}}
-
-	getIP: (req) =>
-		ip = req.connection.remoteAddress or ''
-		ip = wiz.framework.util.strval.inet6_prefix_trim ip
-		return ip
-
-	log: (req, res) => #{{{ http logger
-		wiz.log.info "HTTP/#{req.httpVersion} #{res.statusCode} -> [#{@getIP(req)}] #{req.method} #{req.url} (#{req.headers['user-agent']})"
-	#}}}
-
-	respond: (req, res, numeric, err) => # generic http responder
+	respond: (req, res, numeric, err) => #{{{ generic http responder
 		res.statusCode = numeric
 		switch numeric
 			when 304
@@ -131,6 +125,36 @@ class wiz.framework.http.server extends wiz.base # base server object
 				res.write err if wiz.style is 'DEV'
 
 		res.end()
+	#}}}
+	log: (req, res) => #{{{ http logger
+		wiz.log.info "HTTP/#{req.httpVersion} #{res.statusCode} -> [#{@getIP(req)}] #{req.method} #{req.url} (#{req.headers['user-agent']})"
+	#}}}
+
+	parseURL: (req, res) => #{{{ parse url params and body
+		req.params = {}
+
+		try
+			url = req.url
+			qm = url.indexOf('?')
+			if qm > 0 and qm < url.length
+				args = url.slice(qm + 1, url.length)
+				req.url = url.slice(0, qm)
+				for arg in args.split('&')
+					param = arg.split('=')
+					x = decodeURIComponent(param[0])
+					y = decodeURIComponent(param[1]) or ''
+					req.params[x] = y if x? and x isnt '' and y?
+		catch e
+			wiz.log.err "error parsing url: #{e}"
+			@respond req, res, 400, e.toString()
+			return false
+
+		return true
+	#}}}
+	getIP: (req) => #{{{
+		ip = req.connection.remoteAddress or ''
+		ip = wiz.framework.util.strval.inet6_prefix_trim ip
+		return ip
 	#}}}
 
 class wiz.framework.http.router extends wiz.framework.list.tree
