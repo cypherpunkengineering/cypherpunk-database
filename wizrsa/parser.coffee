@@ -1,62 +1,177 @@
 require '..'
 require '../wizrsa'
-rsa = require '../wizrsa/rsa'
 require '../util/list'
+
+rsa = require '../wizrsa/rsa'
 
 wiz.package 'wiz.framework.wizrsa.parser'
 
-class wiz.framework.wizrsa.parser.asnvalue extends wiz.framework.list.tree
-	constructor: (@inBuffer) ->
+class wiz.framework.wizrsa.parser
+	@PRIVATE_KEY_HEADER = "-----BEGIN RSA PRIVATE KEY-----"
+	@PUBLIC_KEY_HEADER = "-----BEGIN PUBLIC KEY-----"
+	@X509_HEADER = "-----BEGIN CERTIFICATE-----"
+
+	constructor: () ->
+
+	@fromBuffer: (inBuffer) =>
+		stringValue = inBuffer.toString("utf8")
+		headerLength = stringValue.indexOf('\n')
+		header = stringValue.substr(0, headerLength)
+		switch header
+			when @PRIVATE_KEY_HEADER then parserKey = new wiz.framework.wizrsa.parser.privateKey()
+			when @PUBLIC_KEY_HEADER then parserKey = new wiz.framework.wizrsa.parser.publicKey()
+			when @X509_HEADER then parserKey = new wiz.framework.wizrsa.parser.certificate()
+			else return null
+		strippedString = parserKey.stripHeaderFooter(stringValue)
+		outBuffer = new Buffer(strippedString, 'base64')
+		key = @parseBuffer(outBuffer, parserKey)
+		#key.setValues()
+		return key
+
+	@parseBuffer: (inBuffer, currentBranch, position=0, depth='') =>
+		while (position < inBuffer.length)
+			slice = inBuffer.slice(position)
+			newBranch = currentBranch.branchAdd(wiz.framework.wizrsa.parser.asnnode.fromBuffer(slice))
+			#console.log newBranch.type.description
+			if newBranch.type.container
+				@parseBuffer(newBranch.getValueBuffer(), newBranch, 0, depth+"   ")
+			position += newBranch.getNodeSize()
+		return currentBranch
+
+class wiz.framework.wizrsa.parser.asnnode extends wiz.framework.list.tree
+	class nodeType
+		constructor: (@tag, @description, @container = false) ->
+
+	class scopeType
+		constructor: (@scope, @description) ->
+
+	@scopeTypes:
+		0b00000000:	new scopeType(0b00000000, "UNIVERSAL")
+		0b01000000:	new scopeType(0b01000000, "APPLICATION")
+		0b10000000:	new scopeType(0b10000000, "CONTEXT")
+		0b11000000:	new scopeType(0b11000000, "PRIVATE")
+
+	@universalTypes:
+
+		0x00: new nodeType(0x00, 'basic encoding rule header')
+		0x01: new nodeType(0x01, 'boolean')
+		0x02: new nodeType(0x02, 'integer')
+		0x03: new nodeType(0x03, 'bit string', true)
+		0x04: new nodeType(0x04, 'octet string', true)
+		0x05: new nodeType(0x05, 'null')
+		0x06: new nodeType(0x06, 'object identifier')
+		0x07: new nodeType(0x07, 'ObjectDescriptor')
+		0x08: new nodeType(0x08, 'instance of/external')
+		0x09: new nodeType(0x09, 'real')
+		0x0A: new nodeType(0x0A, 'enumerated')
+		0x0B: new nodeType(0x0B, 'enumerated')
+		0x0C: new nodeType(0x0C, 'utf8string')
+		0x0D: new nodeType(0x0D, 'relative-oid')
+		0x10: new nodeType(0x10, 'sequence', true)
+		0x11: new nodeType(0x11, 'set, set of', true)
+		0x12: new nodeType(0x12, 'numeric string')
+		0x13: new nodeType(0x13, 'printable string')
+		0x14: new nodeType(0x14, 'teletex string')
+		0x15: new nodeType(0x15, 'videotex string')
+		0x16: new nodeType(0x16, 'ia5string')
+		0x17: new nodeType(0x17, 'utctime')
+		0x18: new nodeType(0x18, 'GeneralizedTime')
+		0x19: new nodeType(0x19, 'GraphicString')
+		0x1A: new nodeType(0x1A, 'VisibleString, ISO64String')
+		0x1B: new nodeType(0x1B, 'GeneralString')
+		0x1C: new nodeType(0x1C, 'UniversalString')
+		0x1D: new nodeType(0x1D, 'character string')
+		0x1E: new nodeType(0x1E, 'BMPString')
+
+	constructor: (@scope, @type, @inBuffer) ->
 		super()
+
+	@fromBuffer: (inBuffer) =>
+		tagBuffer = wiz.framework.wizrsa.parser.asnnode.getASNtag(inBuffer)
+		tagInt = tagBuffer.readUInt8(0)
+		tag = tagInt & 0b00011111
+		scopeInt = tagInt & 0b11000000
+		scope = @scopeTypes[scopeInt]
+		switch scope.description
+			when "UNIVERSAL"
+				type = @universalTypes[tag]
+			else
+				type = new nodeType(tag, "[#{tag}]")
+
+		if not type?
+			console.log 'invalid asn tag value: '+ tag
+			return null
+
+		n = new wiz.framework.wizrsa.parser.asnnode(scope, type, inBuffer)
+		return n
 
 	setValue: (inValue) =>
 		@value = inValue
 
-	getASNtag: (pos) =>
-		tagByte = @inBuffer.slice(pos,1)
+	@getASNtag: (inBuffer) =>
+		tagByte = inBuffer.slice(0,1)
 		return tagByte
 
-	getASNsizeBufferLength: (pos) =>
-		lengthByte = @inBuffer.readUInt8(pos)
+	getASNsizeBufferLength: () =>
+		# Size buffer length should always be 1 byte
+		lengthByte = @inBuffer.slice(1,2).readUInt8(0)
 		if lengthByte < 128
 			# Return -1 if we don't need to advance position when reading sizebufferlength
 			return -1
 		sizeBufLength = lengthByte - 0x80
 		return sizeBufLength
 
-	getASNvalueSize: (pos, sizeBufLength) =>
-		sizeBuf = @inBuffer.slice(pos, pos+sizeBufLength)
+	getASNvalueSize: () =>
+		sizeBufferLength = @getASNsizeBufferLength()
+		if sizeBufferLength == -1
+			sizeBuf = @inBuffer.slice(1,2)
+		else 
+			sizeBuf = @inBuffer.slice(2, 2+sizeBufferLength)
 		size = parseInt(sizeBuf.toString('hex'), 16)
 		return size
 
-	parseValue: () =>
-		pos = 0
-		tagByte = @getASNtag(pos)
-		if tagByte.toString('hex') != @type.toString('hex')
-			throw "Invalid RSA Key"
-		pos++
-		sizeBufLength = @getASNsizeBufferLength(pos)
-		# Don
-		if sizeBufLength == -1
-			# Don't advance position to read size buffer length which must be only 1 byte long
-			sizeBufLength = 1
+	getValueBuffer: () =>
+		sizeBufSize = @getASNsizeBufferLength()
+		valueSize = @getASNvalueSize()
+		if sizeBufSize == -1
+			value = @inBuffer.slice(2,2+valueSize)
 		else
-			pos++
-		size = @getASNvalueSize(pos, sizeBufLength)
-		pos += sizeBufLength
-		@value = @inBuffer.slice(pos, pos+size)
-		@valueEndPosition = pos + size
-		return
+			value = @inBuffer.slice(2+sizeBufSize,2+sizeBufSize+valueSize)
+		return value
+
+	getNodeSize: () =>
+		size = @getASNsizeBufferLength()
+		if size < 0
+			size = 1
+		else
+			size++
+		size += @getASNvalueSize() + 1
+		return size
 
 	toString: () =>
 		@value.toString('hex')
 
+	printTree: (depthString = "") =>
+		n = @branchList.tail
+		printList = [ '13', '82', '86' ]
+		while n
+			if n.type.container
+				console.log depthString + n.type.description
+				n.printTree(depthString + "   ")
+			else
+				if printList.indexOf(n.type.tag.toString(16)) != -1
+					console.log depthString + n.type.description + " " + n.getValueBuffer().toString('utf8')
+				else
+					console.log depthString + n.type.description
+			n = n.prev
+
 	encode: () =>
-		result = @type
-		if @type == wiz.framework.wizrsa.TAG_BITSTRING
-			@value = Buffer.concat([new Buffer('00', 'hex'), @value])
-		if @value
-			size = @value.length
+		result = @tag
+		valueBuffer = @getValueBuffer()
+		if @tag == wiz.framework.wizrsa.parser.asnnode.nodeTypes.BITSTRING
+			valueBuffer = Buffer.concat([new Buffer('00', 'hex'), valueBuffer])
+		if valueBuffer
+			size = valueBuffer.length
 		else
 			size = 0
 
@@ -77,12 +192,30 @@ class wiz.framework.wizrsa.parser.asnvalue extends wiz.framework.list.tree
 			fb = new Buffer(firstByte.toString(16), "hex")
 			result = Buffer.concat([result, fb, sizeBuf])
 
-		result = Buffer.concat([result, @value])
+		result = Buffer.concat([result, valueBuffer])
 		return result
 
-class wiz.framework.wizrsa.parser.keyPair extends wiz.framework.list.tree
+class wiz.framework.wizrsa.parser.key extends wiz.framework.list.tree
 	constructor: (@modulus, @publicExponent) ->
 		super()
+
+	@createPublicKeyFromRSAkey: (publicKey) =>
+		key = new wiz.framework.wizrsa.parser.key()
+		s1 = key.branchAdd(new wiz.framework.wizrsa.parser.sequence())
+		s2 = s1.branchAdd(new wiz.framework.wizrsa.parser.sequence())
+		oid1 = s2.branchAdd(new wiz.framework.wizrsa.parser.oid())
+		oid1.setValue(new Buffer(wiz.framework.wizrsa.main.DER_ALGORITHM_ID, 'hex'))
+		null1 = s2.branchAdd(new wiz.framework.wizrsa.parser.nullobj())
+		null1.setValue(new Buffer("00",'hex'))
+		bs1 = s1.branchAdd(new wiz.framework.wizrsa.parser.bitstring())
+		s3 = bs1.branchAdd(new wiz.framework.wizrsa.parser.sequence())
+		modulus = s3.branchAdd(new wiz.framework.wizrsa.parser.integer())
+		modulusHex = wiz.framework.wizrsa.main.doPaddingOnHexstring key.n.toString(16)
+		modulusIntBuf.setValue(new Buffer(modulusHex,'hex'))
+		publicExponent = s3.branchAdd(new wiz.framework.wizrsa.parser.integer())
+		publicExponentHex = wiz.framework.wizrsa.main.doPaddingOnHexstring key.e.toString(16)
+		publicExponentIntBuf = new Buffer(publicExponentHex,'hex')
+		return key
 
 	encode: () =>
 		v = new Buffer(0)
@@ -92,13 +225,23 @@ class wiz.framework.wizrsa.parser.keyPair extends wiz.framework.list.tree
 			n = n.prev
 		return v
 
+	printTree: (depthString = "") =>
+		n = @branchList.tail
+		while n
+			if n.type.container
+				console.log n.type.description
+				n.printTree("   ")
+			else
+				console.log depthString + n.type.description
+			n = n.prev
+
 	getModulus: () =>
 		return @modulus
 
 	getPublicExponent: () =>
 		return @publicExponent
 
-class wiz.framework.wizrsa.parser.privateKey extends wiz.framework.wizrsa.parser.keyPair
+class wiz.framework.wizrsa.parser.privateKey extends wiz.framework.wizrsa.parser.key
 	constructor: (@modulus, @publicExponent, @privateExponent, @prime1, @prime2, @exponent1, @exponent2, @coefficient) ->
 		super()
 
@@ -107,35 +250,37 @@ class wiz.framework.wizrsa.parser.privateKey extends wiz.framework.wizrsa.parser
 		strippedString = @stripHeaderFooter(stringValue)
 		keyBuffer = new Buffer(strippedString, 'base64')
 		key = new wiz.framework.wizrsa.parser.privateKey()
-		s1 = key.branchAdd(new wiz.framework.wizrsa.parser.sequence(keyBuffer))
-		s1.parseValue()
-		version = s1.branchAdd(new wiz.framework.wizrsa.parser.integer(s1.value))
-		version.parseValue()
-		modulus = s1.branchAdd(new wiz.framework.wizrsa.parser.integer(s1.value.slice(version.valueEndPosition,s1.value.length)))
-		modulus.parseValue()
-		publicExponent = s1.branchAdd(new wiz.framework.wizrsa.parser.integer(modulus.inBuffer.slice(modulus.valueEndPosition,modulus.inBuffer.length)))
-		publicExponent.parseValue()
-		privateExponent = s1.branchAdd(new wiz.framework.wizrsa.parser.integer(publicExponent.inBuffer.slice(publicExponent.valueEndPosition,publicExponent.inBuffer.length)))
-		privateExponent.parseValue()
-		prime1 = s1.branchAdd(new wiz.framework.wizrsa.parser.integer(privateExponent.inBuffer.slice(privateExponent.valueEndPosition,privateExponent.inBuffer.length)))
-		prime1.parseValue()
-		prime2 = s1.branchAdd(new wiz.framework.wizrsa.parser.integer(prime1.inBuffer.slice(prime1.valueEndPosition,prime1.inBuffer.length)))
-		prime2.parseValue()
-		exponent1 = s1.branchAdd(new wiz.framework.wizrsa.parser.integer(prime2.inBuffer.slice(prime2.valueEndPosition,prime2.inBuffer.length)))
-		exponent1.parseValue()
-		exponent2 = s1.branchAdd(new wiz.framework.wizrsa.parser.integer(exponent1.inBuffer.slice(exponent1.valueEndPosition,exponent1.inBuffer.length)))
-		exponent2.parseValue()
-		coefficient = s1.branchAdd(new wiz.framework.wizrsa.parser.integer(exponent2.inBuffer.slice(exponent2.valueEndPosition,exponent2.inBuffer.length)))
-		coefficient.parseValue()
-		key.modulus = modulus.value
-		key.publicExponent = publicExponent.value
-		key.privateExponent = privateExponent.value
-		key.prime1 = prime1.value
-		key.prime2 = prime2.value
-		key.exponent1 = exponent1.value
-		key.exponent2 = exponent2.value
-		key.coefficient = coefficient.value
+		wiz.framework.wizrsa.parser.parseBuffer(keyBuffer, key)
+		key.setValues()
 		return key
+
+	setValues: () =>
+		list = [
+				"modulus"
+				"publicExponent"
+				"privateExponent"
+				"prime1"
+				"prime2"
+				"exponent1"
+				"exponent2"
+				"coefficient"
+				]
+		n = @branchList.tail
+		i = 0
+		@tailEach (n) =>
+			if (!n.type.container)
+				this[list[i]] = n.getValueBuffer()
+				#console.log n.getValueBuffer().toString('hex')
+				i++
+		@modulus = this[list["modulus"]]
+		@publicExponent = this[list["publicExponent"]]
+		@privateExponent = this[list["privateExponent"]]
+		@prime1 = this[list["prime1"]]
+		@prime2 = this[list["prime2"]]
+		@exponent1 = this[list["exponent1"]]
+		@exponent2 = this[list["exponent2"]]
+		@coefficient = this[list["coefficient"]]
+
 
 	@fromRSAkey: (privateKey) =>
 		key = new wiz.framework.wizrsa.parser.privateKey()
@@ -143,85 +288,70 @@ class wiz.framework.wizrsa.parser.privateKey extends wiz.framework.wizrsa.parser
 		version = s1.branchAdd(new wiz.framework.wizrsa.parser.integer())
 		version.setValue(new Buffer("00",'hex'))
 		modulus = s1.branchAdd(new wiz.framework.wizrsa.parser.integer())
-		modulusHex = wiz.framework.wizrsa.doPaddingOnHexstring privateKey.n.toString(16)
+		modulusHex = wiz.framework.wizrsa.main.doPaddingOnHexstring privateKey.n.toString(16)
 		modulusIntBuf = new Buffer(modulusHex, 'hex')
 		modulus.setValue(modulusIntBuf)
 		publicExponent = s1.branchAdd(new wiz.framework.wizrsa.parser.integer())
-		publicExponentHex = wiz.framework.wizrsa.doPaddingOnHexstring privateKey.e.toString(16)
+		publicExponentHex = wiz.framework.wizrsa.main.doPaddingOnHexstring privateKey.e.toString(16)
 		publicExponentIntBuf = new Buffer(publicExponentHex, 'hex')
 		publicExponent.setValue(publicExponentIntBuf)
 		privateExponent = s1.branchAdd(new wiz.framework.wizrsa.parser.integer())
-		privateExponentHex = wiz.framework.wizrsa.doPaddingOnHexstring privateKey.d.toString(16)
+		privateExponentHex = wiz.framework.wizrsa.main.doPaddingOnHexstring privateKey.d.toString(16)
 		privateExponentIntBuf = new Buffer(privateExponentHex, 'hex')
 		privateExponent.setValue(privateExponentIntBuf)
 		prime1 = s1.branchAdd(new wiz.framework.wizrsa.parser.integer())
-		prime1Hex = wiz.framework.wizrsa.doPaddingOnHexstring privateKey.p.toString(16)
+		prime1Hex = wiz.framework.wizrsa.main.doPaddingOnHexstring privateKey.p.toString(16)
 		prime1IntBuf = new Buffer(prime1Hex, 'hex')
 		prime1.setValue(prime1IntBuf)
 		prime2 = s1.branchAdd(new wiz.framework.wizrsa.parser.integer())
-		prime2Hex = wiz.framework.wizrsa.doPaddingOnHexstring privateKey.q.toString(16)
+		prime2Hex = wiz.framework.wizrsa.main.doPaddingOnHexstring privateKey.q.toString(16)
 		prime2IntBuf = new Buffer(prime2Hex, 'hex')
 		prime2.setValue(prime2IntBuf)
 		exponent1 = s1.branchAdd(new wiz.framework.wizrsa.parser.integer())
-		exponent1Hex = wiz.framework.wizrsa.doPaddingOnHexstring privateKey.dmp1.toString(16)
+		exponent1Hex = wiz.framework.wizrsa.main.doPaddingOnHexstring privateKey.dmp1.toString(16)
 		exponent1IntBuf = new Buffer(exponent1Hex, 'hex')
 		exponent1.setValue(exponent1IntBuf)
 		exponent2 = s1.branchAdd(new wiz.framework.wizrsa.parser.integer())
-		exponent2Hex = wiz.framework.wizrsa.doPaddingOnHexstring privateKey.dmq1.toString(16)
+		exponent2Hex = wiz.framework.wizrsa.main.doPaddingOnHexstring privateKey.dmq1.toString(16)
 		exponent2IntBuf = new Buffer(exponent2Hex, 'hex')
 		exponent2.setValue(exponent2IntBuf)
 		coefficient = s1.branchAdd(new wiz.framework.wizrsa.parser.integer())
-		coefficientHex = wiz.framework.wizrsa.doPaddingOnHexstring privateKey.coeff.toString(16)
+		coefficientHex = wiz.framework.wizrsa.main.doPaddingOnHexstring privateKey.coeff.toString(16)
 		coefficientIntBuf = new Buffer(coefficientHex, 'hex')
 		coefficient.setValue(coefficientIntBuf)
 		return key
 
 	toPEMbuffer: () =>
 		header = "-----BEGIN RSA PRIVATE KEY-----\n"
-		footer = "-----END RSA PRIVATE KEY-----"
+		footer = "-----END RSA PRIVATE KEY-----\n"
 		publicPEM = rsa.linebrk(@encode().toString('base64'),64) + "\n"
 		pemBuffer = new Buffer(header+publicPEM+footer)
 		return pemBuffer
 
-	@stripHeaderFooter: (stringValue) =>
+	stripHeaderFooter: (stringValue) =>
 		stringValue = stringValue.replace("-----BEGIN RSA PRIVATE KEY-----", "")
 		stringValue = stringValue.replace("-----END RSA PRIVATE KEY-----", "")
 		stringValue = stringValue.replace(/[\s\n]+/g, "")
 		return stringValue
 
-class wiz.framework.wizrsa.parser.publicKey extends wiz.framework.wizrsa.parser.keyPair
+class wiz.framework.wizrsa.parser.certificate extends wiz.framework.wizrsa.parser.key
+	constructor: () ->
+		super()
 
-	@fromBuffer: (buffer) =>
-		stringValue = buffer.toString("utf8")
-		strippedString = @stripHeaderFooter(stringValue)
-		keyBuffer = new Buffer(strippedString, 'base64')
-		key = new wiz.framework.wizrsa.parser.publicKey()
-		s1 = key.branchAdd(new wiz.framework.wizrsa.parser.sequence(keyBuffer))
-		s1.parseValue()
-		s2 = s1.branchAdd(new wiz.framework.wizrsa.parser.sequence(s1.value))
-		s2.parseValue()
-		oid1 = s2.branchAdd(new wiz.framework.wizrsa.parser.oid(s2.value))
-		oid1.parseValue()
-		null1 = s2.branchAdd(new wiz.framework.wizrsa.parser.nullobj(s2.value.slice(oid1.valueEndPosition,s2.value.length)))
-		null1.parseValue()
-		bs1 = s1.branchAdd(new wiz.framework.wizrsa.parser.bitstring(s1.value.slice(s2.valueEndPosition,s1.value.length)))
-		bs1.parseValue()
-		s3 = bs1.branchAdd(new wiz.framework.wizrsa.parser.sequence(bs1.value.slice(1,bs1.value.length)))
-		s3.parseValue()
-		i1 = s3.branchAdd(new wiz.framework.wizrsa.parser.integer(s3.value))
-		i1.parseValue()
-		i2 = s3.branchAdd(new wiz.framework.wizrsa.parser.integer(s3.value.slice(i1.valueEndPosition,s3.value.length)))
-		i2.parseValue()
-		key.modulus = i1.value
-		key.publicExponent = i2.value
-		return key
+	stripHeaderFooter: (stringValue) =>
+		stringValue = stringValue.replace("-----BEGIN CERTIFICATE-----", "")
+		stringValue = stringValue.replace("-----END CERTIFICATE-----", "")
+		stringValue = stringValue.replace(/[\s\n]+/g, "")
+		return stringValue
+
+class wiz.framework.wizrsa.parser.publicKey extends wiz.framework.wizrsa.parser.key
 
 	@fromModulusExponent: (modulus, publicExponent) =>
 		key = new wiz.framework.wizrsa.parser.publicKey(modulus, publicExponent)
 		s1 = key.branchAdd(new wiz.framework.wizrsa.parser.sequence())
 		s2 = s1.branchAdd(new wiz.framework.wizrsa.parser.sequence())
 		oid1 = s2.branchAdd(new wiz.framework.wizrsa.parser.oid())
-		oid1.setValue(new Buffer(wiz.framework.wizrsa.DER_ALGORITHM_ID, 'hex'))
+		oid1.setValue(new Buffer(wiz.framework.wizrsa.main.DER_ALGORITHM_ID, 'hex'))
 		null1 = s2.branchAdd(new wiz.framework.wizrsa.parser.nullobj())
 		null1.setValue(new Buffer(0))
 		bs1 = s1.branchAdd(new wiz.framework.wizrsa.parser.bitstring())
@@ -234,7 +364,7 @@ class wiz.framework.wizrsa.parser.publicKey extends wiz.framework.wizrsa.parser.
 
 	toPEMbuffer: () =>
 		header = "-----BEGIN PUBLIC KEY-----\n"
-		footer = "-----END PUBLIC KEY-----"
+		footer = "-----END PUBLIC KEY-----\n"
 		publicPEM = rsa.linebrk(@encode().toString('base64'),64) + "\n"
 		pemBuffer = new Buffer(header+publicPEM+footer)
 		return pemBuffer
@@ -245,7 +375,7 @@ class wiz.framework.wizrsa.parser.publicKey extends wiz.framework.wizrsa.parser.
 		stringValue = stringValue.replace(/[\s\n]+/g, "")
 		return stringValue
 
-class wiz.framework.wizrsa.parser.encapsulatingasn extends wiz.framework.wizrsa.parser.asnvalue
+class wiz.framework.wizrsa.parser.encapsulatingasn extends wiz.framework.wizrsa.parser.asnnode
 	encode: () =>
 		v = new Buffer(0)
 		#x = @each (f) =>
@@ -256,33 +386,18 @@ class wiz.framework.wizrsa.parser.encapsulatingasn extends wiz.framework.wizrsa.
 		@value = v
 		super()
 
-class wiz.framework.wizrsa.parser.sequence extends wiz.framework.wizrsa.parser.encapsulatingasn
-	type: wiz.framework.wizrsa.TAG_SEQUENCE
-
-class wiz.framework.wizrsa.parser.bitstring extends wiz.framework.wizrsa.parser.encapsulatingasn
-	type: wiz.framework.wizrsa.TAG_BITSTRING
-
-class wiz.framework.wizrsa.parser.integer extends wiz.framework.wizrsa.parser.asnvalue
-	type: wiz.framework.wizrsa.TAG_INTEGER
-
-class wiz.framework.wizrsa.parser.oid extends wiz.framework.wizrsa.parser.asnvalue
-	type: wiz.framework.wizrsa.TAG_OID
-
-class wiz.framework.wizrsa.parser.nullobj extends wiz.framework.wizrsa.parser.asnvalue
-	type: wiz.framework.wizrsa.TAG_NULL
-
-class wiz.framework.wizrsa.parser.parsePublicKey
+#class wiz.framework.wizrsa.parser.parsePublicKey
 
 
-fs = require 'fs'
+#fs = require 'fs'
 #pubkey = fs.readFileSync 'public.pem'
 #blah = wiz.framework.wizrsa.parser.publicKey.fromBuffer(pubkey)
 #privkeybuf = fs.readFileSync 'private.pem'
 #blah = wiz.framework.wizrsa.parser.privateKey.fromBuffer(privkeybuf)
-privkey = new rsa.Key()
-privkey.generate(2048, "10001")
+#privkey = new rsa.Key()
+#privkey.generate(2048, "10001")
 #console.log privkey.n.toString(16).length
-blah = wiz.framework.wizrsa.parser.privateKey.fromRSAkey(privkey)
+#blah = wiz.framework.wizrsa.parser.privateKey.fromRSAkey(privkey)
 #privkey.setPrivateEx(blah.modulus.toString('hex'),blah.publicExponent.toString('hex'),blah.privateExponent.toString('hex'),blah.prime1.toString('hex'),blah.prime2.toString('hex'),blah.exponent1.toString('hex'),blah.exponent2.toString('hex'),blah.coefficient.toString('hex'))
 #console.log blah.modulus.toString('hex')
 #console.log blah.publicExponent.toString('hex')
@@ -295,4 +410,4 @@ blah = wiz.framework.wizrsa.parser.privateKey.fromRSAkey(privkey)
 #exponentIntBuf = new Buffer(exp, 'hex')
 #blah = wiz.framework.wizrsa.parser.publicKey.fromModulusExponent(modulusIntBuf,exponentIntBuf)
 #console.log blah.encode().toString('hex')
-console.log blah.toPEMbuffer().toString('utf8')
+#console.log blah.toPEMbuffer().toString('utf8')
