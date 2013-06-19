@@ -54,12 +54,14 @@ class wiz.framework.list.branchList extends wiz.framework.list.doublyList
 				n.each(f)
 			n = n.next
 
-	tailEach: (f) =>
+	tailEach: (d, f) =>
 		n = @tail
 		while n
-			f(n)
+			f(d, n)
 			if n instanceof wiz.framework.list.tree
-				n.tailEach(f)
+				d++
+				n.tailEach(d, f)
+				d--
 			n = n.prev
 
 class wiz.framework.list.node
@@ -80,7 +82,7 @@ class wiz.framework.list.tree extends wiz.framework.list.node
 	each: (f) =>
 		@branchList.each(f)
 
-	tailEach: (f) =>
-		@branchList.tailEach(f)
+	tailEach: (d, f) =>
+		@branchList.tailEach(d, f)
 
 # vim: foldmethod=marker wrap

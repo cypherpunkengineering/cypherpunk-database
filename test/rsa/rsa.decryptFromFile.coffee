@@ -1,5 +1,5 @@
 require '..'
-require '../wizrsa'
+require '../rsa'
 
 fs = require 'fs'
 
@@ -7,7 +7,7 @@ keyfiles =
 	priv: fs.readFileSync 'private.pem'
 	pub: fs.readFileSync 'public.pem'
 
-key = wiz.framework.wizrsa.loadPrivateKeyFromPEMstr keyfiles.priv.toString()
+key = wiz.framework.rsa.loadPrivateKeyFromPEMstr keyfiles.priv.toString()
 
 text = fs.readFileSync 'enc.out'
 enctext = text.toString('hex')
