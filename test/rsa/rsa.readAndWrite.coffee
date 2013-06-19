@@ -1,5 +1,5 @@
 require '..'
-require '../wizrsa'
+require '../rsa'
 
 fs = require 'fs'
 
@@ -13,11 +13,11 @@ else
 	console.log 'key read failure'
 
 if privkey
-	key = wiz.framework.wizrsa.loadPrivateKeyFromPEMstr privkey.toString()
+	key = wiz.framework.rsa.loadPrivateKeyFromPEMstr privkey.toString()
 
 if key
-	fs.writeFileSync 'private.pem', wiz.framework.wizrsa.getPrivatePEMfromKey(key)
-	fs.writeFileSync 'public.pem', wiz.framework.wizrsa.getPublicPEMfromKey(key)
+	fs.writeFileSync 'private.pem', wiz.framework.rsa.getPrivatePEMfromKey(key)
+	fs.writeFileSync 'public.pem', wiz.framework.rsa.getPublicPEMfromKey(key)
 	console.log 'key written to filesystem'
 else
 	console.log 'key write failure'

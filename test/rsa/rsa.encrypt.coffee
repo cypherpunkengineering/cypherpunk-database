@@ -1,11 +1,11 @@
 require '..'
-require '../wizrsa'
+require '../rsa'
 
 fs = require 'fs'
 
-key = wiz.framework.wizrsa.generateKeyPair()
-fs.writeFileSync 'private.pem', wiz.framework.wizrsa.getPrivatePEMfromKey(key)
-fs.writeFileSync 'public.pem', wiz.framework.wizrsa.getPublicPEMfromKey(key)
+key = wiz.framework.rsa.generateKeyPair()
+fs.writeFileSync 'private.pem', wiz.framework.rsa.getPrivatePEMfromKey(key)
+fs.writeFileSync 'public.pem', wiz.framework.rsa.getPublicPEMfromKey(key)
 
 text = 'hello one two three'
 
