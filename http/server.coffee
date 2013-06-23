@@ -3,6 +3,7 @@
 require '..'
 require '../util/list'
 require '../util/strval'
+require './csp'
 
 http = require 'http'
 
@@ -21,7 +22,12 @@ class wiz.framework.http.server extends wiz.base # base server object
 	constructor: () -> #{{{
 		super()
 		@config = new wiz.framework.http.config()
+
+		@contentSecurityPolicy = new wiz.framework.http.contentSecurityPolicy()
+		@contentTypeOptions = 'nosniff'
+		@frameOptions = 'sameorigin'
 	#}}}
+
 	main: () => #{{{ main server process
 		# create tree trunk
 		@root = new wiz.framework.http.router this, null, ''
@@ -45,6 +51,15 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 			# tell the world how awesome we are
 			res.setHeader 'X-Powered-By', 'wiz-framework'
+
+			# prevent click jacking
+			res.setHeader 'X-Frame-Options', @frameOptions if @frameOptions
+
+			# disable mime type guessing to prevent XSS
+			res.setHeader 'X-Content-Type-Options', @contentTypeOptions if @contentTypeOptions
+
+			# set security policy
+			res.setHeader 'Content-Security-Policy', @contentSecurityPolicy if @contentSecurityPolicy
 
 			# parse URL params
 			return unless @parseURL(req, res)
