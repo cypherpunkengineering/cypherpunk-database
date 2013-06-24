@@ -1,23 +1,27 @@
-require '..'
-require '../rsa'
+require '../..'
+require '../../rsa'
 
 fs = require 'fs'
 
 keyfile = process.argv[2] or 'private.pem'
 console.log "reading #{keyfile}"
 
-privkey = fs.readFileSync keyfile
-if privkey
+privkeybuffer = fs.readFileSync keyfile
+if privkeybuffer
 	console.log 'key read from filesystem'
 else
 	console.log 'key read failure'
 
-if privkey
-	key = wiz.framework.rsa.loadPrivateKeyFromPEMstr privkey.toString()
+if privkeybuffer
+	privkey = wiz.framework.rsa.root.fromBuffer privkeybuffer
+	pubkey = wiz.framework.rsa.publicKey.fromPrivateKey privkey
 
-if key
-	fs.writeFileSync 'private.pem', wiz.framework.rsa.getPrivatePEMfromKey(key)
-	fs.writeFileSync 'public.pem', wiz.framework.rsa.getPublicPEMfromKey(key)
-	console.log 'key written to filesystem'
+if privkey
+	fs.writeFileSync 'private.pem', privkey.toPEMbuffer()
+	console.log 'private key written to filesystem'
+
+if pubkey
+	fs.writeFileSync 'public.pem', pubkey.toPEMbuffer()
+	console.log 'public key written to filesystem'
 else
 	console.log 'key write failure'
