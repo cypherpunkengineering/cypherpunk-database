@@ -191,18 +191,6 @@ class wiz.framework.rsa.asnnode extends wiz.framework.list.tree
 			else
 				return value.toString('utf8')
 	#}}}
-	printTree: () => #{{{
-		@tailEach (d, n) =>
-			printList = [ '06', '13', '82', '86' ]
-			if n.type.container
-				console.log depthString + n.type.description
-				n.printTree(depthString + "   ")
-			else
-				if printList.indexOf(n.type.id.toString(16)) != -1
-					console.log depthString + n.type.description + " " + n.getValueBuffer().toString('utf8')
-				else
-					console.log depthString + n.type.description
-	#}}}
 	generateTag: () => #{{{
 		combined = (@scope.id | @type.id)
 
@@ -274,10 +262,10 @@ class wiz.framework.rsa.root extends wiz.framework.list.tree
 		switch header
 			when @PRIVATE_KEY_HEADER
 				rootNode = new wiz.framework.rsa.privateKey()
-				key.setValuesFromTree()
+				#rootNode.setValuesFromTree()
 			when @PUBLIC_KEY_HEADER
 				rootNode = new wiz.framework.rsa.publicKey()
-				key.setValuesFromTree()
+				#rootNode.setValuesFromTree()
 			when @X509_HEADER
 				rootNode = new wiz.framework.rsa.certificate()
 			else
@@ -286,6 +274,7 @@ class wiz.framework.rsa.root extends wiz.framework.list.tree
 		strippedString = rootNode.stripHeaderFooter(stringValue)
 		outBuffer = new Buffer(strippedString, 'base64')
 		rootBranch = @parseBuffer(outBuffer, rootNode)
+		rootBranch.setValuesFromTree()
 		return rootBranch
 	#}}}
 	@parseBuffer: (inBuffer, currentBranch, position = 0) => #{{{ recursive method to parse containers
@@ -466,7 +455,7 @@ class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
 		]
 		n = @branchList.tail
 		i = 0
-		@tailEach (d, n) =>
+		@tailEach 0, (d, n) =>
 			if (!n.type.container)
 				this[list[i]] = n.getValueBuffer()
 				#console.log n.getValueBuffer().toString('hex')
@@ -500,20 +489,20 @@ class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
 	@DER_ALGORITHM_ID = '2a864886f70d010101'
 	@RSA_ALGORITHM_OID = '1.2.2888.113549.1.5.1'
 
-	@fromModulusExponent: (modulus, publicExponent) => #{{{
+	@fromPrivateKey: (privateKey) => #{{{
 		key = new wiz.framework.rsa.publicKey(modulus, publicExponent)
 		s1 = key.branchAdd(wiz.framework.rsa.asnnode.fromType('SEQUENCE'))
 		s2 = s1.branchAdd(wiz.framework.rsa.asnnode.fromType('SEQUENCE'))
 		oid1 = s2.branchAdd(wiz.framework.rsa.asnnode.fromType('OID'))
-		oid1.setValue(new Buffer(@DER_ALGORITHM_ID, 'hex'))
+		oid1.setValue(new Buffer(wiz.framework.rsa.publicKey.DER_ALGORITHM_ID, 'hex'))
 		null1 = s2.branchAdd(wiz.framework.rsa.asnnode.fromType('NULLOBJ'))
 		null1.setValue(new Buffer(0))
 		bs1 = s1.branchAdd(wiz.framework.rsa.asnnode.fromType('BITSTRING'))
 		s3 = bs1.branchAdd(wiz.framework.rsa.asnnode.fromType('SEQUENCE'))
-		i1 = s3.branchAdd(new wiz.framework.rsa.integer)
-		i1.setValue(modulus)
-		i2 = s3.branchAdd(new wiz.framework.rsa.integer)
-		i2.setValue(publicExponent)
+		modulus = s3.branchAdd(new wiz.framework.rsa.asnnode.fromType('INTEGER'))
+		modulus.setValue(privateKey.modulus)
+		publicExponent = s3.branchAdd(new wiz.framework.rsa.asnnode.fromType('INTEGER'))
+		publicExponent.setValue(privateKey.publicExponent)
 		return key
 	#}}}
 	@fromRSAkey: (publicKey) => #{{{
