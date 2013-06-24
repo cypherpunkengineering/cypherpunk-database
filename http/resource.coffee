@@ -84,21 +84,41 @@ class wiz.framework.http.resource.static extends wiz.framework.http.router
 		res.end() if @final
 	#}}}
 
+class wiz.framework.http.resource.folderListing extends wiz.framework.http.router
+	secure: true
+
+	constructor: (@server, @parent, @path, @files) -> #{{{
+		super(@server, @parent, @path)
+	#}}}
+	handler: (req, res) => #{{{
+		return res.send(403, 'directory listing denied') if @secure
+
+		res.setHeader('Content-Type', 'text/html')
+		# TODO: implement directory listing
+		res.end()
+	#}}}
+
 class wiz.framework.http.resource.folder extends wiz.framework.http.router
+	indexType: wiz.framework.http.resource.folderListing
 	resourceType: wiz.framework.http.resource.static
 
 	constructor: (@server, @parent, @path, @parentDir) -> #{{{
 		super(@server, @parent, @path)
+		@folderPath = @parentDir + '/' + @path + '/'
 	#}}}
+
 	init: () => #{{{ scan folder for files, add them to route list
-		#wiz.log.debug "scanning #{@path}"
 		try
-			files = fs.readdirSync @path
+			#wiz.log.debug "scanning #{@folderPath}"
+			@files = fs.readdirSync @folderPath
 		catch e
 			wiz.log.err "unable to open resource folder #{@path}: #{e}"
-		for f in files
-			fullPath = @parentDir + '/' + @path + '/' + f
-			@routeAdd new @resourceType(@server, this, f, fullPath)
+
+		@routeAdd new @indexType(@server, this, '', @files)
+		@routeAdd new @resourceType(@server, this, f, @path + '/' + f) for f in @files
+	#}}}
+	handler: (req, res) => #{{{ redirect to trailing slash for directory listing
+		@redirect(req, res, @getFullPath() + '/')
 	#}}}
 
 # vim: foldmethod=marker wrap
