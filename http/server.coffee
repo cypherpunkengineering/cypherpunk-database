@@ -1,21 +1,15 @@
 # copyright 2013 wiz technologies inc.
 
 require '..'
-require '../util/list'
 require '../util/strval'
+
+require './config'
+require './router'
 require './csp'
 
 http = require 'http'
 
-wiz.package 'wiz.framework.http'
-
-class wiz.framework.http.config #{{{ base server config object
-	workers: 2
-	maxRequestLimit: 1024 * 1024 * 2 # 2mb
-	listeners: [
-		{ host: '127.0.0.1', port: 11080 }
-	]
-#}}}
+wiz.package 'wiz.framework.http.server'
 
 class wiz.framework.http.server extends wiz.base # base server object
 
@@ -33,43 +27,7 @@ class wiz.framework.http.server extends wiz.base # base server object
 		@root = new wiz.framework.http.router this, null, ''
 
 		# create server using NodeJS built-in http module
-		@server = http.createServer (req, res, out) =>
-
-			# limit request size
-			req.receivedBytes = 0
-			req.on 'data', (chunk) =>
-				return if req.receivedBytes > @config.maxRequestLimit
-				req.receivedBytes += chunk.length
-				if req.receivedBytes > @config.maxRequestLimit
-					wiz.log.crit "#{@getIP(req)} max request limit of #{@config.maxRequestLimit} bytes exceeded!"
-					req.destroy()
-
-			# log all requests
-			res.on 'finish', () =>
-				# log the result of the request
-				@log req, res, out
-
-			# tell the world how awesome we are
-			res.setHeader 'X-Powered-By', 'wiz-framework'
-
-			# prevent click jacking
-			res.setHeader 'X-Frame-Options', @frameOptions if @frameOptions
-
-			# disable mime type guessing to prevent XSS
-			res.setHeader 'X-Content-Type-Options', @contentTypeOptions if @contentTypeOptions
-
-			# set security policy
-			res.setHeader 'Content-Security-Policy', @contentSecurityPolicy if @contentSecurityPolicy
-
-			# parse URL params
-			return unless @parseURL(req, res)
-
-			# TODO: parse req.body
-
-			# route the request
-			req.level = 0
-			@router @root, req, res, out
-
+		@server = http.createServer @handler
 		# populate child branches in tree
 		@init()
 
@@ -89,6 +47,57 @@ class wiz.framework.http.server extends wiz.base # base server object
 			@server.listen listener.port, listener.host
 	#}}}
 
+	handler: (req, res, out) => #{{{
+		# recursive counter for router
+		req.level = 0
+
+		# check if https or not
+		req.secure = (req.connection?.encrypted? or req.headers['x-forwarded-proto'] is 'https')
+
+		# limit request size
+		req.receivedBytes = 0
+		req.on 'data', (chunk) =>
+			return if req.receivedBytes > @config.maxRequestLimit
+			req.receivedBytes += chunk.length
+			if req.receivedBytes > @config.maxRequestLimit
+				wiz.log.crit "#{@getIP(req)} max request limit of #{@config.maxRequestLimit} bytes exceeded!"
+				req.destroy()
+
+		# log all requests
+		res.on 'finish', () =>
+			# log the result of the request
+			@log req, res, out
+
+		# utility method for sending response
+		res.send = (numeric, content) =>
+			res.statusCode = numeric if numeric?
+			res.write(content) if content?
+			res.end()
+
+		# tell the world how awesome we are
+		res.setHeader 'X-Powered-By', 'wiz-framework'
+
+		# prevent click jacking
+		res.setHeader 'X-Frame-Options', @frameOptions if @frameOptions
+
+		# disable mime type guessing to prevent XSS
+		res.setHeader 'X-Content-Type-Options', @contentTypeOptions if @contentTypeOptions
+
+		# set security policy
+		res.setHeader 'Content-Security-Policy', @contentSecurityPolicy if @contentSecurityPolicy
+
+		# parse Host header
+		return unless @parseHostHeader(req, res)
+
+		# parse URL params
+		return unless @parseURL(req, res)
+
+		# TODO: parse req.body
+		# return unless @parseBody(req, res)
+
+		# route the request
+		@router @root, req, res, out
+	#}}}
 	router: (parent, req, res, out) => #{{{ recursive router to handle requests
 
 		req.level++
@@ -133,10 +142,13 @@ class wiz.framework.http.server extends wiz.base # base server object
 		switch numeric
 			when 304
 				res.write 'not modified'
+			when 400
+				wiz.log.err "BAD REQUEST: #{err}"
+				res.write err
 			when 404
 				res.write 'file not found'
-			when 500
-				wiz.log.err "FAIL: #{err}"
+			else
+				wiz.log.err "SERVER ERROR: #{err}"
 				res.write err if wiz.style is 'DEV'
 
 		res.end()
@@ -145,6 +157,19 @@ class wiz.framework.http.server extends wiz.base # base server object
 		wiz.log.info "HTTP/#{req.httpVersion} #{res.statusCode} -> [#{@getIP(req)}] #{req.method} #{req.url} (#{req.headers['user-agent']})"
 	#}}}
 
+	parseHostHeader: (req, res) => #{{{ parse Host header
+		try
+			req.host = req.headers.host.split(':')[0]
+		catch e
+			req.host = ''
+
+		return true if wiz.framework.util.strval.validate('fqdnDot', req.host)
+		return true if wiz.framework.util.strval.validate('inet4', req.host)
+		return true if wiz.framework.util.strval.validate('inet6', req.host)
+
+		@respond req, res, 400, 'missing or invalid host header'
+		return false
+	#}}}
 	parseURL: (req, res) => #{{{ parse url params and body
 		req.params = {}
 
@@ -170,32 +195,6 @@ class wiz.framework.http.server extends wiz.base # base server object
 		ip = req.connection.remoteAddress or ''
 		ip = wiz.framework.util.strval.inet6_prefix_trim ip
 		return ip
-	#}}}
-
-class wiz.framework.http.router extends wiz.framework.list.tree
-
-	constructor: (@server, @parent, @path = '', @method = 'GET') -> #{{{
-		super @parent
-		@method = @method.toUpperCase() if @method
-		@routeTable = {}
-	#}}}
-	init: () => #{{{
-		# for child class
-	#}}}
-
-	routeAdd: (m) => #{{{
-		wiz.log.debug "added router for #{m.getFullPath()}"
-		wiz.log.debug "added handler for #{m.method} #{m.getFullPath()}" if m.handler?
-		@routeTable[m.path] = m
-		@branchAdd m
-	#}}}
-	getFullPath: () => #{{{ recurse tree back to root to obtain full path
-		path = @path
-		parent = @parent
-		while parent
-			path = parent.path + '/' + path
-			parent = parent.parent
-		return path
 	#}}}
 
 # vim: foldmethod=marker wrap
