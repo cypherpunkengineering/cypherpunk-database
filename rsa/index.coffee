@@ -126,7 +126,45 @@ class wiz.framework.rsa.asnnode extends wiz.framework.list.tree
 	#}}}
 
 	setValue: (inValue) => #{{{
-		@value = inValue
+		if @type.id is wiz.framework.rsa.asnnode.typesByName.OID.id && @scope.id is wiz.framework.rsa.asnnode.scopesByName.UNIVERSAL.id
+			oidString = inValue.toString('utf8')
+			oidNodeArray = oidString.split('.')
+			oidEncoded = ''
+			oidNodeInt = 0
+			for oidNode,n in oidNodeArray
+				oidNodeInt = parseInt(oidNode)
+				if n == 0
+					oidEncoded = parseInt(oidNode * 40)
+				else if n == 1
+					oidEncoded += parseInt(oidNode)
+					oidEncoded = oidEncoded.toString(16)
+					oidEncoded = wiz.framework.rsa.root.doPaddingOnHexstring(oidEncoded)
+				else if oidNodeInt < 128
+					hexString = oidNodeInt.toString(16)
+					hexString = wiz.framework.rsa.root.doPaddingOnHexstring(hexString)
+					oidEncoded = oidEncoded + hexString
+				else
+					# to be implemented
+					byteArray = []
+					i = 0
+					while oidNodeInt > 0
+						if i == 0
+							byteArray[i] = oidNodeInt & 0x7F
+						else
+							byteArray[i] = (oidNodeInt & 0x7F) | 0x80
+						oidNodeInt = oidNodeInt >> 7
+						i++
+
+					while i >= 0
+						oidNodeEncoded = oidNodeEncoded << 8
+						oidNodeEncoded = oidNodeEncoded | byteArray[i]
+						i--
+					hexString = oidNodeEncoded.toString(16)
+					hexString = wiz.framework.rsa.root.doPaddingOnHexstring(hexString)
+					oidEncoded = oidEncoded + hexString
+			@value = new Buffer(oidEncoded.toString(16), 'hex')
+		else
+			@value = inValue
 	#}}}
 
 	@getASNid: (inBuffer) => #{{{
@@ -486,15 +524,15 @@ class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
 	#}}}
 
 class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
-	@DER_ALGORITHM_ID = '2a864886f70d010101'
-	@RSA_ALGORITHM_OID = '1.2.2888.113549.1.5.1'
+	#@RSA_ALGORITHM_OID = '1.2.2888.113549.1.5.1'
+	@RSA_ALGORITHM_OID = '1.2.840.113549.1.1.1'
 
 	@fromPrivateKey: (privateKey) => #{{{
 		key = new wiz.framework.rsa.publicKey(modulus, publicExponent)
 		s1 = key.branchAdd(wiz.framework.rsa.asnnode.fromType('SEQUENCE'))
 		s2 = s1.branchAdd(wiz.framework.rsa.asnnode.fromType('SEQUENCE'))
 		oid1 = s2.branchAdd(wiz.framework.rsa.asnnode.fromType('OID'))
-		oid1.setValue(new Buffer(wiz.framework.rsa.publicKey.DER_ALGORITHM_ID, 'hex'))
+		oid1.setValue(new Buffer(wiz.framework.rsa.publicKey.RSA_ALGORITHM_OID, 'utf8'))
 		null1 = s2.branchAdd(wiz.framework.rsa.asnnode.fromType('NULLOBJ'))
 		null1.setValue(new Buffer(0))
 		bs1 = s1.branchAdd(wiz.framework.rsa.asnnode.fromType('BITSTRING'))
@@ -510,7 +548,7 @@ class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
 		s1 = key.branchAdd(wiz.framework.rsa.asnnode.fromType('SEQUENCE'))
 		s2 = s1.branchAdd(wiz.framework.rsa.asnnode.fromType('SEQUENCE'))
 		oid1 = s2.branchAdd(wiz.framework.rsa.asnnode.fromType('OID'))
-		oid1.setValue(new Buffer(wiz.framework.rsa.publicKey.DER_ALGORITHM_ID, 'hex'))
+		oid1.setValue(new Buffer(wiz.framework.rsa.publicKey.RSA_ALGORITHM_OID, 'utf8'))
 		null1 = s2.branchAdd(wiz.framework.rsa.asnnode.fromType('NULLOBJ'))
 		null1.setValue(new Buffer("00",'hex'))
 		bs1 = s1.branchAdd(wiz.framework.rsa.asnnode.fromType('BITSTRING'))
