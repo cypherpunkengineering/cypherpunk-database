@@ -85,7 +85,9 @@ class wiz.framework.crypto
 		return out
 	#}}}
 	@detect: (title) => #{{{ get raw asn string
-		return t if t.title is title for t in @types
+		for t in @types
+			if t.title is title
+				return t
 		wiz.log.err "unknown crypto object"
 		return null
 	#}}}

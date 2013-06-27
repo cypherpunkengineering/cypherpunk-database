@@ -271,7 +271,7 @@ class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
 	#}}}
 
 class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
-	@title: 'RSA PUBLIC KEY'
+	@title: 'PUBLIC KEY'
 	#@RSA_ALGORITHM_OID = '1.2.2888.113549.1.5.1'
 	@RSA_ALGORITHM_OID: '1.2.840.113549.1.1.1'
 
