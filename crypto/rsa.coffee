@@ -1,7 +1,6 @@
 # copyright 2013 wiz technologies inc.
 
 require '..'
-require '../util/list'
 require './asn'
 
 BigInteger = require './jsbn'
@@ -189,6 +188,7 @@ class wiz.framework.rsa.key extends wiz.framework.asn.root
 	#}}}
 
 class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
+	@title: 'RSA PRIVATE KEY'
 
 	list: [ #{{{
 		'version'
@@ -271,6 +271,7 @@ class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
 	#}}}
 
 class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
+	@title: 'RSA PUBLIC KEY'
 	#@RSA_ALGORITHM_OID = '1.2.2888.113549.1.5.1'
 	@RSA_ALGORITHM_OID: '1.2.840.113549.1.1.1'
 
