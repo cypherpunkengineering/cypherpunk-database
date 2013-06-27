@@ -1,20 +1,23 @@
 require '../..'
-require '../../rsa'
+require '../../crypto/rsa'
 
 fs = require 'fs'
 
+text = "hello one two three\n"
+proc = require 'child_process'
+proc.exec "echo 'hello one two three' | openssl rsautl -encrypt -inkey public.2048.pem -pubin -out enc.out", (err, stdout, stderr) =>
+
 keyfiles =
 	priv: fs.readFileSync 'private.2048.pem'
-	pub: fs.readFileSync 'public.2048.pem'
 
-key = wiz.framework.rsa.root.fromBuffer keyfiles.priv
+enctext = fs.readFileSync 'enc.out'
+key = wiz.framework.rsa.key.fromBuffer keyfiles.priv
 
-text = fs.readFileSync 'enc.out'
+dectext = key.decrypt(enctext.toString('hex'))
 
-enctext = text.toString('hex')
-
-dec = key.decrypt(enctext)
-if dec
-	console.log dec.toString('ascii')
-else
+if dectext
+	console.log dectext.toString('ascii')
+if (dectext.toString('ascii') != text)
 	console.log 'decryption failed'
+else
+	console.log 'decryption succeeded'
