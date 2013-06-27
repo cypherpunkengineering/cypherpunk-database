@@ -11,10 +11,18 @@ wiz.package 'wiz.framework.rsa'
 
 class wiz.framework.rsa.key extends wiz.framework.asn.root
 
-	list: [ #{{{
-	]#}}}
-	constructor: (@modulus, @publicExponent) -> #{{{
+	constructor: () -> #{{{
 		super()
+		@list ?= []
+		@version = null
+		@modulus = null
+		@publicExponent = null
+		@privateExponent = null
+		@prime1 = null
+		@prime2 = null
+		@exponent1 = null
+		@exponent2 = null
+		@coefficient = null
 	#}}}
 
 	@generateKeypair: (B = 2048, E = "10001") => #{{{ bits is base 10, publicExponent is base 16
@@ -78,7 +86,7 @@ class wiz.framework.rsa.key extends wiz.framework.asn.root
 		else
 			return "0" + h
 	#}}}
-	decrypt: (ctext) => #{{{
+	decrypt: (ctext) => #{{{ Return the PKCS#1 RSA decryption of an even-length hex string as a plain string
 		c = new BigInteger(ctext, 16)
 		m = @doPrivate(c)
 		return null if m is null
@@ -169,13 +177,6 @@ class wiz.framework.rsa.key extends wiz.framework.asn.root
 		return new Buffer(ret)
 	#}}}
 
-	getModulus: () => #{{{
-		return @modulus
-	#}}}
-	getPublicExponent: () => #{{{
-		return @publicExponent
-	#}}}
-
 	setValue: (x, b) => #{{{ set value of given index
 		label = @list[x]
 		if b.length > 4 # use a BigInteger if necessary
@@ -242,19 +243,6 @@ class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
 		coefficientIntBuf = new Buffer(coefficientHex, 'hex')
 		coefficient.setValue(coefficientIntBuf)
 		return key
-	#}}}
-	@fromPEMbuffer: (privatePEM) => #{{{ public constructor
-		parserPrivateKey = wiz.framework.rsa.fromBuffer(privatePEM)
-		privateKey = new wiz.framework.rsa.key()
-		privateKey.setPrivateEx(parserPrivateKey.modulus.toString('hex'),
-								parserPrivateKey.publicExponent.toString('hex'),
-								parserPrivateKey.privateExponent.toString('hex'),
-								parserPrivateKey.prime1.toString('hex'),
-								parserPrivateKey.prime2.toString('hex'),
-								parserPrivateKey.exponent1.toString('hex'),
-								parserPrivateKey.exponent2.toString('hex'),
-								parserPrivateKey.coefficient.toString('hex'))
-		return privateKey
 	#}}}
 
 	setValuesFromTree: () => #{{{
@@ -336,13 +324,6 @@ class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
 		publicExponentIntBuf = new Buffer(publicExponentHex,'hex')
 		publicExponent.setValue(publicExponentIntBuf)
 		return key
-	#}}}
-	@fromPEMbuffer: (publicPEM) => #{{{
-		parserPublicKey = wiz.framework.rsa.fromBuffer(publicPEM)
-		publicKey = new wiz.framework.rsa.key()
-		publicKey.setPublic(parserPublicKey.modulus.toString('hex'),
-							parserPublicKey.publicExponent.toString('hex'))
-		return publicKey
 	#}}}
 
 	setValuesFromTree: () => #{{{
