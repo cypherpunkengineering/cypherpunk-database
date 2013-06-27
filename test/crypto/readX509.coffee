@@ -1,7 +1,9 @@
 require '../..'
-require '../../rsa'
+require '../../crypto'
 
 fs = require 'fs'
+
+wiz.app 'foo'
 
 x509 = 'wiz.crt'
 console.log "reading #{x509}"
@@ -13,5 +15,7 @@ else
 	console.log 'x509 read failure'
 
 if x509buffer
-	key = wiz.framework.rsa.root.fromBuffer(x509buffer)
-	key.printTree()
+	crt = wiz.framework.crypto.fromBuffer(x509buffer)
+	console.log crt
+	for c in crt
+		c.printTree()

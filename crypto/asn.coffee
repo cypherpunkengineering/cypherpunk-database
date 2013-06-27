@@ -1,7 +1,6 @@
 # copyright 2013 wiz technologies inc.
 
 require '..'
-require './rsa'
 require '../util/list'
 
 BigInteger = require './jsbn'
@@ -263,7 +262,6 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 
 		# Calculate how many bytes are needed to store the value of size
 		if size < 127 #& 0b10000000 == 0b00000000
-			console.log 'size is '+size
 			sizehex = new Buffer("0" + size.toString(16), 'hex')
 			result = Buffer.concat([result, sizehex])
 		else
@@ -294,38 +292,13 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 
 class wiz.framework.asn.root extends wiz.framework.list.tree
 
-	#{{{
-	@PRIVATE_KEY_HEADER = "-----BEGIN RSA PRIVATE KEY-----"
-	@PRIVATE_KEY_FOOTER = "-----END RSA PRIVATE KEY-----"
-
-	@PUBLIC_KEY_HEADER = "-----BEGIN PUBLIC KEY-----"
-	@PUBLIC_KEY_FOOTER = "-----END PUBLIC KEY-----"
-
-	@X509_HEADER = "-----BEGIN CERTIFICATE-----"
-	@X509_FOOTER = "-----END CERTIFICATE-----"
+	@doPaddingOnHexstring: (hexstring) => #{{{
+		if hexstring.length % 2 == 1
+			hexstring = "0" + hexstring
+		return hexstring
 	#}}}
 
-	@fromBuffer: (inBuffer) => #{{{ determine which type of object to create and create it
-		stringValue = inBuffer.toString("utf8")
-		headerLength = stringValue.indexOf('\n')
-		header = stringValue.substr(0, headerLength)
-		switch header
-			when @PRIVATE_KEY_HEADER
-				rootNode = new wiz.framework.rsa.privateKey()
-			when @PUBLIC_KEY_HEADER
-				rootNode = new wiz.framework.rsa.publicKey()
-			when @X509_HEADER
-				rootNode = new wiz.framework.rsa.certificate()
-			else
-				return null
-
-		strippedString = rootNode.stripHeaderFooter(stringValue)
-		outBuffer = new Buffer(strippedString, 'base64')
-		rootBranch = @parseBuffer(outBuffer, rootNode)
-		rootBranch.setValuesFromTree()
-		return rootBranch
-	#}}}
-	@parseBuffer: (inBuffer, currentBranch, position = 0) => #{{{ recursive method to parse containers
+	parseBuffer: (inBuffer, currentBranch, position = 0) => #{{{ recursive method to parse containers
 		while (position < inBuffer.length)
 			slice = inBuffer.slice(position)
 			newBranch = currentBranch.branchAdd(wiz.framework.asn.node.fromBuffer(slice))
@@ -333,15 +306,7 @@ class wiz.framework.asn.root extends wiz.framework.list.tree
 			if newBranch.type.container
 				@parseBuffer(newBranch.getValueBuffer(), newBranch, 0)
 			position += newBranch.getNodeSize()
-		return currentBranch
 	#}}}
-
-	@doPaddingOnHexstring: (hexstring) => #{{{
-		if hexstring.length % 2 == 1
-			hexstring = "0" + hexstring
-		return hexstring
-	#}}}
-
 	printTree: () => #{{{
 		@tailEach 0, (d, n) =>
 			indent = ''
@@ -369,6 +334,9 @@ class wiz.framework.asn.root extends wiz.framework.list.tree
 			v = Buffer.concat([v,n.encodeASN()])
 			n = n.prev
 		return v
+	#}}}
+
+	setValuesFromTree: () => #{{{
 	#}}}
 
 # vim: foldmethod=marker wrap
