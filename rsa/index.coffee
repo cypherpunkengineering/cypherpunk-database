@@ -100,9 +100,9 @@ class wiz.framework.rsa.asnnode extends wiz.framework.list.tree
 		super()
 	#}}}
 
-	@fromType: (type) =>
+	@fromType: (type) => #{{{
 		return new wiz.framework.rsa.asnnode(wiz.framework.rsa.asnnode.scopesByName.UNIVERSAL, wiz.framework.rsa.asnnode.typesByName[type])
-
+	#}}}
 	@fromBuffer: (inBuffer) => #{{{ parses a single asn node from given slice of buffer
 
 		# get id of root node
@@ -144,7 +144,6 @@ class wiz.framework.rsa.asnnode extends wiz.framework.list.tree
 					hexString = wiz.framework.rsa.root.doPaddingOnHexstring(hexString)
 					oidEncoded = oidEncoded + hexString
 				else
-					# to be implemented
 					byteArray = []
 					i = 0
 					while oidNodeInt > 0
@@ -190,12 +189,20 @@ class wiz.framework.rsa.asnnode extends wiz.framework.list.tree
 		return size
 	#}}}
 	getValueBuffer: () => #{{{
+		startPtr = 2
 		sizeBufSize = @getASNsizeBufferLength()
 		valueSize = @getASNvalueSize()
+
 		if sizeBufSize == -1
-			value = @inBuffer.slice(2,2+valueSize)
+			value = @inBuffer.slice(startPtr, startPtr + valueSize)
 		else
-			value = @inBuffer.slice(2+sizeBufSize,2+sizeBufSize+valueSize)
+			value = @inBuffer.slice(startPtr + sizeBufSize, startPtr + sizeBufSize + valueSize)
+
+		# strip off trailing bits for bitstring
+		if @type.id == wiz.framework.rsa.asnnode.typesByName.BITSTRING.id and value.readUInt8(0) == 0
+			# TODO: properly parse trailing bits if != 0
+			value = value.slice(1, value.length)
+
 		return value
 	#}}}
 	getNodeSize: () => #{{{
@@ -300,10 +307,8 @@ class wiz.framework.rsa.root extends wiz.framework.list.tree
 		switch header
 			when @PRIVATE_KEY_HEADER
 				rootNode = new wiz.framework.rsa.privateKey()
-				#rootNode.setValuesFromTree()
 			when @PUBLIC_KEY_HEADER
 				rootNode = new wiz.framework.rsa.publicKey()
-				#rootNode.setValuesFromTree()
 			when @X509_HEADER
 				rootNode = new wiz.framework.rsa.certificate()
 			else
@@ -319,7 +324,7 @@ class wiz.framework.rsa.root extends wiz.framework.list.tree
 		while (position < inBuffer.length)
 			slice = inBuffer.slice(position)
 			newBranch = currentBranch.branchAdd(wiz.framework.rsa.asnnode.fromBuffer(slice))
-			#console.log newBranch.type.description
+			#wiz.log.debug "decription is #{newBranch.type.description}"
 			if newBranch.type.container
 				@parseBuffer(newBranch.getValueBuffer(), newBranch, 0)
 			position += newBranch.getNodeSize()
@@ -363,6 +368,8 @@ class wiz.framework.rsa.root extends wiz.framework.list.tree
 
 class wiz.framework.rsa.key extends wiz.framework.rsa.root
 
+	list: [ #{{{
+	]#}}}
 	constructor: (@modulus, @publicExponent) -> #{{{
 		super()
 	#}}}
@@ -414,6 +421,111 @@ class wiz.framework.rsa.key extends wiz.framework.rsa.root
 		return keypair
 	#}}}
 
+	encrypt: (text) => #{{{ Return the PKCS#1 RSA encryption of "text" as an even-length hex string
+		m = @pkcs1pad2(text, (@modulus.bitLength() + 7) >> 3)
+		return null if m is null
+
+		c = @doPublic(m)
+		return null if c is null
+
+		h = c.toString(16)
+
+		if (h.length & 1) == 0
+			return h
+		else
+			return "0" + h
+	#}}}
+	decrypt: (ctext) => #{{{
+		c = new BigInteger(ctext, 16)
+		m = @doPrivate(c)
+		return null if m is null
+		return @pkcs1unpad2(m, (@modulus.bitLength() + 7) >> 3)
+	#}}}
+
+	doPublic: (x) => #{{{ Perform raw public operation on "x": return x^e (mod n)
+		x.modPowInt(@publicExponent, @modulus)
+	#}}}
+	doPrivate: (x) => #{{{ Perform raw private operation on "x": return x^d (mod n)
+		if (@prime1 == null || @prime2 == null)
+			return x.modPow(@d, @modulus)
+
+		# TODO: re-calculate any missing CRT params
+		xp = x.mod(@prime1).modPow(@exponent1, @prime1)
+		xq = x.mod(@prime2).modPow(@exponent2, @prime2)
+
+		while (xp.compareTo(xq) < 0)
+			xp = xp.add(@prime1)
+		return xp.subtract(xq).multiply(@coefficient).mod(@prime1).multiply(@prime2).add(xq)
+	#}}}
+
+	pkcs1pad2: (s, n) => #{{{ PKCS#1 (type 2, random) pad input string s to n bytes, and return a bigint
+		# TODO: fix for utf-8
+		if n < s.length + 11
+			wiz.log.err("Message too long for RSA (n=" + n + ", l=" + s.length + ")")
+			return null
+
+		ba = new Array()
+		i = s.length - 1
+
+		while i >= 0 and n > 0
+			c = s.charCodeAt(i--)
+			if c < 128 # encode using utf-8
+				ba[--n] = c
+			else if (c > 127) and (c < 2048)
+				ba[--n] = (c & 63) | 128
+				ba[--n] = (c >> 6) | 192
+			else
+				ba[--n] = (c & 63) | 128
+				ba[--n] = ((c >> 6) & 63) | 128
+				ba[--n] = (c >> 12) | 224
+		ba[--n] = 0
+
+		rng = new SecureRandom()
+		x = new Array()
+		while n > 2 # random non-zero pad
+			x[0] = 0
+			rng.nextBytes x	while x[0] is 0
+			ba[--n] = x[0]
+		ba[--n] = 2
+		ba[--n] = 0
+
+		return new BigInteger(ba)
+	#}}}
+	pkcs1unpad2: (d, n) => #{{{ # Undo PKCS#1 (type 2, random) padding and, if valid, return the plaintext
+		b = d.toByteArray()
+		i = 0
+
+		while i < b.length and b[i] is 0
+			++i
+
+		if b.length - i isnt n - 1 or b[i] isnt 2
+			return null
+
+		++i
+
+		until b[i] is 0
+			if ++i >= b.length
+				return null
+
+		ret = []
+		while ++i < b.length
+			c = b[i] & 255
+			ret.push c
+
+		#This will need to be tested more, but Node doesn't like all of this!
+		#if (c < 128) { // utf-8 decode
+		#ret += String.fromCharCode(c)
+		#} else if ((c > 191) && (c < 224)) {
+		#	ret += String.fromCharCode(((c & 31) << 6) | (b[i + 1] & 63))
+		#	++i
+		#} else {
+		#	ret += String.fromCharCode(((c & 15) << 12)
+		#			| ((b[i + 1] & 63) << 6) | (b[i + 2] & 63))
+		#	i += 2
+		#}
+		return new Buffer(ret)
+	#}}}
+
 	getModulus: () => #{{{
 		return @modulus
 	#}}}
@@ -421,8 +533,30 @@ class wiz.framework.rsa.key extends wiz.framework.rsa.root
 		return @publicExponent
 	#}}}
 
+	setValue: (x, b) => #{{{ set value of given index
+		label = @list[x]
+		if b.length > 4 # use a BigInteger if necessary
+			v = new BigInteger(b.toString('hex'), 16)
+		else
+			v = parseInt(b.toString('hex'), 16)
+
+		#console.log "setting @#{label} to #{v}"
+		this[label] = v
+	#}}}
+
 class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
 
+	list: [ #{{{
+		'version'
+		'modulus'			# old @n
+		'publicExponent'	# old @e
+		'privateExponent'	# old @d
+		'prime1'			# old @p
+		'prime2'			# old @q
+		'exponent1'			# old @dmp1
+		'exponent2'			# old @dmq1
+		'coefficient'		# old @coeff
+	] #}}}
 	constructor: (@modulus, @publicExponent, @privateExponent, @prime1, @prime2, @exponent1, @exponent2, @coefficient) -> #{{{ private constructor
 		super()
 	#}}}
@@ -480,32 +614,14 @@ class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
 		return privateKey
 	#}}}
 
-	setValuesFromTree: () => #{{{ 
-		list = [
-				"modulus"
-				"publicExponent"
-				"privateExponent"
-				"prime1"
-				"prime2"
-				"exponent1"
-				"exponent2"
-				"coefficient"
-		]
+	setValuesFromTree: () => #{{{
 		n = @branchList.tail
 		i = 0
 		@tailEach 0, (d, n) =>
-			if (!n.type.container)
-				this[list[i]] = n.getValueBuffer()
-				#console.log n.getValueBuffer().toString('hex')
+			if n.type.container is false
+				#console.log n.type
+				@setValue(i, n.getValueBuffer())
 				i++
-		@modulus = this[list["modulus"]]
-		@publicExponent = this[list["publicExponent"]]
-		@privateExponent = this[list["privateExponent"]]
-		@prime1 = this[list["prime1"]]
-		@prime2 = this[list["prime2"]]
-		@exponent1 = this[list["exponent1"]]
-		@exponent2 = this[list["exponent2"]]
-		@coefficient = this[list["coefficient"]]
 	#}}}
 
 	toPEMbuffer: () => #{{{
@@ -525,7 +641,22 @@ class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
 
 class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
 	#@RSA_ALGORITHM_OID = '1.2.2888.113549.1.5.1'
-	@RSA_ALGORITHM_OID = '1.2.840.113549.1.1.1'
+	@RSA_ALGORITHM_OID: '1.2.840.113549.1.1.1'
+
+	treeStructure: [ #{{{
+		wiz.framework.rsa.asnnode.typesByName.SEQUENCE.id
+		wiz.framework.rsa.asnnode.typesByName.SEQUENCE.id
+		wiz.framework.rsa.asnnode.typesByName.OID.id
+		wiz.framework.rsa.asnnode.typesByName.NULLOBJ.id
+		wiz.framework.rsa.asnnode.typesByName.BITSTRING.id
+		wiz.framework.rsa.asnnode.typesByName.SEQUENCE.id
+		wiz.framework.rsa.asnnode.typesByName.INTEGER.id
+		wiz.framework.rsa.asnnode.typesByName.INTEGER.id
+	] #}}}
+	list: [ #{{{
+		'modulus'
+		'publicExponent'
+	] #}}}
 
 	@fromPrivateKey: (privateKey) => #{{{
 		key = new wiz.framework.rsa.publicKey(modulus, publicExponent)
@@ -572,37 +703,20 @@ class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
 	#}}}
 
 	setValuesFromTree: () => #{{{
-		treeStructure = [
-							wiz.framework.rsa.asnnode.typesByName.SEQUENCE.id
-							wiz.framework.rsa.asnnode.typesByName.SEQUENCE.id
-							wiz.framework.rsa.asnnode.typesByName.OID.id
-							wiz.framework.rsa.asnnode.typesByName.NULLOBJ.id
-							wiz.framework.rsa.asnnode.typesByName.BITSTRING.id
-							wiz.framework.rsa.asnnode.typesByName.SEQUENCE.id
-							wiz.framework.rsa.asnnode.typesByName.INTEGER.id
-							wiz.framework.rsa.asnnode.typesByName.INTEGER.id
-						]
-		list = [
-				"modulus"
-				"publicExponent"
-		]
 		n = @branchList.tail
 		i = 0
 		x = 0
-		@tailEach (d, n) =>
-			if this[treeStructure[i]] isnt n.type.id
-				console.log "Not a valid RSA public key"
+		@tailEach 0, (d, n) =>
+			if @treeStructure[i] isnt n.type.id
+				wiz.log.err "Not a valid RSA public key"
 				return null
-			if n.type.id is wiz.framework.rsa.asnnode.typesByName.OID.id && n.toString() != @RSA_ALGORITHM_ID
-				console.log "Could not find RSA algorithm ID"
+			if n.type.id is wiz.framework.rsa.asnnode.typesByName.OID.id && n.toString() != wiz.framework.rsa.publicKey.RSA_ALGORITHM_OID
+				wiz.log.err "Could not find RSA algorithm ID"
 				return null
 			else if n.type.id is wiz.framework.rsa.asnnode.typesByName.INTEGER.id
-				this[list[x]] = n.getValueBuffer()
+				@setValue(x, n.getValueBuffer())
 				x++
-				#console.log n.getValueBuffer().toString('hex')
 			i++
-		@modulus = this[list["modulus"]]
-		@publicExponent = this[list["publicExponent"]]
 	#}}}
 
 	toPEMbuffer: () => #{{{
