@@ -308,7 +308,7 @@ class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
 		oid1 = s2.branchAdd(wiz.framework.asn.node.fromType('OID'))
 		oid1.setValue(new Buffer(wiz.framework.rsa.publicKey.RSA_ALGORITHM_OID, 'utf8'))
 		null1 = s2.branchAdd(wiz.framework.asn.node.fromType('NULLOBJ'))
-		null1.setValue(new Buffer(0))
+		null1.setValue(null)
 		bs1 = s1.branchAdd(wiz.framework.asn.node.fromType('BITSTRING'))
 		s3 = bs1.branchAdd(wiz.framework.asn.node.fromType('SEQUENCE'))
 		modulus = s3.branchAdd(new wiz.framework.asn.node.fromType('INTEGER'))

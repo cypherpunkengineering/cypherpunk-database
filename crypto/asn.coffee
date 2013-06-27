@@ -252,6 +252,9 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 		result = @generateTag()
 		valueBuffer = (if @value? then @value else @getValueBuffer())
 
+		if @type.id == wiz.framework.asn.node.typesByName.NULLOBJ.id
+			return Buffer.concat([result, new Buffer('00', 'hex')])
+
 		if @type.id == wiz.framework.asn.node.typesByName.BITSTRING.id
 			valueBuffer = Buffer.concat([new Buffer('00', 'hex'), valueBuffer])
 
