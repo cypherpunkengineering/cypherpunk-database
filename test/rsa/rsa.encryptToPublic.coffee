@@ -1,5 +1,5 @@
-require '..'
-require '../rsa'
+require '../..'
+require '../../rsa'
 
 fs = require 'fs'
 
@@ -7,7 +7,8 @@ text = 'hello one two three'
 keyfiles =
 	pub: fs.readFileSync 'public.pem'
 
-key = wiz.framework.rsa.loadPublicKeyFromPEMstr keyfiles.pub.toString()
+key = wiz.framework.rsa.root.fromBuffer keyfiles.pub
+
 if key
 	console.log 'key read from filesystem'
 else

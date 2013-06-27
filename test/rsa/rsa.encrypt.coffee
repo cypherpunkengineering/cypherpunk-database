@@ -1,9 +1,9 @@
-require '..'
-require '../rsa'
+require '../..'
+require '../../rsa'
 
 fs = require 'fs'
 
-key = wiz.framework.rsa.generateKeyPair()
+key = wiz.framework.rsa.key.generateKeypair()
 fs.writeFileSync 'private.pem', wiz.framework.rsa.getPrivatePEMfromKey(key)
 fs.writeFileSync 'public.pem', wiz.framework.rsa.getPublicPEMfromKey(key)
 
