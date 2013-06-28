@@ -24,11 +24,20 @@ class wiz.framework.util.hash
 	# foo = { bar: 1, baz: 2 }
 	# digest(foo)
 	@digest: (obj, hash = 'sha256', encoding = 'base32') ->
-		shasum = crypto.createHash hash
-		shasum.update JSON.stringify(obj)
-		if encoding is 'base32'
-			return base32.encode shasum.digest()
+
+		# use native crypto lib
+		shasum = crypto.createHash(hash)
+
+		# convert to string if necessary
+		if typeof obj is 'object'
+			shasum.update JSON.stringify(obj)
 		else
-			return shasum.digest encoding
+			shasum.update obj
+
+		# custom encodings
+		if encoding is 'base32'
+			return base32.encode(shasum.digest())
+		else
+			return shasum.digest(encoding)
 
 # vim: foldmethod=marker wrap
