@@ -2,6 +2,7 @@
 
 require '..'
 require './asn'
+require '../util/hash'
 
 BigInteger = require './jsbn'
 SecureRandom = require './rng'
@@ -9,6 +10,16 @@ SecureRandom = require './rng'
 wiz.package 'wiz.framework.rsa'
 
 class wiz.framework.rsa.key extends wiz.framework.asn.root
+
+	hashHeaders: #{{{
+		sha1:		'3021300906052b0e03021a05000414'
+		sha256:		'3031300d060960864801650304020105000420'
+		sha384:		'3041300d060960864801650304020205000430'
+		sha512:		'3051300d060960864801650304020305000440'
+		md2:		'3020300c06082a864886f70d020205000410'
+		md5:		'3020300c06082a864886f70d020505000410'
+		ripemd160:	'3021300906052b2403020105000414'
+	#}}}
 
 	constructor: () -> #{{{
 		super()
@@ -90,6 +101,84 @@ class wiz.framework.rsa.key extends wiz.framework.asn.root
 		m = @doPrivate(c)
 		return null if m is null
 		return @pkcs1unpad2(m, (@modulus.bitLength() + 7) >> 3)
+	#}}}
+	sign: (s, hash = 'sha256') => #{{{ sign given string using private key
+		hPM = @digestInfoBuild(s, @modulus.bitLength(), hash)
+		biPaddedMessage = new BigInteger(hPM, 16)
+		biSignaturen = @doPrivate(biPaddedMessage)
+		hexSignature = biSignaturen.toString(16)
+		paddedSignature = @signaturePad(hexSignature, @modulus.bitLength())
+		#wiz.log.deubg paddedSignature
+		buf = new Buffer(paddedSignature, 'hex')
+		return buf
+	#}}}
+	verify: (signedMessage, hexSignature) => #{{{ verifies digest in a given hex buffer
+		try
+			# parse given signature from hex buffer
+			biSignature = new BigInteger(hexSignature, 16)
+			#wiz.log.debug "encrypted signature: #{biSignature}"
+
+			# decrypt given signature using doPublic()
+			biDecryptedSignature = @doPublic(biSignature)
+			#wiz.log.debug "decrypted signature: #{biDecryptedSignature}"
+
+			# detect hash algorithm from embedded digestInfo string
+			digestInfo = @digestInfoParse(biDecryptedSignature.toString(16).replace(/^1f+00/, ''))
+
+		catch e
+			wiz.log.debug "error verifying signature: #{e}"
+			return false
+
+		# compute hash for message using detected digest algorithm
+		#wiz.log.debug "computing #{digestInfo.hashAlg} for message: #{signedMessage}"
+		msgHash = wiz.framework.util.hash.digest(signedMessage, digestInfo.hashAlg, 'hex')
+		wiz.log.debug "computed msg hash: #{msgHash}"
+		wiz.log.debug "digest  signature: #{digestInfo.digest}"
+
+		# compare our hash to the given encrypted hash
+		result = (digestInfo.digest == msgHash)
+		wiz.log.debug "signature verification " + (if result then 'SUCCESSFUL' else 'FAIL')
+
+		# return boolean result
+		return result
+	#}}}
+
+	digestInfoBuild: (s, keySize, hashAlg) => #{{{ build digest info with header and msg hash
+		pmStrLen = keySize / 4
+		sHashHex = wiz.framework.util.hash.digest(s, hashAlg, 'hex')
+		sHead = '0001'
+		sTail = '00' + @hashHeaders[hashAlg] + sHashHex
+		sMid = ''
+		fLen = pmStrLen - sHead.length - sTail.length
+		i = 0
+		while i < fLen
+			sMid += 'ff'
+			i += 2
+		sPaddedMessageHex = sHead + sMid + sTail
+		return sPaddedMessageHex
+	#}}}
+	digestInfoParse: (digestInfo) => #{{{ detect hash algorithm and strip off the hash header
+
+		# check if each known header matches
+		for hh, hexstr of @hashHeaders
+
+			# sanity check
+			continue unless digestInfo.length > hexstr.length
+
+			# strncmp()
+			if digestInfo[0..hexstr.length-1] == hexstr
+
+				# found a match
+				wiz.log.debug "detected hash algorithm #{hh}"
+
+				# return an array
+				out =
+					hashAlg: hh
+					digest: digestInfo.substring(hexstr.length)
+				return out
+
+		wiz.log.debug "hash detection failed: #{e}"
+		return null
 	#}}}
 
 	doPublic: (x) => #{{{ Perform raw public operation on "x": return x^e (mod n)
@@ -174,6 +263,13 @@ class wiz.framework.rsa.key extends wiz.framework.asn.root
 		#	i += 2
 		#}
 		return new Buffer(ret)
+	#}}}
+	signaturePad: (hex, bitLength) => #{{{
+		s = '0'
+		nZero = bitLength / 4 - hex.length
+		for i in [0..nZero]
+			s = s + '0'
+		return s + hex
 	#}}}
 
 	setValue: (x, b) => #{{{ set value of given index

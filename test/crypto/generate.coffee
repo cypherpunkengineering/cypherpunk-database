@@ -40,5 +40,5 @@ for len in lengths
 	fs.writeFileSync "private.#{len}.pem", key.private.toPEMbuffer()
 	fs.writeFileSync "public.#{len}.pem", key.public.toPEMbuffer()
 	console.log len + 'bit keypair written to filesystem'
-	checkASN(len)
-	checkRSA(len)
+#	checkASN(len)
+#	checkRSA(len)
