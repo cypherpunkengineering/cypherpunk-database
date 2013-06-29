@@ -13,7 +13,6 @@
 # GNU General Public License for more details.
 
 require '..'
-require '../database/mysql'
 require '../database/mongo'
 require '../database/s3'
 
@@ -21,10 +20,6 @@ wiz.package 'wiz.framework.frontend.database'
 
 # node frameworks
 connect = require 'connect'
-
-class wiz.framework.frontend.mysql extends wiz.framework.database.mysql
-	constructor : (@server, @parent, @config) ->
-		super(@config)
 
 class wiz.framework.frontend.mongo extends wiz.framework.database.mongo
 	client : null

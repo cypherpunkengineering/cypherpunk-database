@@ -17,8 +17,6 @@ require '../db'
 
 wiz.package 'wiz.framework.backend'
 
-# mysql class
-class wiz.framework.backend.mysql extends wiz.framework.db.mysql
 # mongo class
 class wiz.framework.backend.mongo extends wiz.framework.db.mongo
 
