@@ -145,6 +145,34 @@ class wiz.framework.frontend.table.mongo #{{{
 			iTotalDisplayRecords : recordCount
 			aaData : data
 
+	drop: (req, res, cb) => #{{{ default drop ajax handler
+		return res.send 400 if not req.body.recordsToDelete or typeof req.body.recordsToDelete isnt 'object' # only proceed if object
+
+		recordsToDelete = []
+		if req.body.recordsToDelete and req.body.recordsToDelete.length > 0
+			for id, i in req.body.recordsToDelete
+				recordsToDelete[i] = @mongo.oid(id)
+		@dropMany req, res, recordsToDelete, cb
+	#}}}
+	dropMany: (req, res, recordsToDelete, cb) => #{{{ send mongo query to drop a given array of mongo oid objects
+		dropQuery =
+			_id : { $in : recordsToDelete }
+
+		@parent.parent.mongo.collection res, @collectionName, (collection) =>
+			debugstr = "#{@collectionName}.remove(#{JSON.stringify(dropQuery)})"
+			wiz.log.debug debugstr if @debug
+			collection.remove dropQuery, (err, count) =>
+				if err
+					wiz.log.err "DROP FAILED FOR #{recordsToDelete}: #{err}"
+					res.send 500 if res
+					cb false if cb
+					return
+
+				wiz.log.info "DROP OK: #{debugstr}"
+				res.send 200 if res
+				cb true if cb
+				return
+	#}}}
 #}}}
 
 class wiz.framework.frontend.table.mongoArray extends wiz.framework.frontend.table.mongo #{{{
