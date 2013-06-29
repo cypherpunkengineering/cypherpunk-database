@@ -24,6 +24,7 @@ connect = require 'connect'
 
 class wiz.framework.frontend.mysql extends wiz.framework.database.mysql
 	constructor : (@server, @parent, @config) ->
+		super(@config)
 
 class wiz.framework.frontend.mongo extends wiz.framework.database.mongo
 	client : null
