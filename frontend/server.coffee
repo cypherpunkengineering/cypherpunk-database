@@ -97,7 +97,7 @@ class wiz.framework.frontend.server # base server object
 		for module of @modules
 
 			# calculate views paths and add to array
-			path = rootpath + @modules[module].getPath()
+			path = wiz.rootpath + @modules[module].getPath()
 			if path.length > 1 and path[path.length - 1] != '/'
 				path = path + '/'
 			path = path + 'views'
@@ -220,7 +220,7 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch # for 
 	#}}}
 
 	init: () => #{{{ initializes the module
-		tdir = rootpath + @getPathSlashed() + @coffeeDir
+		tdir = wiz.rootpath + @getPathSlashed() + @coffeeDir
 		if fs.existsSync(tdir)
 			cpath = "/#{@coffeeDir}/:script#{@coffeeExt}"
 			cof = new wiz.framework.frontend.method @parent, this, 'get', cpath, @parent.middleware.baseSession(), @server.powerMask.always, @server.powerLevel.stranger, @coffeeCompile
@@ -233,7 +233,7 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch # for 
 	#}}}
 	coffeeCompile: (req, res) => #{{{ compiles coffeescript on the fly
 		res.header 'Content-Type', 'application/x-javascript'
-		fn = rootpath + @getPathSlashed() + @coffeeDir + '/' + req.params.script + @coffeeExt
+		fn = wiz.rootpath + @getPathSlashed() + @coffeeDir + '/' + req.params.script + @coffeeExt
 		fs.readFile fn, 'utf8', (err, data) ->
 			if err
 				wiz.log.err "coffee-script file not found #{fn}"
@@ -258,12 +258,12 @@ class wiz.framework.frontend.module extends wiz.framework.frontend.branch # for 
 		# module-level static folders
 		for staticDir in @parent.staticContent
 			path = @getPathSlashed() + '_' + staticDir + '/'
-			@parent.staticPath path, rootpath + path
+			@parent.staticPath path, wiz.rootpath + path
 			@initStaticDir(path, staticDir)
 
 		for staticDir in @parent.cdnContent
 			path = @getPathSlashed() + staticDir + '/'
-			@parent.staticPath path, rootpath + path, true
+			@parent.staticPath path, wiz.rootpath + path, true
 	#}}}
 	initStaticDir: (path, dir) => #{{{ initializes a given static folder path
 		this[dir] = (file) => return path + file

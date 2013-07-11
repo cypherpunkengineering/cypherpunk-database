@@ -1,32 +1,14 @@
 {
-  "author": "J. Maurice <j@wiz.biz> (https://github.com/jmaurice)",
-  "name": "wiz-framework",
-  "version": "0.0.0",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/jmaurice/wiz-framework.git"
-  },
-  "engines": {
-    "node": "0.8.x"
-  },
-  "dependencies": {
-	"ezcrypto": "0.0.3",
-	"thirty-two": "0.0.1",
-
-    "aws-sdk": "0.9.x",
-    "base32": "0.0.x",
-    "coffee-script": "1.2.x",
+  "dependencies":
+  {
     "connect": "2.3.x",
-    "connect-redis": "1.4.x",
+    "coffee-script": "1.6.x",
     "express": "2.5.x",
-    "jade": "0.26.x",
+    "connect-redis": "1.4.x",
+    "jade": "0.31.x",
     "mongodb": "1.0.x",
     "xml2js": "0.2.x",
+    "mysql": "0.9.x",
     "zmq": "2.4.x"
-
-  },
-  "devDependencies": {},
-  "optionalDependencies": {},
-  "description": "J's HTML5/NodeJS web application framework",
-  "homepage": "https://github.com/jmaurice/wiz-framework"
+  }
 }

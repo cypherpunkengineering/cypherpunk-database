@@ -142,7 +142,7 @@ class wiz.framework.frontend.stateful.server extends wiz.framework.frontend.serv
 
 	listen: () => #{{{
 		if @config.httpPort
-			wiz.log.warning "HTTP listening on [#{@config.httpHost}]:#{@config.httpPort}"
+			wiz.log.warn "HTTP listening on [#{@config.httpHost}]:#{@config.httpPort}"
 			@http.listen @config.httpPort, @config.httpHost
 	#}}}
 
