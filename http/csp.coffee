@@ -8,7 +8,7 @@ class wiz.framework.http.contentSecurityPolicy # HTTP Content-Security-Policy he
 	# ref: http://www.html5rocks.com/en/tutorials/security/content-security-policy/
 
 	# define defaults for any directive left undefined
-	default: [ 'https:', "'self'" ]
+	default: [ "'self'" ]
 
 	# limits the origins to which you can connect (XHR/WebSockets/EventSource)
 	connect: undefined
@@ -19,6 +19,9 @@ class wiz.framework.http.contentSecurityPolicy # HTTP Content-Security-Policy he
 	# lists the origins that can be embedded as frames
 	frame: [ "'none'" ]
 
+	# allow inline styles
+	style: [ "'self'", "'unsafe-inline'" ]
+
 	# defines the origins from which images can be loaded
 	img: undefined
 
@@ -27,6 +30,9 @@ class wiz.framework.http.contentSecurityPolicy # HTTP Content-Security-Policy he
 
 	# allows control over Flash and other plugins
 	object: [ "'none'" ]
+
+	constructor: (https = false) ->
+		@default.unshift('https:') if https
 
 	# print policy as a string for use in HTTP header
 	toString: () =>
