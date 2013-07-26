@@ -108,6 +108,7 @@ class wiz.framework.http.resource.folder extends wiz.framework.http.router
 	#}}}
 
 	init: () => #{{{ scan folder for files, add them to route list
+		@files = []
 		try
 			#wiz.log.debug "scanning #{@folderPath}"
 			@files = fs.readdirSync @folderPath
