@@ -17,9 +17,9 @@ require '..'
 wiz.package 'wiz.framework.util'
 
 class wiz.framework.util.datetime
-	@unixFullTS: () ->
-		return (new Date()).getTime()
-	@unixTS: () ->
-		return Math.round((new Date()).getTime() / 1000)
+	@unixFullTS: (ts = new Date()) ->
+		return ts.getTime()
+	@unixTS: (ts = new Date()) ->
+		return Math.round(@unixFullTS(ts) / 1000)
 
 # vim: foldmethod=marker wrap
