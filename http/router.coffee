@@ -25,7 +25,12 @@ class wiz.framework.http.router extends wiz.framework.list.tree
 
 	redirect: (req, res, path = '/', numeric = 301) => #{{{ respond with a redirect to an absolute URL built from a given relative URL
 		proto = (if req.secure then 'https' else 'http')
-		url = proto + '://' + req.headers.host + path
+
+		if path and path[0..3] == 'http' # absolute url is given
+			url = path
+		else # relative url given, build absolute url
+			url = proto + '://' + req?.headers?.host + path
+
 		res.setHeader('Location', url)
 		res.send(numeric)
 	#}}}
