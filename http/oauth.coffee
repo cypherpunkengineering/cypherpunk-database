@@ -4,7 +4,6 @@ require '..'
 require '../util/datetime'
 
 crypto = require 'crypto'
-xml2js = require 'xml2js'
 stream = require 'stream'
 https = require 'https'
 http = require 'http'
@@ -91,46 +90,11 @@ class wiz.framework.http.oauth.consumer
 			wiz.log.err 'Cannot send unknown reqBody type: '+typeof reqBody
 			req.end()
 	#}}}
-	resParse: (res, cb) => # parse a json or xml response {{{
-		res.setEncoding('utf8')
-		res.on 'data', (datum) =>
-			switch res.headers['content-type']
-
-				when 'application/json'
-
-					try
-						out = JSON.parse datum
-					catch e
-						return @error "json parse error: #{e}", cb
-
-					return cb out
-
-				when 'application/xml'
-
-					try
-						parser = new xml2js.Parser()
-						parser.parseString datum, (err, out) =>
-							if err
-								return @error "xml parse error: #{err}", cb
-							if not out
-								return @error "xml response null?", cb
-							if out.Error
-								return @error "xml error response! #{JSON.stringify(out.Error)}", cb
-							return cb out
-					catch e
-						return @error "xml parse error: #{e}", cb
-
-				else
-
-					wiz.log.err 'unknown content type: '+res.headers['content-type']
-					console.log datum
-	#}}}
 	reqOptions: (method, path, callbackURL, oauthToken, oauthTokenSecret, params, body) => # generate request options #{{{
 
 		# Example OAuth query to tweet on twitter:
 		#
 		# POST /1/statuses/update.json?include_entities=true HTTP/1.1
-		# Accept: */*
 		# Connection: close
 		# User-Agent: OAuth gem v0.4.4
 		# Content-Type: application/x-www-form-urlencoded
@@ -159,7 +123,7 @@ class wiz.framework.http.oauth.consumer
 
 		# set request headers
 		opts.headers = {}
-		opts.headers['Accept'] = 'application/json'
+		opts.headers['Accept'] = 'application/json, text/html'
 		opts.headers['Host'] = @host
 		opts.headers['Content-Type'] = 'application/x-www-form-urlencoded' if method is 'POST'
 		opts.headers['Content-Length'] = if body then body.length else 0
@@ -170,6 +134,7 @@ class wiz.framework.http.oauth.consumer
 		console.log opts
 		return opts
 	#}}}
+
 	authorization: (ts, method, path, headers = {}, callbackURL = null, oauthToken = null, oauthTokenSecret = null) => #{{{
 
 		#headers['include_entities'] = true
@@ -272,19 +237,58 @@ class wiz.framework.http.oauth.consumer
 		return out
 	#}}}
 
+	resParse: (res, cb) => # parse a json or xml response {{{
+		res.setEncoding('utf8')
+		res.on 'data', (datum) =>
+			ct = res.headers['content-type']?.split(';')?[0]
+			console.log ct
+			switch ct
+
+				when 'application/json'
+
+					try
+						out = JSON.parse datum
+					catch e
+						return @error "json parse error: #{e}", cb
+
+					return cb out
+
+				when 'text/html'
+
+					try
+						out = {}
+						params = datum.split('&')
+						for param in params
+							s = param.split('=')
+							k = s[0]
+							v = s[1]
+							out[k] = v
+
+					catch e
+						return @error "html parse error: #{e}", cb
+
+					return cb out
+
+				else
+
+					wiz.log.err 'unknown content type: '+ct
+					console.log datum
+	#}}}
+
 class wiz.framework.http.oauth.twitter extends wiz.framework.http.oauth.consumer
-	constructor: (options = {}) ->
+
+	constructor: (options = {}) -> #{{{
 		options.host ?= 'api.twitter.com'
 		options.port ?= 443
 		options.ssl ?= true
 		super(options)
+	#}}}
 
 	requestToken: (cb) => #{{{
 		# POST /oauth/request_token HTTP/1.1
 		# User-Agent: themattharris' HTTP Client
 		# Host: api.twitter.com
-		# Accept: */*
-		# Authorization: 
+		# Authorization:
 		#         OAuth oauth_callback="http%3A%2F%2Flocalhost%2Fsign-in-with-twitter%2F",
 		#               oauth_consumer_key="cChZNFj6T5R0TigYB9yd1w",
 		#               oauth_nonce="ea9ec8429b68d6b77cd5600adbbb0456",
@@ -294,9 +298,9 @@ class wiz.framework.http.oauth.twitter extends wiz.framework.http.oauth.consumer
 		#               oauth_version="1.0"
 
 		req = @reqCreate @reqOptions('POST', '/oauth/request_token', 'http://wizbook2.local:11080/callback'), true, (res) =>
-		#req = @reqCreate @reqOptions('GET', '/account/verify_credentials.json', 'http://wizbook2.local:11080/callback'), true, (res) =>
-			wiz.log.debug 'GOT RESPONSE'
-			wiz.log.debug res
+			if not res or not res.oauth_token or not res.oauth_token_secret
+				return cb 'FAIL'
+			cb null, res.oauth_token, res.oauth_token_secret, res.oauth_callback_confirmed
 
 		@reqSend(req)
 
