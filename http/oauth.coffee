@@ -284,7 +284,7 @@ class wiz.framework.http.oauth.twitter extends wiz.framework.http.oauth.consumer
 		super(options)
 	#}}}
 
-	requestToken: (cb) => #{{{
+	requestToken: (callbackURL, cb) => #{{{
 		# POST /oauth/request_token HTTP/1.1
 		# User-Agent: themattharris' HTTP Client
 		# Host: api.twitter.com
@@ -297,10 +297,18 @@ class wiz.framework.http.oauth.twitter extends wiz.framework.http.oauth.consumer
 		#               oauth_timestamp="1318467427",
 		#               oauth_version="1.0"
 
-		req = @reqCreate @reqOptions('POST', '/oauth/request_token', 'http://wizbook2.local:11080/callback'), true, (res) =>
+		req = @reqCreate @reqOptions('POST', '/oauth/request_token', callbackURL), true, (res) =>
 			if not res or not res.oauth_token or not res.oauth_token_secret
 				return cb 'FAIL'
 			cb null, res.oauth_token, res.oauth_token_secret, res.oauth_callback_confirmed
+
+		@reqSend(req)
+
+	req: (method, path, oauthAccessToken, oauthAccessTokenSecret, cb) => #{{{
+		req = @reqCreate @reqOptions(method, path, null, oauthAccessToken, oauthAccessTokenSecret), true, (res) =>
+			if not res
+				return cb 'FAIL'
+			cb null, res
 
 		@reqSend(req)
 
