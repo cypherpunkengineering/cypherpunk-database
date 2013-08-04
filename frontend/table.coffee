@@ -192,7 +192,7 @@ class wiz.framework.frontend.table.mongoArray extends wiz.framework.frontend.tab
 		select[key] = 1 for key in keys
 		return select
 
-	getUpdateSetObj: (req, objsToSet) =>
+	getUpdateSetObj: (req, objsToSet = {}) =>
 		update = {}
 		update['$set'] = {}
 		for k, v of objsToSet

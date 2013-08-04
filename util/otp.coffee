@@ -1,45 +1,47 @@
-# Based on speakeasy @ https://github.com/markbao/speakeasy
-# HOTP (HMAC-Based One-Time Password Algorithm): [RFC 4226](http:#tools.ietf.org/html/rfc4226)
-# TOTP (Time-Based One-Time Password Algorithm): [RFC 6238](http:#tools.ietf.org/html/rfc6238)
+# wiz framework crypto one-time password classes
+# copyright 2012-2013 wiz technologies inc.
+#
+# some portions based on excerpts from:
+# "speakeasy - HMAC One-Time Password module for Node.js"
+# copyright 2012-2013 Mark Bao
+# https://github.com/markbao/speakeasy
+# licensed pursuant to terms of the MIT license:
+# https://github.com/markbao/speakeasy/blob/master/LICENSE
+#
+# some portions based on excerpts from:
+# "otptool - HOTP/OATH one-time password utility"
+# copyright 2009 Archie L. Cobbs <archie@dellroad.org>
+# https://code.google.com/p/mod-authn-otp/
+# licensed pursuant to terms of the apache license 2.0:
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# this implementation supports the following algorithms:
+#
+# TOTP (Time-Based One-Time Password Algorithm), as defined by RFC 6238:
+# http://tools.ietf.org/html/rfc6238
+#
+# HOTP (HMAC-Based One-Time Password Algorithm), as defined by RFC 4226:
+# http://tools.ietf.org/html/rfc4226
 
-require('..')
+require '..'
+require '../util/datetime'
+require '../util/convert'
 
-wiz.package('wiz.framework.util.otp')
+wiz.package 'wiz.framework.util.otp'
 
-crypto = require('crypto')
-ezcrypto = require('ezcrypto').Crypto
-base32 = require('thirty-two')
+crypto = require 'crypto'
+BigInteger = require '../crypto/jsbn'
 
 class wiz.framework.util.otp
 
-	# wiz.framework.util.otp.hotp(options)
-	#
-	# Calculates the one-time password given the key and a counter.
-	#
-	# options.key                  the key
-	#        .counter              moving factor
-	#        .length(=6)           length of the one-time password (default 6)
-	#        .encoding(='ascii')   key encoding (ascii, hex, or base32)
-	#
-	@hotp: (options) =>
-		# set vars
-		key = options.key
-		counter = options.counter
-		length = options.length || 6
-		encoding = options.encoding || 'base32'
-
-		# preprocessing: convert to ascii if it's not
-		if (encoding == 'hex')
-			key = wiz.framework.util.otp.hex_to_ascii(key)
-		else if (encoding == 'base32')
-			key = base32.decode(key)
-
+	@hotp: (keybuf, counter, length = 8) -> # generates a one-time password of given length from given key and counter {{{
 		# init hmac with the key
-		hmac = crypto.createHmac('sha1', new Buffer(key))
+		hmac = crypto.createHmac('sha1', keybuf)
 
 		# create an octet array from the counter
 		octet_array = new Array(8)
 
+		# encode the counter to be signed
 		counter_temp = counter
 
 		for i in [0..8]
@@ -61,7 +63,9 @@ class wiz.framework.util.otp
 		digest = hmac.digest('hex')
 
 		# convert the result to an array of bytes
-		digest_bytes = ezcrypto.util.hexToBytes(digest)
+		digest_bytes = []
+		for c in [0...digest.length] by 2
+			digest_bytes.push(parseInt(digest.substr(c, 2), 16))
 
 		# compute HOTP
 		# get offset
@@ -79,160 +83,30 @@ class wiz.framework.util.otp
 		sub_start = bin_code.length - length
 		code = bin_code.substr(sub_start, length)
 
-		# we now have a code with `length` number of digits, so return it
-		return(code)
-
-	# wiz.framework.util.otp.totp(options)
-	#
-	# Calculates the one-time password given the key, based on the current time
-	# with a 30 second step (step being the number of seconds between passwords).
-	#
-	# options.key                  the key
-	#        .length(=6)           length of the one-time password (default 6)
-	#        .encoding(='ascii')   key encoding (ascii, hex, or base32)
-	#        .step(=30)            override the step in seconds
-	#        .time                 (optional) override the time to calculate with
-	#        .initial_time         (optional) override the initial time
-	#
-	@totp: (options) =>
-		# set vars
-		key = options.key
-		length = options.length || 9
-		encoding = options.encoding || 'base32'
-		step = options.step || 30
-		initial_time = options.initial_time || 0; # unix epoch by default
-
-		# get current time in seconds since unix epoch
-		time = parseInt(Date.now()/1000)
-
-		# are we forcing a specific time?
-		if (options.time)
-			# override the time
-			time = options.time
+		# we now have a code with `length` number of digits, so return it in convenient ways
+		return code
+	#}}}
+	@totp: (keybuf, step = 30, length = 6, time = 0, initial_time = 0) -> # generates a one-time password of given length from given key and timestamp {{{
+		# use current time if not given
+		time = time || wiz.framework.util.datetime.unixTS()
 
 		# calculate counter value
-		counter = Math.floor((time - initial_time)/ step)
+		counter = Math.floor((time - initial_time) / step)
 
 		# pass to hotp
-		code = this.hotp({key: key, length: length, encoding: encoding, counter: counter})
+		return @hotp(keybuf, counter, length)
+	#}}}
 
-		# return the code in custom wiz alphabet base32
-		b32 = wiz.framework.util.otp.baseConvert code, 32, 0, ""
-		return wiz.framework.util.otp.padOutput(b32)
+	@generateSecret: (length = 20) => # generates a secret of given length for above OTP methods #{{{
+		loop # loop until full length random number is returned
+			secret = new BigInteger(crypto.randomBytes(length)).abs()
+			break if secret.toString(16).length is length*2
+		out =
+			dec: secret.toString(10)
+			hex: secret.toString(16).toUpperCase()
+			base32: wiz.framework.util.convert.biToBase32(secret)
 
-	# wiz.framework.util.otp.hex_to_ascii(key)
-	#
-	# helper function to convert a hex key to ascii.
-	#
-	@hex_to_ascii: (str) =>
-		# key is a string of hex
-		# convert it to an array of bytes...
-		bytes = ezcrypto.util.hexToBytes(str)
-
-		# bytes is now an array of bytes with character codes
-		# merge this down into a string
-		ascii_string = new String()
-
-		for i of bytes
-			ascii_string += String.fromCharCode(bytes[i])
-
-		return ascii_string
-
-	# wiz.framework.util.otp.ascii_to_hex(key)
-	#
-	# helper function to convert an ascii key to hex.
-	#
-	@ascii_to_hex: (str) =>
-		hex_string = ''
-
-		for i of str
-			hex_string += str.charCodeAt(i).toString(16)
-
-		return hex_string
-
-	# wiz.framework.util.otp.generate_key(options)
-	#
-	# Generates a random key with the set A-Z a-z 0-9 and symbols, of any length
-	# (default 32). Returns the key in ASCII, hexadecimal, and base32 format.
-	# Base32 format is used in Google Authenticator. Turn off symbols by setting
-	# symbols: false. Automatically generate links to QR codes of each encoding
-	# (using the Google Charts API) by setting qr_codes: true. Automatically
-	# generate a link to a special QR code for use with the Google Authenticator
-	# app, for which you can also specify a name.
-	#
-	# options.length(=32)              length of key
-	#        .symbols(=true)           include symbols in the key
-	#        .qr_codes(=false)         generate links to QR codes
-	#        .google_auth_qr(=false)   generate a link to a QR code to scan
-	#                                  with the Google Authenticator app.
-	#        .name                     (optional) add a name. no spaces.
-	#                                  for use with Google Authenticator
-	#
-	@generate_key: (options) =>
-		# options
-		length = options.length || 32
-		name = options.name || "Secret Key"
-		qr_codes = options.qr_codes || false
-		google_auth_qr = options.google_auth_qr || true
-		symbols = true
-
-		# turn off symbols only when explicity told to
-		if (options.symbols isnt undefined && options.symbols is false)
-			symbols = false
-
-		# generate an ascii key
-		key = this.generate_key_ascii(length, symbols)
-
-		# return a SecretKey with ascii, hex, and base32
-		SecretKey = {}
-		SecretKey.ascii = key
-		SecretKey.hex = this.ascii_to_hex(key)
-		SecretKey.base32 = base32.encode(key).replace /\=/g,''
-
-		baseURL = 'https:#chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl='
-
-		# generate a QR code for use in Google Authenticator if requested
-		# (Google Authenticator has a special style and requires base32)
-		if (google_auth_qr)
-			# first, make sure that the name doesn't have spaces, since Google Authenticator doesn't like them
-			name = name.replace /\ /g,''
-			SecretKey.google_auth_qr = baseURL + 'otpauth:#totp/' + encodeURIComponent(name) + '%3Fsecret=' + encodeURIComponent(SecretKey.base32)
-
-		return SecretKey
-
-	# wiz.framework.util.otp.generate_key_ascii(length, symbols)
-	#
-	# Generates a random key, of length `length` (default 32).
-	# Also choose whether you want symbols, default false.
-	# wiz.framework.util.otp.generate_key() wraps around this.
-	#
-	@generate_key_ascii: (length, symbols) =>
-		length = 32 if (!length)
-
-		set = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'
-
-		if (symbols)
-			set += '!@#$%^&*()<>?/[]{},.:;'
-
-		key = ''
-
-		for i in [0..length]
-			key += set.charAt(Math.floor(Math.random() * set.length))
-
-		return key
-
-	@baseConvert: (number, base, position, result) =>
-		symbols = "123456789ABCDEFGHJKLMNPRSTUVWXYZ"
-
-		if number < Math.pow(base, position + 1)
-			return symbols[(number / Math.pow(base, position))] + result
-
-		remainder = (number % Math.pow(base, position + 1))
-		return wiz.framework.util.otp.baseConvert(number - remainder, base, position + 1, symbols[remainder / ( Math.pow(base, position) )] + result)
-
-	@padOutput: (str) =>
-		str = str.toUpperCase()
-		str = '1' + str while str.length < 6
-		return str
+		return out
+	#}}}
 
 # vim: foldmethod=marker wrap
