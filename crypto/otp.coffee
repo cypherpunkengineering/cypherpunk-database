@@ -27,12 +27,12 @@ require '..'
 require '../util/datetime'
 require '../util/convert'
 
-wiz.package 'wiz.framework.util.otp'
+wiz.package 'wiz.framework.crypto.otp'
 
 crypto = require 'crypto'
 BigInteger = require '../crypto/jsbn'
 
-class wiz.framework.util.otp
+class wiz.framework.crypto.otp
 
 	@hotp: (keybuf, counter, length = 8) -> # generates a one-time password of given length from given key and counter {{{
 		# init hmac with the key
