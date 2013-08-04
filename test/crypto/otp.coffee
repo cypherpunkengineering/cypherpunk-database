@@ -10,8 +10,8 @@ secret = s.hex
 #secret = ''
 
 keybuf = new Buffer(secret, 'hex')
-totp = wiz.framework.crypto.otp.totp(keybuf)
-hotp = wiz.framework.crypto.otp.hotp(keybuf, 0)
+totp = wiz.framework.crypto.otp.generateTOTP(keybuf)
+hotp = wiz.framework.crypto.otp.generateHOTP(keybuf, 0)
 
 console.log "TOTP: #{totp}"
 console.log "HOTP: #{hotp}"

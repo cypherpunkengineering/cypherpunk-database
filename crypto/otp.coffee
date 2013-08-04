@@ -34,7 +34,55 @@ BigInteger = require '../crypto/jsbn'
 
 class wiz.framework.crypto.otp
 
-	@hotp: (keybuf, counter, length = 8) -> # generates a one-time password of given length from given key and counter {{{
+	# HOTP is all digits, no conversion
+	@userHOTPlen: 8
+	@serverHOTPlen: 8
+
+	# TOTP gets converted from/to base32
+	@userTOTPlen: 6
+	@serverTOTPlen: 9
+
+	@validateHOTP: (keybuf, counter, userHOTP, fwd = 4) -> # validate a HOTP code against a given key and counter {{{
+		out =
+			result: false
+			offset: undefined
+
+		if userHOTP.length isnt @userHOTPlen
+			wiz.log.debug "invalid userHOTP length"
+			return out
+
+		for offset in [0..fwd]
+			serverHOTP = @generateHOTP(keybuf, counter + offset, @serverHOTPlen)
+			wiz.log.debug "comparing serverHOTP (counter #{counter + offset}) #{serverHOTP} against userHOTP #{userHOTP}"
+			if userHOTP == serverHOTP
+				out.result = true
+				out.offset = offset
+				break
+
+		return out
+	#}}}
+	@validateTOTP: (keybuf, userTOTP, from = -1, to = 1, step = 30) -> # validate a TOTP code against a given key and current time {{{
+		out =
+			result: false
+			offset: undefined
+
+		if userTOTP.length isnt @userTOTPlen
+			wiz.log.debug "invalid userTOTP length"
+			return out
+
+		for offset in [from..to]
+			ts = wiz.framework.util.datetime.unixTS() + (step * offset)
+			serverTOTP = @generateTOTP(keybuf, step, @serverTOTPlen, ts)
+			wiz.log.debug "comparing serverTOTP (offset #{offset}) #{serverTOTP} against userTOTP #{userTOTP}"
+			if userTOTP == serverTOTP
+				out.result = true
+				out.offset = offset
+				break
+
+		return out
+	#}}}
+
+	@generateHOTP: (keybuf, counter, length = 8) -> # generates a one-time password of given length from given key and counter {{{
 		# init hmac with the key
 		hmac = crypto.createHmac('sha1', keybuf)
 
@@ -86,15 +134,20 @@ class wiz.framework.crypto.otp
 		# we now have a code with `length` number of digits, so return it in convenient ways
 		return code
 	#}}}
-	@totp: (keybuf, step = 30, length = 6, time = 0, initial_time = 0) -> # generates a one-time password of given length from given key and timestamp {{{
+	@generateTOTP: (keybuf, step = 30, length = 9, time = 0, initial_time = 0) -> # generates a one-time password of given length from given key and timestamp {{{
 		# use current time if not given
 		time = time || wiz.framework.util.datetime.unixTS()
 
 		# calculate counter value
 		counter = Math.floor((time - initial_time) / step)
 
-		# pass to hotp
-		return @hotp(keybuf, counter, length)
+		# generate the TOTP code
+		totp = @generateHOTP(keybuf, counter, length)
+
+		# convert to base32 and pad it to the proper length
+		totpBase32 = wiz.framework.util.convert.num2wiz32(totp, @userTOTPlen)
+
+		return totpBase32
 	#}}}
 
 	@generateSecret: (length = 20) => # generates a secret of given length for above OTP methods #{{{
