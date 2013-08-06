@@ -125,7 +125,9 @@ class wiz.framework.crypto.otp
 		bin_code |= (digest_bytes[offset+2] & 0xff) << 8
 		bin_code |= (digest_bytes[offset+3] & 0xff)
 
+		# convert bin_code to string and pad if necessary
 		bin_code = bin_code.toString()
+		bin_code = '0' + bin_code while bin_code.length < length
 
 		# get the chars at position bin_code - length through length chars
 		sub_start = bin_code.length - length
