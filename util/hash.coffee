@@ -13,11 +13,12 @@
 # GNU General Public License for more details.
 
 require '..'
+require './convert'
 
 wiz.package 'wiz.framework.util'
 
+BigInteger = require '../crypto/jsbn'
 crypto = require 'crypto'
-base32 = require 'base32'
 
 class wiz.framework.util.hash
 
@@ -36,7 +37,9 @@ class wiz.framework.util.hash
 
 		# custom encodings
 		if encoding is 'base32'
-			return base32.encode(shasum.digest())
+			digest = shasum.digest()
+			digestBI = new BigInteger(digest)
+			return wiz.framework.util.convert.biToBase32(digestBI, undefined, 51)
 		else
 			return shasum.digest(encoding)
 

@@ -34,6 +34,8 @@ BigInteger = require '../crypto/jsbn'
 
 class wiz.framework.crypto.otp
 
+	# static constants {{{
+
 	# HOTP is all digits, no conversion
 	@userHOTPlen: 8
 	@serverHOTPlen: 8
@@ -41,6 +43,8 @@ class wiz.framework.crypto.otp
 	# TOTP gets converted from/to base32
 	@userTOTPlen: 6
 	@serverTOTPlen: 9
+
+	#}}}
 
 	@validateHOTP: (keybuf, counter, userHOTP, fwd = 4) -> # validate a HOTP code against a given key and counter {{{
 		out =

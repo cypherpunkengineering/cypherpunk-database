@@ -9,6 +9,7 @@ BigInteger = require '../crypto/jsbn'
 
 class wiz.framework.util.convert
 	# old @base32charset: '123456789ABCDEFGHJKLMNPRSTUVWXYZ'
+	# alt @base32charset: '0123456789abcdefghjkmnpqrtuvwxyz'
 	@base32charset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
 
 	@hex2ascii: (str) => # convert a hex byte string to ascii string of hex bytes {{{
@@ -35,16 +36,20 @@ class wiz.framework.util.convert
 		return hex_string
 	#}}}
 
-	@biToBase32: (n) => # print BigInteger as base32 {{{
+	@biToBase32: (n, charset = @base32charset, length = -1) => # print BigInteger as base32 {{{
+		n = n.abs() # negative numbers aren't supported for now
 		base = new BigInteger('32')
 		out = ''
 		loop
 			d = n.divideAndRemainder(base)
 			n = d[0]
-			out = @base32charset.charAt(d[1]) + out
+			r = d[1]
+			out = charset.charAt(r) + out
 			if n.compareTo(base) < 0
-				out = @base32charset.charAt(n) + out
+				out = charset.charAt(n) + out
 				break
+		if length > 0
+			out = @padFront(out, length, charset[0])
 		return out
 	#}}}
 
@@ -62,16 +67,16 @@ class wiz.framework.util.convert
 	#}}}
 	@num2wiz32: (number, length) => # converts a number to wizBase32 and pads front to given length with 0 {{{
 		wiz32 = @num2base(number, 32, @base32charset)
-		wiz32padded = @padFront(wiz32, length, @base32charset[0])
+		wiz32padded = @padBack(wiz32, length, @base32charset[0])
 		return wiz32padded
 	#}}}
 
 	@padFront: (number, length, padchar) => #{{{ pads front of number with given symbol to given length
-		number = number + padchar while number.length < length
+		number = padchar + number while number.length < length
 		return number
 	#}}}
 	@padBack: (number, length, padchar) => #{{{ pads back of number with given symbol to given length
-		number = padchar + number while number.length < length
+		number = number + padchar while number.length < length
 		return number
 	#}}}
 
