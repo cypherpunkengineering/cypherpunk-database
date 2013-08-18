@@ -67,7 +67,7 @@ class wiz.framework.util.convert
 	#}}}
 	@num2wiz32: (number, length) => # converts a number to wizBase32 and pads front to given length with 0 {{{
 		wiz32 = @num2base(number, 32, @base32charset)
-		wiz32padded = @padBack(wiz32, length, @base32charset[0])
+		wiz32padded = @padFront(wiz32, length, @base32charset[0])
 		return wiz32padded
 	#}}}
 
