@@ -70,7 +70,7 @@ class wiz.framework.frontend.stateful.server extends wiz.framework.frontend.serv
 		@root.method 'post', '/logout', @middleware.baseSession(), @powerMask.always, @powerLevel.stranger, @postLogout
 
 		# for logged in users
-		@root.method 'get', '/home', @middleware.baseSessionAuth(), @powerMask.always, @powerLevel.stranger, @handleHome
+		@root.method 'get', '/home', @middleware.baseSessionAuth(), @powerMask.auth, @powerLevel.friend, @handleHome
 	#}}}
 
 	createSessionStore: () => #{{{
