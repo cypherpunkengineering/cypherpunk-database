@@ -1,13 +1,13 @@
 # copyright 2013 wiz technologies inc.
 
-require '..'
+require '../..'
 
-wiz.package 'wiz.framework.http.mime'
+wiz.package 'wiz.framework.http.resource.mime'
 
-class wiz.framework.http.mime
+class wiz.framework.http.resource.mime
 
 	@getType: (ext) =>
-		return wiz.framework.http.mime.types[ext]
+		return wiz.framework.http.resource.mime.types[ext]
 
 	@types = #{{{
 		'123': 'application/vnd.lotus-1-2-3'

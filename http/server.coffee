@@ -1,10 +1,10 @@
 # copyright 2013 wiz technologies inc.
 
 require '..'
-require '../util/strval'
+require '../util/list'
 
+require './resource/base'
 require './config'
-require './router'
 require './csp'
 
 http = require 'http'
@@ -24,19 +24,22 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 	main: () => #{{{ main server process
 		# create tree trunk
-		@root = new wiz.framework.http.router this, null, ''
+		@root = new wiz.framework.http.resource.base this, null, ''
 
-		# create server using NodeJS built-in http module
+		# NodeJS built-in http server, wiz framework router
 		@server = http.createServer @handler
-		# populate child branches in tree
+
+		# app-side initialization
 		@init()
+
+		# populate child branches in tree
+		@root.each (r) =>
+			r.init()
 
 		# listen for requests
 		@listen()
 	#}}}
-	init: () => #{{{
-		@root.each (r) =>
-			r.init()
+	init: () => # for app-side initialization {{{
 	#}}}
 	listen: () => #{{{ listen for HTTP requests according to config
 		if not @config.listeners
@@ -46,10 +49,9 @@ class wiz.framework.http.server extends wiz.base # base server object
 			wiz.log.info "HTTP listening on [#{listener.host}]:#{listener.port}"
 			@server.listen listener.port, listener.host
 	#}}}
-
-	handler: (req, res, out) => #{{{
+	handler: (req, res, out) => # HTTP request handler {{{
 		# recursive counter for router
-		req.level = 0
+		req._index_route = 0
 
 		# check if https or not
 		req.secure = (req.connection?.encrypted? or req.headers['x-forwarded-proto'] is 'https')
@@ -60,7 +62,7 @@ class wiz.framework.http.server extends wiz.base # base server object
 			return if req.receivedBytes > @config.maxRequestLimit
 			req.receivedBytes += chunk.length
 			if req.receivedBytes > @config.maxRequestLimit
-				wiz.log.crit "#{@getIP(req)} max request limit of #{@config.maxRequestLimit} bytes exceeded!"
+				wiz.log.crit "#{req.ip} max request limit of #{@config.maxRequestLimit} bytes exceeded!"
 				req.destroy()
 
 		# log all requests
@@ -69,13 +71,29 @@ class wiz.framework.http.server extends wiz.base # base server object
 			@log req, res, out
 
 		# utility method for sending response
-		res.send = (numeric, content) =>
-			res.statusCode = numeric if numeric?
-			res.write(content) if content?
-			res.end()
-
-		# tell the world how awesome we are
-		res.setHeader 'X-Powered-By', 'wiz-framework'
+		res.send = (numeric = 200, content = null, err = null) =>
+			err ?= content ? 'unknown error'
+			res.statusCode = numeric
+			switch numeric
+				when 100, 101
+					res.write(content) if content?
+				when 304
+					res.write 'not modified'
+					res.end()
+				when 400
+					wiz.log.err "BAD REQUEST: #{err}"
+					res.write err.toString() if wiz.style is 'DEV'
+					res.end()
+				when 404
+					res.write 'file not found'
+					res.end()
+				when 500, 501, 502, 503, 504, 505
+					wiz.log.err "SERVER ERROR: #{err}"
+					res.write err.toString() if wiz.style is 'DEV'
+					res.end()
+				else
+					res.write(content) if content?
+					res.end()
 
 		# prevent click jacking
 		res.setHeader 'X-Frame-Options', @frameOptions if @frameOptions
@@ -86,115 +104,12 @@ class wiz.framework.http.server extends wiz.base # base server object
 		# set security policy
 		res.setHeader 'Content-Security-Policy', @contentSecurityPolicy if @contentSecurityPolicy
 
-		# parse Host header
-		return unless @parseHostHeader(req, res)
-
-		# parse URL params
-		return unless @parseURL(req, res)
-
-		# TODO: parse req.body
-		# return unless @parseBody(req, res)
-
-		# route the request
-		@router @root, req, res, out
+		# pass to root resource router
+		@root.router @root, req, res
 	#}}}
-	router: (parent, req, res, out) => #{{{ recursive router to handle requests
 
-		req.level++
-		sliced = req.url.split('/')
-		word = sliced[req.level]
-		depth = sliced.length - 1
-		route = parent.routeTable[word]
-
-		#wiz.log.debug "level #{req.level} split is #{word}"
-
-		if route? and req.level < depth # we need to go DEEPER
-
-			try # pass request to sub-route if we can
-
-				#wiz.log.debug "going deeper"
-				@router route, req, res, out
-				return
-
-			catch e # otherwise send 500 error
-
-				@respond req, res, 500, e
-
-		else if route?.handler? and (route.method is 'ANY' or route.method is req.method)
-
-			try # handle the request if we can
-
-				#wiz.log.debug "handling request"
-				route.handler req, res, out
-
-			catch e # otherwise send 500 error
-
-				console.log e.stack
-				@respond req, res, 500, e.toString()
-
-		else # 404 route not found
-
-			@respond req, res, 404, out
-
-	#}}}
-	respond: (req, res, numeric, err) => #{{{ generic http responder
-		res.statusCode = numeric
-		switch numeric
-			when 304
-				res.write 'not modified'
-			when 400
-				wiz.log.err "BAD REQUEST: #{err}"
-				res.write err
-			when 404
-				res.write 'file not found'
-			else
-				wiz.log.err "SERVER ERROR: #{err}"
-				res.write err if wiz.style is 'DEV'
-
-		res.end()
-	#}}}
 	log: (req, res) => #{{{ http logger
-		wiz.log.info "HTTP/#{req.httpVersion} #{res.statusCode} -> [#{@getIP(req)}] #{req.method} #{req.url} (#{req.headers['user-agent']})"
-	#}}}
-
-	parseHostHeader: (req, res) => #{{{ parse Host header
-		try
-			req.host = req.headers.host.split(':')[0]
-		catch e
-			req.host = ''
-
-		return true if wiz.framework.util.strval.validate('fqdnDot', req.host)
-		return true if wiz.framework.util.strval.validate('inet4', req.host)
-		return true if wiz.framework.util.strval.validate('inet6', req.host)
-
-		@respond req, res, 400, 'missing or invalid host header'
-		return false
-	#}}}
-	parseURL: (req, res) => #{{{ parse url params and body
-		req.params = {}
-
-		try
-			url = req.url
-			qm = url.indexOf('?')
-			if qm > 0 and qm < url.length
-				args = url.slice(qm + 1, url.length)
-				req.url = url.slice(0, qm)
-				for arg in args.split('&')
-					param = arg.split('=')
-					x = decodeURIComponent(param[0])
-					y = decodeURIComponent(param[1]) or ''
-					req.params[x] = y if x? and x isnt '' and y?
-		catch e
-			wiz.log.err "error parsing url: #{e}"
-			@respond req, res, 400, e.toString()
-			return false
-
-		return true
-	#}}}
-	getIP: (req) => #{{{
-		ip = req.connection.remoteAddress or ''
-		ip = wiz.framework.util.strval.inet6_prefix_trim ip
-		return ip
+		wiz.log.info "HTTP/#{req.httpVersion} #{res.statusCode} -> [#{req.ip}] #{req.method} #{req.url} (#{req.headers['user-agent']})"
 	#}}}
 
 # vim: foldmethod=marker wrap

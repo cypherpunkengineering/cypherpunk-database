@@ -1,13 +1,14 @@
 # copyright 2013 wiz technologies inc.
 
-require '..'
-require './resource'
+require '../..'
+require './base'
+require './folder'
 
 coffee = require 'coffee-script'
 
 wiz.package 'wiz.framework.http.resource'
 
-class wiz.framework.http.resource.coffeeScript extends wiz.framework.http.resource.static
+class wiz.framework.http.resource.coffeeScript extends wiz.framework.http.resource.base
 	contentType: 'application/ecmascript'
 
 	constructor: (@server, @parent, @path, @file, @options = {}, @method) -> #{{{ load resource from file

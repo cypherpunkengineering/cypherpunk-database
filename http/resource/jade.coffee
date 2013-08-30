@@ -1,13 +1,14 @@
 # copyright 2013 wiz technologies inc.
 
-require '..'
-require './resource'
+require '../..'
+require './base'
+require './folder'
 
 jade = require 'jade'
 
 wiz.package 'wiz.framework.http.resource'
 
-class wiz.framework.http.resource.jadeTemplate extends wiz.framework.http.resource.static
+class wiz.framework.http.resource.jadeTemplate extends wiz.framework.http.resource.base
 	contentType: 'text/html'
 	dynamic: true
 
