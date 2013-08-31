@@ -1,8 +1,8 @@
 require '../..'
 require '../../http/server'
-require '../../http/resource'
-require '../../http/coffee-script'
-require '../../http/jade'
+require '../../http/resource/base'
+require '../../http/resource/coffee-script'
+require '../../http/resource/jade'
 
 fs = require 'fs'
 

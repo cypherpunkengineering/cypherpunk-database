@@ -13,7 +13,7 @@ s3 = new wiz.framework.database.s3
 	key: fs.readFileSync 'S3key'
 	secret: fs.readFileSync 'S3secret'
 
-class resource extends wiz.framework.http.router
+class resource extends wiz.framework.http.resource.base
 	handler: (req, res) =>
 		s3.listAllMyBuckets (buckets) =>
 			for bucket in buckets

@@ -3,18 +3,18 @@ require '../../http/server'
 
 wiz.app 'testor'
 
-class level3 extends wiz.framework.http.router
+class level3 extends wiz.framework.http.resource.base
 	handler: (req, res) =>
 		res.end 'you have reached level3'
 
-class level2 extends wiz.framework.http.router
+class level2 extends wiz.framework.http.resource.base
 	init: () =>
 		@routeAdd new level3(@server, this, 'three', 'get', null, null, null)
 
 	handler: (req, res) =>
 		res.end 'you have reached level2'
 
-class level1 extends wiz.framework.http.router
+class level1 extends wiz.framework.http.resource.base
 	init: () =>
 		@routeAdd new level2(@server, this, 'two', 'get', null, null, null)
 
