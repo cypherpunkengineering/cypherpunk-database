@@ -87,6 +87,12 @@ class wiz.framework.util.strval
 		return false unless @int_valid(ttl)
 		return (ttl >= 60 and ttl <= (60 * 60 * 24 * 7))
 
+	# check if valid 8 digit hotp code
+	@hotp_valid : (str) -> /^\d{8}$/.test(str)
+
+	# check if valid 8 digit pengikey id
+	@pengikey_valid : (str) -> /^\d{8}$/.test(str)
+
 	# check if valid ascii
 	@ascii_valid : (str) ->
 		for c, i in str
