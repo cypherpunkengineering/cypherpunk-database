@@ -67,13 +67,16 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 		# log all requests
 		res.on 'finish', () =>
+			# save session, set cookie header
+			wiz.framework.http.account.session.save(req.session) if req.session?.sid?
+
 			# log the result of the request
 			@log req, res, out
 
 		# utility method for sending response
 		res.send = (numeric = 200, content = null, err = null) =>
 
-			if typeof content is 'object'
+			if content and typeof content is 'object'
 				content = JSON.stringify(content)
 				res.setHeader 'Content-type', 'application/json'
 				res.setHeader 'Content-length', content.length
