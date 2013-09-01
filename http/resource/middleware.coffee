@@ -48,9 +48,50 @@ class wiz.framework.http.resource.middleware
 		req.next()
 	#}}}
 	@parseCookie: (req, res) => #{{{
-		wiz.log.debug "Got cookie: #{req.headers.cookie}" if req.headers?.cookie?
-		req.cookie = ''
-		req.next()
+		#wiz.log.debug "Got cookie: #{req.headers.cookie}" if req.headers?.cookie?
+
+		# only run once
+		return req.next() if req.cookies?
+
+		# initialize cookie object
+		req.cookies = {}
+
+		# make local copy of cookie header
+		cookie = req.headers.cookie
+
+		return req.next() unless cookie
+		try
+			obj = {}
+			pairs = cookie.split(/[;,] */)
+
+			for i in [0...pairs.length]
+				pair = pairs[i]
+				eqlIndex = pair.indexOf('=')
+				key = pair.substr(0, eqlIndex).trim().toLowerCase()
+				val = pair.substr(++eqlIndex, pair.length).trim()
+
+				# quoted values
+				if val[0] == '"'
+					val = val.slice(1, -1)
+
+				# only assign once
+				if obj[key] == undefined
+					val = val.replace(/\+/g, ' ')
+					try
+						obj[key] = decodeURIComponent(val)
+					catch err
+						if err instanceof URIError
+							obj[key] = val
+						else
+							throw err
+
+			req.cookies = obj
+			req.next()
+
+		catch err
+
+			res.send 400, "error parsing cookie", err
+			return
 	#}}}
 	@parseBody: (req, res) => #{{{
 		# initialize as empty

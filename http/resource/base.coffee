@@ -51,6 +51,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 	#}}}
 
 	router: (parent, req, res) => #{{{ recursive router
+		#wiz.log.debug "router: #{req._index_route}"
 		req._index_route++
 		sliced = req.url.split('/')
 		word = sliced[req._index_route]
@@ -85,12 +86,14 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 
 		else # 404 route not found
 
+			wiz.log.debug "no handler for this route"
 			res.send 404
 
 	#}}}
 	serve: (req, res) => # {{{
 		req._index_middleware = 0
 		req.next = () =>
+			#wiz.log.debug "req.next(): #{req._index_middleware}"
 			if @middleware[req._index_middleware]
 				next = @middleware[req._index_middleware]
 				req._index_middleware++
