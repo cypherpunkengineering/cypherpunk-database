@@ -2,7 +2,7 @@
 
 require '..'
 require './asn'
-require '../util/hash'
+require './hash'
 
 BigInteger = require './jsbn'
 SecureRandom = require './rng'
@@ -131,7 +131,7 @@ class wiz.framework.rsa.key extends wiz.framework.asn.root
 
 		# compute hash for message using detected digest algorithm
 		#wiz.log.debug "computing #{digestInfo.hashAlg} for message: #{signedMessage}"
-		msgHash = wiz.framework.util.hash.digest(signedMessage, digestInfo.hashAlg, 'hex')
+		msgHash = wiz.framework.crypto.hash.digest(signedMessage, digestInfo.hashAlg, 'hex')
 		wiz.log.debug "computed msg hash: #{msgHash}"
 		wiz.log.debug "digest  signature: #{digestInfo.digest}"
 
@@ -145,7 +145,7 @@ class wiz.framework.rsa.key extends wiz.framework.asn.root
 
 	digestInfoBuild: (s, keySize, hashAlg) => #{{{ build digest info with header and msg hash
 		pmStrLen = keySize / 4
-		sHashHex = wiz.framework.util.hash.digest(s, hashAlg, 'hex')
+		sHashHex = wiz.framework.crypto.hash.digest(s, hashAlg, 'hex')
 		sHead = '0001'
 		sTail = '00' + @hashHeaders[hashAlg] + sHashHex
 		sMid = ''

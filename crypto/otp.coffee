@@ -25,7 +25,7 @@
 
 require '..'
 require '../util/datetime'
-require '../util/convert'
+require './convert'
 
 wiz.package 'wiz.framework.crypto.otp'
 
@@ -151,7 +151,7 @@ class wiz.framework.crypto.otp
 		totp = @generateHOTP(keybuf, counter, length)
 
 		# convert to base32 and pad it to the proper length
-		totpBase32 = wiz.framework.util.convert.num2wiz32(totp, @userTOTPlen)
+		totpBase32 = wiz.framework.crypto.convert.num2wiz32(totp, @userTOTPlen)
 
 		return totpBase32
 	#}}}
@@ -163,7 +163,7 @@ class wiz.framework.crypto.otp
 		out =
 			dec: secret.toString(10)
 			hex: secret.toString(16).toUpperCase()
-			base32: wiz.framework.util.convert.biToBase32(secret)
+			base32: wiz.framework.crypto.convert.biToBase32(secret)
 
 		return out
 	#}}}

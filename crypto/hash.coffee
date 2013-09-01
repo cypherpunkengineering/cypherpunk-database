@@ -15,12 +15,12 @@
 require '..'
 require './convert'
 
-wiz.package 'wiz.framework.util'
+wiz.package 'wiz.framework.crypto.hash'
 
-BigInteger = require '../crypto/jsbn'
+BigInteger = require './jsbn'
 crypto = require 'crypto'
 
-class wiz.framework.util.hash
+class wiz.framework.crypto.hash
 
 	# foo = { bar: 1, baz: 2 }
 	# digest(foo)
@@ -39,7 +39,7 @@ class wiz.framework.util.hash
 		if encoding is 'base32'
 			digest = shasum.digest()
 			digestBI = new BigInteger(digest)
-			return wiz.framework.util.convert.biToBase32(digestBI, undefined, 51)
+			return wiz.framework.crypto.convert.biToBase32(digestBI, undefined, 51)
 		else
 			return shasum.digest(encoding)
 

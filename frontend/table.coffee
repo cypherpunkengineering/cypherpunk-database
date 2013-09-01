@@ -30,7 +30,7 @@ class wiz.framework.frontend.table.dbobj #{{{
 		@updated ?= wiz.framework.util.datetime.unixFullTS()
 		@created ?= @updated
 		# create unique id using headers/session data as salt
-		@id ?= wiz.framework.util.hash.digest
+		@id ?= wiz.framework.crypto.hash.digest
 			payload: this
 			headers: req.headers
 			session: req.session

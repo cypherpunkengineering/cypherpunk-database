@@ -1,5 +1,5 @@
-require '..'
-require '../util/hash'
+require '../..'
+require '../../crypto/hash'
 
 wiz.app 'test'
 
@@ -7,4 +7,4 @@ data = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 
 for datum in data
 	console.log datum
-	console.log wiz.framework.util.hash.digest(datum.toString())
+	console.log wiz.framework.crypto.hash.digest(datum.toString())

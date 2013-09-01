@@ -3,11 +3,11 @@
 
 require '..'
 
-wiz.package 'wiz.framework.util.convert'
+wiz.package 'wiz.framework.crypto.convert'
 
-BigInteger = require '../crypto/jsbn'
+BigInteger = require './jsbn'
 
-class wiz.framework.util.convert
+class wiz.framework.crypto.convert
 	# old @base32charset: '123456789ABCDEFGHJKLMNPRSTUVWXYZ'
 	# alt @base32charset: '0123456789abcdefghjkmnpqrtuvwxyz'
 	@base32charset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
