@@ -72,8 +72,16 @@ class wiz.framework.http.server extends wiz.base # base server object
 
 		# utility method for sending response
 		res.send = (numeric = 200, content = null, err = null) =>
+
+			if typeof content is 'object'
+				content = JSON.stringify(content)
+				res.setHeader 'Content-type', 'application/json'
+				res.setHeader 'Content-length', content.length
+
 			err ?= content ? 'unknown error'
+
 			res.statusCode = numeric
+
 			switch numeric
 				when 100, 101
 					res.write(content) if content?
