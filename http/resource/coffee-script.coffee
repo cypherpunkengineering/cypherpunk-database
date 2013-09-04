@@ -2,13 +2,14 @@
 
 require '../..'
 require './base'
+require './static'
 require './folder'
 
 coffee = require 'coffee-script'
 
 wiz.package 'wiz.framework.http.resource'
 
-class wiz.framework.http.resource.coffeeScript extends wiz.framework.http.resource.base
+class wiz.framework.http.resource.coffeeScript extends wiz.framework.http.resource.static
 	contentType: 'application/ecmascript'
 
 	constructor: (@server, @parent, @path, @file, @options = {}, @method) -> #{{{ load resource from file

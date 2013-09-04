@@ -1,10 +1,10 @@
 # copyright 2013 wiz technologies inc.
 
-require '..'
+require '../..'
 
-wiz.package 'wiz.framework.http.contentSecurityPolicy'
+wiz.package 'wiz.framework.http.server.csp'
 
-class wiz.framework.http.contentSecurityPolicy # HTTP Content-Security-Policy header
+class wiz.framework.http.server.csp # HTTP Content-Security-Policy header
 	# ref: http://www.html5rocks.com/en/tutorials/security/content-security-policy/
 
 	# define defaults for any directive left undefined

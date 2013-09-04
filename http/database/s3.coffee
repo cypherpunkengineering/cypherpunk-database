@@ -3,7 +3,7 @@
 require '..'
 require '../database/s3'
 
-wiz.package 'wiz.framework.http.database'
+wiz.package 'wiz.framework.http.database.s3'
 
 class wiz.framework.http.database.s3 extends wiz.framework.database.s3
 	fail: (req, res, err) =>

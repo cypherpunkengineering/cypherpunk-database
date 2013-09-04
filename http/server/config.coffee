@@ -1,10 +1,10 @@
 # copyright 2013 wiz technologies inc.
 
-require '..'
+require '../..'
 
-wiz.package 'wiz.framework.http.config'
+wiz.package 'wiz.framework.http.server.config'
 
-class wiz.framework.http.config #{{{ base server config object
+class wiz.framework.http.server.config #{{{ base http server config object
 
 	# what IP/port to listen on
 	listeners: [

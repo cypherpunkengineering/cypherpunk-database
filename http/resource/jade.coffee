@@ -2,13 +2,14 @@
 
 require '../..'
 require './base'
+require './static'
 require './folder'
 
 jade = require 'jade'
 
 wiz.package 'wiz.framework.http.resource'
 
-class wiz.framework.http.resource.jadeTemplate extends wiz.framework.http.resource.base
+class wiz.framework.http.resource.jadeTemplate extends wiz.framework.http.resource.static
 	contentType: 'text/html'
 	dynamic: true
 

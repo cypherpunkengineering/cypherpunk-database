@@ -1,7 +1,7 @@
 # copyright 2013 wiz technologies inc.
 
-require '..'
-require '../util/datetime'
+require '../..'
+require '../../util/datetime'
 
 crypto = require 'crypto'
 stream = require 'stream'
@@ -303,7 +303,7 @@ class wiz.framework.http.oauth.twitter extends wiz.framework.http.oauth.consumer
 			cb null, res.oauth_token, res.oauth_token_secret, res.oauth_callback_confirmed
 
 		@reqSend(req)
-
+	#}}}
 	req: (method, path, oauthAccessToken, oauthAccessTokenSecret, cb) => #{{{
 		req = @reqCreate @reqOptions(method, path, null, oauthAccessToken, oauthAccessTokenSecret), true, (res) =>
 			if not res

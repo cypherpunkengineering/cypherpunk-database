@@ -1,23 +1,23 @@
 # copyright 2013 wiz technologies inc.
 
-require '..'
-require '../util/list'
+require '../..'
+require '../../util/list'
 
-require './resource/base'
+require '../resource/base'
 require './config'
 require './csp'
 
 http = require 'http'
 
-wiz.package 'wiz.framework.http.server'
+wiz.package 'wiz.framework.http.server.base'
 
-class wiz.framework.http.server extends wiz.base # base server object
+class wiz.framework.http.server.base extends wiz.base # base http server object
 
 	constructor: () -> #{{{
 		super()
-		@config = new wiz.framework.http.config()
+		@config = new wiz.framework.http.server.config()
 
-		@contentSecurityPolicy = new wiz.framework.http.contentSecurityPolicy()
+		@contentSecurityPolicy = new wiz.framework.http.server.csp()
 		@contentTypeOptions = 'nosniff'
 		@frameOptions = 'sameorigin'
 	#}}}

@@ -72,7 +72,7 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 
 			# send 304 if cache is up to date
 			if notModified
-				return @server.respond req, res, 304
+				return res.send 304
 
 			res.setHeader 'Last-Modified', @stats.mtime if @stats and @stats.mtime
 

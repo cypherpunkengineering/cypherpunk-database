@@ -1,15 +1,12 @@
 # copyright 2013 wiz technologies inc.
 
-require '..'
-require '../database/mysql'
-require '../database/mongo'
+require '../..'
+require '../../database/mysql'
+require '../../database/mongo'
 
-wiz.package 'wiz.framework.http.database'
+wiz.package 'wiz.framework.http.database.mongo'
 
-class wiz.framework.http.mysql extends wiz.framework.database.mysql
-	constructor : (@server, @parent, @config) ->
-
-class wiz.framework.http.mongo extends wiz.framework.database.mongo
+class wiz.framework.http.database.mongo extends wiz.framework.database.mongo
 	client : null
 
 	constructor : (@server, @parent, @config, @serverOptions, @dbOptions) ->
