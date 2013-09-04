@@ -49,13 +49,13 @@ class wiz.framework.frontend.database.s3 extends wiz.framework.database.s3
 	createNewBucket: (req, res, bucket) =>
 		super bucket, (out) =>
 			return res.send out.statusCode if out
-			wiz.log.error "S3 request failed"
+			wiz.log.err "S3 request failed"
 			return res.send 500
 
 	issueCredentials: (req, res, name, email, userKey, cb) =>
 		super name, email, userKey, (out) =>
 			if not out or not out.key_id or not out.key_secret
-				wiz.log.error "S3 request failed"
+				wiz.log.err "S3 request failed"
 				return res.send 500
 			cb out
 
