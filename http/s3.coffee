@@ -7,7 +7,7 @@ wiz.package 'wiz.framework.http.database'
 
 class wiz.framework.http.database.s3 extends wiz.framework.database.s3
 	fail: (req, res, err) =>
-		wiz.log.error "S3 request failed"
+		wiz.log.err "S3 request failed"
 		res.statusCode = 500
 		res.end()
 
