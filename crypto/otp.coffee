@@ -46,12 +46,17 @@ class wiz.framework.crypto.otp
 
 	#}}}
 
-	@validateHOTP: (keybuf, counter, userHOTP, fwd = 4) -> # validate a HOTP code against a given key and counter {{{
+	@validateHOTP: (keybuf, counter, userHOTP, fwd = 1000) -> # validate a HOTP code against a given key and counter {{{
 		out =
 			result: false
 			offset: undefined
 
-		if userHOTP.length isnt @userHOTPlen
+		try
+			userHOTP = userHOTP.substr(@userHOTPlen * -1)
+		catch e
+			userHOTP = ''
+
+		if userHOTP.length < @userHOTPlen
 			wiz.log.debug "invalid userHOTP length"
 			return out
 
