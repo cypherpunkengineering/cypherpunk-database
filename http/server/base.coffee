@@ -110,6 +110,9 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 		# set security policy
 		res.setHeader 'Content-Security-Policy', @contentSecurityPolicy if @contentSecurityPolicy
 
+		# close connection
+		res.setHeader 'Connection', 'close'
+
 		# pass to root resource router
 		@root.router @root, req, res
 	#}}}
