@@ -28,11 +28,13 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		@routeTable = {}
 	#}}}
 	init: () => #{{{
+		@each (r) =>
+			r.init()
 		# for child class
 	#}}}
 
 	routeAdd: (m) => #{{{
-		wiz.log.debug "added router for #{m.getFullPath()}"
+		#wiz.log.debug "added router for #{m.getFullPath()}"
 		wiz.log.debug "added handler for #{m.method} #{m.getFullPath()}" if m.handler?
 		@routeTable[m.path] = m
 		@branchAdd m
@@ -109,9 +111,19 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		path = @path
 		parent = @parent
 		while parent
-			path = parent.path + '/' + path
+			path = parent.path + '/' + path unless (parent.path is '' and path[0] is '/')
 			parent = parent.parent
 		return path
 	#}}}
+	js: (file) =>
+		return @getFullPath() + '/_js/' + file
+	css: (file) =>
+		return @getFullPath() + '/_css/' + file
+	coffee: (file) =>
+		return @getFullPath() + '/_coffee/' + file + '.coffee'
+	img: (file) =>
+		return @getFullPath() + '/_img/' + file
+	jade: (file) =>
+		return @getFullPath() + '/_jade/' + file
 
 # vim: foldmethod=marker wrap

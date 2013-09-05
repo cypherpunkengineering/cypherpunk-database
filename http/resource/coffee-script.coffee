@@ -16,12 +16,9 @@ class wiz.framework.http.resource.coffeeScript extends wiz.framework.http.resour
 		super(@server, @parent, @path, @file, @method)
 		@options.bare = true # don't add coffee-script's clojure wrapper
 	#}}}
-	load: () => #{{{ convert buffer to string
-		super()
-		@src = @src.toString()
-	#}}}
 	compiler: () => #{{{ compile using coffee-script
-		@content = coffee.compile @src, @options
+		@content = coffee.compile @src.toString(), @options
+
 		return () =>
 			return @content
 	#}}}

@@ -4,7 +4,7 @@ require '../..'
 
 wiz.package 'wiz.framework.http.server.config'
 
-class wiz.framework.http.server.config #{{{ base http server config object
+class wiz.framework.http.server.configBase #{{{ base http server config object
 
 	# what IP/port to listen on
 	listeners: [

@@ -18,6 +18,7 @@ class wiz.framework.http.resource.jadeTemplate extends wiz.framework.http.resour
 		@options.pretty = true if wiz.style is 'DEV' # pretty print for developers
 	#}}}
 	compiler: () => #{{{ compile using jade
+		@options.filename = @file
 		jade.compile @src, @options
 	#}}}
 

@@ -15,7 +15,7 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 
 	constructor: () -> #{{{
 		super()
-		@config = new wiz.framework.http.server.config()
+		@config = new wiz.framework.http.server.configBase()
 
 		@contentSecurityPolicy = new wiz.framework.http.server.csp()
 		@contentTypeOptions = 'nosniff'
@@ -23,25 +23,20 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 	#}}}
 
 	main: () => #{{{ main server process
-		# create tree trunk
-		@root = new wiz.framework.http.resource.base this, null, ''
-
 		# NodeJS built-in http server, wiz framework router
-		@server = http.createServer @handler
+		@server = http.createServer(@handler)
 
 		# app-side initialization
 		@init()
-
-		# populate child branches in tree
-		@root.each (r) =>
-			r.init()
 
 		# listen for requests
 		@listen()
 	#}}}
 	init: () => # for app-side initialization {{{
+		wiz.log.crit 'root resource is missing!' unless @root
+		@root.init()
 	#}}}
-	listen: () => #{{{ listen for HTTP requests according to config
+	listen: () => # listen for HTTP requests according to config {{{
 		if not @config.listeners
 			wiz.log.err "no listeners defined in server config!"
 
@@ -81,7 +76,7 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 				res.setHeader 'Content-type', 'application/json'
 				res.setHeader 'Content-length', content.length
 
-			err ?= content ? 'unknown error'
+			err ?= content ? 'something bad happened'
 
 			res.statusCode = numeric
 
