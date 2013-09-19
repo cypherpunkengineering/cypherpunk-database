@@ -23,6 +23,8 @@ class wiz.framework.http.account.util
 	#}}}
 
 class wiz.framework.http.account.identify extends wiz.framework.http.resource.base
+	level: wiz.framework.http.resource.power.level.stranger
+	mask: wiz.framework.http.resource.power.mask.public
 	handler: (req, res) => #{{{
 
 		return res.send 400, 'missing key' unless req.body?.key?
@@ -49,9 +51,9 @@ class wiz.framework.http.account.identify extends wiz.framework.http.resource.ba
 	#}}}
 
 class wiz.framework.http.account.authenticate extends wiz.framework.http.resource.base
-	init: () =>
-		super()
-		@middleware.push(wiz.framework.http.account.session.middleware)
+	level: wiz.framework.http.resource.power.level.friend
+	mask: wiz.framework.http.resource.power.mask.auth
+	middleware: wiz.framework.http.account.session.base
 
 	handler: (req, res, cb) => #{{{
 		return res.send 400, 'invalid session' if not req.session?.auth or not req.session?.user?

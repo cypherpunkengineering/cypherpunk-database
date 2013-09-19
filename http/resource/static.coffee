@@ -3,12 +3,16 @@
 require '../..'
 require './base'
 require './mime'
+require './power'
 
 fs = require 'fs'
 
 wiz.package 'wiz.framework.http.resource'
 
 class wiz.framework.http.resource.static extends wiz.framework.http.resource.base
+	# default to public/stranger access
+	level: wiz.framework.http.resource.power.level.stranger
+	mask: wiz.framework.http.resource.power.mask.public
 	contentType: null
 	content: null
 	renderer: null
@@ -69,7 +73,7 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 		() =>
 			return @src
 	#}}}
-	render: () => #{{{ renders @content
+	render: (req, res) => #{{{ renders @content
 		@compile() unless @renderer
 
 		try
@@ -81,7 +85,8 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 			wiz.log.err "failed rendering #{@file}: #{e}"
 	#}}}
 	handler: (req, res) => #{{{ send @content as http response
-		@render() unless @content
+		if @dynamic or not @content
+			@render(req, res)
 
 		if @src is null or @renderer is null or @content is null
 			wiz.log.err 'no content to serve'

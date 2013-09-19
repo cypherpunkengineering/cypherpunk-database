@@ -1,6 +1,7 @@
 # copyright 2013 wiz technologies inc.
 
 require '../..'
+require '../resource/middleware'
 
 crypto = require 'crypto'
 BigInteger = require '../../crypto/jsbn'
@@ -12,6 +13,17 @@ class wiz.framework.http.account.session
 	@key: 'wiz.session'
 	expires: 60 # minutes from now
 
+	@middleware: (req, res) => # middleware to load session if cookie present {{{
+		req.session = {}
+		sid = req.cookies?[wiz.framework.http.account.session.key]
+		req.session = wiz.framework.http.account.session.load(sid) if sid
+		req.next()
+	#}}}
+	# array must come after middleware methods after it is defined
+	@base: wiz.framework.http.resource.middleware.base.concat [ #{{{ base list of middleware required for session use
+		@middleware
+	] #}}}
+
 	@load: (sid) => # load session from db after receiving request {{{
 		return wiz.sessions[sid] || {}
 	#}}}
@@ -19,12 +31,7 @@ class wiz.framework.http.account.session
 		wiz.sessions[s.sid] = s
 		return true
 	#}}}
-	@middleware: (req, res) => # middleware to load session if cookie present {{{
-		req.session = {}
-		sid = req.cookies?[wiz.framework.http.account.session.key]
-		req.session = wiz.framework.http.account.session.load(sid) if sid
-		req.next()
-	#}}}
+
 	constructor: (req, res) -> # create new session {{{
 		r = new BigInteger(crypto.randomBytes(64))
 		@sid = wiz.framework.crypto.convert.biToBase32(r)

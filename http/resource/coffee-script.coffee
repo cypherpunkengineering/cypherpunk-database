@@ -10,6 +10,8 @@ coffee = require 'coffee-script'
 wiz.package 'wiz.framework.http.resource'
 
 class wiz.framework.http.resource.coffeeScript extends wiz.framework.http.resource.static
+	level: wiz.framework.http.resource.power.level.stranger
+	mask: wiz.framework.http.resource.power.mask.public
 	contentType: 'application/ecmascript'
 
 	constructor: (@server, @parent, @path, @file, @options = {}, @method) -> #{{{ load resource from file

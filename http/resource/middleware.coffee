@@ -178,5 +178,23 @@ class wiz.framework.http.resource.middleware
 				# dont know how to parse this content-type
 				req.next()
 	#}}}
+	@checkAccess: (req, res) => #{{{
+		return req.next() if req.route.isAccessible(req)
+		return res.send 403
+	#}}}
+
+	# arrays must come last to reference methods after they are defined
+
+	@minimum: [ # only used internally
+		@parseIP
+		@parseHostHeader
+		@parseURL
+	]
+
+	@base: @minimum.concat [ # resources should use this
+		@checkAccess
+		@parseCookie
+		@parseBody
+	]
 
 # vim: foldmethod=marker wrap

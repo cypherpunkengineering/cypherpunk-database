@@ -10,6 +10,8 @@ fs = require 'fs'
 wiz.package 'wiz.framework.http.resource'
 
 class wiz.framework.http.resource.folderListing extends wiz.framework.http.resource.base
+	level: wiz.framework.http.resource.power.level.stranger
+	mask: wiz.framework.http.resource.power.mask.public
 	secure: true
 
 	constructor: (@server, @parent, @path, @files) -> #{{{
@@ -21,6 +23,8 @@ class wiz.framework.http.resource.folderListing extends wiz.framework.http.resou
 	#}}}
 
 class wiz.framework.http.resource.folder extends wiz.framework.http.resource.base
+	level: wiz.framework.http.resource.power.level.stranger
+	mask: wiz.framework.http.resource.power.mask.public
 	indexType: wiz.framework.http.resource.folderListing
 	resourceType: wiz.framework.http.resource.static
 

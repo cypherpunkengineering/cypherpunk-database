@@ -1,7 +1,7 @@
 # copyright 2013 wiz technologies inc.
 
-require '..'
-require '../database/s3'
+require '../..'
+require '../../database/s3'
 
 wiz.package 'wiz.framework.http.database.s3'
 

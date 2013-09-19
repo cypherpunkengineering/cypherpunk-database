@@ -4,23 +4,17 @@ require '../..'
 require '../../util/list'
 require './power'
 require './middleware'
+require '../account/session'
+require '../resource/power'
 
-wiz.package 'wiz.framework.http.resource'
+wiz.package 'wiz.framework.http.resource.base'
 
 class wiz.framework.http.resource.base extends wiz.framework.list.tree
 
-	middleware: [ # minimum required {{{
-		wiz.framework.http.resource.middleware.parseIP
-		wiz.framework.http.resource.middleware.parseHostHeader
-		wiz.framework.http.resource.middleware.parseURL
-		wiz.framework.http.resource.middleware.parseCookie
-		wiz.framework.http.resource.middleware.parseBody
-	] #}}}
-
-	# default vars {{{
+	middleware: wiz.framework.http.resource.middleware.base
 	level: wiz.framework.http.resource.power.level.unknown
 	mask: wiz.framework.http.resource.power.mask.unknown
-	#}}}
+	nav: false
 
 	constructor: (@server, @parent, @path = '', @method = 'GET') -> #{{{
 		super @parent
@@ -79,6 +73,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 			try # handle the request if we can
 
 				#wiz.log.debug "handling request"
+				req.route = route
 				route.serve req, res
 
 			catch e # otherwise send 500 error
@@ -88,23 +83,53 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 
 		else # 404 route not found
 
-			wiz.log.debug "no handler for this route"
-			res.send 404
+			@serve req, res, wiz.framework.http.resource.middleware.minimum, @default
 
 	#}}}
-	serve: (req, res) => # {{{
+	default: (req, res) => #{{{ default 404 handler
+		#wiz.log.debug "no handler for this route"
+		res.send 404
+	#}}}
+	serve: (req, res, middleware = @middleware, handler = @handler) => # {{{
 		req._index_middleware = 0
 		req.next = () =>
 			#wiz.log.debug "req.next(): #{req._index_middleware}"
-			if @middleware[req._index_middleware]
-				next = @middleware[req._index_middleware]
+			if middleware[req._index_middleware]
+				next = middleware[req._index_middleware]
 				req._index_middleware++
 				next(req, res)
 			else
 				process.nextTick =>
-					@handler(req, res)
+					handler(req, res)
 
 		req.next()
+	#}}}
+
+	isAccessible: (req) => #{{{ evaluate if request can access us
+		return false if not req?
+		# err on the side of security
+		return false if @level is wiz.framework.http.resource.power.level.unknown
+		return false if @mask is wiz.framework.http.resource.power.level.unknown
+
+		# don't bother checking for pages that require auth if there is no session
+		return false if not req.session? and @level > wiz.framework.http.resource.power.level.stranger
+		return false if not req.session? and @mask > wiz.framework.http.resource.power.mask.public
+
+		# allow public pages
+		if @level is wiz.framework.http.resource.power.level.stranger and
+		(
+			@mask is wiz.framework.http.resource.power.mask.always or
+			@mask is wiz.framework.http.resource.power.mask.public
+		)
+			return true
+
+		# default deny
+		return false
+	#}}}
+
+	isVisible: (req) => #{{{ evaluate if request can access us
+		return true if @isAccessible(req) and @nav is true
+		return false
 	#}}}
 
 	getFullPath: () => #{{{ recurse tree back to root to obtain full path

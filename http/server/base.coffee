@@ -27,10 +27,11 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 		@server = http.createServer(@handler)
 
 		# app-side initialization
-		@init()
+		setTimeout @init, 200
 
 		# listen for requests
-		@listen()
+		setTimeout @listen, 2000
+
 	#}}}
 	init: () => # for app-side initialization {{{
 		wiz.log.crit 'root resource is missing!' unless @root
@@ -45,6 +46,9 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 			@server.listen listener.port, listener.host
 	#}}}
 	handler: (req, res, out) => # HTTP request handler {{{
+		# allow req to reference us if necessary
+		req.server = this
+
 		# recursive counter for router
 		req._index_route = 0
 

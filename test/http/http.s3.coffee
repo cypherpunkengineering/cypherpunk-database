@@ -1,6 +1,8 @@
 require '../..'
-require '../../http/server'
-require '../../http/s3'
+require '../../http/server/base'
+require '../../http/resource/base'
+require '../../http/resource/root'
+require '../../http/database/s3'
 
 fs = require 'fs'
 
@@ -22,9 +24,14 @@ class resource extends wiz.framework.http.resource.base
 						res.write bucketName + "\n"
 			res.end()
 
-class server extends wiz.framework.http.server
+class root extends wiz.framework.http.resource.root
 	init: () =>
-		@root.routeAdd new resource this, @root, ''
+		@routeAdd new resource this, this, ''
+		super()
+
+class server extends wiz.framework.http.server.base
+	init: () =>
+		@root = new root this, null, ''
 		super()
 
 app = new server()
