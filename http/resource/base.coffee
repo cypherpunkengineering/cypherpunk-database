@@ -68,9 +68,17 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 
 				res.send 500, e
 
-		else if route?.handler? and (route.method is 'ANY' or route.method is req.method)
+		else if route?.handler? and
+		(
+			# a route for any method
+			route.method is 'ANY' or
+			# a route for a specific method
+			route.method is req.method or
+			# a route for GET should also support HEAD
+			(route.method is 'GET' and req.method is 'HEAD')
 
-			try # handle the request if we can
+		)
+			try # to handle the request if we can
 
 				#wiz.log.debug "handling request"
 				req.route = route
@@ -115,8 +123,16 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		return false if not req.session? and @level > wiz.framework.http.resource.power.level.stranger
 		return false if not req.session? and @mask > wiz.framework.http.resource.power.mask.public
 
-		# allow public pages
+		# public pages for strangers always allowed
 		if @level is wiz.framework.http.resource.power.level.stranger and
+		(
+			@mask is wiz.framework.http.resource.power.mask.always or
+			@mask is wiz.framework.http.resource.power.mask.public
+		)
+			return true
+
+		# public pages for friends require a user session
+		if req.session and @level is wiz.framework.http.resource.power.level.friend and
 		(
 			@mask is wiz.framework.http.resource.power.mask.always or
 			@mask is wiz.framework.http.resource.power.mask.public

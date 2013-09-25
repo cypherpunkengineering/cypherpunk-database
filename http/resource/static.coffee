@@ -16,7 +16,6 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 	contentType: null
 	content: null
 	renderer: null
-	final: true
 	dynamic: false
 	loading: false
 
@@ -93,28 +92,30 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 			return res.send 500
 
 		if not @dynamic
-			# FIXME: check etag header and if-none-match
-			notModified = undefined
+			# set last-modified header for static content
+			res.setHeader 'Last-Modified', @stats.mtime if @stats?.mtime
+
+			# check if-modified-since header is older than 
 			if req.headers?['if-modified-since']?
 				try
+					# if modified since
 					ims = new Date(req.headers['if-modified-since'])
+					# last modified time
 					lmt = new Date(@stats.mtime)
+
+					# FIXME: maybe this should be greater than instead of equal to??
 					notModified = (ims - lmt == 0)
 				catch e
 					wiz.log.debug "unable to compare last modified time and if-modified-since headers: #{e}"
+					notModified = undefined # lol i dunno
+
+			# TODO: check etag header and if-none-match
 
 			# send 304 if cache is up to date
-			if notModified
-				return res.send 304
-
-			res.setHeader 'Last-Modified', @stats.mtime if @stats?.mtime
+			return res.send 304 if notModified
 
 		res.setHeader 'Content-Type', @contentType if @contentType
-		res.setHeader 'Content-Length', @content.length if @content?.length
-
-		res.write(@content)
-
-		res.end() if @final
+		res.send 200, @content
 	#}}}
 
 # vim: foldmethod=marker wrap

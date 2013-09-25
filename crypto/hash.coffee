@@ -43,4 +43,10 @@ class wiz.framework.crypto.hash
 		else
 			return shasum.digest(encoding)
 
+	@salthash: (plaintext, encoding = undefined, salt = undefined) =>
+		salt ?= 'angelheaded hipsters burning for the ancient heavenly connection to the starry dynamo in the machinery of night'
+		nugget = (s + plaintext for s in salt.split(' '))
+		hash = wiz.framework.crypto.hash.digest(nugget, undefined, encoding)
+		return hash
+
 # vim: foldmethod=marker wrap

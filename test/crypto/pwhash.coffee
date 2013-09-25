@@ -7,4 +7,4 @@ data = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 
 for datum in data
 	console.log datum
-	console.log wiz.framework.http.account.util.pwhash(datum.toString())
+	console.log wiz.framework.crypto.hash.salthash(datum.toString())

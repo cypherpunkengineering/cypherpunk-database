@@ -192,7 +192,6 @@ class wiz.framework.http.resource.middleware
 	]
 
 	@base: @minimum.concat [ # resources should use this
-		@checkAccess
 		@parseCookie
 		@parseBody
 	]
