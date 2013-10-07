@@ -1,7 +1,7 @@
 # copyright 2013 wiz technologies inc.
 
 require '..'
-require '../database/mongo'
+require '../database/mongo/driver'
 
 wiz.package 'wiz.framework.daemon.mongo'
 

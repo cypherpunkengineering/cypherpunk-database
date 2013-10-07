@@ -1,6 +1,6 @@
 # copyright 2013 wiz technologies inc.
 
-require '..'
+require '../..'
 
 crypto = require 'crypto'
 xml2js = require 'xml2js'

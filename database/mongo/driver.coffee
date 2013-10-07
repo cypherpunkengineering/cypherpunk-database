@@ -1,24 +1,24 @@
 # copyright 2013 wiz technologies inc.
 
-require '..'
+require '../..'
 
 mongodb = require 'mongodb'
 BSON = mongodb.BSONPure
 
 wiz.package 'wiz.framework.database.mongo'
 
-class wiz.framework.database.mongo
+class wiz.framework.database.mongo.driver
 
-	config : {}
-	serverOptions : {}
-	dbOptions : {}
+	config: {}
+	serverOptions: {}
+	dbOptions: {}
 
-	init : (cb) =>
+	init: (cb) =>
 		@connect (err, client) =>
 			cb err, client
 
 	# connect and auth to mongo database
-	connect : (cb) =>
+	connect: (cb) =>
 		unless mongoServer = new mongodb.Server @config.hostname, 27017, @serverOptions
 			return cb "mongodb.Server(#{@config.hostname}) failed: #{err}"
 
@@ -29,7 +29,7 @@ class wiz.framework.database.mongo
 			if err or not client
 				return cb "mongoDB.open(#{@config.hostname}) failed: #{err}"
 
-			if @server and @server.config and @server.config.mongoDoAuth is false
+			if @server and @server.config and not @server.config.username
 				return cb null, client
 
 			client.authenticate @config.username, @config.password, (err, auth) =>
@@ -39,7 +39,7 @@ class wiz.framework.database.mongo
 				cb null, client
 
 	# retreive a mongo collection from given database handle
-	collection : (client, collectionName, stayOpen, cb) =>
+	collection: (client, collectionName, stayOpen, cb) =>
 		# check if non-null client
 		unless client
 			return cb 'no database connection!'
@@ -55,13 +55,13 @@ class wiz.framework.database.mongo
 		if not stayOpen
 			@disconnect(client)
 
-	disconnect : (client) =>
+	disconnect: (client) =>
 		client.close()
 
-	code : (func) =>
+	code: (func) =>
 		return new mongodb.Code(func)
 
-	dateFromID : (id) =>
+	dateFromID: (id) =>
 		try
 			ts = id.toString().substring(0,8)
 			date = new Date(parseInt(ts, 16) * 1000)

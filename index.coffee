@@ -27,4 +27,6 @@ require './wiz/base'
 
 wiz.log = new wiz.logger()
 
+module.exports = wiz
+
 # vim: foldmethod=marker wrap

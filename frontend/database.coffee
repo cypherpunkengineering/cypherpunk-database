@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 
 require '..'
-require '../database/mongo'
+require '../database/mongo/driver'
 require '../database/s3'
 
 wiz.package 'wiz.framework.frontend.database'

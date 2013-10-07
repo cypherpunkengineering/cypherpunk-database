@@ -6,17 +6,17 @@ require '../resource/middleware'
 crypto = require 'crypto'
 BigInteger = require '../../crypto/jsbn'
 
-wiz.package 'wiz.framework.http.account.session'
+wiz.package 'wiz.framework.http.acct.session'
 wiz.sessions = {}
 
-class wiz.framework.http.account.session
+class wiz.framework.http.acct.session
 	@cookieName: 'wiz.session' # must be static for middleware
 	expires: 60 # minutes from now
 	path: '/'
 
 	@load: (req, res) => # middleware to load session if cookie present {{{
 		try
-			cookie = req.cookies?[wiz.framework.http.account.session.cookieName]
+			cookie = req.cookies?[wiz.framework.http.acct.session.cookieName]
 			id = decodeURIComponent(cookie)
 			key = wiz.framework.crypto.hash.salthash(id, 'base64')
 			req.session = wiz.sessions[key]
@@ -53,7 +53,7 @@ class wiz.framework.http.account.session
 			wiz.sessions[req.session.key] = req.session
 	#}}}
 	@start: (req, res, user) => #{{{ start new session
-		req.session = new wiz.framework.http.account.session()
+		req.session = new wiz.framework.http.acct.session()
 		req.session.user = user
 		res.setCookie req.session.cookie()
 	#}}}
@@ -82,7 +82,7 @@ class wiz.framework.http.account.session
 
 		# cookie object
 		cookie =
-			name: wiz.framework.http.account.session.cookieName
+			name: wiz.framework.http.acct.session.cookieName
 			val: @id
 			expires: new Date(@last.getTime() + (@expires * 60 * 1000))
 

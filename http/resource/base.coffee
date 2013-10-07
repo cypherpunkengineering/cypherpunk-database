@@ -4,7 +4,6 @@ require '../..'
 require '../../util/list'
 require './power'
 require './middleware'
-require '../account/session'
 require '../resource/power'
 
 wiz.package 'wiz.framework.http.resource.base'
@@ -17,11 +16,15 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 	nav: false
 
 	constructor: (@server, @parent, @path = '', @method = 'GET') -> #{{{
+		# XXX: not recommended to override constructor
+		wiz.assert(@server, "invalid @server: #{@server}")
+		wiz.assert(@parent, "invalid @parent: #{@parent}")
 		super @parent
 		@method = @method.toUpperCase() if @method
 		@routeTable = {}
 	#}}}
 	init: () => #{{{
+		#wiz.log.debug "initializing #{@getFullPath()}"
 		@each (r) =>
 			r.init()
 		# for child class

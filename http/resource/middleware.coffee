@@ -101,8 +101,15 @@ class wiz.framework.http.resource.middleware
 		return req.next() if req.method == 'GET'
 		return req.next() if req.method == 'HEAD'
 
-		# if multipart/form-data, parse the request body
-		switch req?.headers?['content-type']
+		# dont bother trying to parse if not content-type header
+		return req.next() if not req?.headers?['content-type']
+
+		# separate charset value if present, ie. 'application/x-www-form-urlencoded; charset=UTF-8'
+		parts = req?.headers?['content-type'].split('; ')
+		ct = parts[0]
+		return req.next() if not ct
+
+		switch ct
 
 			when 'application/x-www-form-urlencoded'
 				req.setEncoding 'utf8'

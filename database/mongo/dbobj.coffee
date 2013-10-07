@@ -3,9 +3,9 @@
 require '../..'
 require '../../crypto/hash'
 
-wiz.package 'wiz.framework.http.table'
+wiz.package 'wiz.framework.http.database.base'
 
-class wiz.framework.http.table.dbobj #{{{
+class wiz.framework.http.database.base.dbobj #{{{
 
 	constructor: () ->
 		# implement in child class
