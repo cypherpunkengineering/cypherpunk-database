@@ -29,7 +29,7 @@ class wiz.framework.database.mongo.driver
 			if err or not client
 				return cb "mongoDB.open(#{@config.hostname}) failed: #{err}"
 
-			if @server and @server.config and not @server.config.username
+			if @config and not @config.username
 				return cb null, client
 
 			client.authenticate @config.username, @config.password, (err, auth) =>

@@ -5,13 +5,12 @@ require '../database/mongo/driver'
 
 wiz.package 'wiz.framework.daemon.mongo'
 
-class wiz.framework.daemon.mongo extends wiz.framework.database.mongo
+class wiz.framework.daemon.mongo.driver extends wiz.framework.database.mongo.driver
 
 	verbose : false
 
 	constructor : (@parent, @config, @serverOptions, @dbOptions) -> #{{{
 		super()
-		@init()
 	#}}}
 	init : () => #{{{
 		# just test database connection
