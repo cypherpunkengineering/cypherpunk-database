@@ -10,6 +10,17 @@ require '../session'
 
 wiz.package 'wiz.framework.http.acct.db.accounts'
 
+# Example account entry:
+#
+#	{
+#		"id" : "ROWB6S3IAE4O3RIQWUSA7DHVBLBH4II6BOM2M3XY3U7W7GU7PIV",
+#		"email" : "j@wiz.biz",
+#		"fullname" : "J. Maurice",
+#		"level" : 9001,
+#		"pw" : "HVBLBH4II6BOM2M3XY3U7W7GU7PIVHVBLBH4II6BOM2M3XY3U7W",
+#	}
+#
+
 class wiz.framework.http.acct.db.accounts extends wiz.framework.http.database.mongo.baseArray
 	collectionName: 'accounts'
 	docKey: 'email'
