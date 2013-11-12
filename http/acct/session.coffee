@@ -4,32 +4,48 @@ require '../..'
 require '../resource/middleware'
 
 crypto = require 'crypto'
+redis = require 'redis'
 BigInteger = require '../../crypto/jsbn'
 
 wiz.package 'wiz.framework.http.acct.session'
-wiz.sessions = {}
+
+wiz.sessions = redis.createClient()
 
 class wiz.framework.http.acct.session
 	@cookieName: 'wiz.session' # must be static for middleware
-	expires: 60 # minutes from now
-	path: '/'
 
 	@load: (req, res) => # middleware to load session if cookie present {{{
 		try
+			# get session cookie
 			cookie = req.cookies?[wiz.framework.http.acct.session.cookieName]
+			return req.next() if not cookie
+
+			# get session id from session cookie
 			id = decodeURIComponent(cookie)
+			#wiz.log.debug "got session id #{id}"
+
+			# get session key by hashing session id
 			key = wiz.framework.crypto.hash.salthash(id, 'base64')
-			req.session = wiz.sessions[key]
+			#wiz.log.debug "got session key #{key}"
+
+			# get session from session store by session key
+			wiz.sessions.get key, (err, datum) =>
+
+				if err or not datum
+					wiz.log.err "error loading session: #{err}" if err
+					req.session = undefined
+					return req.next() # call next middleware
+
+				req.session = JSON.parse(datum)
+				req.session.last = new Date() # update session time
+				wiz.framework.http.acct.session.cookie(req, res)
+				#console.log req.session
+				return req.next() # call next middleware
+
 		catch e
-			#wiz.log.debug "no session: #{e}"
+			wiz.log.debug "unable to load session: #{e}"
 			req.session = undefined
-
-		if req.session
-			req.session.last = new Date() # update session time
-			res.setCookie req.session.cookie() # update cookie expiration time
-
-		# call next middleware
-		req.next()
+			req.next() # call next middleware
 	#}}}
 	@checkSecret: (req, res) => # {{{ check if CSRF secret token matches
 		if req.session?.secret and req.body?.secret
@@ -50,43 +66,51 @@ class wiz.framework.http.acct.session
 
 	@save: (req) => # save session to db after sending response {{{
 		if req?.session?.key
-			wiz.sessions[req.session.key] = req.session
+			#wiz.log.debug "storing session key #{req.session.key} data #{JSON.stringify(req.session)}"
+			wiz.sessions.set(req.session.key, JSON.stringify(req.session))
 	#}}}
 	@start: (req, res, user) => #{{{ start new session
-		req.session = new wiz.framework.http.acct.session()
-		req.session.user = user
-		res.setCookie req.session.cookie()
+		# create session object
+		req.session = {}
+		# session timestamps
+		req.session.started = req.session.last = new Date()
+
+		# default session values
+		req.session.auth = false
+		req.session.user = null
+		req.session.expires = 60 # minutes
+
+		# generate secure session id and secret
+		req.session.id = crypto.randomBytes(64).toString('base64')
+		s = new BigInteger(crypto.randomBytes(64))
+		req.session.secret = wiz.framework.crypto.convert.biToBase32(s)
+
+		# generate session key from salthash(id)
+		req.session.key = wiz.framework.crypto.hash.salthash(req.session.id, 'base64')
+
+		# store user data in session
+		req.session.user = user if user
+
+		# generate session cookie
+		wiz.framework.http.acct.session.cookie(req, res)
 	#}}}
 	@logout: (req, res) => #{{{ destroy session
 		if req?.session?.key
-			wiz.sessions[req.session.key] = undefined
+			wiz.sessions.del(req.session.key)
 			req.session = undefined
 	#}}}
-	constructor: () -> #{{{ create new session
-		# session timestamps
-		@started = @last = new Date()
+	@cookie: (req, res) => #{{{ set-cookie for the session
 
-		# default session values
-		@auth = false
-		@user = null
+		if not req?.session?.id? or not req?.session?.last?
+			return wiz.log.crit 'invalid session, unable to set-cookie'
 
-		# generate secure session id and secret
-		@id = crypto.randomBytes(64).toString('base64')
-		s = new BigInteger(crypto.randomBytes(64))
-		@secret = wiz.framework.crypto.convert.biToBase32(s)
-
-		# generate session key from salthash(id)
-		@key = wiz.framework.crypto.hash.salthash(@id, 'base64')
-	#}}}
-	cookie: (req, res) => #{{{ generate a cookie for the session
-
-		# cookie object
-		cookie =
+		c = # c is for cookie
 			name: wiz.framework.http.acct.session.cookieName
-			val: @id
-			expires: new Date(@last.getTime() + (@expires * 60 * 1000))
+			val: req.session.id
+			expires: new Date(req.session.last.getTime() + (req.session.expires * 60 * 1000))
 
-		return cookie
+		res.setCookie(c)
+		#wiz.log.debug "set session cookie #{JSON.stringify(req.cookie)}"
 	#}}}
 
 # vim: foldmethod=marker wrap

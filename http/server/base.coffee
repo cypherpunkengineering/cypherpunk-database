@@ -99,12 +99,13 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 			pairs = [opts.name + '=' + encodeURIComponent(opts.val)]
 			pairs.push 'expires=' + opts.expires.toUTCString() if opts.expires
 			pairs.push 'domain=' + opts.domain if opts.domain
-			pairs.push 'path=' + opts.path or '/'
+			pairs.push 'path=' + (opts.path or '/')
 			pairs.push 'httpOnly' unless opts.httpOnly is false
 			pairs.push 'secure' if req.secure
 
 			cookie = pairs.join('; ')
 
+			#wiz.log.debug "sending cookie: #{cookie}"
 			res.setHeader 'Set-Cookie', cookie
 		#}}}
 
