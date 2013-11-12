@@ -18,52 +18,73 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 	renderer: null
 	dynamic: false
 	loading: false
+	cache: true
 
 	constructor: (@server, @parent, @path, @file, @method) -> #{{{
 		super(@server, @parent, @path, @method)
 		@args ?= {}
 	#}}}
-	init: () => #{{{ precompile on init
+	init: () => #{{{ preload and precompile on init
 		super()
 		@getContentType()
-		@load (ok) =>
-			return if not ok
-			#wiz.log.debug "loaded file #{@file}"
-			@compile()
+		@cache = false if wiz.style is 'DEV' # disable cache during development
+		@loader (ok) =>
+			wiz.log.err "initial loading of #{@file} failed" unless ok
 	#}}}
+
 	getContentType: () => #{{{
 		if @contentType is null
 			dots = @file.split('.')
 			ext = dots[dots.length - 1]
 			@contentType = wiz.framework.http.resource.mime.getType(ext)
 	#}}}
-	load: (cb) => #{{{ load src from filesystem
-		return cb(false) if @loading
-		#wiz.log.debug "loading file #{@file}"
-		@loading = true
-		@src = null
+
+	loader: (cb) => #{{{ load if necessary
+
+		necessary = false
+		necessary = true if not @src # initial load or previous loading error
+		necessary = true if not @cache # cache is disabled for this resource
+
+		return cb(true) if not necessary
+
+		oldmtime = @stats?.mtime?.getTime() # save old mtime
+		@stat (statOK) => # stat file to see if it's newer than our cache
+			return cb(false) if not statOK # error while stat'ing
+
+			necessary = false if @stats?.mtime?.getTime() == oldmtime # file unchanged
+			return cb(true) if not necessary
+
+			# ness, ness, ness... necessary to load file
+			wiz.log.debug "re-loading #{@file}" if @src
+
+			@read (readOK) =>
+				return cb(false) if not readOK
+				@content = null
+				@compile()
+				return cb(@renderer?)
+	#}}}
+	stat: (cb) => #{{{ get file stats
+		#wiz.log.debug "stating file #{@file}"
 		fs.stat @file, (err, @stats) =>
 			err = 'not a file' if @stats and not @stats.isFile()
-			if err
-				@stats = null
-				@loading = false
-				wiz.log.err "failed stating file #{@file}: #{err}"
-				return cb(false)
-
-			fs.readFile @file, (err, @src) =>
-				@loading = false
-				if err
-					@src = null
-					wiz.log.err "failed reading file #{@file}: #{err}"
-					return cb(false)
-
-				cb(true)
+			return cb(true) if not err
+			@stats = null
+			wiz.log.err "failed stating file #{@file}: #{err}"
+			return cb(false)
 	#}}}
+	read: (cb) => #{{{ read src from filesystem
+		wiz.log.debug "re-reading file #{@file}" if @content
+		fs.readFile @file, (err, @src) =>
+			return cb(true) if not err
+			@src = null
+			wiz.log.err "failed reading file #{@file}: #{err}"
+			return cb(false)
+	#}}}
+
 	compile: () => #{{{ returns function to render content
+		wiz.log.debug "re-compiling file #{@file}" if @renderer
 		try
-			#wiz.log.debug "compiling file #{@file}"
 			@renderer = @compiler()
-			#wiz.log.debug "compiled file #{@file}"
 		catch e
 			@renderer = null
 			wiz.log.err "failed compiling template #{@file}: #{e}"
@@ -72,50 +93,56 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 		() =>
 			return @src
 	#}}}
+
 	render: (req, res) => #{{{ renders @content
 		@compile() unless @renderer
 
+		#wiz.log.debug "rendering file #{@file}"
 		try
-			#wiz.log.debug "rendering file #{@file}"
 			@content = @renderer @args
-			#wiz.log.debug "rendered file #{@file}"
 		catch e
 			@content = null
 			wiz.log.err "failed rendering #{@file}: #{e}"
 	#}}}
+
 	handler: (req, res) => #{{{ send @content as http response
-		if @dynamic or not @content
-			@render(req, res)
 
-		if @src is null or @renderer is null or @content is null
-			wiz.log.err 'no content to serve'
-			return res.send 500
+		@loader (ok) =>
 
-		if not @dynamic
-			# set last-modified header for static content
-			res.setHeader 'Last-Modified', @stats.mtime if @stats?.mtime
+			return res.send 500 if not ok
 
-			# check if-modified-since header is older than 
-			if req.headers?['if-modified-since']?
-				try
-					# if modified since
-					ims = new Date(req.headers['if-modified-since'])
-					# last modified time
-					lmt = new Date(@stats.mtime)
+			@render(req, res) if @dynamic or not @content
 
-					# FIXME: maybe this should be greater than instead of equal to??
-					notModified = (ims - lmt == 0)
-				catch e
-					wiz.log.debug "unable to compare last modified time and if-modified-since headers: #{e}"
-					notModified = undefined # lol i dunno
+			if @src is null or @renderer is null or @content is null
+				wiz.log.err 'no content to serve'
+				return res.send 500
 
-			# TODO: check etag header and if-none-match
+			if not @dynamic
 
-			# send 304 if cache is up to date
-			return res.send 304 if notModified
+				# set last-modified header for static content
+				res.setHeader 'Last-Modified', @stats.mtime if @stats?.mtime
 
-		res.setHeader 'Content-Type', @contentType if @contentType
-		res.send 200, @content
+				# check if-modified-since header is older than 
+				if req.headers?['if-modified-since']?
+					try
+						# if modified since
+						ims = new Date(req.headers['if-modified-since'])
+						# last modified time
+						lmt = new Date(@stats.mtime)
+
+						# FIXME: maybe this should be greater than instead of equal to??
+						notModified = (ims - lmt == 0)
+					catch e
+						wiz.log.debug "unable to compare last modified time and if-modified-since headers: #{e}"
+						notModified = undefined # lol i dunno
+
+				# TODO: check etag header and if-none-match
+
+				# send 304 if cache is up to date
+				return res.send 304 if notModified
+
+			res.setHeader 'Content-Type', @contentType if @contentType
+			res.send 200, @content
 	#}}}
 
 # vim: foldmethod=marker wrap
