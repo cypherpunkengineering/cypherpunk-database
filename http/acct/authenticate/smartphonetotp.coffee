@@ -4,29 +4,27 @@ require '../../..'
 require '../../../crypto/otp'
 require './base'
 
-wiz.package 'wiz.framework.http.acct.identify.yubikeyhotp'
+wiz.package 'wiz.framework.http.acct.authenticate.smartphonetotp'
 
-# Example YubiKey HOTP identification request:
+# Example Smartphone TOTP authentication request:
 #
-# POST /account/identify/yubikeyhotp
+# POST /account/authenticate/smartphonetotp
 #
 #	{
-#		"key" : "yubikey id"
-#		"otp" : "yubikey otp"
+#		"otp" : "smartphone otp"
 #	}
 #
 
-class wiz.framework.http.acct.identify.yubikeyhotp extends wiz.framework.http.acct.identify.base
+class wiz.framework.http.acct.authenticate.smartphonetotp extends wiz.framework.http.acct.authenticate.base
 
 	otpValidate: (req, res, user, userOTP) => #{{{
-		validation = wiz.framework.crypto.otp.validateHOTP(user.secret, user.counter, userOTP)
+		validation = wiz.framework.crypto.otp.validateTOTP(user.secret, userOTP)
 		return true if user and validation.result is true
 		return res.send 400, 'otp validation failed'
 	#}}}
 
 	handler: (req, res) => #{{{
 		return res.send 400, 'missing paramters' unless (req.body?.key? and req.body?.otp?)
-		return res.send 400, 'invalid id' unless wiz.framework.util.strval.pengikey_valid(req.body.key)
 		return res.send 400, 'invalid otp' unless wiz.framework.util.strval.hotp_valid(req.body.otp)
 		return @parent.otpdb.findOneByOTPid req, res, req.body.key, (req, res, user) =>
 			if otp and @otpValidate(req, res, user, req.body.otp)

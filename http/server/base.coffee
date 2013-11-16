@@ -36,6 +36,7 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 	#}}}
 	init: () => # for app-side initialization {{{
 		wiz.log.crit 'root resource is missing!' unless @root
+		@root.load()
 		@root.init()
 	#}}}
 	listen: () => # listen for HTTP requests according to config {{{

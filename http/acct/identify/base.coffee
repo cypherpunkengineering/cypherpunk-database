@@ -14,9 +14,9 @@ class wiz.framework.http.acct.identify.base extends wiz.framework.http.resource.
 		return null unless req?.session?.user?
 
 		out =
-			auth: req?.session?.auth
+			auth: req?.session?.user?.auth
 			email: req?.session?.user?.email
-			realname: req?.session?.user?.realname
+			realname: req?.session?.user?.fullname
 			lastlogin: req?.session?.user?.lastlogin
 
 		return out
@@ -24,6 +24,9 @@ class wiz.framework.http.acct.identify.base extends wiz.framework.http.resource.
 	onIdentifySuccess: (req, res, user) => #{{{
 		# TODO: call logout() here before creating new session
 		# TODO: maybe better for security purposes if we dont allow a new login until existing session is logged out?
+
+		# user has only identified, not successfully authenticated yet
+		user.auth = false
 
 		# start a new session for the identified user
 		wiz.framework.http.acct.session.start(req, res, user)
@@ -33,7 +36,6 @@ class wiz.framework.http.acct.identify.base extends wiz.framework.http.resource.
 			secret: req.session.secret
 			user: @userinfo(req)
 
-		console.log out
 		res.send 200, out
 	#}}}
 

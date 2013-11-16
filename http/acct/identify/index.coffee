@@ -9,10 +9,8 @@ require './yubikeyhotp'
 wiz.package 'wiz.framework.http.acct.identify.module'
 
 class wiz.framework.http.acct.identify.module extends wiz.framework.http.resource.base
-	init: () =>
+	load: () =>
 		@routeAdd new wiz.framework.http.acct.identify.userpasswd(@server, this, 'userpasswd', 'POST')
 		@routeAdd new wiz.framework.http.acct.identify.yubikeyhotp(@server, this, 'yubikeyhotp', 'POST')
-
-		super()
 
 # vim: foldmethod=marker wrap

@@ -25,7 +25,6 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 		@args ?= {}
 	#}}}
 	init: () => #{{{ preload and precompile on init
-		super()
 		@getContentType()
 		@cache = false if wiz.style is 'DEV' # disable cache during development
 		@loader (ok) =>

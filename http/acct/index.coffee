@@ -64,7 +64,7 @@ class wiz.framework.http.acct.module extends wiz.framework.http.resource.base
 		reaper: true
 		safe: true
 	#}}}
-	init: () =>
+	load: () =>
 		# create db driver
 		@mongo = new wiz.framework.http.database.mongo.driver(@server, this, @mongoConfig, @mongoServerOptions, @mongoDbOptions)
 		# connect to db
@@ -78,7 +78,5 @@ class wiz.framework.http.acct.module extends wiz.framework.http.resource.base
 		# create http handler classes
 		@routeAdd new wiz.framework.http.acct.identify.module(@server, this, 'identify')
 		@routeAdd new wiz.framework.http.acct.authenticate.module(@server, this, 'authenticate')
-
-		super()
 
 # vim: foldmethod=marker wrap

@@ -48,10 +48,15 @@ class wiz.framework.http.resource.folder extends wiz.framework.http.resource.bas
 			for f in @files
 				stat = fs.statSync(@folderPath + '/' + f)
 				if stat.isDirectory()
-					@routeAdd new @constructor(@server, this, f, @folderPath)
+					r = new @constructor(@server, this, f, @folderPath)
+					wiz.log.debug "recursing into folder #{r.getFullPath()}"
+					@routeAdd(r)
+					r.init()
 				else if stat.isFile()
-					@routeAdd new @resourceType(@server, this, f, @folderPath + '/' + f)
-			super()
+					r = new @resourceType(@server, this, f, @folderPath + '/' + f)
+					wiz.log.debug "adding resource #{r.getFullPath()}"
+					@routeAdd(r)
+					r.init()
 	#}}}
 	handler: (req, res) => #{{{ redirect to trailing slash for directory listing
 		@redirect(req, res, @getFullPath() + '/')

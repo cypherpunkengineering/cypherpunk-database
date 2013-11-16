@@ -23,21 +23,19 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		@method = @method.toUpperCase() if @method
 		@routeTable = {}
 	#}}}
+	load: () => #{{{ for child class
+	#}}}
 	init: () => #{{{
-		#wiz.log.debug "initializing #{@getFullPath()}"
-		@each (r) =>
-			r.init()
-		# for child class
 	#}}}
 
 	routeAdd: (m) => #{{{
 		#wiz.log.debug "added router for #{m.getFullPath()}"
-		wiz.log.debug "added handler for #{m.method} #{m.getFullPath()}" if m.handler?
+		#wiz.log.debug "added handler for #{m.method} #{m.getFullPath()}" if m.handler?
 		@routeTable[m.path] = m
 		@branchAdd m
 	#}}}
 
-	redirect: (req, res, path = '/', numeric = 301) => #{{{ respond with a redirect to an absolute URL built from a given relative URL
+	redirect: (req, res, path = '/', numeric = 307) => #{{{ respond with a redirect to an absolute URL built from a given relative URL
 		proto = (if req.secure then 'https' else 'http')
 
 		if path and path[0..3] == 'http' # absolute url is given
@@ -117,14 +115,18 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 	#}}}
 
 	isAccessible: (req) => #{{{ evaluate if request can access us
+		# sanity check
 		return false if not req?
+
 		# err on the side of security
 		return false if @level is wiz.framework.http.resource.power.level.unknown
 		return false if @mask is wiz.framework.http.resource.power.level.unknown
 
-		# don't bother checking for pages that require auth if there is no session
-		return false if not req.session? and @level > wiz.framework.http.resource.power.level.stranger
-		return false if not req.session? and @mask > wiz.framework.http.resource.power.mask.public
+		# don't bother checking for pages that require a session if there is no session
+		return false if not req.session?.user? and @level > wiz.framework.http.resource.power.level.stranger
+		return false if not req.session?.user? and @mask > wiz.framework.http.resource.power.mask.public
+
+		#wiz.log.debug "user power level is #{req.session?.user?.level} and required power level for #{@getFullPath()} is #{@level}"
 
 		# public pages for strangers always allowed
 		if @level is wiz.framework.http.resource.power.level.stranger and
@@ -142,6 +144,9 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		)
 			return true
 
+		# check if user's session access level is greater than or equal to required access level
+		return true if req.session.user.level >= @level # TODO: check bitmask
+ 
 		# default deny
 		return false
 	#}}}
