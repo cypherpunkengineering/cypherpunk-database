@@ -2,8 +2,6 @@
 # copyright 2013 wiz technologies inc.
 
 require '../../..'
-require '../../../crypto/otp'
-require '../../../crypto/hash'
 require '../../resource/base'
 require '../../db/mongo'
 require '../session'
@@ -66,6 +64,11 @@ class wiz.framework.http.acct.db.accounts extends wiz.framework.http.database.mo
 		@dropMany req, res, req.session.wiz.portal, null, recordsToDelete
 	#}}}
 
+	findOneByID: (req, res, id, cb) => #{{{
+		query = { _id: id }
+		fields = @fields()
+		@findOne req, res, query, fields, cb
+	#}}}
 	findOneByEmail: (req, res, email, cb) => #{{{
 		query = @getDocKey(email)
 		fields = @fields()

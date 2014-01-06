@@ -17,16 +17,27 @@ class wiz.framework.http.resource.root extends wiz.framework.http.resource.base
 	#}}}
 	@usernav: (req, res) => #{{{
 		req.nav ?= {}
-		req.nav ?= {}
 		#console.log "path is #{req.route.path}"
 		for route of req.route.parent.routeTable
-			continue unless n = req.route.parent.routeTable[route]
-			if n.isVisible(req)
-				req.nav[n.path] =
-					title: n.title
-					path: n.getFullPath()
+			resources = []
+			continue unless module = req.route.parent.routeTable[route]
+			if module.isVisible(req)
+				#console.log module.title
 
-		#console.log req.nav
+				for r of module.routeTable
+					continue unless resource = module.routeTable[r]
+					if resource.isVisible(req)
+						#console.log resource.title
+						resources.push
+							title: resource.title
+							path: resource.getFullPath()
+
+				req.nav[module.path] =
+					title: module.title
+					path: module.getFullPath()
+					resources: resources
+					resourceCount: resources.length
+
 		req.next()
 	#}}}
 

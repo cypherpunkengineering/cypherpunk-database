@@ -93,6 +93,9 @@ class wiz.framework.util.strval
 	# check if valid 8 digit pengikey id
 	@pengikey_valid : (str) -> /^\d{8}$/.test(str)
 
+	# check if valid 20 digit leetcode
+	@leetcode_valid : (str) -> /^1337\d{8}\d{8}$/.test(str)
+
 	# check if valid ascii
 	@ascii_valid : (str) ->
 		for c, i in str

@@ -69,7 +69,7 @@ class wiz.framework.http.acct.session
 			#wiz.log.debug "storing session key #{req.session.key} data #{JSON.stringify(req.session)}"
 			wiz.sessions.set(req.session.key, JSON.stringify(req.session))
 	#}}}
-	@start: (req, res, user) => #{{{ start new session
+	@start: (req, res) => #{{{ start new session
 		# create session object
 		req.session = {}
 		# session timestamps
@@ -77,7 +77,7 @@ class wiz.framework.http.acct.session
 
 		# default session values
 		req.session.auth = false
-		req.session.user = null
+		req.session.acct = null
 		req.session.expires = 60 # minutes
 
 		# generate secure session id and secret
@@ -87,9 +87,6 @@ class wiz.framework.http.acct.session
 
 		# generate session key from salthash(id)
 		req.session.key = wiz.framework.crypto.hash.salthash(req.session.id, 'base64')
-
-		# store user data in session
-		req.session.user = user if user
 
 		# generate session cookie
 		wiz.framework.http.acct.session.cookie(req, res)

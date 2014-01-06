@@ -1,4 +1,3 @@
-
 # copyright 2013 wiz technologies inc.
 
 require '../../..'
@@ -7,19 +6,37 @@ require '../../../crypto/hash'
 require '../../resource/base'
 require '../../db/mongo'
 require '../session'
+require './accounts'
 
 wiz.package 'wiz.framework.http.acct.db.otpkeys'
 
-class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.database.mongo.baseArray
-	collectionName: 'otp'
-	docKey: 'key'
-	debug: true
+class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.accounts
 
-	otpKey: 'otp'
+	arrayKey: 'otp'
+	elementKey: 'key'
+
 	otpTokenSecret32: 'secret32'
 	otpTokenSecret16: 'secret16'
 	otpTokenCounter10: 'counter10'
 	otpTokenRequire: 'require'
+
+	findAcctByYubiID: (req, res, keyID, cb) => #{{{ find user acct from yubikey id
+		authKey = null
+		user = null
+
+		# match on otp key id
+		query = {}
+		query["#{@arrayKey}.#{@elementKey}"] = keyID
+
+		# get account id and matching otp key element only
+		select = {}
+		select["_id"] = 1
+		select["#{@arrayKey}.$"] = 1
+
+		@findOne req, res, query, select, (req, res, result) =>
+			return cb(req, res, null, null) if not result?[@arrayKey]?[0]
+			return cb(req, res, result._id, result[@arrayKey][0])
+	#}}}
 
 	otpStatus: (req, res) => #{{{
 		@findElementByID req, res, req.session.wiz.portal, req.session.wiz.user.id, (result) =>
@@ -38,7 +55,7 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.database.mon
 	otpToggle: (req, res, setting, cb) => #{{{
 		doc = @getDocKeyWithElementID req.session.wiz.portal, req.session.wiz.user.id
 		nugget = {}
-		nugget["#{@otpKey}.#{@otpTokenRequire}"] = setting
+		nugget["#{@arrayKey}.#{@otpTokenRequire}"] = setting
 		update = @getUpdateSetObj req, nugget
 		options = { upsert: false }
 		@updateCustom req, res, doc, update, options, cb
@@ -48,7 +65,7 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.database.mon
 		# {"$inc":{"users.$.otp.counter10":1}, "$set":{"users.$.updated":1337}}
 		update = {}
 		update["$inc"] = {}
-		update["$inc"]["#{@arrayKey}.$.#{@otpKey}.#{@otpTokenCounter10}"] = incby
+		update["$inc"]["#{@arrayKey}.$.#{@elementKey}.#{@otpTokenCounter10}"] = incby
 		options = { upsert: false }
 		@updateCustom req, res, doc, update, options, cb
 	#}}}
@@ -82,9 +99,9 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.database.mon
 			wiz.log.err "Unable to generate key!"
 			return res.send 500
 		nugget = {}
-		nugget["#{@otpKey}.#{@otpTokenSecret32}"] = key.base32
-		nugget["#{@otpKey}.#{@otpTokenSecret16}"] = key.hex
-		nugget["#{@otpKey}.#{@otpTokenCounter10}"] = 0
+		nugget["#{@elementKey}.#{@otpTokenSecret32}"] = key.base32
+		nugget["#{@elementKey}.#{@otpTokenSecret16}"] = key.hex
+		nugget["#{@elementKey}.#{@otpTokenCounter10}"] = 0
 		update = @getUpdateSetObj req, nugget
 		options = { upsert: false }
 		@updateCustom req, res, doc, update, options, () =>

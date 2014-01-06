@@ -2,38 +2,42 @@
 
 require '../../..'
 require '../../resource/base'
-#require './database'
+require '../session'
 
 wiz.package 'wiz.framework.http.acct.authenticate.base'
 
 class wiz.framework.http.acct.authenticate.base extends wiz.framework.http.resource.base
-	level: wiz.framework.http.resource.power.level.friend
+	level: wiz.framework.http.resource.power.level.stranger
 	mask: wiz.framework.http.resource.power.mask.always
-	middleware: wiz.framework.http.acct.session.secret
 
-	onAuthenticateSuccess: (req, res) => #{{{
+	acctinfo: (req) => #{{{ returns a (safe to send) object containing acct info from a acct object
+		return null unless req?.session?.acct?
 
-		if not req.session?.user?
-			wiz.log.crit 'missing session user object?'
-			return res.send 500
-
-		# mark user as authenticated
-		req.session.user.auth = true
-
-		# send session secret and user info
 		out =
-			user: wiz.framework.http.acct.util.userinfo(req)
+			auth: req?.session?.acct?.auth
+			email: req?.session?.acct?.email
+			fullname: req?.session?.acct?.fullname
+			lastlogin: req?.session?.acct?.lastlogin
 
-		out.s3 = req.session?.user?.s3 if req.body.piggyback == 's3credentials'
+		return out
+	#}}}
+	onAuthenticateSuccess: (req, res, acct) => #{{{
+		# TODO: call logout() here before creating new session
+		# TODO: maybe better for security purposes if we dont allow a new login until existing session is logged out?
 
-		if req.body.logout
-			wiz.framework.http.acct.session.logout(req, res)
-			out.loggedout = true
+		# start a new session for the identified user
+		wiz.framework.http.acct.session.start(req, res)
 
-		return res.send 200, out
+		# TODO: implement multiple factor auth (ie. half-logged-in)
+		req.session.acct = acct
+		req.session.auth = 1337 # XXX: temp hack
 
-		# search database for given credentials
-		#@user.usertable.findOneByUserPass req, res, req.session.wiz.portal, login, pass, (result) =>
+		# send session secret and acct info
+		out =
+			secret: req.session.secret
+			acct: @acctinfo(req)
+
+		res.send 200, out
 	#}}}
 
 # vim: foldmethod=marker wrap

@@ -123,10 +123,10 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		return false if @mask is wiz.framework.http.resource.power.level.unknown
 
 		# don't bother checking for pages that require a session if there is no session
-		return false if not req.session?.user? and @level > wiz.framework.http.resource.power.level.stranger
-		return false if not req.session?.user? and @mask > wiz.framework.http.resource.power.mask.public
+		return false if not req.session?.acct? and @level > wiz.framework.http.resource.power.level.stranger
+		return false if not req.session?.acct? and @mask > wiz.framework.http.resource.power.mask.public
 
-		#wiz.log.debug "user power level is #{req.session?.user?.level} and required power level for #{@getFullPath()} is #{@level}"
+		#wiz.log.debug "acct power level is #{req.session?.acct?.level} and required power level for #{@getFullPath()} is #{@level}"
 
 		# public pages for strangers always allowed
 		if @level is wiz.framework.http.resource.power.level.stranger and
@@ -136,7 +136,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		)
 			return true
 
-		# public pages for friends require a user session
+		# public pages for friends require a session
 		if req.session and @level is wiz.framework.http.resource.power.level.friend and
 		(
 			@mask is wiz.framework.http.resource.power.mask.always or
@@ -144,8 +144,8 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		)
 			return true
 
-		# check if user's session access level is greater than or equal to required access level
-		return true if req.session.user.level >= @level # TODO: check bitmask
+		# check if session access level is greater than or equal to required access level
+		return true if req.session.acct.level >= @level # TODO: check bitmask
  
 		# default deny
 		return false

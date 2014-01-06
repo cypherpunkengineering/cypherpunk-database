@@ -4,11 +4,11 @@ require '../../..'
 require '../../../crypto/hash'
 require './base'
 
-wiz.package 'wiz.framework.http.acct.identify.userpasswd'
+wiz.package 'wiz.framework.http.acct.authenticate.userpasswd'
 
-# Example username/password identification request:
+# Example username/password authentication request:
 #
-# POST /account/identify/userpasswd
+# POST /account/authenticate/userpasswd
 #
 #	{
 #		"email" : "user email"
@@ -16,7 +16,7 @@ wiz.package 'wiz.framework.http.acct.identify.userpasswd'
 #	}
 #
 
-class wiz.framework.http.acct.identify.userpasswd extends wiz.framework.http.acct.identify.base
+class wiz.framework.http.acct.authenticate.userpasswd extends wiz.framework.http.acct.authenticate.base
 	level: wiz.framework.http.resource.power.level.stranger
 	mask: wiz.framework.http.resource.power.mask.always
 
