@@ -16,11 +16,13 @@ class wiz.framework.http.resource.root extends wiz.framework.http.resource.base
 			r.init()
 	#}}}
 	@usernav: (req, res) => #{{{
+
 		req.nav ?= {}
-		#console.log "path is #{req.route.path}"
-		for route of req.route.parent.routeTable
+		root = req.route.server.root
+
+		for route of root.routeTable
 			resources = []
-			continue unless module = req.route.parent.routeTable[route]
+			continue unless module = root.routeTable[route]
 			if module.isVisible(req)
 				#console.log module.title
 
