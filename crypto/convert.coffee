@@ -11,6 +11,7 @@ class wiz.framework.crypto.convert
 	# old @base32charset: '123456789ABCDEFGHJKLMNPRSTUVWXYZ'
 	# alt @base32charset: '0123456789abcdefghjkmnpqrtuvwxyz'
 	@base32charset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
+	@modhexcharset: 'cbdefghijklnrtuv'
 
 	@hex2ascii: (str) => # convert a hex byte string to ascii string of hex bytes {{{
 		# first convert to an array of bytes
@@ -26,6 +27,14 @@ class wiz.framework.crypto.convert
 			ascii_string += String.fromCharCode(bytes[i])
 
 		return ascii_string
+	#}}}
+	@hex2modhex: (str) => # convert hex string to modhex string {{{
+		out = ''
+		for s of str
+			h = parseInt s, 16
+			h = 0 if isNaN h
+			out += @modhexcharset[h]
+		return out
 	#}}}
 	@ascii2hex: (str) => # convert an ascii string of hex bytes to a hex byte string {{{
 		hex_string = ''
