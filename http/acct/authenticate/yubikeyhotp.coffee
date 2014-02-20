@@ -48,7 +48,8 @@ class wiz.framework.http.acct.authenticate.yubikeyhotp extends wiz.framework.htt
 
 			@parent.parent.db.accounts.findOneByID req, res, acctID, (req, res, acct) =>
 				return @fail(req, res, 'no such acct') if not acct
-				return @onAuthenticateSuccess(req, res, acct)
+				return @parent.parent.db.otpkeys.otpIncrementCounter req, res, acct, keyID, 1, (result) =>
+					return @onAuthenticateSuccess(req, res, acct)
 	#}}}
 
 	fail: (req, res, err) => #{{{

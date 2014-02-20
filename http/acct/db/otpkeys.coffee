@@ -67,7 +67,7 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.acco
 	otpIncrementCounter: (req, res, acct, otpkeyID, incby = 1, cb) => #{{{
 		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
 
-		doc = @getDocKeyWithElementID portal, id
+		doc = @getDocKeyWithElementID acct.id, otpkeyID
 		# {"$inc":{"users.$.otp.counter10":1}, "$set":{"users.$.updated":1337}}
 		update = {}
 		update["$inc"] = {}
@@ -81,18 +81,18 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.acco
 		@findElementByID req, res, acct.id, otpkeyID, (result) =>
 			if result?.secret16?
 
+				# store secret in buffer for crypto methods
 				secret = new Buffer(result.secret16, 'hex')
 
-				validationHOTP = wiz.framework.crypto.otp.validateHOTP(secret, result.counter10, req.body.userotp)
-				validationTOTP = wiz.framework.crypto.otp.validateTOTP(secret, req.body.userotp)
-
 				# if matches HOTP, enable OTP and increment OTP counter
+				validationHOTP = wiz.framework.crypto.otp.validateHOTP(secret, result.counter10, req.body.userotp)
 				if validationHOTP.result is true
-					return @otpToggle req, res, true, (res2) =>
-						return res.send 500 if res2 is null
+					return @otpToggle req, res, acct, otpkeyID, true, (res2) =>
+						return res.send 500, 'otp toggle failed' if res2 is null
 						@otpIncrementCounter req, res, acct, otpkeyID, validationHOTP.offset + 1
 
 				# if matches TOTP, enable OTP
+				validationTOTP = wiz.framework.crypto.otp.validateTOTP(secret, req.body.userotp)
 				if validationTOTP.result is true
 					return @otpToggle req, res, acct, otpkeyID, true
 
