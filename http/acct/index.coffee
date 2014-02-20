@@ -8,6 +8,7 @@ require './session'
 
 require './db'
 require './authenticate'
+require './otpkeys'
 require './logout'
 
 wiz.package 'wiz.framework.http.acct.module'
@@ -67,16 +68,23 @@ class wiz.framework.http.acct.module extends wiz.framework.http.resource.base
 	load: () =>
 		# create db driver
 		@mongo = new wiz.framework.http.database.mongo.driver(@server, this, @mongoConfig, @mongoServerOptions, @mongoDbOptions)
-		# connect to db
-		@mongo.init()
 
 		# create db classes with db driver instance
 		@db =
 			accounts: new wiz.framework.http.acct.db.accounts(@server, this, @mongo)
 			otpkeys: new wiz.framework.http.acct.db.otpkeys(@server, this, @mongo)
 
+		# logout and destroy session
+		@routeAdd new wiz.framework.http.acct.logout(@server, this, 'logout', 'POST')
+
 		# load the account authentication sub-module
 		@routeAdd new wiz.framework.http.acct.authenticate.module(@server, this, 'authenticate')
-		@routeAdd new wiz.framework.http.acct.logout(@server, this, 'logout', 'POST')
+
+		# load the account otpkeys sub-module
+		@routeAdd new wiz.framework.http.acct.otpkeys.module(@server, this, 'otpkeys')
+
+	init: () =>
+		# connect to db
+		@mongo.init()
 
 # vim: foldmethod=marker wrap

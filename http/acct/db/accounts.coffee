@@ -21,11 +21,11 @@ wiz.package 'wiz.framework.http.acct.db.accounts'
 
 class wiz.framework.http.acct.db.accounts extends wiz.framework.http.database.mongo.baseArray
 	collectionName: 'accounts'
-	docKey: 'email'
+	docKey: 'id'
 	debug: true
 
 	list: (req, res) => #{{{
-		@findOne req, res, @getDocKey(req.session.wiz.portal), @getArrayKey(), (results) =>
+		@findOne req, res, @getDocKey(req.session.acct.id), @getArrayKey(), (results) =>
 			userData = []
 			if not results or not results[@arrayKey] or not results[@arrayKey].length > 0
 				return @listResponse(req, res, userData)
@@ -53,7 +53,7 @@ class wiz.framework.http.acct.db.accounts extends wiz.framework.http.database.mo
 		powerLevels[l] = pl for l of @server.powerLevel when pl = @server.powerLevel[l]
 		return unless recordToInsert = wiz.portal.admin.entity.user.fromUser(req, res, powerLevels, req.body.fullname, req.body.email, req.body.pass, req.body.level)
 
-		@insertOne req, res, req.session.wiz.portal, recordToInsert
+		@insertOne req, res, req.session.acct.id, recordToInsert
 	#}}}
 	modify: (req, res) => #{{{
 		return res.send 501 # TODO: implement user modify
@@ -61,7 +61,7 @@ class wiz.framework.http.acct.db.accounts extends wiz.framework.http.database.mo
 	drop: (req, res) => #{{{
 		# TODO: need extensible method (send event?) for other modules to delete related objects from their databases onUserDeleted
 		return res.send 400 if not recordsToDelete = req.body.recordsToDelete or typeof recordsToDelete isnt 'object' # only proceed if object
-		@dropMany req, res, req.session.wiz.portal, null, recordsToDelete
+		@dropMany req, res, req.session.acct.id, null, recordsToDelete
 	#}}}
 
 	findOneByID: (req, res, id, cb) => #{{{

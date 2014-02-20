@@ -42,7 +42,7 @@ class wiz.framework.crypto.otp
 
 	# TOTP gets converted from/to base32
 	@userTOTPlen: 6
-	@serverTOTPlen: 9
+	@serverTOTPlen: 6
 
 	#}}}
 
@@ -158,7 +158,7 @@ class wiz.framework.crypto.otp
 		# convert to base32 and pad it to the proper length
 		totpBase32 = wiz.framework.crypto.convert.num2wiz32(totp, @userTOTPlen)
 
-		return totpBase32
+		return totp
 	#}}}
 
 	@generateSecret: (length = 20) => # generates a secret of given length for above OTP methods #{{{

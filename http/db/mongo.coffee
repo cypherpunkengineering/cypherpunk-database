@@ -90,11 +90,11 @@ class wiz.framework.http.database.mongo.base
 			collection.findOne query, fields, (err, result) =>
 				if err
 					wiz.log.err "FINDONE FAILED: #{debugstr} -> #{err}"
-					return cb null if cb
+					return cb req, res, null if cb
 					return res.send 500
 
 				wiz.log.info "FINDONE OK: #{debugstr}" if @debug
-				# wiz.log.debug "FINDONE RESULT: #{JSON.stringify(result)}" if @debug
+				wiz.log.debug "FINDONE RESULT: #{JSON.stringify(result)}" if @debug
 				return cb req, res, result if cb
 				return res.send 200
 	#}}}
@@ -220,7 +220,7 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 		@findElementByCustom(req, res, @getDocKeyWithElementID(queryID, elementID), @getArrayKey(), @elementKey, elementID, cb)
 	#}}}
 	findElementByCustom: (req, res, query, fields, elementKey, elementID, cb) => #{{{
-		@findOne req, res, query, fields, (result) =>
+		@findOne req, res, query, fields, (req, res, result) =>
 			if result and result[@arrayKey]
 				for ri of result[@arrayKey] when r = result[@arrayKey][ri]
 					if r[elementKey] == elementID

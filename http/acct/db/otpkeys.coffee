@@ -38,74 +38,81 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.acco
 			return cb(req, res, result._id, result[@arrayKey][0])
 	#}}}
 
-	otpStatus: (req, res) => #{{{
-		@findElementByID req, res, req.session.wiz.portal, req.session.wiz.user.id, (result) =>
+	otpStatus: (req, res, acct, otpkeyID) => #{{{
+		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
+
+		@findElementByID req, res, acct.id, otpkeyID, (result) =>
 			otp = {}
-			otp = result.otp if result and result.otp
-			email = ''
-			email = result.email if result and result.email
+			otp = result if result?.key?
+
 			res.send 200,
-				email: email
+				email: acct.email
 				otp: otp
 	#}}}
-	otpDisable: (req, res) => #{{{
-		# TODO: sign all POST requests with signing key from cookie, verify signature in framework
-		@otpToggle req, res, false
+	otpDisable: (req, res, acct, otpkeyID) => #{{{
+		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
+
+		@otpToggle req, res, acct, otpkeyID, false
 	#}}}
-	otpToggle: (req, res, setting, cb) => #{{{
-		doc = @getDocKeyWithElementID req.session.wiz.portal, req.session.wiz.user.id
+	otpToggle: (req, res, acct, otpkeyID, setting, cb) => #{{{
+		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
+
+		doc = @getDocKeyWithElementID acct.id, otpkeyID
 		nugget = {}
-		nugget["#{@arrayKey}.#{@otpTokenRequire}"] = setting
+		nugget[@otpTokenRequire] = setting
 		update = @getUpdateSetObj req, nugget
 		options = { upsert: false }
 		@updateCustom req, res, doc, update, options, cb
 	#}}}
-	otpIncrementCounter: (req, res, portal, id, incby = 1, cb) => #{{{
+	otpIncrementCounter: (req, res, acct, otpkeyID, incby = 1, cb) => #{{{
+		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
+
 		doc = @getDocKeyWithElementID portal, id
 		# {"$inc":{"users.$.otp.counter10":1}, "$set":{"users.$.updated":1337}}
 		update = {}
 		update["$inc"] = {}
-		update["$inc"]["#{@arrayKey}.$.#{@elementKey}.#{@otpTokenCounter10}"] = incby
+		update["$inc"]["#{@arrayKey}.$.#{@otpTokenCounter10}"] = incby
 		options = { upsert: false }
 		@updateCustom req, res, doc, update, options, cb
 	#}}}
-	otpEnable: (req, res) => #{{{
-		@findElementByID req, res, req.session.wiz.portal, req.session.wiz.user.id, (result) =>
-			if result and result.otp and result.otp.secret32
+	otpEnable: (req, res, acct, otpkeyID) => #{{{
+		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
 
-				secret = new Buffer(result.otp.secret16, 'hex')
+		@findElementByID req, res, acct.id, otpkeyID, (result) =>
+			if result?.secret16?
 
-				validationHOTP = wiz.framework.crypto.otp.validateHOTP(secret, result.otp.counter10, req.body.userotp)
+				secret = new Buffer(result.secret16, 'hex')
+
+				validationHOTP = wiz.framework.crypto.otp.validateHOTP(secret, result.counter10, req.body.userotp)
 				validationTOTP = wiz.framework.crypto.otp.validateTOTP(secret, req.body.userotp)
 
 				# if matches HOTP, enable OTP and increment OTP counter
 				if validationHOTP.result is true
 					return @otpToggle req, res, true, (res2) =>
 						return res.send 500 if res2 is null
-						@otpIncrementCounter req, res, req.session.wiz.portal, req.session.wiz.user.id, validationHOTP.offset + 1
+						@otpIncrementCounter req, res, acct, otpkeyID, validationHOTP.offset + 1
 
 				# if matches TOTP, enable OTP
 				if validationTOTP.result is true
-					return @otpToggle req, res, true
+					return @otpToggle req, res, acct, otpkeyID, true
 
 			# otherwise auth fails
-			res.send 400
+			res.send 400, 'validation failure'
 	#}}}
-	otpGenerate: (req, res) => #{{{
-		# TODO: sign all POST requests with signing key from cookie, verify signature in framework
-		doc = @getDocKeyWithElementID req.session.wiz.portal, req.session.wiz.user.id
+	otpGenerate: (req, res, acct, otpkeyID) => #{{{
+		doc = @getDocKeyWithElementID acct.id, otpkeyID
 		key = wiz.framework.crypto.otp.generateSecret(20)
 		if not key.base32
 			wiz.log.err "Unable to generate key!"
 			return res.send 500
 		nugget = {}
-		nugget["#{@elementKey}.#{@otpTokenSecret32}"] = key.base32
-		nugget["#{@elementKey}.#{@otpTokenSecret16}"] = key.hex
-		nugget["#{@elementKey}.#{@otpTokenCounter10}"] = 0
+		nugget[@otpTokenSecret32] = key.base32
+		nugget[@otpTokenSecret16] = key.hex
+		nugget[@otpTokenCounter10] = 0
 		update = @getUpdateSetObj req, nugget
 		options = { upsert: false }
 		@updateCustom req, res, doc, update, options, () =>
-			@otpToggle req, res, false
+			@otpToggle req, res, acct, otpkeyID, false
 	#}}}
 
 # vim: foldmethod=marker wrap

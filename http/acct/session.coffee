@@ -79,6 +79,7 @@ class wiz.framework.http.acct.session
 		req.session.auth = false
 		req.session.acct = null
 		req.session.expires = 60 # minutes
+		req.session.realm = 'wiz'
 
 		# generate secure session id and secret
 		req.session.id = crypto.randomBytes(64).toString('base64')
