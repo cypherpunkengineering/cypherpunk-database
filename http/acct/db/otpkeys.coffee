@@ -64,14 +64,14 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.acco
 		options = { upsert: false }
 		@updateCustom req, res, doc, update, options, cb
 	#}}}
-	otpIncrementCounter: (req, res, acct, otpkeyID, incby = 1, cb) => #{{{
+	otpIncrementCounter: (req, res, acct, otpkeyID, offset, cb) => #{{{
 		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
 
 		doc = @getDocKeyWithElementID acct.id, otpkeyID
 		# {"$inc":{"users.$.otp.counter10":1}, "$set":{"users.$.updated":1337}}
 		update = {}
 		update["$inc"] = {}
-		update["$inc"]["#{@arrayKey}.$.#{@otpTokenCounter10}"] = incby
+		update["$inc"]["#{@arrayKey}.$.#{@otpTokenCounter10}"] = (offset + 1)
 		options = { upsert: false }
 		@updateCustom req, res, doc, update, options, cb
 	#}}}
@@ -89,7 +89,7 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.acco
 				if validationHOTP.result is true
 					return @otpToggle req, res, acct, otpkeyID, true, (res2) =>
 						return res.send 500, 'otp toggle failed' if res2 is null
-						@otpIncrementCounter req, res, acct, otpkeyID, validationHOTP.offset + 1
+						@otpIncrementCounter req, res, acct, otpkeyID, validationHOTP.offset
 
 				# if matches TOTP, enable OTP
 				validationTOTP = wiz.framework.crypto.otp.validateTOTP(secret, req.body.userotp)

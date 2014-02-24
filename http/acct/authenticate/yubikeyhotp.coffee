@@ -20,21 +20,13 @@ wiz.package 'wiz.framework.http.acct.authenticate.yubikeyhotp'
 
 class wiz.framework.http.acct.authenticate.yubikeyhotp extends wiz.framework.http.acct.authenticate.base
 
-	otpValidate: (req, res, acctOTP, userOTP) => #{{{
-		secret = new Buffer(acctOTP.secret16, 'hex')
-		counter = acctOTP.counter10
-
-		validation = wiz.framework.crypto.otp.validateHOTP(secret, counter, userOTP)
-
-		return true if validation.result is true
-		return false
-	#}}}
-
 	handler: (req, res) => #{{{
+		# fail if no leetcode given
 		return @fail(req, res, 'missing parameters') if not req.body?.leetcode?
+		# fail if invalid leetcode given
 		return @fail(req, res, 'invalid leetcode') if not wiz.framework.util.strval.leetcode_valid(req.body.leetcode)
 
-		try # parse key id and hotp out of leetcode string
+		try # split keyID and userOTP out of leetcode string using regex
 			r = /^1337(\d{8})(\d{8})$/
 			leetcode = r.exec(req.body.leetcode)
 			keyID = leetcode[1]
@@ -42,13 +34,33 @@ class wiz.framework.http.acct.authenticate.yubikeyhotp extends wiz.framework.htt
 		catch e
 			return @error req, res, "leetcode error: #{e}"
 
-		return @parent.parent.db.otpkeys.findAcctByYubiID req, res, keyID, (req, res, acctID, acctOTP) =>
-			return @fail(req, res, 'no such acct') if not acctID or not acctOTP
-			return @fail(req, res, 'otp incorrect') if not @otpValidate(req, res, acctOTP, userOTP)
+		# get acctID and acctOTP data for matching keyID
+		@parent.parent.db.otpkeys.findAcctByYubiID req, res, keyID, (req, res, acctID, acctOTP) =>
 
+			# fail if no matching account is found
+			return @fail(req, res, 'no such acct') if not acctID or not acctOTP
+
+			# get yubikey secret/counter from otpkeys database
+			secret = new Buffer(acctOTP.secret16, 'hex')
+			counter = acctOTP.counter10
+
+			# validate given yubikey leetcode is correct
+			validation = wiz.framework.crypto.otp.validateHOTP(secret, counter, userOTP)
+
+			# fail if validation doesnt pass
+			return @fail(req, res, 'otp incorrect') if validation.result isnt true
+
+			# query full account object
 			@parent.parent.db.accounts.findOneByID req, res, acctID, (req, res, acct) =>
+
+				# fail if account object cant be retrieved
 				return @fail(req, res, 'no such acct') if not acct
-				return @parent.parent.db.otpkeys.otpIncrementCounter req, res, acct, keyID, 1, (result) =>
+
+				console.log 'offset is '+validation.offset
+				# increment hotp counter in otpkeys database
+				@parent.parent.db.otpkeys.otpIncrementCounter req, res, acct, keyID, validation.offset, (result) =>
+
+					# pass account object to success callback
 					return @onAuthenticateSuccess(req, res, acct)
 	#}}}
 
