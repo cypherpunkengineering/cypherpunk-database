@@ -55,7 +55,7 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 		req.receivedBytes = 0
 
 		# recursive counter for router
-		req._index_route = 0
+		req.routeDepth = 0
 
 		# default accept ct is text
 		req.headers.accept ?= [ 'text/plain' ]

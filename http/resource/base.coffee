@@ -48,26 +48,40 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 	#}}}
 
 	router: (parent, req, res) => #{{{ recursive router
-		#wiz.log.debug "router: #{req._index_route}"
-		req._index_route++
-		sliced = req.url.split('/')
-		word = sliced[req._index_route]
-		depth = sliced.length - 1
-		route = parent.routeTable[word]
+		try
+			# increment route depth counter
+			req.routeDepth++
 
-		#wiz.log.debug "level #{req._index_route} split is #{word}"
+			# strip url parameters on ? or & delimiters
+			urlStripped = req.url.split(/[\?\&]/, 1)[0]
 
-		if route? and req._index_route < depth # we need to go DEEPER
+			# split url on / delimiter
+			urlSplit = urlStripped.split('/')
+
+			# compute end depth
+			urlDepth = urlSplit.length - 1
+
+			# get current slice of url
+			routeWord = urlSplit[req.routeDepth]
+
+			# lookup word in routing table
+			route = parent.routeTable[routeWord]
+
+			#wiz.log.debug "route depth #{req.routeDepth}: word is #{routeWord}"
+		catch e
+			wiz.log.crit "internal router error #{e.toString()}"
+			return res.send 500, "internal router error"
+
+		if route? and req.routeDepth < urlDepth # we need to go DEEPER
 
 			try # pass request to sub-route if we can
 
 				#wiz.log.debug "going deeper"
-				route.router route, req, res
-				return
+				return route.router route, req, res
 
 			catch e # otherwise send 500 error
 
-				res.send 500, e
+				@handler500 req, res, e.toString()
 
 		else if route?.handler? and
 		(
@@ -87,18 +101,24 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 
 			catch e # otherwise send 500 error
 
-				console.log e.stack
-				res.send 500, e.toString()
+				@handler500 req, res, e.toString()
 
 		else # 404 route not found
 
-			@serve req, res, wiz.framework.http.resource.middleware.minimum, @default
+			@serve req, res, wiz.framework.http.resource.middleware.minimum, @handler404
 
 	#}}}
-	default: (req, res) => #{{{ default 404 handler
-		#wiz.log.debug "no handler for this route"
-		res.send 404
+
+	handler403: (req, res) => #{{{ default 403 handler
+		return @server.root.handler403(req, res)
 	#}}}
+	handler404: (req, res) => #{{{ default 404 handler
+		return @server.root.handler404(req, res)
+	#}}}
+	handler500: (req, res, err) => #{{{ default 500 handler
+		return @server.root.handler500(req, res, err)
+	#}}}
+
 	serve: (req, res, middleware = @middleware, handler = @handler) => # {{{
 		req._index_middleware = 0
 		req.next = () =>
@@ -118,7 +138,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		# sanity check
 		return false if not req?
 
-		wiz.log.debug "session power level is #{req.session?.acct?.level} and required power level for #{@getFullPath()} is #{@level}"
+		#wiz.log.debug "session power level is #{req.session?.acct?.level} and required power level for #{@getFullPath()} is #{@level}"
 
 		# err on the side of security
 		return false if @level is wiz.framework.http.resource.power.level.unknown

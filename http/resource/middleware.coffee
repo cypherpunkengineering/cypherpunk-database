@@ -187,7 +187,7 @@ class wiz.framework.http.resource.middleware
 	#}}}
 	@checkAccess: (req, res) => #{{{
 		return req.next() if req.route.isAccessible(req)
-		return res.send 403
+		return req.route.server.root.handler403(req, res)
 	#}}}
 
 	# arrays must come last to reference methods after they are defined

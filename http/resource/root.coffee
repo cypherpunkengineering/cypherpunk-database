@@ -43,4 +43,15 @@ class wiz.framework.http.resource.root extends wiz.framework.http.resource.base
 		req.next()
 	#}}}
 
+	handler403: (req, res) => #{{{ default 403 handler
+		res.send 403, 'forbidden'
+	#}}}
+	handler404: (req, res) => #{{{ default 404 handler
+		res.send 404, 'not found'
+	#}}}
+	handler500: (req, res, err) => #{{{ default 500 handler
+		wiz.log.err err
+		res.send 500, 'server error'
+	#}}}
+
 # vim: foldmethod=marker wrap
