@@ -12,6 +12,24 @@ class wiz.framework.crypto.convert
 	# alt @base32charset: '0123456789abcdefghjkmnpqrtuvwxyz'
 	@base32charset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
 	@modhexcharset: 'cbdefghijklnrtuv'
+	@modhex2hex_mapping: #{{{
+		c: '0'
+		b: '1'
+		d: '2'
+		e: '3'
+		f: '4'
+		g: '5'
+		h: '6'
+		i: '7'
+		j: '8'
+		k: '9'
+		l: 'A'
+		n: 'B'
+		r: 'C'
+		t: 'D'
+		u: 'E'
+		v: 'F'
+	#}}}
 
 	@hex2ascii: (str) => # convert a hex byte string to ascii string of hex bytes {{{
 		# first convert to an array of bytes
@@ -28,14 +46,6 @@ class wiz.framework.crypto.convert
 
 		return ascii_string
 	#}}}
-	@hex2modhex: (str) => # convert hex string to modhex string {{{
-		out = ''
-		for s of str
-			h = parseInt s, 16
-			h = 0 if isNaN h
-			out += @modhexcharset[h]
-		return out
-	#}}}
 	@ascii2hex: (str) => # convert an ascii string of hex bytes to a hex byte string {{{
 		hex_string = ''
 
@@ -43,6 +53,27 @@ class wiz.framework.crypto.convert
 			hex_string += str.charCodeAt(i).toString(16)
 
 		return hex_string
+	#}}}
+
+	@hex2modhex: (str) => # convert hex string to modhex string {{{
+		out = ''
+		for s in str
+			h = parseInt s, 16
+			h = 0 if isNaN h
+			out += @modhexcharset[h]
+		return out
+	#}}}
+	@modhex2hex: (str) => # convert hex string to modhex string {{{
+		out = ''
+		console.log str
+		for s in str
+			# find char from mapping
+			c = @modhex2hex_mapping[s]
+			# or if none, use 0
+			c ?= @modhexcharset[0]
+			# append to output string
+			out += c
+		return out
 	#}}}
 
 	@biToBase32: (n, charset = @base32charset, length = -1) => # print BigInteger as base32 {{{
