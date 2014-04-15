@@ -15,33 +15,6 @@ class wiz.framework.http.resource.root extends wiz.framework.http.resource.base
 			wiz.log.debug "init router #{r.getFullPath()}"
 			r.init()
 	#}}}
-	@usernav: (req, res) => #{{{
-
-		req.nav ?= {}
-		root = req.route.server.root
-
-		for route of root.routeTable
-			resources = []
-			continue unless module = root.routeTable[route]
-			if module.isVisible(req)
-				#console.log module.title
-
-				for r of module.routeTable
-					continue unless resource = module.routeTable[r]
-					if resource.isVisible(req)
-						#console.log resource.title
-						resources.push
-							title: resource.title
-							path: resource.getFullPath()
-
-				req.nav[module.path] =
-					title: module.title
-					path: module.getFullPath()
-					resources: resources
-					resourceCount: resources.length
-
-		req.next()
-	#}}}
 
 	handler403: (req, res) => #{{{ default 403 handler
 		res.send 403, 'forbidden'

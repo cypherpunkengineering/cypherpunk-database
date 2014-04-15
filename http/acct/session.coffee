@@ -55,10 +55,39 @@ class wiz.framework.http.acct.session
 
 		res.send 400, "missing or invalid secret token"
 	#}}}
+	@usernav: (req, res) => #{{{
+
+		req.nav ?= {}
+		root = req.route.server.root
+
+		for route of root.routeTable
+			resources = []
+			continue unless module = root.routeTable[route]
+			if module.isVisible(req)
+				#console.log module.title
+
+				for r of module.routeTable
+					continue unless resource = module.routeTable[r]
+					if resource.isVisible(req)
+						#console.log resource.title
+						resources.push
+							title: resource.title
+							path: resource.getFullPath()
+
+				req.nav[module.path] =
+					title: module.title
+					path: module.getFullPath()
+					resources: resources
+					resourceCount: resources.length
+
+		req.next()
+	#}}}
+
 	# array must come after middleware methods after it is defined
 	@base: wiz.framework.http.resource.middleware.base.concat [ #{{{ base list of middleware required for session use
 		@load
 		wiz.framework.http.resource.middleware.checkAccess
+		@usernav
 	] #}}}
 	@secret: @base.concat [ #{{{ above list and check CSRF secret token
 		@checkSecret
