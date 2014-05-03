@@ -13,12 +13,12 @@
 # GNU General Public License for more details.
 
 require '..'
-require '../db'
+require '../database/mongo/driver'
 
 wiz.package 'wiz.framework.backend'
 
 # mongo class
-class wiz.framework.backend.mongo extends wiz.framework.db.mongo
+class wiz.framework.backend.mongo extends wiz.framework.database.mongo.driver
 
 	verbose : false
 
