@@ -9,7 +9,7 @@ text = fs.readFileSync 'in'
 
 pubkey = fs.readFileSync 'public.2048.pem'
 
-key = wiz.framework.crypto.fromBuffer(pubkey)
+key = wiz.framework.crypto.base.fromBuffer(pubkey)
 
 if enc = key[0].encrypt(text.toString())
 	encbuf = new Buffer(enc, 'hex')

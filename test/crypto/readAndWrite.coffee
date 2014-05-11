@@ -13,8 +13,8 @@ else
 	console.log 'key read failure'
 
 if privkeybuffer
-	privkey = wiz.framework.rsa.root.fromBuffer privkeybuffer
-	pubkey = wiz.framework.rsa.publicKey.fromPrivateKey privkey
+	privkey = wiz.framework.crypto.rsa.root.fromBuffer privkeybuffer
+	pubkey = wiz.framework.crypto.rsa.publicKey.fromPrivateKey privkey
 
 if privkey
 	fs.writeFileSync 'private.pem', privkey.toPEMbuffer()

@@ -7,9 +7,9 @@ require './hash'
 BigInteger = require './jsbn'
 SecureRandom = require './rng'
 
-wiz.package 'wiz.framework.rsa'
+wiz.package 'wiz.framework.crypto.rsa'
 
-class wiz.framework.rsa.key extends wiz.framework.asn.root
+class wiz.framework.crypto.rsa.key extends wiz.framework.crypto.asn.root
 
 	hashHeaders: #{{{
 		sha1:		'3021300906052b0e03021a05000414'
@@ -76,8 +76,8 @@ class wiz.framework.rsa.key extends wiz.framework.asn.root
 				break
 
 		keypair =
-			private: new wiz.framework.rsa.privateKey.fromRSAkey(key)
-			public: new wiz.framework.rsa.publicKey.fromRSAkey(key)
+			private: new wiz.framework.crypto.rsa.privateKey.fromRSAkey(key)
+			public: new wiz.framework.crypto.rsa.publicKey.fromRSAkey(key)
 
 		return keypair
 	#}}}
@@ -283,7 +283,7 @@ class wiz.framework.rsa.key extends wiz.framework.asn.root
 		this[label] = v
 	#}}}
 
-class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
+class wiz.framework.crypto.rsa.privateKey extends wiz.framework.crypto.rsa.key
 	@title: 'RSA PRIVATE KEY'
 
 	list: [ #{{{
@@ -302,40 +302,40 @@ class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
 	#}}}
 
 	@fromRSAkey: (privateKey) => #{{{ public constructor
-		key = new wiz.framework.rsa.privateKey()
-		s1 = key.branchAdd(wiz.framework.asn.node.fromType('SEQUENCE'))
-		version = s1.branchAdd(wiz.framework.asn.node.fromType('INTEGER'))
+		key = new wiz.framework.crypto.rsa.privateKey()
+		s1 = key.branchAdd(wiz.framework.crypto.asn.node.fromType('SEQUENCE'))
+		version = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('INTEGER'))
 		version.setValue(new Buffer("00",'hex'))
-		modulus = s1.branchAdd(wiz.framework.asn.node.fromType('INTEGER'))
-		modulusHex = wiz.framework.rsa.key.doPaddingOnHexstring privateKey.n.toString(16)
+		modulus = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('INTEGER'))
+		modulusHex = wiz.framework.crypto.rsa.key.doPaddingOnHexstring privateKey.n.toString(16)
 		modulusIntBuf = new Buffer(modulusHex, 'hex')
 		modulus.setValue(modulusIntBuf)
-		publicExponent = s1.branchAdd(wiz.framework.asn.node.fromType('INTEGER'))
-		publicExponentHex = wiz.framework.rsa.key.doPaddingOnHexstring privateKey.e.toString(16)
+		publicExponent = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('INTEGER'))
+		publicExponentHex = wiz.framework.crypto.rsa.key.doPaddingOnHexstring privateKey.e.toString(16)
 		publicExponentIntBuf = new Buffer(publicExponentHex, 'hex')
 		publicExponent.setValue(publicExponentIntBuf)
-		privateExponent = s1.branchAdd(wiz.framework.asn.node.fromType('INTEGER'))
-		privateExponentHex = wiz.framework.rsa.key.doPaddingOnHexstring privateKey.d.toString(16)
+		privateExponent = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('INTEGER'))
+		privateExponentHex = wiz.framework.crypto.rsa.key.doPaddingOnHexstring privateKey.d.toString(16)
 		privateExponentIntBuf = new Buffer(privateExponentHex, 'hex')
 		privateExponent.setValue(privateExponentIntBuf)
-		prime1 = s1.branchAdd(wiz.framework.asn.node.fromType('INTEGER'))
-		prime1Hex = wiz.framework.rsa.key.doPaddingOnHexstring privateKey.p.toString(16)
+		prime1 = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('INTEGER'))
+		prime1Hex = wiz.framework.crypto.rsa.key.doPaddingOnHexstring privateKey.p.toString(16)
 		prime1IntBuf = new Buffer(prime1Hex, 'hex')
 		prime1.setValue(prime1IntBuf)
-		prime2 = s1.branchAdd(wiz.framework.asn.node.fromType('INTEGER'))
-		prime2Hex = wiz.framework.rsa.key.doPaddingOnHexstring privateKey.q.toString(16)
+		prime2 = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('INTEGER'))
+		prime2Hex = wiz.framework.crypto.rsa.key.doPaddingOnHexstring privateKey.q.toString(16)
 		prime2IntBuf = new Buffer(prime2Hex, 'hex')
 		prime2.setValue(prime2IntBuf)
-		exponent1 = s1.branchAdd(wiz.framework.asn.node.fromType('INTEGER'))
-		exponent1Hex = wiz.framework.rsa.key.doPaddingOnHexstring privateKey.dmp1.toString(16)
+		exponent1 = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('INTEGER'))
+		exponent1Hex = wiz.framework.crypto.rsa.key.doPaddingOnHexstring privateKey.dmp1.toString(16)
 		exponent1IntBuf = new Buffer(exponent1Hex, 'hex')
 		exponent1.setValue(exponent1IntBuf)
-		exponent2 = s1.branchAdd(wiz.framework.asn.node.fromType('INTEGER'))
-		exponent2Hex = wiz.framework.rsa.key.doPaddingOnHexstring privateKey.dmq1.toString(16)
+		exponent2 = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('INTEGER'))
+		exponent2Hex = wiz.framework.crypto.rsa.key.doPaddingOnHexstring privateKey.dmq1.toString(16)
 		exponent2IntBuf = new Buffer(exponent2Hex, 'hex')
 		exponent2.setValue(exponent2IntBuf)
-		coefficient = s1.branchAdd(wiz.framework.asn.node.fromType('INTEGER'))
-		coefficientHex = wiz.framework.rsa.key.doPaddingOnHexstring privateKey.coeff.toString(16)
+		coefficient = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('INTEGER'))
+		coefficientHex = wiz.framework.crypto.rsa.key.doPaddingOnHexstring privateKey.coeff.toString(16)
 		coefficientIntBuf = new Buffer(coefficientHex, 'hex')
 		coefficient.setValue(coefficientIntBuf)
 		return key
@@ -354,7 +354,7 @@ class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
 	toPEMbuffer: () => #{{{
 		header = "-----BEGIN RSA PRIVATE KEY-----\n"
 		footer = "-----END RSA PRIVATE KEY-----\n"
-		privatePEM = wiz.framework.asn.root.linebrk(@encodeASN().toString('base64'),64) + "\n"
+		privatePEM = wiz.framework.crypto.asn.root.linebrk(@encodeASN().toString('base64'),64) + "\n"
 		pemBuffer = new Buffer(header+privatePEM+footer)
 		return pemBuffer
 	#}}}
@@ -366,20 +366,20 @@ class wiz.framework.rsa.privateKey extends wiz.framework.rsa.key
 		return stringValue
 	#}}}
 
-class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
+class wiz.framework.crypto.rsa.publicKey extends wiz.framework.crypto.rsa.key
 	@title: 'PUBLIC KEY'
 	#@RSA_ALGORITHM_OID = '1.2.2888.113549.1.5.1'
 	@RSA_ALGORITHM_OID: '1.2.840.113549.1.1.1'
 
 	treeStructure: [ #{{{
-		wiz.framework.asn.node.typesByName.SEQUENCE.id
-		wiz.framework.asn.node.typesByName.SEQUENCE.id
-		wiz.framework.asn.node.typesByName.OID.id
-		wiz.framework.asn.node.typesByName.NULLOBJ.id
-		wiz.framework.asn.node.typesByName.BITSTRING.id
-		wiz.framework.asn.node.typesByName.SEQUENCE.id
-		wiz.framework.asn.node.typesByName.INTEGER.id
-		wiz.framework.asn.node.typesByName.INTEGER.id
+		wiz.framework.crypto.asn.node.typesByName.SEQUENCE.id
+		wiz.framework.crypto.asn.node.typesByName.SEQUENCE.id
+		wiz.framework.crypto.asn.node.typesByName.OID.id
+		wiz.framework.crypto.asn.node.typesByName.NULLOBJ.id
+		wiz.framework.crypto.asn.node.typesByName.BITSTRING.id
+		wiz.framework.crypto.asn.node.typesByName.SEQUENCE.id
+		wiz.framework.crypto.asn.node.typesByName.INTEGER.id
+		wiz.framework.crypto.asn.node.typesByName.INTEGER.id
 	] #}}}
 	list: [ #{{{
 		'modulus'
@@ -387,37 +387,37 @@ class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
 	] #}}}
 
 	@fromPrivateKey: (privateKey) => #{{{
-		key = new wiz.framework.rsa.publicKey(modulus, publicExponent)
-		s1 = key.branchAdd(wiz.framework.asn.node.fromType('SEQUENCE'))
-		s2 = s1.branchAdd(wiz.framework.asn.node.fromType('SEQUENCE'))
-		oid1 = s2.branchAdd(wiz.framework.asn.node.fromType('OID'))
-		oid1.setValue(new Buffer(wiz.framework.rsa.publicKey.RSA_ALGORITHM_OID, 'utf8'))
-		null1 = s2.branchAdd(wiz.framework.asn.node.fromType('NULLOBJ'))
+		key = new wiz.framework.crypto.rsa.publicKey(modulus, publicExponent)
+		s1 = key.branchAdd(wiz.framework.crypto.asn.node.fromType('SEQUENCE'))
+		s2 = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('SEQUENCE'))
+		oid1 = s2.branchAdd(wiz.framework.crypto.asn.node.fromType('OID'))
+		oid1.setValue(new Buffer(wiz.framework.crypto.rsa.publicKey.RSA_ALGORITHM_OID, 'utf8'))
+		null1 = s2.branchAdd(wiz.framework.crypto.asn.node.fromType('NULLOBJ'))
 		null1.setValue(null)
-		bs1 = s1.branchAdd(wiz.framework.asn.node.fromType('BITSTRING'))
-		s3 = bs1.branchAdd(wiz.framework.asn.node.fromType('SEQUENCE'))
-		modulus = s3.branchAdd(new wiz.framework.asn.node.fromType('INTEGER'))
+		bs1 = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('BITSTRING'))
+		s3 = bs1.branchAdd(wiz.framework.crypto.asn.node.fromType('SEQUENCE'))
+		modulus = s3.branchAdd(new wiz.framework.crypto.asn.node.fromType('INTEGER'))
 		modulus.setValue(privateKey.modulus)
-		publicExponent = s3.branchAdd(new wiz.framework.asn.node.fromType('INTEGER'))
+		publicExponent = s3.branchAdd(new wiz.framework.crypto.asn.node.fromType('INTEGER'))
 		publicExponent.setValue(privateKey.publicExponent)
 		return key
 	#}}}
 	@fromRSAkey: (publicKey) => #{{{
-		key = new wiz.framework.rsa.publicKey()
-		s1 = key.branchAdd(wiz.framework.asn.node.fromType('SEQUENCE'))
-		s2 = s1.branchAdd(wiz.framework.asn.node.fromType('SEQUENCE'))
-		oid1 = s2.branchAdd(wiz.framework.asn.node.fromType('OID'))
-		oid1.setValue(new Buffer(wiz.framework.rsa.publicKey.RSA_ALGORITHM_OID, 'utf8'))
-		null1 = s2.branchAdd(wiz.framework.asn.node.fromType('NULLOBJ'))
+		key = new wiz.framework.crypto.rsa.publicKey()
+		s1 = key.branchAdd(wiz.framework.crypto.asn.node.fromType('SEQUENCE'))
+		s2 = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('SEQUENCE'))
+		oid1 = s2.branchAdd(wiz.framework.crypto.asn.node.fromType('OID'))
+		oid1.setValue(new Buffer(wiz.framework.crypto.rsa.publicKey.RSA_ALGORITHM_OID, 'utf8'))
+		null1 = s2.branchAdd(wiz.framework.crypto.asn.node.fromType('NULLOBJ'))
 		null1.setValue(new Buffer("00",'hex'))
-		bs1 = s1.branchAdd(wiz.framework.asn.node.fromType('BITSTRING'))
-		s3 = bs1.branchAdd(wiz.framework.asn.node.fromType('SEQUENCE'))
-		modulus = s3.branchAdd(wiz.framework.asn.node.fromType('INTEGER'))
-		modulusHex = wiz.framework.rsa.key.doPaddingOnHexstring publicKey.n.toString(16)
+		bs1 = s1.branchAdd(wiz.framework.crypto.asn.node.fromType('BITSTRING'))
+		s3 = bs1.branchAdd(wiz.framework.crypto.asn.node.fromType('SEQUENCE'))
+		modulus = s3.branchAdd(wiz.framework.crypto.asn.node.fromType('INTEGER'))
+		modulusHex = wiz.framework.crypto.rsa.key.doPaddingOnHexstring publicKey.n.toString(16)
 		modulusIntBuf = new Buffer(modulusHex,'hex')
 		modulus.setValue(modulusIntBuf)
-		publicExponent = s3.branchAdd(wiz.framework.asn.node.fromType('INTEGER'))
-		publicExponentHex = wiz.framework.rsa.key.doPaddingOnHexstring publicKey.e.toString(16)
+		publicExponent = s3.branchAdd(wiz.framework.crypto.asn.node.fromType('INTEGER'))
+		publicExponentHex = wiz.framework.crypto.rsa.key.doPaddingOnHexstring publicKey.e.toString(16)
 		publicExponentIntBuf = new Buffer(publicExponentHex,'hex')
 		publicExponent.setValue(publicExponentIntBuf)
 		return key
@@ -431,10 +431,10 @@ class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
 			if @treeStructure[i] isnt n.type.id
 				wiz.log.err "Not a valid RSA public key"
 				return null
-			if n.type.id is wiz.framework.asn.node.typesByName.OID.id && n.toString() != wiz.framework.rsa.publicKey.RSA_ALGORITHM_OID
+			if n.type.id is wiz.framework.crypto.asn.node.typesByName.OID.id && n.toString() != wiz.framework.crypto.rsa.publicKey.RSA_ALGORITHM_OID
 				wiz.log.err "Could not find RSA algorithm ID"
 				return null
-			else if n.type.id is wiz.framework.asn.node.typesByName.INTEGER.id
+			else if n.type.id is wiz.framework.crypto.asn.node.typesByName.INTEGER.id
 				@setValue(x, n.getValueBuffer())
 				x++
 			i++
@@ -443,7 +443,7 @@ class wiz.framework.rsa.publicKey extends wiz.framework.rsa.key
 	toPEMbuffer: () => #{{{
 		header = "-----BEGIN PUBLIC KEY-----\n"
 		footer = "-----END PUBLIC KEY-----\n"
-		publicPEM = wiz.framework.asn.root.linebrk(@encodeASN().toString('base64'),64) + "\n"
+		publicPEM = wiz.framework.crypto.asn.root.linebrk(@encodeASN().toString('base64'),64) + "\n"
 		pemBuffer = new Buffer(header+publicPEM+footer)
 		return pemBuffer
 	#}}}

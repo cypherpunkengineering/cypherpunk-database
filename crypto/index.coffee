@@ -6,14 +6,14 @@ require './x509'
 
 wiz.package 'wiz.framework.crypto'
 
-class wiz.framework.crypto
+class wiz.framework.crypto.base
 
 	@header: '-----BEGIN '
 	@footer: '-----END '
 
 	@types: [ #{{{
-		wiz.framework.rsa.privateKey
-		wiz.framework.rsa.publicKey
+		wiz.framework.crypto.rsa.privateKey
+		wiz.framework.crypto.rsa.publicKey
 		wiz.framework.x509.certificate
 	] #}}}
 

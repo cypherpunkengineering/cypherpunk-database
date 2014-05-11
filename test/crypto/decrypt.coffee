@@ -7,7 +7,7 @@ plaintext = fs.readFileSync 'in'
 enctext = fs.readFileSync 'out'
 
 privkey = fs.readFileSync 'private.2048.pem'
-key = wiz.framework.crypto.fromBuffer(privkey)
+key = wiz.framework.crypto.base.fromBuffer(privkey)
 
 dectext = key[0].decrypt(enctext.toString('hex'))
 

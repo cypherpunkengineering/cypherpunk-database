@@ -15,7 +15,7 @@ else
 	console.log 'blobs read failure'
 
 if buf
-	blobs = wiz.framework.crypto.fromBuffer(buf)
+	blobs = wiz.framework.crypto.base.fromBuffer(buf)
 	for b in blobs
 		console.log 'found a blob'
 		console.log ''

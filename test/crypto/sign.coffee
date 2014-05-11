@@ -9,7 +9,7 @@ privkey = fs.readFileSync 'private.2048.pem'
 
 plaintext = fs.readFileSync 'in'
 
-key = wiz.framework.crypto.fromBuffer(privkey)
+key = wiz.framework.crypto.base.fromBuffer(privkey)
 
 if signature = key[0].sign(plaintext)
 	#console.log 'signature: ' + signature.toString('hex')

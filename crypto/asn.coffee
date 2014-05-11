@@ -6,12 +6,12 @@ require '../util/list'
 BigInteger = require './jsbn'
 SecureRandom = require './rng'
 
-wiz.package 'wiz.framework.asn'
+wiz.package 'wiz.framework.crypto.asn'
 
-class wiz.framework.asn.node extends wiz.framework.list.tree
+class wiz.framework.crypto.asn.node extends wiz.framework.list.tree
 
 	constructor: (@scope, @type, @inBuffer) -> #{{{
-		if @scope.id == wiz.framework.asn.node.scopesByName.CONTEXT.id
+		if @scope.id == wiz.framework.crypto.asn.node.scopesByName.CONTEXT.id
 			@type.container = true
 		super()
 	#}}}
@@ -101,12 +101,12 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 	#}}}
 
 	@fromType: (type) => #{{{
-		return new wiz.framework.asn.node(wiz.framework.asn.node.scopesByName.UNIVERSAL, wiz.framework.asn.node.typesByName[type])
+		return new wiz.framework.crypto.asn.node(wiz.framework.crypto.asn.node.scopesByName.UNIVERSAL, wiz.framework.crypto.asn.node.typesByName[type])
 	#}}}
 	@fromBuffer: (inBuffer) => #{{{ parses a single asn node from given slice of buffer
 
 		# get id of root node
-		idBuffer = wiz.framework.asn.node.getASNid(inBuffer)
+		idBuffer = wiz.framework.crypto.asn.node.getASNid(inBuffer)
 		idInt = idBuffer.readUInt8(0)
 		id = idInt & 0b00011111
 		scopeInt = idInt & 0b11000000
@@ -121,12 +121,12 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 			wiz.log.err 'invalid asn id value: '+ id
 			return null
 
-		n = new wiz.framework.asn.node(scope, type, inBuffer)
+		n = new wiz.framework.crypto.asn.node(scope, type, inBuffer)
 		return n
 	#}}}
 
 	setValue: (inValue) => #{{{
-		if @type.id is wiz.framework.asn.node.typesByName.OID.id && @scope.id is wiz.framework.asn.node.scopesByName.UNIVERSAL.id
+		if @type.id is wiz.framework.crypto.asn.node.typesByName.OID.id && @scope.id is wiz.framework.crypto.asn.node.scopesByName.UNIVERSAL.id
 			oidString = inValue.toString('utf8')
 			oidNodeArray = oidString.split('.')
 			oidEncoded = ''
@@ -138,10 +138,10 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 				else if n == 1
 					oidEncoded += parseInt(oidNode)
 					oidEncoded = oidEncoded.toString(16)
-					oidEncoded = wiz.framework.asn.root.doPaddingOnHexstring(oidEncoded)
+					oidEncoded = wiz.framework.crypto.asn.root.doPaddingOnHexstring(oidEncoded)
 				else if oidNodeInt < 128
 					hexString = oidNodeInt.toString(16)
-					hexString = wiz.framework.asn.root.doPaddingOnHexstring(hexString)
+					hexString = wiz.framework.crypto.asn.root.doPaddingOnHexstring(hexString)
 					oidEncoded = oidEncoded + hexString
 				else
 					byteArray = []
@@ -159,7 +159,7 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 						oidNodeEncoded = oidNodeEncoded | byteArray[i]
 						i--
 					hexString = oidNodeEncoded.toString(16)
-					hexString = wiz.framework.asn.root.doPaddingOnHexstring(hexString)
+					hexString = wiz.framework.crypto.asn.root.doPaddingOnHexstring(hexString)
 					oidEncoded = oidEncoded + hexString
 			@value = new Buffer(oidEncoded.toString(16), 'hex')
 		else
@@ -199,7 +199,7 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 			value = @inBuffer.slice(startPtr + sizeBufSize, startPtr + sizeBufSize + valueSize)
 
 		# strip off trailing bits for bitstring
-		if @type.id == wiz.framework.asn.node.typesByName.BITSTRING.id and value.readUInt8(0) == 0
+		if @type.id == wiz.framework.crypto.asn.node.typesByName.BITSTRING.id and value.readUInt8(0) == 0
 			# TODO: properly parse trailing bits if != 0
 			value = value.slice(1, value.length)
 
@@ -218,7 +218,7 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 	toString: () => #{{{
 		value = @getValueBuffer()
 		if value?
-			if @type.id is wiz.framework.asn.node.typesByName.OID.id && @scope.id is wiz.framework.asn.node.scopesByName.UNIVERSAL.id
+			if @type.id is wiz.framework.crypto.asn.node.typesByName.OID.id && @scope.id is wiz.framework.crypto.asn.node.scopesByName.UNIVERSAL.id
 				firstTwoNodes = value.readUInt8(0)
 				firstNode = Math.floor(firstTwoNodes / 40)
 				secondNode = firstTwoNodes % 40
@@ -239,10 +239,10 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 	generateTag: () => #{{{
 		combined = (@scope.id | @type.id)
 
-		if @type.id == wiz.framework.asn.node.typesByName.SEQUENCE.id
+		if @type.id == wiz.framework.crypto.asn.node.typesByName.SEQUENCE.id
 			combined = (combined | 0b00100000)
 
-		tag = wiz.framework.asn.root.doPaddingOnHexstring(combined.toString(16))
+		tag = wiz.framework.crypto.asn.root.doPaddingOnHexstring(combined.toString(16))
 
 		return new Buffer(tag, 'hex')
 	#}}}
@@ -251,10 +251,10 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 		result = @generateTag()
 		valueBuffer = (if @value? then @value else @getValueBuffer())
 
-		if @type.id == wiz.framework.asn.node.typesByName.NULLOBJ.id
+		if @type.id == wiz.framework.crypto.asn.node.typesByName.NULLOBJ.id
 			return Buffer.concat([result, new Buffer('00', 'hex')])
 
-		if @type.id == wiz.framework.asn.node.typesByName.BITSTRING.id
+		if @type.id == wiz.framework.crypto.asn.node.typesByName.BITSTRING.id
 			valueBuffer = Buffer.concat([new Buffer('00', 'hex'), valueBuffer])
 
 		size = 0
@@ -290,7 +290,7 @@ class wiz.framework.asn.node extends wiz.framework.list.tree
 		@value = v
 	#}}}
 
-class wiz.framework.asn.root extends wiz.framework.list.tree
+class wiz.framework.crypto.asn.root extends wiz.framework.list.tree
 
 	@doPaddingOnHexstring: (hexstring) => #{{{
 		if hexstring.length % 2 == 1
@@ -301,7 +301,7 @@ class wiz.framework.asn.root extends wiz.framework.list.tree
 	parseBuffer: (inBuffer, currentBranch, position = 0) => #{{{ recursive method to parse containers
 		while (position < inBuffer.length)
 			slice = inBuffer.slice(position)
-			newBranch = currentBranch.branchAdd(wiz.framework.asn.node.fromBuffer(slice))
+			newBranch = currentBranch.branchAdd(wiz.framework.crypto.asn.node.fromBuffer(slice))
 			#wiz.log.debug "decription is #{newBranch.type.description}"
 			if newBranch.type.container
 				@parseBuffer(newBranch.getValueBuffer(), newBranch, 0)
@@ -315,7 +315,7 @@ class wiz.framework.asn.root extends wiz.framework.list.tree
 				indent += '|  '
 			str = indent
 			str += n.type.description + ' '
-			str += n.toString() if n.type.printable or n.scope.id isnt wiz.framework.asn.node.scopesByName.UNIVERSAL.id
+			str += n.toString() if n.type.printable or n.scope.id isnt wiz.framework.crypto.asn.node.scopesByName.UNIVERSAL.id
 			console.log str
 	#}}}
 	@linebrk: (buf, n) -> #{{{

@@ -31,7 +31,7 @@ checkASN = (len) ->
 		console.log stdout
 
 for len in lengths
-	key = wiz.framework.rsa.key.generateKeypair(len)
+	key = wiz.framework.crypto.rsa.key.generateKeypair(len)
 
 	if not key
 		console.log len + 'bit keypair generation failure'

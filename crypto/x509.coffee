@@ -5,7 +5,7 @@ require './asn'
 
 wiz.package 'wiz.framework.x509'
 
-class wiz.framework.x509.certificate extends wiz.framework.asn.root
+class wiz.framework.x509.certificate extends wiz.framework.crypto.asn.root
 
 	@title: 'CERTIFICATE'
 
