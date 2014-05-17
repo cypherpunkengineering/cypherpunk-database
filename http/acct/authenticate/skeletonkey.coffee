@@ -11,7 +11,8 @@ wiz.package 'wiz.framework.http.acct.authenticate.skeletonkey'
 # POST /account/authenticate/skeletonkey
 #
 #	{
-#		"keynum" : "XXXXXXXX" // 8 digit key serial number
+#		"id" : "XXXX" // user-side local id to temporarily identify key object
+#		"serialnum" : "XXXXXXXX....." // public key of hardware RSA keypair
 #	}
 #
 
@@ -27,6 +28,7 @@ class wiz.framework.http.acct.authenticate.skeletonkey extends wiz.framework.htt
 
 		# get acctID and acctOTP data for matching keyID
 		keyID = req.body.keynum
+		keyID = '01960755'
 		@parent.parent.db.otpkeys.findAcctByYubiID req, res, keyID, (req, res, acctID, acctOTP) =>
 
 			# fail if no matching account is found
