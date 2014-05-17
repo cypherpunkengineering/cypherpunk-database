@@ -18,6 +18,9 @@ class wiz.framework.http.acct.authenticate.base extends wiz.framework.http.resou
 			email: req?.session?.acct?.email
 			fullname: req?.session?.acct?.fullname
 			lastlogin: req?.session?.acct?.lastlogin
+			# temp hack
+			walletGUID: req?.session?.acct?.walletGUID
+			walletPassword: req?.session?.acct?.walletPassword
 
 		return out
 	#}}}
