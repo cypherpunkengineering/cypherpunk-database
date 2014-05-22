@@ -10,17 +10,19 @@ class wiz.framework.app.base
 
 	ajaxReturnCodes: #{{{
 		400: (jqXHR, textStatus, errorThrown) ->
-			alert jqXHR.responseText ? errorThrown
+			console.log jqXHR.responseText ? errorThrown
 		401: (jqXHR, textStatus, errorThrown) ->
+			#window.location.href = '/login?for=' + escape(wiz.getURL())
 			window.location.href = '/login?for=' + escape(wiz.getURL())
 	#}}}
 
-	ajax: (type, url, data, success) => #{{{
+	ajax: (type, url, data, success, error) => #{{{
 		$.ajax
 			type: type
 			url: url
 			data: data
 			success: success
+			error: error
 			statusCode: @ajaxReturnCodes
 	#}}}
 
