@@ -232,6 +232,7 @@ class wiz.framework.app.base
 		img.css('width', args.width) if args.width
 		img.css('height', args.height) if args.height
 		img.load(args.load) if args.load
+		img.click(args.click) if args.click
 
 		return img
 	#}}}
