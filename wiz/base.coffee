@@ -14,6 +14,8 @@ class wiz.base # base app object
 	#}}}
 	master: () => #{{{ main process of master supervisor process
 		wiz.log.notice "*** MASTER #{process.pid} START"
+		# run app in master process if dev mode
+		if wiz.style == 'DEV' then return @main()
 
 		# restart worker processes if they die
 		cluster.on 'exit', (worker, code, signal) ->
