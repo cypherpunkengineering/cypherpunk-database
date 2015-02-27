@@ -28,6 +28,9 @@ class wiz.framework.http.server.csp # HTTP Content-Security-Policy header
 	# restricts the origins allowed to deliver video and audio
 	media: undefined
 
+	# restricts the origins allowed to serve javascript
+	script: [ "*", "'unsafe-inline'" ]
+
 	# allows control over Flash and other plugins
 	object: [ "'none'" ]
 
