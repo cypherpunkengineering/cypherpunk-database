@@ -50,31 +50,22 @@ class wiz.framework.http.resource.folder extends wiz.framework.http.resource.bas
 				return
 
 			# add directory index
-			@initIndex(@server, @files)
+			@initIndex()
 
 			# recurse thru files list
-			for f in @files
-				stat = fs.statSync(@folderPath + '/' + f)
-				if stat.isDirectory()
-					r = new @folderType(@server, this, f, @folderPath)
-					#wiz.log.debug "recursing into folder #{r.getFullPath()}"
-					@routeAdd(r)
-					r.init()
-				else if stat.isFile()
-					r = new @resourceType(@server, this, f, @folderPath + '/' + f)
-					wiz.log.debug "adding resource #{r.getFullPath()}"
-					@routeAdd(r)
-					r.init()
-					if @htmlSuffixOptional and f.split('.').pop() == 'html'
-						nosuffix = f.slice(0, -5)
-						r = new @resourceType(@server, this, nosuffix, @folderPath + '/' + f)
-						wiz.log.debug "adding html suffix optional route for #{r.getFullPath()}"
-						@routeAdd(r)
-						r.init()
+			@initFiles()
 	#}}}
-	initIndex: (server, files) => #{{{ add directory index
+	initFiles: () => #{{{ recurse thru files list
+		for f in @files
+			stat = fs.statSync(@folderPath + '/' + f)
+			if stat.isDirectory()
+				@addFolder(@folderType, f) if @filterFolders(f)
+			else if stat.isFile()
+				@addFile(@resourceType, f) if @filterFiles(f)
+	#}}}
+	initIndex: () => #{{{ add directory index
 		if @indexType
-			index = new @indexType(server, this, '', files)
+			index = new @indexType(@server, this, '', @files)
 			@routeAdd(index)
 			index.init()
 		else
@@ -82,6 +73,40 @@ class wiz.framework.http.resource.folder extends wiz.framework.http.resource.bas
 			@routeAdd(index)
 			index.init()
 	#}}}
+
+	newFolder: (folderType, server, parent, file, folderPath) => #{{{
+		return new folderType(server, parent, file, folderPath)
+	#}}}
+	newFile: (resourceType, server, parent, file, folderPath) => #{{{
+		return new resourceType(server, parent, file, folderPath)
+	#}}}
+
+	addFolder: (folderType, f) => #{{{
+		r = @newFolder(folderType, @server, this, f, @folderPath)
+		#wiz.log.debug "recursing into folder #{r.getFullPath()}"
+		@routeAdd(r)
+		r.init()
+	#}}}
+	addFile: (resourceType, f, verbose = false) => #{{{
+		r = @newFile(resourceType, @server, this, f, @folderPath + '/' + f)
+		wiz.log.debug "adding resource #{r.getFullPath()}" if verbose
+		@routeAdd(r)
+		r.init()
+		if @htmlSuffixOptional and f.split('.').pop() == 'html'
+			nosuffix = f.slice(0, -5)
+			r = @newFile(resourceType, @server, this, nosuffix, @folderPath + '/' + f)
+			wiz.log.debug "adding html suffix optional route for #{r.getFullPath()}" if verbose
+			@routeAdd(r)
+			r.init()
+	#}}}
+
+	filterFolders: (fn) => #{{{ return true or false to allow this file resource being added
+		return true
+	#}}}
+	filterFiles: (fn) => #{{{ return true or false to allow this file resource being added
+		return true
+	#}}}
+
 	handler: (req, res) => #{{{ redirect to trailing slash for directory listing
 		@redirect(req, res, @getFullPath() + '/')
 	#}}}
