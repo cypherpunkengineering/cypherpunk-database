@@ -26,8 +26,9 @@ class wiz.framework.http.resource.folder extends wiz.framework.http.resource.bas
 	level: wiz.framework.http.resource.power.level.stranger
 	mask: wiz.framework.http.resource.power.mask.public
 	folderType: null
-	indexType: wiz.framework.http.resource.folderListing
+	indexType: null
 	resourceType: wiz.framework.http.resource.static
+	htmlSuffixOptional: true
 
 	constructor: (@server, @parent, @path, @parentDir) -> #{{{
 		super(@server, @parent, @path)
@@ -61,13 +62,23 @@ class wiz.framework.http.resource.folder extends wiz.framework.http.resource.bas
 					r.init()
 				else if stat.isFile()
 					r = new @resourceType(@server, this, f, @folderPath + '/' + f)
-					#wiz.log.debug "adding resource #{r.getFullPath()}"
+					wiz.log.debug "adding resource #{r.getFullPath()}"
 					@routeAdd(r)
 					r.init()
+					if @htmlSuffixOptional and f.split('.').pop() == 'html'
+						nosuffix = f.slice(0, -5)
+						r = new @resourceType(@server, this, nosuffix, @folderPath + '/' + f)
+						wiz.log.debug "adding html suffix optional route for #{r.getFullPath()}"
+						@routeAdd(r)
+						r.init()
 	#}}}
 	initIndex: (server, files) => #{{{ add directory index
 		if @indexType
 			index = new @indexType(server, this, '', files)
+			@routeAdd(index)
+			index.init()
+		else
+			index = new wiz.framework.http.resource.static(@server, this, '', @folderPath + '/index.html')
 			@routeAdd(index)
 			index.init()
 	#}}}
