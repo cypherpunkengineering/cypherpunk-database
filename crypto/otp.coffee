@@ -1,5 +1,5 @@
 # wiz framework crypto one-time password classes
-# copyright 2012-2013 wiz technologies inc.
+# copyright 2012-2013 J. Maurice <j@wiz.biz>
 #
 # some portions based on excerpts from:
 # "speakeasy - HMAC One-Time Password module for Node.js"

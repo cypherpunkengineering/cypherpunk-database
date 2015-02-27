@@ -1,5 +1,5 @@
 # top-level wiz object
-# copyright 2013 wiz technologies inc.
+# copyright 2013 J. Maurice <j@wiz.biz>
 
 process.on 'SIGINT', () =>
 	process.exit()

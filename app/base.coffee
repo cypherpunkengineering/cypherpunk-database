@@ -1,4 +1,4 @@
-# copyright 2014 wiz technologies inc.
+# copyright 2014 J. Maurice <j@wiz.biz>
 
 wiz.package 'wiz.framework.app.base'
 

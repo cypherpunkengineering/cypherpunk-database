@@ -1,5 +1,5 @@
 # wiz framework QR code utility classes
-# copyright 2013 wiz technologies inc.
+# copyright 2013 J. Maurice <j@wiz.biz>
 #
 # based on "QR Code Generator for JavaScript", copyright 2009 Kazuhiko Arase
 # licensed under the MIT license as per website http://www.d-project.com/

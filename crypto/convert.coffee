@@ -1,5 +1,5 @@
 # wiz framework base conversion utility methods
-# copyright 2013 wiz technologies inc.
+# copyright 2013 J. Maurice <j@wiz.biz>
 
 require '..'
 
