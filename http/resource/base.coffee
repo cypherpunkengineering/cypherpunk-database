@@ -24,8 +24,10 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		@routeTable = {}
 	#}}}
 	load: () => #{{{ for child class
+		wiz.log.debug "load #{@getFullPath()}"
 	#}}}
 	init: () => #{{{
+		wiz.log.debug "init #{@getFullPath()}"
 	#}}}
 
 	routeAdd: (m) => #{{{
