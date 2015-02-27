@@ -57,7 +57,7 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 			wiz.log.debug "re-loading #{@file}" if @src
 
 			@read (readOK) =>
-				wiz.log.debug "reading #{@file}"
+				#wiz.log.debug "reading #{@file}"
 				return cb(false) if not readOK
 				@content = null
 				@compile()
