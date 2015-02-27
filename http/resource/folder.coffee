@@ -25,6 +25,7 @@ class wiz.framework.http.resource.folderListing extends wiz.framework.http.resou
 class wiz.framework.http.resource.folder extends wiz.framework.http.resource.base
 	level: wiz.framework.http.resource.power.level.stranger
 	mask: wiz.framework.http.resource.power.mask.public
+	folderType: null
 	indexType: wiz.framework.http.resource.folderListing
 	resourceType: wiz.framework.http.resource.static
 
@@ -36,27 +37,39 @@ class wiz.framework.http.resource.folder extends wiz.framework.http.resource.bas
 	#}}}
 
 	init: () => #{{{ scan folder for files, add them to route list
+		# hack
+		@folderType = wiz.framework.http.resource.folder if @folderType is null
+
 		@files = []
-		wiz.log.debug "scanning #{@folderPath}"
+		#wiz.log.debug "scanning #{@folderPath}"
 		fs.readdir @folderPath, (err, @files) =>
 			if err
 				wiz.log.err "unable to open resource folder #{@path}: #{err}"
 				super()
 				return
 
-			@routeAdd new @indexType(@server, this, '', @files)
+			# add directory index
+			@initIndex(@server, @files)
+
+			# recurse thru files list
 			for f in @files
 				stat = fs.statSync(@folderPath + '/' + f)
 				if stat.isDirectory()
-					r = new @constructor(@server, this, f, @folderPath)
-					wiz.log.debug "recursing into folder #{r.getFullPath()}"
+					r = new @folderType(@server, this, f, @folderPath)
+					#wiz.log.debug "recursing into folder #{r.getFullPath()}"
 					@routeAdd(r)
 					r.init()
 				else if stat.isFile()
 					r = new @resourceType(@server, this, f, @folderPath + '/' + f)
-					wiz.log.debug "adding resource #{r.getFullPath()}"
+					#wiz.log.debug "adding resource #{r.getFullPath()}"
 					@routeAdd(r)
 					r.init()
+	#}}}
+	initIndex: (server, files) => #{{{ add directory index
+		if @indexType
+			index = new @indexType(server, this, '', files)
+			@routeAdd(index)
+			index.init()
 	#}}}
 	handler: (req, res) => #{{{ redirect to trailing slash for directory listing
 		@redirect(req, res, @getFullPath() + '/')
