@@ -130,7 +130,7 @@ class wiz.framework.http.database.mongo.base
 		data = [] if not data or data not instanceof Array
 		recordCount ?= data.length
 		res.send 200,
-			sEcho : req.query.sEcho
+			sEcho : req.query?.sEcho
 			iTotalRecords : recordCount
 			iTotalDisplayRecords : recordCount
 			aaData : data
