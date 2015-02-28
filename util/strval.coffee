@@ -90,8 +90,8 @@ class wiz.framework.util.strval
 	# check if valid 8 digit hotp code
 	@hotp_valid : (str) -> /^\d{8}$/.test(str)
 
-	# check if valid 8 digit pengikey id
-	@pengikey_valid : (str) -> /^\d{8}$/.test(str)
+	# check if valid 8 digit wizkey id
+	@wizkey_valid : (str) -> /^\d{8}$/.test(str)
 
 	# check if valid 20 digit leetcode
 	@leetcode_valid : (str) -> /^1337\d{8}\d{8}$/.test(str)

@@ -26,7 +26,7 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 	#}}}
 	init: () => #{{{ preload and precompile on init
 		@getContentType()
-		#@cache = false if wiz.style is 'DEV' # disable cache during development
+		@cache = false if wiz.style is 'DEV' # disable cache during development
 		@loader (ok) =>
 			wiz.log.err "initial loading of #{@file} failed" unless ok
 	#}}}

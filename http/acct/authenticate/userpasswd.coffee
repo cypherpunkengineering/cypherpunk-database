@@ -38,7 +38,7 @@ class wiz.framework.http.acct.authenticate.userpasswd extends wiz.framework.http
 
 		return @parent.parent.db.accounts.findOneByEmail req, res, req.body.login, (req, res, user) =>
 			if user?.id and @pwValidate(req, res, user, req.body.password)
-				return @onIdentifySuccess(req, res, user)
+				return @onAuthenticateSuccess(req, res, user)
 
 			return res.send 400, 'username/password verification failed'
 	#}}}

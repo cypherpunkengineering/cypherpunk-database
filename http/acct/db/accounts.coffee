@@ -22,6 +22,7 @@ wiz.package 'wiz.framework.http.acct.db.accounts'
 class wiz.framework.http.acct.db.accounts extends wiz.framework.http.database.mongo.baseArray
 	collectionName: 'accounts'
 	docKey: 'id'
+	emailKey: 'email'
 	debug: true
 
 	list: (req, res) => #{{{
@@ -70,7 +71,7 @@ class wiz.framework.http.acct.db.accounts extends wiz.framework.http.database.mo
 		@findOne req, res, query, fields, cb
 	#}}}
 	findOneByEmail: (req, res, email, cb) => #{{{
-		query = @getDocKey(email)
+		query = { 'email': email }
 		fields = @fields()
 		@findOne req, res, query, fields, cb
 	#}}}
