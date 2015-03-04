@@ -1,18 +1,17 @@
-# copyright 2014 J. Maurice <j@wiz.biz>
+# copyright 2015 J. Maurice <j@wiz.biz>
 
 wiz.package 'wiz.framework.app.base'
 
 class wiz.framework.app.base
 
 	constructor: () ->
-		@container = $('#pengiBody1')
-		@toolbar = $('#pengiBody')
+		@container = $('#wizBody1')
+		@toolbar = $('#wizBody')
 
 	ajaxReturnCodes: #{{{
 		400: (jqXHR, textStatus, errorThrown) ->
-			console.log jqXHR.responseText ? errorThrown
+			alert jqXHR.responseText ? errorThrown
 		401: (jqXHR, textStatus, errorThrown) ->
-			#window.location.href = '/login?for=' + escape(wiz.getURL())
 			window.location.href = '/login?for=' + escape(wiz.getURL())
 	#}}}
 
@@ -30,7 +29,7 @@ class wiz.framework.app.base
 		args ?= {}
 		args.classes ?= []
 		args.classes.push 'modal'
-		args.classes.push 'hide'
+		args.classes.push 'fade'
 		args.id ?= ''
 		args.body ?= $('<div>')
 		args.footer ?= $('<div>')
@@ -46,6 +45,16 @@ class wiz.framework.app.base
 		modal.attr('aria-labelledby', modalLabelID)
 
 		modal.append(
+			modalDialog = $('<div>')
+			.addClass('modal-dialog')
+		)
+
+		modalDialog.append(
+			modalContent = $('<div>')
+			.addClass('modal-content')
+		)
+
+		modalContent.append(
 			$('<div>')
 			.addClass('modal-header')
 			.append(
@@ -63,14 +72,14 @@ class wiz.framework.app.base
 		)
 
 		# TODO: create modalBody
-		modal.append(
+		modalContent.append(
 			$('<div>')
 			.addClass('modal-body')
 			.append(args.body)
 		)
 
 		# TODO: create modalFooter
-		modal.append(
+		modalContent.append(
 			$('<div>')
 			.addClass('modal-footer')
 			.append(args.footer)
