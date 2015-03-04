@@ -129,6 +129,7 @@ class wiz.framework.http.database.mongo.base
 	listResponse: (req, res, data, recordCount) => #{{{
 		data = [] if not data or data not instanceof Array
 		recordCount ?= data.length
+		res.setHeader 'Content-Type', 'application/json'
 		res.send 200,
 			sEcho : req.query?.sEcho
 			iTotalRecords : recordCount
