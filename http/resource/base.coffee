@@ -67,7 +67,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 			routeWord = urlSplit[req.routeDepth]
 
 			# lookup word in routing table
-			route = parent.routeTable[routeWord]
+			route = parent.routeTable[routeWord] or parent.routeTable['_catchall']
 
 			#wiz.log.debug "route depth #{req.routeDepth}: word is #{routeWord}"
 		catch e
