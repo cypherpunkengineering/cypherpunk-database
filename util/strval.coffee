@@ -117,6 +117,8 @@ class wiz.framework.util.strval
 				return @ascii_valid(value)
 			when 'asciiNoQuote'
 				return (@ascii_valid(value) && value.indexOf('"') == -1 && value.indexOf("'") == -1)
+			when 'asciiNoSpace'
+				return (@ascii_valid(value) && value.indexOf(' ') == -1)
 			when 'fqdn'
 				return @fqdn_valid(value)
 			when 'fqdnOrAt'
