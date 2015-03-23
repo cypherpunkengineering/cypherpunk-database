@@ -58,7 +58,7 @@ class wiz.framework.http.acct.session
 	@usernav: (req, res) => #{{{
 
 		req.nav ?= {}
-		root = req.route.server.root
+		root = req.route.server.rootnav or req.route.server.root
 
 		for route of root.routeTable
 			resources = []
