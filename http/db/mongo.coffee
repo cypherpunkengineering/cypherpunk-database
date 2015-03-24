@@ -67,12 +67,11 @@ class wiz.framework.http.database.mongo.base
 				return cb count if cb
 				return res.send 200
 	#}}}
-	find: (req, res, query, fields, sortby, cb) => #{{{
-		debugstr = "#{@collectionName}.find(#{JSON.stringify(query)}, #{JSON.stringify(fields)}, #{JSON.stringify(sortby)})"
+	find: (req, res, query, fields, opts = {}, cb) => #{{{
+		debugstr = "#{@collectionName}.find(#{JSON.stringify(query)}, #{JSON.stringify(fields)}, #{JSON.stringify(opts)})"
 		wiz.log.debug debugstr if @debug
 		@mongo.collection res, @collectionName, (collection) =>
-			found = collection.find(query, fields)
-			found = found.sort(sortby) if sortby
+			found = collection.find(query, fields, opts)
 			found.toArray (err, results) =>
 				if err
 					wiz.log.err "FIND FAILED: #{debugstr} -> #{err}"
