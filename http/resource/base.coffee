@@ -67,7 +67,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 			routeWord = urlSplit[req.routeDepth]
 
 			# lookup word in routing table
-			route = parent.routeTable[routeWord] or parent.routeTable['_catchall']
+			route = parent.routeTable[routeWord]
 
 			#wiz.log.debug "route depth #{req.routeDepth}: word is #{routeWord}"
 		catch e
@@ -107,8 +107,12 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 
 		else # 404 route not found
 
-			@serve req, res, wiz.framework.http.resource.middleware.minimum, @handler404
+				@serve req, res, wiz.framework.http.resource.middleware.minimum, (req, res) =>
+					@catchall(req, res, routeWord)
 
+	#}}}
+	catchall: (req, res) => #{{{ default 404 handler
+		@handler404(req, res)
 	#}}}
 
 	handler403: (req, res) => #{{{ default 403 handler
