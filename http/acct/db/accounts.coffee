@@ -65,15 +65,8 @@ class wiz.framework.http.acct.db.accounts extends wiz.framework.http.database.mo
 		@dropMany req, res, req.session.acct.id, null, recordsToDelete
 	#}}}
 
-	findOneByID: (req, res, id, cb) => #{{{
-		query = { _id: id }
-		fields = @fields()
-		@findOne req, res, query, fields, cb
-	#}}}
 	findOneByEmail: (req, res, email, cb) => #{{{
-		query = { 'email': email }
-		fields = @fields()
-		@findOne req, res, query, fields, cb
+		@findOneByKey req, res, @emailKey, email, @projection(), cb
 	#}}}
 
 # vim: foldmethod=marker wrap

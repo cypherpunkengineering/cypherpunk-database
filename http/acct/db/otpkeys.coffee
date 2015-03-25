@@ -25,15 +25,15 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.acco
 		user = null
 
 		# match on otp key id
-		query = {}
-		query["#{@arrayKey}.#{@elementKey}"] = keyID
+		criteria = {}
+		criteria["#{@arrayKey}.#{@elementKey}"] = keyID
 
 		# get account id and matching otp key element only
-		select = {}
-		select["_id"] = 1
-		select["#{@arrayKey}.$"] = 1
+		projection = {}
+		projection["_id"] = 1
+		projection["#{@arrayKey}.$"] = 1
 
-		@findOne req, res, query, select, (req, res, result) =>
+		@findOne req, res, criteria, projection, (req, res, result) =>
 			return cb(req, res, null, null) if not result?[@arrayKey]?[0]
 			return cb(req, res, result._id, result[@arrayKey][0])
 	#}}}
