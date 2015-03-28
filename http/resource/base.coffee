@@ -105,14 +105,18 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 
 				@handler500 req, res, e.toString()
 
+		else if @catchall? and typeof @catchall is 'function' # catchall handler last
+
+			req.route = this
+			@serve req, res, @middleware, (req, res) =>
+				@catchall(req, res, routeWord)
+
 		else # 404 route not found
 
-				@serve req, res, wiz.framework.http.resource.middleware.minimum, (req, res) =>
-					@catchall(req, res, routeWord)
+			req.route = null
+			@serve req, res, wiz.framework.http.resource.middleware.minimum, (req, res) =>
+				@handler404(req, res)
 
-	#}}}
-	catchall: (req, res) => #{{{ default 404 handler
-		@handler404(req, res)
 	#}}}
 
 	handler403: (req, res) => #{{{ default 403 handler
@@ -182,7 +186,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 
 		# check if session access level is greater than or equal to required access level
 		return true if req.session.acct.level >= @level # TODO: check bitmask
- 
+
 		# default deny
 		return false
 	#}}}
