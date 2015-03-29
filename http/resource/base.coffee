@@ -14,6 +14,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 	level: wiz.framework.http.resource.power.level.unknown
 	mask: wiz.framework.http.resource.power.mask.unknown
 	nav: false
+	debug: false
 
 	constructor: (@server, @parent, @path = '', @method = 'GET') -> #{{{
 		# XXX: not recommended to override constructor
@@ -24,10 +25,10 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		@routeTable = {}
 	#}}}
 	load: () => #{{{ for child class
-		wiz.log.debug "load #{@getFullPath()}"
+		wiz.log.debug "load #{@getFullPath()}" if @debug
 	#}}}
 	init: () => #{{{
-		wiz.log.debug "init #{@getFullPath()}"
+		wiz.log.debug "init #{@getFullPath()}" if @debug
 	#}}}
 
 	routeAdd: (m) => #{{{

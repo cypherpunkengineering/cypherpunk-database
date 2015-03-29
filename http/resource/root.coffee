@@ -11,10 +11,10 @@ class wiz.framework.http.resource.root extends wiz.framework.http.resource.base
 	init: () => #{{{
 		super()
 		@each (r) =>
-			wiz.log.debug "loading router #{r.getFullPath()}"
+			wiz.log.debug "loading router #{r.getFullPath()}" if @debug
 			r.load()
 		@each (r) =>
-			wiz.log.debug "init router #{r.getFullPath()}"
+			wiz.log.debug "init router #{r.getFullPath()}" if @debug
 			r.init()
 	#}}}
 
@@ -23,10 +23,10 @@ class wiz.framework.http.resource.folderRoot extends wiz.framework.http.resource
 	init: () => #{{{
 		super()
 		@each (r) =>
-			wiz.log.debug "loading router #{r.getFullPath()}"
+			wiz.log.debug "loading router #{r.getFullPath()}" if @debug
 			r.load()
 		@each (r) =>
-			wiz.log.debug "init router #{r.getFullPath()}"
+			wiz.log.debug "init router #{r.getFullPath()}" if @debug
 			r.init()
 	#}}}
 
