@@ -108,11 +108,11 @@ class wiz.framework.http.database.mongo.base
 				@setJSON(res)
 				res.send 200, JSON.stringify(result)
 	#}}}
-	findAll: (req, res) => #{{{
+	findAll: (req, res, cb) => #{{{
 		criteria = @criteria()
 		projection = @projection()
 		opts = {}
-		@find(req, res, criteria, projection, opts)
+		@find(req, res, criteria, projection, opts, cb)
 	#}}}
 
 	findOneByID: (req, res, id, cb) => #{{{
