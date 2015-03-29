@@ -122,7 +122,6 @@ class wiz.framework.app.base
 		args.classes ?= []
 		args.classes.push 'control-group'
 		args.inputLabel ?= ''
-		args.inputType ?= 'text'
 
 		controlGroup = $('<div>')
 
@@ -147,6 +146,7 @@ class wiz.framework.app.base
 							placeholder: args.inputPlaceholder
 							value: args.inputValue
 							blur: args.inputBlur
+							selopts: args.inputSelopts
 			)
 
 		return controlGroup
@@ -183,7 +183,18 @@ class wiz.framework.app.base
 		args.classes ?= []
 		args.type ?= 'text'
 
-		input = $('<input>')
+		# for pull-down box options
+		if args.type == 'select' and args.selopts
+			input = $('<select>')
+			for value, text of args.selopts
+				input.append(
+					@selopt
+						value: value
+						text: text
+				)
+		else
+			input = $('<input>')
+
 		input.addClass(c) for c in args.classes
 		input.attr('type', args.type)
 		input.attr('id', args.id) if args.id
@@ -197,6 +208,13 @@ class wiz.framework.app.base
 		input.blur(args.blur) if args.blur
 		input.click(args.click) if args.click
 
+		return input
+	#}}}
+
+	selopt: (args) => #{{{
+		input = $('<option>')
+		input.attr('value', args.value) if args.value
+		input.text(args.text) if args.text
 		return input
 	#}}}
 
