@@ -90,7 +90,7 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 			wiz.framework.http.acct.session.save(req)
 
 			# log the result of the request
-			@log req, res, out
+			@log req, res, out unless res?.route?.log is false
 
 		# accept header utility matcher
 		req.is = (ct) => return ~req.headers.accept.indexOf(ct)

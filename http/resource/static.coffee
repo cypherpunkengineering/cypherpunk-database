@@ -19,6 +19,7 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 	dynamic: false
 	loading: false
 	cache: true
+	log: false
 
 	constructor: (@server, @parent, @path, @file, @method) -> #{{{
 		super(@server, @parent, @path, @method)

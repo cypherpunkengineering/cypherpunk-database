@@ -13,6 +13,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 	middleware: wiz.framework.http.resource.middleware.base
 	level: wiz.framework.http.resource.power.level.unknown
 	mask: wiz.framework.http.resource.power.mask.unknown
+	log: true
 	nav: false
 	debug: false
 
