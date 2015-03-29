@@ -42,6 +42,9 @@ class wiz.framework.http.database.mongo.base
 	#}}}
 	init: () => #{{{
 	#}}}
+	setJSON: (res) => #{{{
+		res.setHeader 'Content-Type', 'application/json'
+	#}}}
 
 	criteria: (req) => #{{{ allow child class to override
 		return {}
@@ -83,7 +86,8 @@ class wiz.framework.http.database.mongo.base
 
 				wiz.log.info "FIND OK: #{debugstr}" if @debug
 				return cb results if cb
-				return res.send 200
+				@setJSON(res)
+				return res.send 200, JSON.stringify(results)
 	#}}}
 	findOne: (req, res, criteria, projection, cb) => #{{{
 		debugstr = "#{@collectionName}.findOne(#{JSON.stringify(criteria)}, #{JSON.stringify(projection)})"
@@ -98,8 +102,14 @@ class wiz.framework.http.database.mongo.base
 				wiz.log.info "FINDONE OK: #{debugstr}" if @debug
 				wiz.log.debug "FINDONE RESULT: #{JSON.stringify(result)}" if @debug
 				return cb req, res, result if cb
-				res.setHeader 'Content-Type', 'application/json'
+				@setJSON(res)
 				res.send 200, JSON.stringify(result)
+	#}}}
+	findAll: (req, res) => #{{{
+		criteria = @criteria()
+		projection = @projection()
+		opts = {}
+		@find(req, res, criteria, projection, opts)
 	#}}}
 
 	findOneByID: (req, res, id, cb) => #{{{
@@ -144,7 +154,7 @@ class wiz.framework.http.database.mongo.base
 	listResponse: (req, res, data, recordCount) => #{{{
 		data = [] if not data or data not instanceof Array
 		recordCount ?= data.length
-		res.setHeader 'Content-Type', 'application/json'
+		@setJSON(res)
 		res.send 200,
 			sEcho : req.query?.sEcho
 			iTotalRecords : recordCount
