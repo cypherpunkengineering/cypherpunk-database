@@ -18,8 +18,12 @@ wiz =
 	getURL: () ->
 		window.location.protocol + '//' + window.location.host + window.location.pathname
 
-	getParentURL: () ->
-		wiz.getURL().substring(0, wiz.getURL().lastIndexOf('/'))
+	getParentURL: (i = 1) ->
+		url = wiz.getURL()
+		while i > 0
+			url = url.substring(0, url.lastIndexOf('/'))
+			i = i -= 1
+		return url
 
 	getPath: () ->
 		window.location.pathname
