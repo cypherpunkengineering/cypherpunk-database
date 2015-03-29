@@ -47,10 +47,13 @@ class wiz.framework.http.database.mongo.base
 	#}}}
 
 	criteria: (req) => #{{{ allow child class to override
-		return {}
+		baseCriteria = {}
+		return baseCriteria
 	#}}}
 	projection: (req) => #{{{ allow child class to override
-		return {}
+		baseProjection =
+			_id: 0
+		return baseProjection
 	#}}}
 
 	getDocKey: (id) => #{{{
@@ -172,7 +175,7 @@ class wiz.framework.http.database.mongo.base
 	#}}}
 	dropMany: (req, res, recordsToDelete, cb) => #{{{ send mongo criteria to drop a given array of mongo oid objects
 		dropQuery =
-			_id : { $in : recordsToDelete }
+			id : { $in : recordsToDelete }
 
 		@parent.parent.mongo.collection res, @collectionName, (collection) =>
 			debugstr = "#{@collectionName}.remove(#{JSON.stringify(dropQuery)})"
