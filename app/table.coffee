@@ -44,7 +44,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		}
 	]
 	#}}}
-	baseParams: # {{{
+	baseParams: #{{{
 		aaSorting: []
 		aoColumnDefs: [
 			{
@@ -96,7 +96,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 #						$(this).fnDraw()
 #					'submitdata' :  (value, settings) =>
 #						alert('value: ' + value)
-	# }}}
+	#}}}
 
 	tableCheckmark: () => #{{{
 		tableCheckmark = $('<th>')
@@ -289,13 +289,13 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 			)
 	#}}}
 
-	insertDialogOpen: (e, data) => # {{{
+	insertDialogOpen: (e, data) => #{{{
 		return if @insertDialog # one dialog at a time
-
-		# TODO: refactor properly
 		@insertDialogFormSelectCreate(data)
 		@insertDialogFormFieldsCreate(data)
-
+		@insertDialogModal(e, data)
+	#}}}
+	insertDialogModal: (e, data) => #{{{
 		@insertDialogForm = @form
 			classes: [ 'form-horizontal' ]
 			submit: @insertDialogFormSubmit
@@ -323,11 +323,15 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 			@insertDialog = null
 
 		@insertDialog.modal()
-	# }}}
+	#}}}
 	insertDialogFormSelectCreate: () => #{{{
 		# implement in child class
 	#}}}
-	insertDialogFormFieldsCreate: () => # {{{
+	insertDialogFormFieldsCreate: () => #{{{
+		@insertDialogFormFieldsCreateInit()
+		@insertDialogFormFieldsCreateAll()
+	#}}}
+	insertDialogFormFieldsCreateInit: () => #{{{
 		# save parent object if updating
 		p = null
 		if @insertDialogFormFields
@@ -339,44 +343,56 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 
 		if (p) # append new object to parent
 			$(p).append(@insertDialogFormFields)
-
-		# TODO: refactor properly
+	#}}}
+	insertDialogFormFieldsCreateAll: () => #{{{
 		for arg in @insertDialogFormArgs
+			@insertDialogFormFieldsCreateOne(arg.id, arg)
+	#}}}
+	insertDialogFormFieldsCreateOne: (id, datum) => #{{{
+		nugget = null
 
-			arg.input = 'text'
-			arg.input = 'password' if arg.type is 'passwd'
+		switch datum.type
+			when 'passwd'
+				datum.input = 'password'
 
-			switch arg.type
-				when 'pulldown'
-					pulldown = $('<select>')
-						.attr('name', arg.name)
-					for key, val of arg.options
-						pulldown.append(
-							$('<option>')
-							.attr('value', key)
-							.text(val)
-						)
-					@insertDialogFormFields
-					.append(
-						@controlGroup
-							inputLabel: arg.label
-							controls:
-								@controls
-									nugget: pulldown
-					)
-				else
-					@insertDialogFormFields
-					.append(
-						@controlGroup
-							inputLabel: arg.label
-							inputID: arg.name
-							inputName: arg.name
-							inputType: arg.input
-							inputArgType: arg.type
-							inputBlur: @formFieldValidate
+			when 'pulldown'
+				nugget = $('<select>')
+					.attr('name', datum.name)
+				for key, val of datum.options
+					nugget.append(
+						$('<option>')
+						.attr('value', key)
+						.text(val)
 					)
 
-	# }}}
+			when 'boolean'
+				datum.input = 'checkbox'
+
+			else
+				datum.input = 'text'
+
+		controls = null
+		if nugget
+			controls = @controls
+				nugget: nugget
+
+		@insertDialogFormFieldsCreateOneControl(id, datum, controls)
+	#}}}
+	insertDialogFormFieldsCreateOneControl: (id, datum, controls) => #{{{
+		@insertDialogFormFields
+		.append(
+			@controlGroup
+				controls: controls
+				inputID: "data[#{id}]"
+				inputLabel: datum.label
+				inputName: datum.name
+				inputType: datum.input
+				inputArgType: datum.type
+				inputPlaceholder: datum.placeholder
+				inputSelopts: datum.selopts
+				inputBlur: @formFieldValidate
+		)
+	#}}}
 	insertDialogFormSubmit: (e) => #{{{
 
 		e.preventDefault()
@@ -390,11 +406,11 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		return false
 	#}}}
 
-	modifyDialogOpen: (e) => # {{{
+	modifyDialogOpen: (e) => #{{{
 		@insertDialogOpen(e)
 	#}}}
 
-	dropDialogOpen: (e) => # {{{
+	dropDialogOpen: (e) => #{{{
 		return if @dropDialog
 
 		@dropArray = [] # array of ids to delete
@@ -437,7 +453,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 
 		@dropDialog.modal()
 
-	# }}}
+	#}}}
 	dropDialogFormSubmit: (e) => #{{{
 
 		e.preventDefault()
