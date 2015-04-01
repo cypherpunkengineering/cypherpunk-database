@@ -345,32 +345,34 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		if (p) # append new object to parent
 			$(p).append(@insertDialogFormFields)
 	#}}}
-	insertDialogFormFieldsCreateAll: () => #{{{
+	insertDialogFormFieldsCreateAll: (record) => #{{{
 		for arg in @insertDialogFormArgs
-			@insertDialogFormFieldsCreateOne(arg.id, arg)
+			@insertDialogFormFieldsCreateOne(arg.id, arg, record)
 	#}}}
-	insertDialogFormFieldsCreateOne: (id, datum) => #{{{
+	insertDialogFormFieldsCreateOne: (id, schema, record) => #{{{
 		nugget = null
 
-		switch datum.type
+		switch schema.type
 			when 'passwd'
-				datum.input = 'password'
+				schema.input = 'password'
 
 			when 'pulldown'
-				datum.input = 'select'
+				schema.input = 'select'
 
 			when 'boolean'
-				datum.input = 'checkbox'
+				schema.input = 'checkbox'
 
 			else
-				datum.input = 'text'
+				schema.input = 'text'
+
+		schema.value = record?.data?[id]
 
 		controls = null
 		if nugget
 			controls = @controls
 				nugget: nugget
 
-		@insertDialogFormFieldsCreateOneControl(id, datum, controls)
+		@insertDialogFormFieldsCreateOneControl(id, schema, controls)
 	#}}}
 	insertDialogFormFieldsCreateOneControl: (id, datum, controls) => #{{{
 		@insertDialogFormFields
@@ -381,6 +383,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 				inputLabel: datum.label
 				inputName: datum.name
 				inputType: datum.input
+				inputValue: datum.value
 				inputArgType: datum.type
 				inputPlaceholder: datum.placeholder
 				inputSelopts: datum.selopts

@@ -33,7 +33,7 @@ class wiz.portal.userjs.table.multi extends wiz.portal.userjs.table.base
 				.text(recordType.description)
 			)
 	#}}}
-	insertDialogFormFieldsCreateAll: () => #{{{
+	insertDialogFormFieldsCreateAll: (record) => #{{{
 		# dont proceed until something is selected
 		return if !@insertDialogFormSelect or $(@insertDialogFormSelect).find('option').length < 1
 
@@ -55,8 +55,8 @@ class wiz.portal.userjs.table.multi extends wiz.portal.userjs.table.base
 				break
 		return unless recordType # not found
 
-		for d of recordType.data when datum = recordType.data[d]
-			@insertDialogFormFieldsCreateOne(d, datum)
+		for d of recordType.data when schema = recordType.data[d]
+			@insertDialogFormFieldsCreateOne(d, schema, record)
 	#}}}
 
 # vim: foldmethod=marker wrap
