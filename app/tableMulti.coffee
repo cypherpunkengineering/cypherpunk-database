@@ -4,16 +4,7 @@ wiz.package 'wiz.portal.userjs.table'
 
 class wiz.portal.userjs.table.multi extends wiz.portal.userjs.table.base
 
-	init: (@data) => #{{{
-		@urlBase ?= wiz.getParentURL() + '/api'
-		@urlList = @urlBase + '/list'
-		@urlInsert = @urlBase + '/insert'
-		@urlModify = @urlBase + '/modify'
-		@urlDrop = @urlBase + '/drop'
-		@urlExport = @urlBase + '/export'
-		super()
-	#}}}
-	insertDialogFormSelectCreate: () => #{{{
+	insertDialogFormSelectCreate: (data) => #{{{
 		@insertDialogFormSelect = $('<select>')
 			.attr('id', 'insertSelect')
 			.attr('name', 'insertSelect')
@@ -38,6 +29,7 @@ class wiz.portal.userjs.table.multi extends wiz.portal.userjs.table.base
 			.append(
 				$('<option>')
 				.attr('value', recordType.type)
+				.attr('selected', (data?.type == recordType.type))
 				.text(recordType.description)
 			)
 	#}}}

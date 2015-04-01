@@ -106,15 +106,16 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		return tableCheckmark
 	#}}}
 
-	constructor: () -> #{{{
-		super()
+	init: (@data) => #{{{
+		#@urlBase ?= wiz.getParentURL() + '/api'
+		@urlListBase ?= @urlBase + '/list'
+		@urlFindOneByID ?= @urlBase + '/findOneByID'
+		@urlList ?= @urlBase + '/list'
+		@urlInsert ?= @urlBase + '/insert'
+		@urlModify ?= @urlBase + '/modify'
+		@urlDrop ?= @urlBase + '/drop'
+		@urlExport ?= @urlBase + '/export'
 
-		@urlList = wiz.getURL() + '/list'
-		@urlInsert = wiz.getURL() + '/insert'
-		@urlDrop = wiz.getURL() + '/drop'
-
-	#}}}
-	init: () => #{{{
 		@idBodyHeader = @container[0].id + 'Header'
 		@idBodyToolbar = @container[0].id + 'Toolbar'
 		@idBodySelector = @container[0].id + 'Selector'
@@ -327,9 +328,9 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 	insertDialogFormSelectCreate: () => #{{{
 		# implement in child class
 	#}}}
-	insertDialogFormFieldsCreate: () => #{{{
-		@insertDialogFormFieldsCreateInit()
-		@insertDialogFormFieldsCreateAll()
+	insertDialogFormFieldsCreate: (data) => #{{{
+		@insertDialogFormFieldsCreateInit(data)
+		@insertDialogFormFieldsCreateAll(data)
 	#}}}
 	insertDialogFormFieldsCreateInit: () => #{{{
 		# save parent object if updating
@@ -356,14 +357,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 				datum.input = 'password'
 
 			when 'pulldown'
-				nugget = $('<select>')
-					.attr('name', datum.name)
-				for key, val of datum.options
-					nugget.append(
-						$('<option>')
-						.attr('value', key)
-						.text(val)
-					)
+				datum.input = 'select'
 
 			when 'boolean'
 				datum.input = 'checkbox'
@@ -401,13 +395,15 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		recordToInsert = @insertDialogForm.serializeArray()
 		return false if not recordToInsert or recordToInsert.length < 1
 
-		@ajax 'POST', @urlInsert, recordToInsert, @dialogSubmitCompleted
+		@ajax 'POST', @urlInsert, recordToInsert, @onDialogSubmitCompleted
 
 		return false
 	#}}}
 
 	modifyDialogOpen: (e) => #{{{
-		@insertDialogOpen(e)
+		id = $(e.target.parentNode.parentNode).attr('id')
+		@ajax 'GET', @urlFindOneByID + '/' + id, null, (data) =>
+			@insertDialogOpen(e, data)
 	#}}}
 
 	dropDialogOpen: (e) => #{{{
@@ -464,7 +460,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		else if @dropData
 			dropData = @dropData
 
-		@ajax 'POST', @urlDrop, { recordsToDelete: dropData }, @dialogSubmitCompleted
+		@ajax 'POST', @urlDrop, { recordsToDelete: dropData }, @onDialogSubmitCompleted
 
 		return false
 	#}}}
@@ -476,14 +472,18 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		@inputValidated(t, valid)
 		return valid
 	#}}}
-	dialogSubmitCompleted: () => #{{{
-
-		t.dt.fnDraw() if t.dt for t in @t
-
+	onDialogSubmitCompleted: () => #{{{
+		@tablesReload()
+		@dialogDestroy()
+	#}}}
+	dialogDestroy: () => #{{{
 		if @insertDialog
-			@insertDialog.modal 'hide'
+			@insertDialog.modal('hide')
 		else if @dropDialog
-			@dropDialog.modal 'hide'
+			@dropDialog.modal('hide')
+	#}}}
+	tablesReload: () => #{{{
+		t.dt.fnDraw() if t.dt for t in @t
 	#}}}
 
 # vim: foldmethod=marker wrap
