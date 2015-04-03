@@ -193,6 +193,9 @@ class wiz.framework.app.base
 						text: text
 						selected: (text == args.value)
 				)
+		else if args.type == 'checkbox'
+			input = $('<input>')
+			input.attr('checked', true) if args.value is 'on' or args.value is 'true'
 		else
 			input = $('<input>')
 
