@@ -151,6 +151,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 				next(req, res)
 			else
 				process.nextTick =>
+					wiz.assert(handler, "invalid handler for #{@getFullPath()}")
 					handler(req, res)
 
 		req.next()
@@ -206,6 +207,10 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 			parent = parent.parent
 		return path
 	#}}}
+
+	handler: (req, res) =>
+		wiz.log.err 'default handler? handler not defined'
+
 	js: (file) =>
 		return @getFullPath() + '/_js/' + file
 	css: (file) =>
