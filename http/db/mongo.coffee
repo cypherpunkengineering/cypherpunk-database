@@ -42,9 +42,6 @@ class wiz.framework.http.database.mongo.base
 	#}}}
 	init: () => #{{{
 	#}}}
-	setJSON: (res) => #{{{
-		res.setHeader 'Content-Type', 'application/json'
-	#}}}
 
 	criteria: (req) => #{{{ allow child class to override
 		baseCriteria = {}
@@ -89,8 +86,7 @@ class wiz.framework.http.database.mongo.base
 
 				wiz.log.info "FIND OK: #{debugstr}" if @debug
 				return cb results if cb
-				@setJSON(res)
-				return res.send 200, JSON.stringify(results)
+				return res.send 200, results
 	#}}}
 	findOne: (req, res, criteria, projection, cb) => #{{{
 		debugstr = "#{@collectionName}.findOne(#{JSON.stringify(criteria)}, #{JSON.stringify(projection)})"
@@ -105,8 +101,7 @@ class wiz.framework.http.database.mongo.base
 				wiz.log.info "FINDONE OK: #{debugstr}" if @debug
 				wiz.log.debug "FINDONE RESULT: #{JSON.stringify(result)}" if @debug
 				return cb req, res, result if cb
-				@setJSON(res)
-				res.send 200, JSON.stringify(result)
+				res.send 200, result
 	#}}}
 	findAll: (req, res, cb) => #{{{
 		criteria = @criteria()
@@ -157,13 +152,17 @@ class wiz.framework.http.database.mongo.base
 	listResponse: (req, res, data, recordCount) => #{{{
 		data = [] if not data or data not instanceof Array
 		recordCount ?= data.length
-		@setJSON(res)
 		res.send 200,
 			sEcho : req.query?.sEcho
 			iTotalRecords : recordCount
 			iTotalDisplayRecords : recordCount
 			aaData : data
 	#}}}
+
+	updateOne: (req, res, id, objToModify) => #{{{
+		res.send 501
+	#}}}
+
 	drop: (req, res, cb) => #{{{ default drop ajax handler
 		return res.send 400 if not req.body.recordsToDelete or typeof req.body.recordsToDelete isnt 'object' # only proceed if object
 
@@ -173,6 +172,7 @@ class wiz.framework.http.database.mongo.base
 				recordsToDelete[i] = @mongo.oid(id)
 		@dropMany req, res, recordsToDelete, cb
 	#}}}
+
 	dropMany: (req, res, recordsToDelete, cb) => #{{{ send mongo criteria to drop a given array of mongo oid objects
 		dropQuery =
 			id : { $in : recordsToDelete }
@@ -261,9 +261,6 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 		update = @getUpdatePushArray req, objToInsert
 		options = @getUpdateOptions()
 		@updateCustom(req, res, criteria, update, options)
-	#}}}
-	modifyOne: (req, res, criteriaID, objToModify) => #{{{
-		res.send 501
 	#}}}
 	dropMany: (req, res, criteriaID, elementID, objsToDelete, pullKey = null) => #{{{
 		@mongo.collection res, @collectionName, (collection) =>
