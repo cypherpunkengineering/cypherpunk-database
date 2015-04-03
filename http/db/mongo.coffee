@@ -52,6 +52,11 @@ class wiz.framework.http.database.mongo.base
 			_id: 0
 		return baseProjection
 	#}}}
+	getUpdateOptions: () => #{{{
+		options =
+			upsert: @upsert
+		return options
+	#}}}
 
 	getDocKey: (id) => #{{{
 		criteria = @criteria()
@@ -159,8 +164,15 @@ class wiz.framework.http.database.mongo.base
 			aaData : data
 	#}}}
 
-	updateOne: (req, res, id, objToModify) => #{{{
-		res.send 501
+	update: (req, res, id, fieldsToUpdate, cb) => #{{{
+		criteria = @criteria()
+		criteria[@docKey] = id
+		update =
+			'$set':
+				updated: wiz.framework.util.datetime.unixFullTS()
+				data: fieldsToUpdate
+		options = @getUpdateOptions()
+		@updateCustom(req, res, criteria, update, options, cb)
 	#}}}
 
 	drop: (req, res, cb) => #{{{ default drop ajax handler
@@ -238,11 +250,6 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 			'$set' : { updated: wiz.framework.util.datetime.unixFullTS() }
 			'$pull': toPull
 		return update
-	#}}}
-	getUpdateOptions: () => #{{{
-		options =
-			upsert: @upsert
-		return options
 	#}}}
 	findElementByID: (req, res, criteriaID, elementID, cb) => #{{{
 		return cb(null) if not criteriaID or not elementID

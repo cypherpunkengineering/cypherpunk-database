@@ -20,7 +20,8 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 	stringInsertButton: 'Add record'
 	stringInsertRecordSelectLabel: null
 	stringInsertSubmit: 'Add record'
-	stringModifyButton: 'Modify record'
+	stringUpdateSubmit: 'Update record'
+	stringUpdateButton: 'Update record'
 	stringDropButton: 'Drop record'
 	stringDropSubmit: 'Drop record'
 	stringInsertRecordDialogTitle: 'Insert record'
@@ -112,7 +113,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		@urlFindOneByID ?= @urlBase + '/findOneByID'
 		@urlList ?= @urlBase + '/list'
 		@urlInsert ?= @urlBase + '/insert'
-		@urlModify ?= @urlBase + '/modify'
+		@urlUpdate ?= @urlBase + '/update'
 		@urlDrop ?= @urlBase + '/drop'
 		@urlExport ?= @urlBase + '/export'
 
@@ -316,8 +317,10 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 			body: @insertDialogForm
 			footer: @button
 				classes: [ 'btn-primary' ]
-				text: @stringInsertSubmit
+				text: (if data then @stringUpdateSubmit else @stringInsertSubmit)
 				click: @insertDialogFormSubmit
+
+		@setUpdateRecordID(data)
 
 		@insertDialog.on 'hidden.bs.modal', () =>
 			@insertDialog.remove()
@@ -401,12 +404,17 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		recordToInsert = @insertDialogForm.serializeArray()
 		return false if not recordToInsert or recordToInsert.length < 1
 
-		@ajax 'POST', @urlInsert, recordToInsert, @onDialogSubmitCompleted
+		if @insertDialog.attr('updateRecordID')
+			@ajax 'POST', @urlUpdate + '/' + @insertDialog.attr('updateRecordID'), recordToInsert, @onDialogSubmitCompleted
+		else
+			@ajax 'POST', @urlInsert, recordToInsert, @onDialogSubmitCompleted
 
 		return false
 	#}}}
-
-	modifyDialogOpen: (e) => #{{{
+	setUpdateRecordID: (data) =>
+		if data
+			@insertDialog.attr('updateRecordID', data.id)
+	updateDialogOpen: (e) => #{{{
 		id = $(e.target.parentNode.parentNode).attr('id')
 		@ajax 'GET', @urlFindOneByID + '/' + id, null, (data) =>
 			@insertDialogOpen(e, data)
