@@ -28,6 +28,10 @@ class wiz.framework.util.strval
 			ip = ip.replace ipv6prefix, ''
 		return ip
 
+	# check if on or off
+	@boolean_valid: (str) ->
+		return (str is 'on' or str is 'off')
+
 	# check if valid ipv4 address
 	@inet4_valid : (ip) ->
 		ipv4octet = '(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])'
@@ -116,7 +120,9 @@ class wiz.framework.util.strval
 		return ( str1 == str2 ) ? 0 : (( str1 > str2 ) ? 1 : -1 )
 
 	@validate: (argtype, value) =>
-		return false unless typeof value == 'string'
+		if typeof value != 'string'
+			console.log 'non-string type passed to string validation method'
+			return false
 		switch argtype
 			when 'ascii'
 				return @ascii_valid(value)
@@ -124,6 +130,8 @@ class wiz.framework.util.strval
 				return (@ascii_valid(value) && value.indexOf('"') == -1 && value.indexOf("'") == -1)
 			when 'asciiNoSpace'
 				return (@ascii_valid(value) && value.indexOf(' ') == -1)
+			when 'boolean'
+				return @boolean_valid(value)
 			when 'fqdn'
 				return @fqdn_valid(value)
 			when 'fqdnOrAt'
@@ -144,6 +152,8 @@ class wiz.framework.util.strval
 				return @int_valid(value) && value >= 0 && value <= 255
 			when 'email'
 				return @email_valid(value)
+			when 'pulldown'
+				return true # XXX hack
 			when 'btcaddrB58mainnet'
 				return @btcaddr_base58_mainnet_valid(value)
 			when 'str'
@@ -151,6 +161,7 @@ class wiz.framework.util.strval
 			when 'ttl'
 				return @ttl_valid(value)
 			else # unknown
+				console.log 'unknown string validation type '+argtype
 				return false
 
 # vim: foldmethod=marker wrap
