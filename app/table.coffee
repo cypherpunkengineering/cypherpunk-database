@@ -362,6 +362,9 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 			when 'boolean'
 				schema.input = 'checkbox'
 
+			when 'nugget'
+				nugget = schema.nugget
+
 			else
 				schema.input = 'text'
 
