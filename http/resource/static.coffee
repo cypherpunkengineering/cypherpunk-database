@@ -29,7 +29,7 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 		@getContentType()
 		@cache = false if wiz.style is 'DEV' # disable cache during development
 		@loader (ok) =>
-			wiz.log.debug "initial loading of #{@file} failed" if not ok and @debug
+			wiz.log.err "initial loading of #{@file} failed" if not ok
 	#}}}
 
 	getContentType: () => #{{{
@@ -65,12 +65,13 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 				return cb(@renderer?)
 	#}}}
 	stat: (cb) => #{{{ get file stats
+		wiz.assert(@file, "invalid @file for #{@getFullPath()}")
 		#wiz.log.debug "stating file #{@file}"
 		fs.stat @file, (err, @stats) =>
 			err = 'not a file' if @stats and not @stats.isFile()
 			return cb(true) if not err
 			@stats = null
-			wiz.log.debug "failed stating file #{@file}: #{err}" if @debug
+			wiz.log.err "failed stating file #{@file}: #{err}"
 			return cb(false)
 	#}}}
 	read: (cb) => #{{{ read src from filesystem
@@ -110,7 +111,10 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 
 		@loader (ok) =>
 
-			return res.send 500 if not ok
+			if not ok
+				err = 'error loading file'
+				wiz.log.err err
+				return res.send 500, err
 
 			@render(req, res) if @dynamic or not @content
 
