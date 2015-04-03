@@ -60,19 +60,25 @@ class wiz.framework.http.acct.session
 		req.nav ?= {}
 		root = req.route.server.rootnav or req.route.server.root
 
-		for route of root.routeTable
+		for route of root.routeTable when module = root.routeTable[route]
 			resources = []
-			continue unless module = root.routeTable[route]
 			if module.isVisible(req)
 				#console.log module.title
 
-				for r of module.routeTable
-					continue unless resource = module.routeTable[r]
+				for r of module.routeTable when resource = module.routeTable[r]
+					subresources = []
 					if resource.isVisible(req)
 						#console.log resource.title
+						for sr of resource.routeTable when subresource = resource.routeTable[sr]
+							subresources.push
+								title: subresource.title
+								path: subresource.getFullPath()
+
 						resources.push
 							title: resource.title
 							path: resource.getFullPath()
+							subresources: subresources
+							subresourceCount: subresources.length
 
 				req.nav[module.path] =
 					title: module.title
