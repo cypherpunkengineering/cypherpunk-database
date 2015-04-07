@@ -3,6 +3,7 @@
 require '../..'
 require '../../util/list'
 
+require '../base'
 require '../resource/base'
 require '../acct/session'
 require './config'
@@ -12,8 +13,7 @@ http = require 'http'
 
 wiz.package 'wiz.framework.http.server.base'
 
-class wiz.framework.http.server.base extends wiz.base # base http server object
-
+class wiz.framework.http.server.base extends wiz.framework.http.base
 	constructor: () -> #{{{
 		super()
 		@config = new wiz.framework.http.server.configBase()
@@ -48,6 +48,8 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 			@server.listen listener.port, listener.host
 	#}}}
 	handler: (req, res, out) => # HTTP request handler {{{
+
+		#{{{ request setup
 		# allow req to reference us if necessary
 		req.server = this
 
@@ -62,7 +64,19 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 
 		# check if https or not
 		req.secure = (req.connection?.encrypted? or req.headers['x-forwarded-proto'] is 'https')
+		#}}}
+		req.on 'data', (chunk) => #{{{ limit request size
+			return if req.receivedBytes > @config.maxRequestLimit
+			req.receivedBytes += chunk.length
+			if req.receivedBytes > @config.maxRequestLimit
+				wiz.log.crit "#{req.ip} max request limit of #{@config.maxRequestLimit} bytes exceeded!"
+				req.destroy()
+		#}}}
+		req.is = (ct) => #{{{ accept header utility matcher
+			return ~req.headers.accept.indexOf(ct)
+		#}}}
 
+		#{{{ response setup
 		# prevent click jacking
 		res.setHeader 'X-Frame-Options', @frameOptions if @frameOptions
 
@@ -74,27 +88,7 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 
 		# close connection
 		res.setHeader 'Connection', 'close'
-
-		# limit request size
-		req.on 'data', (chunk) =>
-			return if req.receivedBytes > @config.maxRequestLimit
-			req.receivedBytes += chunk.length
-			if req.receivedBytes > @config.maxRequestLimit
-				wiz.log.crit "#{req.ip} max request limit of #{@config.maxRequestLimit} bytes exceeded!"
-				req.destroy()
-
-		# log all requests
-		res.on 'finish', () =>
-			# TODO: implement post-response-middleware
-			# save session, set cookie header
-			wiz.framework.http.acct.session.save(req)
-
-			# log the result of the request
-			@log req, res, out unless res?.route?.log is false
-
-		# accept header utility matcher
-		req.is = (ct) => return ~req.headers.accept.indexOf(ct)
-
+		#}}}
 		res.setCookie = (opts) => #{{{
 			# Set-Cookie: connect.sid=RBYBtQ8XYmaX9fr9DPcfKhUy.vzR8ey26fYG7sGJYHHUSzSWyJJO12e5jiW0BKdd3YsY; path=/; expires=Sun, 08 Sep 2013 14:03:51 GMT; httpOnly; secure
 			pairs = [opts.name + '=' + encodeURIComponent(opts.val)]
@@ -109,7 +103,6 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 			#wiz.log.debug "sending cookie: #{cookie}"
 			res.setHeader 'Set-Cookie', cookie
 		#}}}
-
 		res.send = (numeric = 200, content = '', err = null) => #{{{ for sending response
 
 			# set numeric
@@ -169,6 +162,14 @@ class wiz.framework.http.server.base extends wiz.base # base http server object
 					res.write content
 
 			res.end() unless numeric < 200
+		#}}}
+		res.on 'finish', () => #{{{ log all requests
+			# TODO: implement post-response-middleware
+			# save session, set cookie header
+			wiz.framework.http.acct.session.save(req)
+
+			# log the result of the request
+			@log req, res, out unless res?.route?.log is false
 		#}}}
 
 		# pass to root resource router

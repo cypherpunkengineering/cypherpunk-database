@@ -23,7 +23,6 @@ class global.wiz
 		wiz.log.err "ASSERTION FAIL! #{err}"
 
 require './wiz/logger'
-require './wiz/base'
 
 wiz.log = new wiz.logger()
 

@@ -1,16 +1,13 @@
 # copyright 2013 J. Maurice <j@wiz.biz>
 
 require '../..'
-require '../../util/datetime'
+require '../client/query'
 
 crypto = require 'crypto'
-stream = require 'stream'
-https = require 'https'
-http = require 'http'
 
 wiz.package 'wiz.framework.http.oauth'
 
-class wiz.framework.http.oauth.consumer
+class wiz.framework.http.oauth.consumer extends wiz.framework.http.client.query
 
 	constructor: (options = {}) -> #{{{
 
@@ -23,72 +20,6 @@ class wiz.framework.http.oauth.consumer
 
 		wiz.assert (@hashMethod = options.hashMethod || 'HMAC-SHA1'), 'OAuth hash method'
 
-	#}}}
-
-	client: () => # to ssl or not to ssl {{{
-		return (if @ssl is false then http else https)
-	#}}}
-	proto: () => # to ssl or not to ssl {{{
-		return (if @ssl is false then 'http' else 'https')
-	#}}}
-	error: (e, cb) => #{{{
-		wiz.log.err e
-		return cb null if cb
-		return null
-	#}}}
-
-	reqCreate: (opts, parse, cb) => #{{{ create request
-		# debug print
-		#console.log "#{opts.method} #{opts.path} HTTP/1.1"
-		#console.log ("#{x}: #{y}" for x, y of opts.headers).join('\n')
-		#console.log ''
-
-		# create request
-		req = @client().request opts, (res) =>
-			#TODO: move this all into one leet reqParse method
-
-			return @error 'no response!', cb if not res
-
-			switch res.statusCode
-				when 400, 403, 404, 405, 500, 502, 503
-					@error "HTTP #{res.statusCode}", cb
-
-				else
-					return @resParse res, cb if parse
-					return cb res
-
-		return req
-	#}}}
-	reqSend: (req, reqBody = null) => #{{{ send request
-
-		# set request error handler
-		req.on 'error', (e) =>
-			@error e
-
-		if not reqBody
-
-			req.end()
-
-		else if reqBody instanceof String or typeof reqBody is 'string'
-
-			req.end reqBody
-
-		else if reqBody instanceof Buffer
-
-			req.end reqBody
-
-		else if reqBody instanceof stream.Readable
-
-			req.pipe reqBody
-
-		else if reqBody instanceof Object or typeof reqBody is 'object'
-
-			req.end JSON.stringify(reqBody)
-
-		else
-
-			wiz.log.err 'Cannot send unknown reqBody type: '+typeof reqBody
-			req.end()
 	#}}}
 	reqOptions: (method, path, callbackURL, oauthToken, oauthTokenSecret, params, body) => # generate request options #{{{
 
@@ -111,30 +42,17 @@ class wiz.framework.http.oauth.consumer
 		#
 		# status=Hello%20Ladies%20%2b%20Gentlemen%2c%20a%20signed%20OAuth%20request%21
 
-		# timestamp the request
-		ts = new Date()
+		# get base opts
+		opts = super(method, path, params, body)
 
-		# set request options
-		opts =
-			method: method
-			host: @host
-			port: @port
-			path: path
-
-		# set request headers
-		opts.headers = {}
 		opts.headers['Accept'] = 'application/json, text/html'
-		opts.headers['Host'] = @host
 		opts.headers['Content-Type'] = 'application/x-www-form-urlencoded' if method is 'POST'
-		opts.headers['Content-Length'] = if body then body.length else 0
-
 		# generate Authorization header from request params
 		opts.headers['Authorization'] = @authorization(ts, method, path, params, callbackURL, oauthToken, oauthTokenSecret)
 
 		console.log opts
 		return opts
 	#}}}
-
 	authorization: (ts, method, path, headers = {}, callbackURL = null, oauthToken = null, oauthTokenSecret = null) => #{{{
 
 		#headers['include_entities'] = true
@@ -237,44 +155,6 @@ class wiz.framework.http.oauth.consumer
 		return out
 	#}}}
 
-	resParse: (res, cb) => # parse a json or xml response {{{
-		res.setEncoding('utf8')
-		res.on 'data', (datum) =>
-			ct = res.headers['content-type']?.split(';')?[0]
-			console.log ct
-			switch ct
-
-				when 'application/json'
-
-					try
-						out = JSON.parse datum
-					catch e
-						return @error "json parse error: #{e}", cb
-
-					return cb out
-
-				when 'text/html'
-
-					try
-						out = {}
-						params = datum.split('&')
-						for param in params
-							s = param.split('=')
-							k = s[0]
-							v = s[1]
-							out[k] = v
-
-					catch e
-						return @error "html parse error: #{e}", cb
-
-					return cb out
-
-				else
-
-					wiz.log.err 'unknown content type: '+ct
-					console.log datum
-	#}}}
-
 class wiz.framework.http.oauth.twitter extends wiz.framework.http.oauth.consumer
 
 	constructor: (options = {}) -> #{{{
@@ -283,7 +163,6 @@ class wiz.framework.http.oauth.twitter extends wiz.framework.http.oauth.consumer
 		options.ssl ?= true
 		super(options)
 	#}}}
-
 	requestToken: (callbackURL, cb) => #{{{
 		# POST /oauth/request_token HTTP/1.1
 		# User-Agent: themattharris' HTTP Client
@@ -311,7 +190,6 @@ class wiz.framework.http.oauth.twitter extends wiz.framework.http.oauth.consumer
 			cb null, res
 
 		@reqSend(req)
-
 	#}}}
 
 # vim: foldmethod=marker wrap

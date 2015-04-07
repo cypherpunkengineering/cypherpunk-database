@@ -2,9 +2,8 @@
 
 require '../..'
 require '../../util/list'
-require './power'
 require './middleware'
-require '../resource/power'
+require './power'
 
 wiz.package 'wiz.framework.http.resource.base'
 
@@ -121,6 +120,9 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 
 	#}}}
 
+	handler: (req, res) => #{{{ default handler
+		wiz.log.err 'default handler? handler not defined'
+	#}}}
 	handler403: (req, res) => #{{{ default 403 handler
 		try
 			@server.root.handler403(req, res)
@@ -144,11 +146,11 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 	serve: (req, res, middleware = @middleware, handler = @handler) => # {{{
 		req._index_middleware = 0
 		req.next = () =>
-			#wiz.log.debug "req.next(): #{req._index_middleware}"
+			wiz.log.debug "req.next(): #{req._index_middleware}" if @debug
 			if middleware[req._index_middleware]
 				next = middleware[req._index_middleware]
 				req._index_middleware++
-				next(req, res)
+				next(req, res, req.next)
 			else
 				process.nextTick =>
 					wiz.assert(handler, "invalid handler for #{@getFullPath()}")
@@ -193,7 +195,6 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		# default deny
 		return false
 	#}}}
-
 	isVisible: (req) => #{{{ evaluate if request can access us
 		return true if @isAccessible(req) and @nav is true
 		return false
@@ -208,18 +209,12 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		return path
 	#}}}
 
-	handler: (req, res) =>
-		wiz.log.err 'default handler? handler not defined'
-
-	js: (file) =>
-		return @getFullPath() + '/_js/' + file
-	css: (file) =>
-		return @getFullPath() + '/_css/' + file
-	coffee: (file) =>
-		return @getFullPath() + '/_coffee/' + file + '.coffee'
-	img: (file) =>
-		return @getFullPath() + '/_img/' + file
-	jade: (file) =>
-		return @getFullPath() + '/_jade/' + file
+	#{{{ file helpers
+	js:		(file) => @getFullPath() + '/_js/' + file
+	css:	(file) => @getFullPath() + '/_css/' + file
+	coffee:	(file) => @getFullPath() + '/_coffee/' + file + '.coffee'
+	img:	(file) => @getFullPath() + '/_img/' + file
+	jade:	(file) => @getFullPath() + '/_jade/' + file
+	#}}}
 
 # vim: foldmethod=marker wrap
