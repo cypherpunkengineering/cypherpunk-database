@@ -7,7 +7,7 @@ wiz.package 'wiz.framework.daemon.mongo'
 
 class wiz.framework.daemon.mongo.driver extends wiz.framework.database.mongo.driver
 
-	verbose : false
+	debug: false
 
 	constructor : (@parent, @config, @serverOptions, @dbOptions) -> #{{{
 		super()
@@ -16,11 +16,12 @@ class wiz.framework.daemon.mongo.driver extends wiz.framework.database.mongo.dri
 		# just test database connection
 		super (err, client) =>
 			if client
-				if @verbose then wiz.log.debug 'initial database connection OK'
+				wiz.log.debug 'initial database connection OK' if @debug
 				@disconnect(client)
 	#}}}
+
 	connect : (cb) => #{{{
-		if @verbose then wiz.log.debug "connecting to mongo database #{@config.database}"
+		wiz.log.debug "connecting to mongo database #{@config.database}" if @debug
 		super (err, client) =>
 			# call cb even if err
 			if not client or err
@@ -28,9 +29,10 @@ class wiz.framework.daemon.mongo.driver extends wiz.framework.database.mongo.dri
 			cb err, client
 	#}}}
 	disconnect : (client) => #{{{
-		if @verbose then wiz.log.debug "disconnecting from mongo database #{@config.database}"
+		wiz.log.debug "disconnecting from mongo database #{@config.database}" if @debug
 		super (client)
 	#}}}
+
 	collection : (client, collectionName, stayOpen, cb) => #{{{
 		super client, collectionName, stayOpen, (err, collection) =>
 			# only call cb if we have collection
@@ -53,16 +55,25 @@ class wiz.framework.daemon.mongo.driver extends wiz.framework.database.mongo.dri
 		key += '.' + ('0' + date.getHours()).slice(-2)
 		return key
 	#}}}
-	saveJS : (methodsToSave) => #{{{ for storing javascript methods in database
+	saveJS: (methodsToSave) => #{{{ for storing javascript methods in database
 		wiz.log.debug 'preparing to save JS to database'
 		@connect (err, client) =>
 			@collection client, 'system.js', false, (err, systemJS) =>
 				for methodName, methodCode of methodsToSave
-					wiz.log.debug "saving #{methodName} to database"
-					# save db methods as stored JS
-					systemJS.save
-						'_id' : methodName
-						'value' : @code(methodCode)
+					@saveJSone systemJS, methodName, methodCode
+	#}}}
+	saveJSone: (systemJS, methodName, methodCode) => #{{{ for storing javascript methods in database
+		wiz.log.debug "saving #{methodName} to database"
+		# save db methods as stored JS
+		objToSave =
+			'_id' : methodName
+			'value' : @code(methodCode)
+		opts =
+			'writeConcern':
+				w: "majority"
+				wtimeout: 5000
+		systemJS.save objToSave, opts, (res) =>
+			wiz.log.debug "callback from saving #{methodName} to database: #{res}"
 	#}}}
 
 # vim: foldmethod=marker wrap
