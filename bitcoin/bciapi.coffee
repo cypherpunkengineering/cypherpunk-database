@@ -58,7 +58,7 @@ class wiz.framework.bitcoin.bciapi
 				out.err = err = 'invalid response received: '+res
 				wiz.log.err(err)
 			else
-				out.balance = res
+				out.totalReceived = res
 
 			cb(out) if cb
 	#}}}
