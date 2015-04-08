@@ -7,10 +7,12 @@ wiz.package 'wiz.framework.daemon'
 # worker loop for tasks
 class wiz.framework.daemon.worker
 
-	quiet: false
+	debug: false
 	running: false
-	interval: 30 * 1000
+
 	rundelay: 3 * 1000
+	interval: 30 * 1000
+
 	taskdelay: 1000
 	waitmax: 5
 	waited: 0
@@ -22,8 +24,10 @@ class wiz.framework.daemon.worker
 	init: () => #{{{
 		# setup worker to run every X secs and manually start first run
 		if @rundelay > 0
+			wiz.log.info "initial run delay set to #{@rundelay} ms"
 			setTimeout @run, @rundelay
 		if @interval > 0
+			wiz.log.info "run interval set to #{@interval} ms"
 			setInterval @run, @interval
 	#}}}
 
@@ -48,7 +52,7 @@ class wiz.framework.daemon.worker
 			@waited = 0
 
 		# start
-		wiz.log.debug 'worker started' unless @quiet
+		wiz.log.info 'work start'
 		@running = true
 		setTimeout @work, 500
 	#}}}
@@ -58,7 +62,7 @@ class wiz.framework.daemon.worker
 	#}}}
 	finish: () => #{{{ called from work() when all work is completed
 		return if not @running or @pendingTask > 0
-		wiz.log.debug 'worker finished' unless @quiet
+		wiz.log.info 'work finished'
 		@running = false
 		@cleanup()
 	#}}}
@@ -68,18 +72,18 @@ class wiz.framework.daemon.worker
 
 	pendingTask: 0
 	queueTask: (taskName, task) => #{{{
-		wiz.log.info "queueing task #{taskName}"
+		wiz.log.info "queueing task #{taskName}" if @debug
 		# schedule task according to amount of pending tasks
 		setTimeout task, (@taskdelay * @pendingTask)
 		@pendingTask += 1
 	#}}}
 	onTaskCompleted: (taskName) => #{{{
-		wiz.log.debug "completed task #{taskName}"
+		wiz.log.info "completed task #{taskName}" if @debug
 		@pendingTask -= 1
 
 		# check if any pending tasks
 		if @pendingTask > 0
-			wiz.log.debug "waiting on #{@pendingTask} pending tasks"
+			wiz.log.debug "waiting on #{@pendingTask} pending tasks" if @debug
 			return
 
 		setTimeout @checkIfAllTasksCompleted, 500

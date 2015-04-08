@@ -26,7 +26,7 @@ class wiz.framework.bitcoin.bciapi
 
 		# validate args
 		if not args or typeof args isnt 'object'
-			res.error = 'invalid args'
+			res.error = 'missing args'
 			cb(res) if cb
 			return
 
@@ -34,7 +34,7 @@ class wiz.framework.bitcoin.bciapi
 			args.confirmations = 1
 
 		if not wiz.framework.util.strval.validate('btcaddrB58mainnet', args.address)
-			res.error = 'invalid bitcoin address'
+			res.error = 'invalid bitcoin address: '+args.address
 			cb(res) if cb
 			return
 
