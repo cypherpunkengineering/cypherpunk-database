@@ -11,7 +11,7 @@ class wiz.framework.daemon.worker
 	running: false
 	interval: 30 * 1000
 	rundelay: 3 * 1000
-	pending: 0
+	taskdelay: 1000
 	waitmax: 5
 	waited: 0
 
@@ -56,35 +56,41 @@ class wiz.framework.daemon.worker
 	work: () => #{{{ override this
 		@finish()
 	#}}}
-	queueTask: (taskName, task) => #{{{
-		wiz.log.info "queueing task #{taskName}"
-		setTimeout task, 100
-		@pending += 1
-	#}}}
-	onTaskCompleted: (taskName) => #{{{
-		wiz.log.debug "completed task #{taskName}"
-		@pending -= 1
-
-		# check if any pending tasks
-		if @pending > 0
-			wiz.log.debug "waiting on #{@pending} pending tasks"
-			return
-
-		setTimeout @onAllTasksCompleted, 500
-	#}}}
-	onAllTasksCompleted: () => #{{{
-		return if not @running or @pending > 0
-		wiz.log.info 'all tasks completed'
-		@finish()
-	#}}}
 	finish: () => #{{{ called from work() when all work is completed
-		return if not @running or @pending > 0
+		return if not @running or @pendingTask > 0
 		wiz.log.debug 'worker finished' unless @quiet
 		@running = false
 		@cleanup()
 	#}}}
 	cleanup: () => #{{{ called from finish() to cleanup between runs
 		return {}
+	#}}}
+
+	pendingTask: 0
+	queueTask: (taskName, task) => #{{{
+		wiz.log.info "queueing task #{taskName}"
+		# schedule task according to amount of pending tasks
+		setTimeout task, (@taskdelay * @pendingTask)
+		@pendingTask += 1
+	#}}}
+	onTaskCompleted: (taskName) => #{{{
+		wiz.log.debug "completed task #{taskName}"
+		@pendingTask -= 1
+
+		# check if any pending tasks
+		if @pendingTask > 0
+			wiz.log.debug "waiting on #{@pendingTask} pending tasks"
+			return
+
+		setTimeout @checkIfAllTasksCompleted, 500
+	#}}}
+	checkIfAllTasksCompleted: () => #{{{
+		return if not @running or @pendingTask > 0
+		@onAllTasksCompleted()
+	#}}}
+	onAllTasksCompleted: () => #{{{ override in child, just needs to call finish()
+		wiz.log.info 'all tasks completed'
+		@finish()
 	#}}}
 
 	pendingMapReduce: 0 # for queueing multiple mapReduce tasks
@@ -116,7 +122,7 @@ class wiz.framework.daemon.worker
 			try
 				client.close()
 			catch e
-				wiz.log.err 'onAllTasksCompleted: exception while disconnecting from database: ' + e.toString()
+				wiz.log.err 'onAllMapReduceTasksCompleted: exception while disconnecting from database: ' + e.toString()
 	#}}}
 
 # vim: foldmethod=marker wrap
