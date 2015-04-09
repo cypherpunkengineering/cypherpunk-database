@@ -12,6 +12,12 @@ class wiz.framework.http.middleware.base
 	debug: true
 	constructor: () ->
 
+	error: (e, cb) => #{{{ error handler
+		wiz.log.err e
+		return cb null if cb
+		return null
+	#}}}
+
 	# header parsing methods
 	@parseIP: (req, res, cb) => #{{{
 		req.ip = wiz.framework.util.strval.inet6_prefix_trim(req.connection?.remoteAddress or '0.0.0.0')
@@ -201,18 +207,9 @@ class wiz.framework.http.middleware.base
 		form.parse(req)
 	#}}}
 	@parseTextHTML: (req, res, cb) => #{{{
-		try
-			out = {}
-			params = datum.split('&')
-			for param in params
-				s = param.split('=')
-				k = s[0]
-				v = s[1]
-				out[k] = v
-		catch e
-			return @error "html parse error: #{e}", cb
-
-		return cb out
+		@parseText req, res, () => # TODO: implement html parsing
+			console.log req.body
+			cb()
 	#}}}
 
 # vim: foldmethod=marker wrap
