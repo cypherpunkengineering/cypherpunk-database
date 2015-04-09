@@ -191,7 +191,7 @@ class wiz.framework.app.base
 					@selopt
 						value: value
 						text: text
-						selected: (value == args.value)
+						selected: (value.toString() == args.value.toString())
 				)
 		else if args.type == 'checkbox'
 			input = $('<input>')
