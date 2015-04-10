@@ -26,7 +26,7 @@ class wiz.framework.bitcoin.bciapi
 
 		# validate args
 		if not args or typeof args isnt 'object'
-			res.error = 'missing args'
+			res.err = 'missing args'
 			cb(res) if cb
 			return
 
@@ -34,7 +34,7 @@ class wiz.framework.bitcoin.bciapi
 			args.confirmations = 1
 
 		if not wiz.framework.util.strval.validate('btcaddrB58mainnet', args.address)
-			res.error = 'invalid bitcoin address: '+args.address
+			res.err = 'invalid bitcoin address: '+args.address
 			cb(res) if cb
 			return
 
@@ -68,7 +68,7 @@ class wiz.framework.bitcoin.bciapi
 
 		# validate args
 		if not args or typeof args isnt 'object'
-			res.error = 'invalid args'
+			res.err = 'invalid args'
 			cb(res) if cb
 			return
 
@@ -76,7 +76,7 @@ class wiz.framework.bitcoin.bciapi
 			args.confirmations = 1
 
 		if not wiz.framework.util.strval.validate('btcaddrB58mainnet', args.address)
-			res.error = 'invalid bitcoin address'
+			res.err = 'invalid bitcoin address'
 			cb(res) if cb
 			return
 
@@ -91,6 +91,13 @@ class wiz.framework.bitcoin.bciapi
 		q = new httpreq(reqopts)
 		q.query null, () =>
 			res = q.res.body
+
+			# validate res
+			if not res or typeof res isnt 'object'
+				res.err = 'invalid response'
+				cb(res) if cb
+				return
+
 			cb(res)
 	#}}}
 
