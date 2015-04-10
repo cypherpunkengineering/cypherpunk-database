@@ -1,6 +1,7 @@
 # copyright 2013 J. Maurice <j@wiz.biz>
 
 require '../../'
+require '../../util/csv'
 
 qs = require 'qs'
 formidable = require 'formidable'
@@ -122,21 +123,14 @@ class wiz.framework.http.middleware.base
 			when 'text/html'
 				@parseTextHTML(req, res, cb)
 			when 'text/plain'
-				@parseText(req, res, cb)
+				@parseTextPlain(req, res, cb)
+			when 'text/csv'
+				@parseTextCSV(req, res, cb)
 			when undefined # no ct supplied
 				return cb()
 			else # unsupported ct
 				wiz.log.err 'unknown content type: '+ct
 				return cb()
-	#}}}
-	@parseText: (req, res, cb) => #{{{
-		req.setEncoding 'utf8'
-		buf = ''
-		req.on 'data', (chunk) ->
-			buf += chunk
-		req.on 'end', () ->
-			req.body = buf
-			return cb()
 	#}}}
 	@parseJSON: (req, res, cb) => #{{{
 		req.setEncoding 'utf8'
@@ -206,10 +200,28 @@ class wiz.framework.http.middleware.base
 
 		form.parse(req)
 	#}}}
+	@parseTextPlain: (req, res, cb) => #{{{
+		req.setEncoding 'utf8'
+		buf = ''
+		req.on 'data', (chunk) ->
+			buf += chunk
+		req.on 'end', () ->
+			req.body = buf
+			return cb()
+	#}}}
 	@parseTextHTML: (req, res, cb) => #{{{
 		@parseText req, res, () => # TODO: implement html parsing
 			console.log req.body
 			cb()
+	#}}}
+	@parseTextCSV: (req, res, cb) => #{{{
+		req.setEncoding 'utf8'
+		buf = ''
+		req.on 'data', (chunk) ->
+			buf += chunk
+		req.on 'end', () ->
+			req.body = wiz.framework.util.csv.parse(buf)
+			return cb()
 	#}}}
 
 # vim: foldmethod=marker wrap
