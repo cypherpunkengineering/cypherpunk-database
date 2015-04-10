@@ -210,7 +210,7 @@ class wiz.framework.http.middleware.base
 			return cb()
 	#}}}
 	@parseTextHTML: (req, res, cb) => #{{{
-		@parseText req, res, () => # TODO: implement html parsing
+		@parseTextPlain req, res, () => # TODO: implement html parsing
 			console.log req.body
 			cb()
 	#}}}
