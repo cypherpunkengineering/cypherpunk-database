@@ -514,4 +514,22 @@ class wiz.framework.app.base
 				controlGroup.addClass('error')
 	#}}}
 
+	displayAsUSD: (amount) => #{{{
+		dollars = Math.floor(amount / 100)
+		cents = ('00' + amount % 100).slice(-2)
+		usd = '$' + dollars + '.' + cents
+		return usd
+	#}}}
+	displayAsBTC: (amount) => #{{{
+		# insert decimal point
+		bitcoins = Math.floor(amount / 100000000)
+		sats = ('00000000' + (amount % 100000000)).slice(-8)
+		# trim trailing zeros
+		float = parseFloat(bitcoins + '.' + sats)
+		btcstr = +float.toFixed(8)
+		# add bitcoin symbol
+		btc = '\u0243'+btcstr
+		return btc
+	#}}}
+
 # vim: foldmethod=marker wrap
