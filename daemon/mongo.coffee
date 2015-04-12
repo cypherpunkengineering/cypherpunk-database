@@ -28,26 +28,29 @@ class wiz.framework.daemon.mongo.driver extends wiz.framework.database.mongo.dri
 				wiz.log.err "unable to connect to mongo database #{@config.database} #{err}"
 			cb err, client
 	#}}}
-	disconnect : (client) => #{{{
+	disconnect: (client) => #{{{
 		wiz.log.debug "disconnecting from mongo database #{@config.database}" if @debug
 		super (client)
 	#}}}
 
-	collection : (client, collectionName, stayOpen, cb) => #{{{
-		super client, collectionName, stayOpen, (err, collection) =>
-			# only call cb if we have collection
-			if not collection or err
-				wiz.log.err "unable to retrieve collection #{@config.database}.#{collectionName} #{err}"
-				return
-			cb err, collection
+	collection: (collectionName, cb) => #{{{
+		@connect (err, client) =>
+			return cb(err, null) if err or not client
+			super client, collectionName, (err, collection) =>
+				if err or not collection
+					wiz.log.err "unable to retrieve collection #{@config.database}.#{collectionName}: #{err}"
+					return cb(err, null)
+
+				return cb(null, collection)
 	#}}}
-	dayFromDate : (date) -> #{{{ date like this: 2012.04.01
+
+	dayFromDate: (date) -> #{{{ date like this: 2012.04.01
 		key = date.getFullYear()
-		key += '.' + ('0' + date.getMonth()).slice(-2)
+		key += '.' + ('0' + (date.getMonth() + 1)).slice(-2)
 		key += '.' + ('0' + date.getDate()).slice(-2)
 		return key
 	#}}}
-	dayhourFromDate : (date) -> #{{{ date like this: 2012.04.01.09
+	dayhourFromDate: (date) -> #{{{ date like this: 2012.04.01.09
 		# key = dayFromDate(date)
 		key = date.getFullYear()
 		key += '.' + ('0' + date.getMonth()).slice(-2)
@@ -55,12 +58,12 @@ class wiz.framework.daemon.mongo.driver extends wiz.framework.database.mongo.dri
 		key += '.' + ('0' + date.getHours()).slice(-2)
 		return key
 	#}}}
+
 	saveJS: (methodsToSave) => #{{{ for storing javascript methods in database
 		wiz.log.debug 'preparing to save JS to database'
-		@connect (err, client) =>
-			@collection client, 'system.js', false, (err, systemJS) =>
-				for methodName, methodCode of methodsToSave
-					@saveJSone systemJS, methodName, methodCode
+		@collection 'system.js', (err, systemJS) =>
+			for methodName, methodCode of methodsToSave
+				@saveJSone systemJS, methodName, methodCode
 	#}}}
 	saveJSone: (systemJS, methodName, methodCode) => #{{{ for storing javascript methods in database
 		wiz.log.debug "saving #{methodName} to database"

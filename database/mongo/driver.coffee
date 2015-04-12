@@ -39,7 +39,7 @@ class wiz.framework.database.mongo.driver
 				cb null, client
 
 	# retreive a mongo collection from given database handle
-	collection: (client, collectionName, stayOpen, cb) =>
+	collection: (client, collectionName, cb) =>
 		# check if non-null client
 		unless client
 			return cb 'no database connection!'
@@ -50,10 +50,6 @@ class wiz.framework.database.mongo.driver
 
 		# call the cb
 		cb null, collection
-
-		# close the db connection unless told not to
-		if not stayOpen
-			@disconnect(client)
 
 	disconnect: (client) =>
 		client.close()

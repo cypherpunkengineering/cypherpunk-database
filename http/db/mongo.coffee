@@ -20,7 +20,7 @@ class wiz.framework.http.database.mongo.driver extends wiz.framework.database.mo
 			wiz.log.debug "connected to database #{@config.database}"
 	#}}}
 	collection: (res, collectionName, cb) => #{{{
-		super @client, collectionName, true, (err, collection) =>
+		super @client, collectionName, (err, collection) =>
 			# only call cb if we have collection
 			if err or not collection
 				wiz.log.err "unable to retrieve collection #{@config.database}.#{collectionName} #{err}"
