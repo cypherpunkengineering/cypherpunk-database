@@ -53,7 +53,7 @@ class wiz.framework.http.client.base extends wiz.framework.http.base
 
 		# set request error handler
 		@req.on 'error', (e) =>
-			@error e
+			@error e, cb
 
 		# send request body
 		@reqSend(body, cb)
