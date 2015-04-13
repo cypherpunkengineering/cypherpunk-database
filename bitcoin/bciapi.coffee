@@ -90,7 +90,7 @@ class wiz.framework.bitcoin.bciapi
 		# send query
 		q = new httpreq(reqopts)
 		q.query null, () =>
-			res = q.res.body
+			res = q.res?.body or {}
 
 			# validate res
 			if not res or typeof res isnt 'object'
