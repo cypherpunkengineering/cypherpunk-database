@@ -98,13 +98,13 @@ class wiz.framework.daemon.worker
 	#}}}
 
 	pendingMapReduce: 0 # for queueing multiple mapReduce tasks
-	queueMapReduceTask: (client, collection, map, reduce, output) => #{{{
+	queueMapReduceTask: (collection, map, reduce, output) => #{{{
 		@pendingMapReduce += 1
 		@queueTask output.out, () =>
 			collection.mapReduce map, reduce, output, (err, ret) =>
-				@onMapReduceTaskCompleted client, output, err, ret
+				@onMapReduceTaskCompleted output, err, ret
 	#}}}
-	onMapReduceTaskCompleted: (client, output, err, ret) => #{{{
+	onMapReduceTaskCompleted: (output, err, ret) => #{{{
 		@pendingMapReduce -= 1
 		# keep track
 		@onTaskCompleted output.out
@@ -113,20 +113,14 @@ class wiz.framework.daemon.worker
 		if err
 			wiz.log.err "mapReduce error for #{output.out}: #{err}"
 			console.log err
-			@onAllMapReduceTasksCompleted client
+			@onAllMapReduceTasksCompleted()
 			return
 
 		if @pendingMapReduce == 0
-			@onAllMapReduceTasksCompleted client
+			@onAllMapReduceTasksCompleted()
 	#}}}
-	onAllMapReduceTasksCompleted: (client) => #{{{
+	onAllMapReduceTasksCompleted: () => #{{{
 		wiz.log.debug 'all mapReduce tasks completed'
-		# disconnect from database
-		if client
-			try
-				client.close()
-			catch e
-				wiz.log.err 'onAllMapReduceTasksCompleted: exception while disconnecting from database: ' + e.toString()
 	#}}}
 
 # vim: foldmethod=marker wrap
