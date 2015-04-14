@@ -64,7 +64,7 @@ class wiz.framework.bitcoin.fxrateapi
 		q = new httpreq(reqopts)
 		q.query null, () =>
 			data = []
-			rawdata = q.res.body
+			rawdata = q.res?.body or []
 			for row in rawdata when row instanceof Array
 				continue unless row[3]?
 				continue unless new Date(row[0]).getTime() > 0
