@@ -7,24 +7,22 @@ require '../../crypto/hash'
 wiz.package 'wiz.framework.http.database.mongo'
 
 class wiz.framework.http.database.mongo.driver extends wiz.framework.database.mongo.driver
-	client: null
-
 	constructor: (@server, @parent, @config, @serverOptions, @dbOptions) -> #{{{
 		super()
 	#}}}
 	init: () => #{{{
-		super (err, @client) =>
+		super (err) =>
 			if not @client or err
 				wiz.log.err "failed connecting to database #{@config.database} #{err}"
 				return null
 			wiz.log.debug "connected to database #{@config.database}"
 	#}}}
 	collection: (res, collectionName, cb) => #{{{
-		super @client, collectionName, (err, collection) =>
+		super collectionName, (err, collection) =>
 			# only call cb if we have collection
 			if err or not collection
 				wiz.log.err "unable to retrieve collection #{@config.database}.#{collectionName} #{err}"
-				res.send 500
+				res.send 500, 'database failure'
 				return null
 			cb collection
 	#}}}
