@@ -76,7 +76,7 @@ class wiz.framework.daemon.mongo.driver extends wiz.framework.database.mongo.dri
 				w: "majority"
 				wtimeout: 5000
 		systemJS.save objToSave, opts, (res) =>
-			wiz.log.debug "callback from saving #{methodName} to database: #{res}"
+			wiz.log.debug "callback from saving #{methodName} to database: #{res}" if @debug
 	#}}}
 
 # vim: foldmethod=marker wrap
