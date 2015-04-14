@@ -15,9 +15,8 @@ class wiz.framework.daemon.mongo.driver extends wiz.framework.database.mongo.dri
 	init: (cb) => #{{{
 		# just test database connection
 		super (err) =>
-			if @client
-				wiz.log.debug 'initial database connection OK' if @debug
-				cb() if cb
+			wiz.log.debug 'initial database connection error' if @err or not @client
+			cb(err) if cb
 	#}}}
 
 	connect: (cb) => #{{{

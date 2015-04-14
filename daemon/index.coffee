@@ -99,6 +99,10 @@ class wiz.framework.daemon.worker
 
 	pendingMapReduce: 0 # for queueing multiple mapReduce tasks
 	queueMapReduceTask: (collection, map, reduce, output) => #{{{
+		wiz.assert(collection, "invalid collection: #{collection}")
+		wiz.assert(map, "invalid map: #{map}")
+		wiz.assert(reduce, "invalid reduce: #{reduce}")
+		wiz.assert(output.out, "invalid output.out: #{output.out}")
 		@pendingMapReduce += 1
 		@queueTask output.out, () =>
 			collection.mapReduce map, reduce, output, (err, ret) =>
