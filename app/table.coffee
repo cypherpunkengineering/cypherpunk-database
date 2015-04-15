@@ -9,6 +9,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 
 	# settings {{{
 	bodyToolbarButtons: true
+	tableCheckmarkAppend: true
 	idInsertDialog: 'insertDialog'
 	idDropDialog: 'dropDialog'
 	#}}}
@@ -235,14 +236,20 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		)
 	#}}}
 	initTableHead: (t) => #{{{
+		# create thead and tr
 		t.tableHead = $('<thead>')
 		.append(
 			t.tableHeadRow = $('<tr>')
+		)
+
+		# optionally create checkbox in first column header
+		if @tableCheckmarkAppend
+			t.tableHeadRow
 			.append(
 				@tableCheckmark()
 			)
-		)
 
+		# allow easy override
 		@initTableHeadStrings(t)
 
 		return t.tableHead
