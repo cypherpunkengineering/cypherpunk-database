@@ -101,5 +101,29 @@ class wiz.framework.bitcoin.bciapi
 
 			cb(res)
 	#}}}
+	getCurrentBlockHeight: (cb) => #{{{
+		# local variables
+		res = {}
+
+		# build query options
+		reqopts = @baseRequestOptions
+		reqopts.path = '/latestblock'
+		reqopts.path += '?format=json'
+		reqopts.path += '&api_key=' + @apiKey if @apiKey
+
+		# send query
+		q = new httpreq(reqopts)
+		q.query null, () =>
+			res = {}
+
+			# validate res
+			res.height = parseInt(q.res?.body?.height)
+			if not res.height or typeof res.height isnt 'number'
+				res.err = 'invalid response'
+				cb(res) if cb
+				return
+
+			cb(res)
+	#}}}
 
 # vim: foldmethod=marker wrap
