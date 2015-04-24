@@ -50,7 +50,7 @@ class wiz.framework.daemon.mongo.driver extends wiz.framework.database.mongo.dri
 	dayhourFromDate: (date) -> #{{{ date like this: 2012.04.01.09
 		# key = dayFromDate(date)
 		key = date.getFullYear()
-		key += '.' + ('0' + date.getMonth()).slice(-2)
+		key += '.' + ('0' + date.getMonth() + 1).slice(-2)
 		key += '.' + ('0' + date.getDate()).slice(-2)
 		key += '.' + ('0' + date.getHours()).slice(-2)
 		return key

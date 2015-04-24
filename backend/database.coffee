@@ -53,22 +53,6 @@ class wiz.framework.backend.mongo extends wiz.framework.database.mongo.driver
 				return
 			cb err, collection
 
-	# date like this: 2012.04.01
-	dayFromDate : (date) ->
-		key = date.getFullYear()
-		key += '.' + ('0' + date.getMonth()).slice(-2)
-		key += '.' + ('0' + date.getDate()).slice(-2)
-		return key
-
-	# date like this: 2012.04.01.09
-	dayhourFromDate : (date) ->
-		# key = dayFromDate(date)
-		key = date.getFullYear()
-		key += '.' + ('0' + date.getMonth()).slice(-2)
-		key += '.' + ('0' + date.getDate()).slice(-2)
-		key += '.' + ('0' + date.getHours()).slice(-2)
-		return key
-
 	# for storing javascript methods in database
 	saveJS : (methodsToSave) =>
 		wiz.log.debug 'preparing to save JS to database'
