@@ -96,6 +96,11 @@ class wiz.framework.util.strval
 		return false unless @int_valid(ttl)
 		return (ttl >= 60 and ttl <= (60 * 60 * 24 * 7))
 
+	# check if valid string
+	@url_valid : (str) ->
+		strRegex = 'https:\/\/[^ "]+'
+		return (new RegExp( '^' + strRegex + '$' )).test(str)
+
 	# check if valid 8 digit hotp code
 	@hotp_valid : (str) -> /^\d{8}$/.test(str)
 
@@ -160,6 +165,8 @@ class wiz.framework.util.strval
 				return @str_valid(value)
 			when 'ttl'
 				return @ttl_valid(value)
+			when 'url'
+				return @url_valid(value)
 			else # unknown
 				console.log 'unknown string validation type '+argtype
 				return false
