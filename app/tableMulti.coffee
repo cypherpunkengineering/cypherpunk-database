@@ -29,7 +29,7 @@ class wiz.portal.userjs.table.multi extends wiz.portal.userjs.table.base
 			.append(
 				$('<option>')
 				.attr('value', recordType.type)
-				.attr('selected', (data?.type == recordType.type))
+				.attr('selected', (data?.type == recordType.type || Object.keys(this.data.recordTypes).length == 1))
 				.text(recordType.description)
 			)
 	#}}}
