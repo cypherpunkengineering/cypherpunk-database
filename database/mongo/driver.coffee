@@ -118,4 +118,19 @@ class wiz.framework.database.mongo.driver
 		return new BSON.ObjectID(id)
 	#}}}
 
+	dayFromDate: (date) -> #{{{ date like this: 2012.04.01
+		key = date.getFullYear()
+		key += '.' + ('0' + (date.getMonth() + 1)).slice(-2)
+		key += '.' + ('0' + date.getDate()).slice(-2)
+		return key
+	#}}}
+	dayhourFromDate: (date) -> #{{{ date like this: 2012.04.01.09
+		# key = dayFromDate(date)
+		key = date.getFullYear()
+		key += '.' + ('0' + (date.getMonth() + 1)).slice(-2)
+		key += '.' + ('0' + date.getDate()).slice(-2)
+		key += '.' + ('0' + date.getHours()).slice(-2)
+		return key
+	#}}}
+
 # vim: foldmethod=marker wrap
