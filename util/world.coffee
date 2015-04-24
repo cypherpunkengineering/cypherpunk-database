@@ -5,16 +5,16 @@ require '..'
 wiz.package 'wiz.framework.util.world'
 
 class wiz.framework.util.world.regions
-	AS: 'Asia'
-	EU: 'Europe'
-	AF: 'Africa'
-	OC: 'Oceania'
-	NA: 'North America'
-	ZZ: 'Undefined'
+	@AS: 'Asia'
+	@EU: 'Europe'
+	@AF: 'Africa'
+	@OC: 'Oceania'
+	@NA: 'North America'
+	@ZZ: 'Undefined'
 
 class wiz.framework.util.world.countries
 
-	Asia: [ #{{{
+	@AS: #{{{
 		AF: 'Afghanistan'
 		AM: 'Armenia'
 		AZ: 'Azerbaijan'
@@ -66,8 +66,8 @@ class wiz.framework.util.world.countries
 		UZ: 'Uzbekistan'
 		VN: 'Viet Nam'
 		YE: 'Yemen'
-	] #}}}
-	Europe: [ #{{{
+	#}}}
+	@EU: #{{{
 		AX: 'Åland Islands'
 		AL: 'Albania'
 		AD: 'Andorra'
@@ -119,8 +119,8 @@ class wiz.framework.util.world.countries
 		CH: 'Switzerland'
 		UA: 'Ukraine'
 		GB: 'United Kingdom'
-	] #}}}
-	Africa: [ #{{{
+	#}}}
+	@AF: #{{{
 		DZ: 'Algeria'
 		AO: 'Angola'
 		BJ: 'Benin'
@@ -179,8 +179,8 @@ class wiz.framework.util.world.countries
 		EH: 'Western Sahara'
 		ZM: 'Zambia'
 		ZW: 'Zimbabwe'
-		] #}}}
-	Oceania: [ #{{{
+		#}}}
+	@OC: #{{{
 		AS: 'American Samoa'
 		AU: 'Australia'
 		CK: 'Cook Islands'
@@ -206,8 +206,8 @@ class wiz.framework.util.world.countries
 		TV: 'Tuvalu'
 		VU: 'Vanuatu'
 		WF: 'Wallis and Futuna'
-	] #}}}
-	Americas: [ #{{{
+	#}}}
+	@NA: #{{{
 		AI: 'Anguilla'
 		AG: 'Antigua and Barbuda'
 		AR: 'Argentina'
@@ -263,8 +263,8 @@ class wiz.framework.util.world.countries
 		VE: 'Venezuela, Bolivarian Republic of'
 		VG: 'Virgin Islands, British'
 		VI: 'Virgin Islands, U.S.'
-	] #}}}
-	ZZ: [ #{{{
+	#}}}
+	@ZZ: #{{{
 		AQ: 'Antarctica'
 		BV: 'Bouvet Island'
 		IO: 'British Indian Ocean Territory'
@@ -274,6 +274,6 @@ class wiz.framework.util.world.countries
 		HM: 'Heard Island and McDonald Islands'
 		GS: 'South Georgia and the South Sandwich Islands'
 		UM: 'United States Minor Outlying Islands'
-	] #}}}
+	#}}}
 
 # vim: foldmethod=marker wrap
