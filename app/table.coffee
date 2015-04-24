@@ -33,6 +33,8 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		'Created On'
 		'Last Updated'
 	]
+	stringBooleanEnabled: 'yes'
+	stringBooleanDisabled: 'no'
 	iconInsert: '/admin/_img/icons/32/record_insert.png'
 	iconDrop: '/admin/_img/icons/32/record_drop.png'
 	iconExport: '/admin/_img/icons/32/export_excel.png'
@@ -370,7 +372,10 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 				schema.input = 'select'
 
 			when 'boolean'
-				schema.input = 'checkbox'
+				schema.input = 'select'
+				schema.selopts =
+					on: @stringBooleanEnabled
+					off: @stringBooleanDisabled
 
 			when 'nugget'
 				nugget = schema.nugget
