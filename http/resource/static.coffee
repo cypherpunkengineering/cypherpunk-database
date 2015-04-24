@@ -20,12 +20,16 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 	loading: false
 	cache: true
 	log: false
+	clone: null # to clone a pre-compiled renderer to save time
+	debugCompile: false
 
 	constructor: (@server, @parent, @path, @file, @method) -> #{{{
 		super(@server, @parent, @path, @method)
 		@args ?= {}
 	#}}}
 	init: () => #{{{ preload and precompile on init
+		return if @clone # skip init, we will just call clone's methods
+
 		@getContentType()
 		@cache = false if wiz.style is 'DEV' # disable cache during development
 		@loader (ok) =>
@@ -71,7 +75,7 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 			err = 'not a file' if @stats and not @stats.isFile()
 			return cb(true) if not err
 			@stats = null
-			wiz.log.err "failed stating file #{@file}: #{err}"
+			wiz.log.err "failed stating path #{@getFullPath()} file #{@file}: #{err}"
 			return cb(false)
 	#}}}
 	read: (cb) => #{{{ read src from filesystem
@@ -84,7 +88,10 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 	#}}}
 
 	compile: () => #{{{ returns function to render content
-		wiz.log.debug "re-compiling file #{@file}" if @renderer
+		if @renderer
+			wiz.log.debug "re-compiling path #{@getFullPath()} from file #{@file}"
+		else
+			wiz.log.debug "compiling path #{@getFullPath()} from file #{@file}" if @debug or @debugCompile
 		try
 			@renderer = @compiler()
 		catch e
@@ -108,6 +115,7 @@ class wiz.framework.http.resource.static extends wiz.framework.http.resource.bas
 	#}}}
 
 	handler: (req, res) => #{{{ send @content as http response
+		return @clone.handler(req, res) if @clone
 
 		@loader (ok) =>
 
