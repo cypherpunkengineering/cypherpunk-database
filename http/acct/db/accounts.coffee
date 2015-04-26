@@ -60,6 +60,7 @@ class wiz.framework.http.acct.db.accounts extends wiz.framework.http.database.mo
 		return res.send 501 # TODO: implement user modify
 	#}}}
 	drop: (req, res) => #{{{
+		return res.send 501 # TODO: implement user drop
 		# TODO: need extensible method (send event?) for other modules to delete related objects from their databases onUserDeleted
 		return res.send 400 if not recordsToDelete = req.body.recordsToDelete or typeof recordsToDelete isnt 'object' # only proceed if object
 		@dropMany req, res, req.session.acct.id, null, recordsToDelete
