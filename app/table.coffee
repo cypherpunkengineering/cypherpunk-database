@@ -308,7 +308,6 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 	#}}}
 	insertDialogModal: (e, data) => #{{{
 		@insertDialogForm = @form
-			classes: [ 'form-horizontal' ]
 			submit: @insertDialogFormSubmit
 			nugget:
 				@controlGroup
@@ -352,7 +351,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 			@insertDialogFormFields.remove() # nuke old form fields
 
 		# start from scratch
-		@insertDialogFormFields = $('<span>')
+		@insertDialogFormFields = $('<div class="form-group">')
 
 		if (p) # append new object to parent
 			$(p).append(@insertDialogFormFields)

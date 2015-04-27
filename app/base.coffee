@@ -181,6 +181,7 @@ class wiz.framework.app.base
 	input: (args) => #{{{
 		args ?= {}
 		args.classes ?= []
+		args.classes.push 'form-control'
 		args.type ?= 'text'
 
 		# for pull-down box options
@@ -190,7 +191,7 @@ class wiz.framework.app.base
 				input.attr('multiple', 'multiple')
 				cb = () =>
 					input.multiselect
-						maxHeight: 200
+						maxHeight: 500
 						includeSelectAllOption: true
 						enableFiltering: true
 						enableCaseInsensitiveFiltering: true
