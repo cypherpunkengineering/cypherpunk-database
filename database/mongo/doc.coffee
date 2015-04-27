@@ -76,19 +76,22 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 
 					err = null # ok
 
-				else if (
-					schemaType.data[field].type == 'array' and # schema requires int type
-					userData[field] instanceof Array and # field value is array
-					userData[field].length <= schemaType.data[field].maxlen # field value is proper length
-				)
+				else if schemaType.data[field].type == 'array' # schema requires array
+
+					if not userData[field] instanceof Array # field value is array
+						userData[field] = [ userData[field] ]
+
 					err = null # ok
+					if userData[field].length > (schemaType.data[field].maxElements or 0)
+						err = '(2)' + baseError
 					for element of userData[field]
-						if not wiz.framework.util.strval.validate(schemaType.data[field].arrayType, element) # field value passes regex check
-							err = '(2)' + baseError
+						if not wiz.framework.util.strval.validate(schemaType.data[field].arrayType, element) or element.length > (schemaType.data[field].maxlen or 0)
+							err = '(3)' + baseError + ' ' + element
 
 				else # invalid field value
+					console.log schemaType.data[field].maxlen # field value is proper length
 
-					err = '(3)' + baseError
+					err = '(4)' + baseError
 
 			else
 				err = "missing required field #{field}" unless not schemaType.data.required or updating

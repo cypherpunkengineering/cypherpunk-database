@@ -296,7 +296,7 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 	getUpdatePushArray: (req, objToPush, pushKey) => #{{{
 		pushKey ?= @arrayKey
 		toPush = {}
-		toPush[pushKey] = objToPush.toDB(req)
+		toPush[pushKey] = objToPush#.toDB(req)
 		update =
 			'$set' : { updated: wiz.framework.util.datetime.unixFullTS() }
 			'$push': toPush
@@ -369,15 +369,15 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 			@listResponse(req, res, responseData, responseData.length)
 	#}}}
 
-	insertElementCustom: (req, res, criteriaID, objToInsert) => #{{{
+	insertElementCustom: (req, res, criteriaID, objToInsert, cb) => #{{{
 		criteria = @getDocKey criteriaID
 		update = @getUpdatePushArray req, objToInsert
 		options = @getUpdateOptions()
-		@updateCustom(req, res, criteria, update, options)
+		@updateCustom(req, res, criteria, update, options, cb)
 	#}}}
-	insertElement: (req, res, id) => #{{{
-		return unless recordToInsert = @schema.fromUser(req, res, id, req.body.data)
-		@insertElementCustom req, res, id, recordToInsert
+	insertElement: (req, res, type) => #{{{
+		return unless recordToInsert = @schema.fromUser(req, res, type, req.body.data)
+		@insertElementCustom req, res, type, recordToInsert
 	#}}}
 
 	dropMany: (req, res, criteriaID, elementID, objsToDelete, pullKey = null) => #{{{
