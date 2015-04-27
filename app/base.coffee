@@ -184,15 +184,34 @@ class wiz.framework.app.base
 		args.type ?= 'text'
 
 		# for pull-down box options
-		if args.type == 'select' and args.selopts
+		if (args.type == 'select' or args.type == 'multiSelect') and args.selopts
 			input = $('<select>')
-			for value, text of args.selopts
-				input.append(
-					@selopt
-						value: value
-						text: text
-						selected: (value?.toString() == args?.value?.toString())
-				)
+			if args.type == 'multiSelect'
+				input.attr('multiple', 'multiple')
+				cb = () =>
+					input.multiselect
+						maxHeight: 200
+						includeSelectAllOption: true
+						enableFiltering: true
+						enableCaseInsensitiveFiltering: true
+						enableClickableOptGroups: true
+				setTimeout cb, 100
+
+			for k, v of args.selopts
+				if typeof v is 'object'
+					input.append(
+						@selopt
+							value: v.value
+							text: v.text
+							selected: v.selected
+					)
+				else
+					input.append(
+						@selopt
+							value: k
+							text: v
+							selected: (k?.toString() == args?.value?.toString())
+					)
 		else if args.type == 'checkbox'
 			input = $('<input>')
 			input.attr('checked', true) if args.value is 'on' or args.value is 'true'
@@ -518,7 +537,9 @@ class wiz.framework.app.base
 		dollars = Math.floor(amount / 100)
 		cents = ('00' + amount % 100).slice(-2)
 		usd = '$' + dollars + '.' + cents
-		return usd
+		out = usd
+		out = '-(' + usd + ')' if amount < 0
+		return out
 	#}}}
 	displayAsBTC: (amount) => #{{{
 		# insert decimal point

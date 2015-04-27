@@ -371,6 +371,9 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 			when 'pulldown'
 				schema.input = 'select'
 
+			when 'multiSelect'
+				schema.input = 'multiSelect'
+
 			when 'boolean'
 				schema.input = 'select'
 				schema.selopts =
