@@ -369,15 +369,15 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 			@listResponse(req, res, responseData, responseData.length)
 	#}}}
 
-	insertOne: (req, res, criteriaID, objToInsert) => #{{{
+	insertElementCustom: (req, res, criteriaID, objToInsert) => #{{{
 		criteria = @getDocKey criteriaID
 		update = @getUpdatePushArray req, objToInsert
 		options = @getUpdateOptions()
 		@updateCustom(req, res, criteria, update, options)
 	#}}}
-	insert: (req, res, id) => #{{{
-		return unless recordToInsert = @schema.fromUser(req, res, req.body.data)
-		@insertOne req, res, id, recordToInsert
+	insertElement: (req, res, id) => #{{{
+		return unless recordToInsert = @schema.fromUser(req, res, id, req.body.data)
+		@insertElementCustom req, res, id, recordToInsert
 	#}}}
 
 	dropMany: (req, res, criteriaID, elementID, objsToDelete, pullKey = null) => #{{{
