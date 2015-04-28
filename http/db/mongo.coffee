@@ -121,13 +121,16 @@ class wiz.framework.http.database.mongo.base
 				return cb result if cb
 				return res.send 200
 	#}}}
-	updateByID: (req, res, id, fieldsToUpdate, cb) => #{{{
+	updateByID: (req, res, docID, fieldsToUpdate, cb) => #{{{
+		@updateCustomDataByID(req, res, docID, @dataKey, fieldsToUpdate, cb)
+	#}}}
+	updateCustomDataByID: (req, res, docID, dataKey, fieldsToUpdate, cb) => #{{{
 		criteria = @criteria()
-		criteria[@docKey] = id
+		criteria[@docKey] = docID
 		update =
 			'$set':
 				updated: wiz.framework.util.datetime.unixFullTS()
-				data: fieldsToUpdate
+		update['$set'][dataKey] = fieldsToUpdate
 		options = @getUpdateOptions()
 		@updateCustom(req, res, criteria, update, options, cb)
 	#}}}
@@ -260,14 +263,12 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 
 	criteria: (req) => #{{{
 		baseCriteria = super(req)
-		if @typeKey and @arrayKey
-			baseCriteria[@typeKey] = @arrayKey
+#		if @typeKey and @arrayKey
+#			baseCriteria[@typeKey] = @arrayKey
 		return baseCriteria
 	#}}}
 	projection: (req) => #{{{
 		baseProjection = super(req)
-		if @arrayKey
-			baseProjection[@arrayKey] = 1
 		return baseProjection
 	#}}}
 
@@ -284,11 +285,12 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 		return projection
 	#}}}
 
-	getUpdateSetObj: (req, objsToSet) => #{{{
+	getUpdateSetObj: (req, objsToSet, setKeyBase = null) => #{{{
 		update = {}
 		update['$set'] = {}
+		setKeyBase = @arrayKey + '.$.' if not setKeyBase
 		for k, v of objsToSet
-			setKey = @arrayKey + '.$.' + k
+			setKey = setKeyBase + k
 			update['$set'][setKey] = v
 			update['$set'][setKey].updated = wiz.framework.util.datetime.unixFullTS()
 		return update
@@ -328,8 +330,8 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 	#}}}
 
 	findOneElementByKeyFromAllDocuments: (req, res, value, cb) => #{{{
-		criteria = @criteria()
-		criteria["#{@arrayKey}#{@elementKey}"] = value
+		criteria = @criteria(req)
+		criteria["#{@arrayKey}.#{@elementKey}"] = value
 		projection = @projection()
 		projection[@arrayKey] = {}
 		projection[@arrayKey]['$elemMatch'] = {}
@@ -347,6 +349,13 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 		criteria["#{@arrayKey}.#{@elementKey}"] = value
 		projection = @projection()
 		opts = {}
+		@find(req, res, criteria, projection, opts, cb)
+	#}}}
+	findDocumentsWithElement: (req, res, elementID, opts, cb) => #{{{
+		criteria = @criteria()
+		criteria[elementID] =
+			'$exists': true
+		projection = @projection()
 		@find(req, res, criteria, projection, opts, cb)
 	#}}}
 

@@ -52,7 +52,7 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 
 			schemaRequired += 1 if schemaType.data.required is true
 
-			#console.log 'validating schema field ' + field
+			wiz.log.debug 'validating schema field ' + field
 
 			baseError = "field #{schemaType.data[field].label} should be type #{schemaType.data[field].type}"
 
@@ -88,10 +88,17 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 						if not wiz.framework.util.strval.validate(schemaType.data[field].arrayType, element) or element.length > (schemaType.data[field].maxlen or 0)
 							err = '(3)' + baseError + ' ' + element
 
-				else # invalid field value
-					console.log schemaType.data[field].maxlen # field value is proper length
+				else if schemaType.data[field].type == 'boolean' # schema requires array
 
-					err = '(4)' + baseError
+					if userData[field] == 'on' or userData[field] == 'off'
+						err = null
+					else
+						err = '(4)' + baseError + ' ' + element
+
+				else # invalid field value
+					#TODO console.log schemaType.data[field].maxlen # field value is proper length
+
+					err = '(9)' + baseError
 
 			else
 				err = "missing required field #{field}" unless not schemaType.data.required or updating
