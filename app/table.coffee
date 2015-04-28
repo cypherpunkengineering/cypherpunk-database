@@ -403,6 +403,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 				inputLabel: datum.label
 				inputName: datum.name
 				inputType: datum.input
+				inputDisabled: datum.disabled
 				inputValue: datum.value
 				inputArgType: datum.type
 				inputPlaceholder: datum.placeholder

@@ -142,6 +142,7 @@ class wiz.framework.app.base
 							id: args.inputID
 							name: args.inputID
 							type: args.inputType
+							disabled: args.inputDisabled
 							argtype: args.inputArgType
 							placeholder: args.inputPlaceholder
 							value: args.inputValue
@@ -222,6 +223,7 @@ class wiz.framework.app.base
 		input.addClass(c) for c in args.classes
 		input.attr('type', args.type)
 		input.attr('id', args.id) if args.id
+		input.attr('disabled', 'disabled') if args.disabled
 		input.attr('placeholder', args.placeholder) if args.placeholder
 		input.attr('autocomplete', 'off') unless args.autocomplete
 		input.attr('name', args.name) if args.name
