@@ -1,11 +1,12 @@
 # copyright 2013 J. Maurice <j@wiz.biz>
 
 require '..'
+require '../database/mongo/driver'
 
-wiz.package 'wiz.framework.daemon'
+wiz.package 'wiz.framework.daemon.worker'
 
 # worker loop for tasks
-class wiz.framework.daemon.worker
+class wiz.framework.daemon.worker extends wiz.framework.database.mongo.driver
 
 	debug: false
 	running: false
@@ -17,11 +18,17 @@ class wiz.framework.daemon.worker
 	waitmax: 5
 	waited: 0
 
-	constructor: (@parent) -> #{{{
-		# wiz.log.debug 'creating worker...'
+	constructor: (@parent, @config, @serverOptions, @dbOptions) -> #{{{
+		wiz.log.debug 'creating worker...'
+		super()
 	#}}}
 
-	init: () => #{{{
+	init: (cb) => #{{{
+		# just test database connection
+		super (err) =>
+			wiz.log.debug 'initial database connection error' if @err or not @client
+			cb(err) if cb
+
 		# setup worker to run every X secs and manually start first run
 		if @rundelay > 0
 			wiz.log.info "initial run delay set to #{@rundelay} ms"
@@ -29,6 +36,27 @@ class wiz.framework.daemon.worker
 		if @interval > 0
 			wiz.log.info "run interval set to #{@interval} ms"
 			setInterval @run, @interval
+	#}}}
+	connect: (cb) => #{{{
+		wiz.log.debug "connecting to mongo database #{@config.database}" if @debug
+		super (err) =>
+			# call cb even if err
+			if not @client or err
+				wiz.log.err "unable to connect to mongo database #{@config.database} #{err}"
+			cb err
+	#}}}
+	disconnect: () => #{{{
+		wiz.log.debug "disconnecting from mongo database #{@config.database}" if @debug
+		super()
+	#}}}
+
+	collection: (collectionName, cb) => #{{{
+		super collectionName, (err, collection) =>
+			if err or not collection
+				wiz.log.err "unable to retrieve collection #{@config.database}.#{collectionName}: #{err}"
+				return cb(err, null)
+
+			return cb(null, collection)
 	#}}}
 
 	onRunWait: () => #{{{
