@@ -63,7 +63,10 @@ class wiz.framework.http.server.base extends wiz.framework.http.base
 		req.headers.accept ?= [ 'text/plain' ]
 
 		# check if https or not
-		req.secure = (req.connection?.encrypted? or req.headers['x-forwarded-proto'] is 'https')
+		if @config.behindReverseProxy is true
+			req.secure = (req.headers['x-forwarded-proto'] is 'https')
+		else
+			req.secure = req.connection?.encrypted?
 		#}}}
 		req.on 'data', (chunk) => #{{{ limit request size
 			return if req.receivedBytes > @config.maxRequestLimit
