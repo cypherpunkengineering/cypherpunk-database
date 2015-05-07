@@ -125,18 +125,21 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 	#}}}
 	handler403: (req, res) => #{{{ default 403 handler
 		try
+			throw new Error 'default 403 handler' if this is @server.root
 			@server.root.handler403(req, res)
 		catch e
 			res.send 403, 'forbidden'
 	#}}}
 	handler404: (req, res) => #{{{ default 404 handler
 		try
+			throw new Error 'default 404 handler' if this is @server.root
 			@server.root.handler404(req, res)
 		catch e
 			res.send 404, 'not found'
 	#}}}
 	handler500: (req, res, err) => #{{{ default 500 handler
 		try
+			throw new Error 'default 500 handler' if this is @server.root
 			@server.root.handler500(req, res, err)
 		catch e
 			wiz.log.err err
