@@ -27,6 +27,7 @@ class wiz.framework.http.resource.folder extends wiz.framework.http.resource.bas
 	mask: wiz.framework.http.resource.power.mask.public
 	folderType: null
 	indexType: null
+	indexFile: null # index.html
 	resourceType: wiz.framework.http.resource.static
 	htmlSuffixOptional: true
 
@@ -68,8 +69,8 @@ class wiz.framework.http.resource.folder extends wiz.framework.http.resource.bas
 			index = new @indexType(@server, this, '', @files)
 			@routeAdd(index)
 			index.init()
-		else
-			index = new wiz.framework.http.resource.static(@server, this, '', @folderPath + '/index.html')
+		else if @indexFile
+			index = new wiz.framework.http.resource.static(@server, this, '', @folderPath + '/' + @indexFile)
 			@routeAdd(index)
 			index.init()
 	#}}}
