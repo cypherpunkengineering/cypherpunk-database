@@ -304,6 +304,7 @@ $(document).ready =>
 		sessmgr.mobileLogout = $('#sessionMobileLogout')
 		sessmgr.mobileLogin = $('#sessionMobileLogin')
 		sessmgr.mobileLoginBtn = $('#sessionMobileLoginBtn')
+		sessmgr.init()
 
 		if wiz?.session?.acct? # user is logged in
 			sessmgr.enableLogout()
