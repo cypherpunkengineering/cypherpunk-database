@@ -365,27 +365,27 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 
 		switch schema.type
 			when 'passwd'
-				schema.input = 'password'
+				schema.input ?= 'password'
 
 			when 'pulldown'
-				schema.input = 'select'
+				schema.input ?= 'select'
 
 			when 'multiSelect'
-				schema.input = 'multiSelect'
+				schema.input ?= 'multiSelect'
 
 			when 'boolean'
-				schema.input = 'select'
-				schema.selopts =
+				schema.input ?= 'select'
+				schema.selopts ?=
 					on: @stringBooleanEnabled
 					off: @stringBooleanDisabled
 
 			when 'nugget'
-				nugget = schema.nugget
+				nugget ?= schema.nugget
 
 			else
-				schema.input = 'text'
+				schema.input ?= 'text'
 
-		schema.value = record?.data?[id]
+		schema.value ?= record?.data?[id]
 
 		controls = null
 		if nugget
