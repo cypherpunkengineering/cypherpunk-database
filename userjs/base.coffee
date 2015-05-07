@@ -224,25 +224,25 @@ class wiz.framework.app.base
 
 		input.addClass(c) for c in args.classes
 		input.attr('type', args.type)
-		input.attr('id', args.id) if args.id
-		input.attr('disabled', 'disabled') if args.disabled
-		input.attr('placeholder', args.placeholder) if args.placeholder
-		input.attr('autocomplete', 'off') unless args.autocomplete
-		input.attr('name', args.name) if args.name
-		input.attr('value', args.value) if args.value and args.type isnt 'select'
+		input.attr('id', args.id) if args.id?
+		input.attr('disabled', 'disabled') if args.disabled?
+		input.attr('placeholder', args.placeholder) if args.placeholder?
+		input.attr('autocomplete', 'off') unless args.autocomplete?
+		input.attr('name', args.name) if args.name?
+		input.attr('value', args.value) if args.value? and args.type isnt 'select'
 		input.attr('argtype', args.argtype) if args.argtype
-		input.attr('maxlength', args.maxlength) if args.maxlength
-		input.css('width', args.width) if args.width
-		input.blur(args.blur) if args.blur
-		input.click(args.click) if args.click
+		input.attr('maxlength', args.maxlength) if args.maxlength?
+		input.css('width', args.width) if args.width?
+		input.blur(args.blur) if args.blur?
+		input.click(args.click) if args.click?
 
 		return input
 	#}}}
 
 	selopt: (args) => #{{{
 		input = $('<option>')
-		input.attr('value', args.value) if args.value
-		input.text(args.text) if args.text
+		input.attr('value', args.value) if args.value?
+		input.text(args.text) if args.text?
 		input.attr('selected', true) if args.selected
 		return input
 	#}}}
