@@ -8,6 +8,9 @@ class wiz.framework.app.base
 		@container = $('#wizBody1')
 		@toolbar = $('#wizBody')
 
+	init:() => #{{{
+	#}}}
+
 	ajaxReturnCodes: #{{{
 		400: (jqXHR, textStatus, errorThrown) ->
 			alert jqXHR.responseText ? errorThrown

@@ -13,16 +13,7 @@ class wiz.portal.userjs.session extends wiz.framework.app.base
 	#}}}
 	#{{{ static constants
 
-	urlLoginCompleted: '/admin/home'
-	urlLogoutCompleted: '/'
-
-	urlAuthenticateUserPW: '/admin/account/authenticate/userpasswd'
-	urlAuthenticateYubiKeyHOTP: '/admin/account/authenticate/yubikeyhotp'
-	urlLogout: '/admin/account/logout'
-	urlMyAccount: '/admin/account/'
-
 	idLogin: 'login'
-	urlLogin: '/admin/login'
 	stringLogin: 'Login'
 	stringLoginL: 'Email'
 	stringLoginPH: 'user@example.com'
@@ -43,6 +34,18 @@ class wiz.portal.userjs.session extends wiz.framework.app.base
 	#}}}
 	#{{{ state variables
 	skeletonKeys: []
+	#}}}
+
+	init: () => #{{{
+		@urlBase ?= ''
+		@urlLoginCompleted ?= @urlBase + '/home'
+		@urlLogoutCompleted ?= @urlBase + '/'
+		@urlAuthenticateUserPW ?= @urlBase + '/account/authenticate/userpasswd'
+		@urlAuthenticateYubiKeyHOTP ?= @urlBase + '/account/authenticate/yubikeyhotp'
+		@urlLogout ?= @urlBase + '/account/logout'
+		@urlLogin ?= @urlBase + '/account/login'
+		@urlMyAccount ?= @urlBase + '/account/me'
+		super()
 	#}}}
 
 	createLoginFormMain: () => #{{{
