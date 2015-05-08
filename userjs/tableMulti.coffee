@@ -55,7 +55,7 @@ class wiz.portal.userjs.table.multi extends wiz.portal.userjs.table.base
 				break
 		return unless recordType # not found
 
-		for d of recordType.data when schema = recordType.data[d]
+		for d of recordType.data when schema = $.extend {}, recordType.data[d]
 			@insertDialogFormFieldsCreateOne(d, schema, record)
 	#}}}
 
