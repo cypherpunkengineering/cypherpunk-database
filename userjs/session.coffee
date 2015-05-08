@@ -295,20 +295,4 @@ class wiz.portal.userjs.session extends wiz.framework.app.base
 			window.location.href = '/'
 	#}}}
 
-$(document).ready =>
-	# add to navbar unless set
-	unless wiz.noAjaxLogin
-		sessmgr = new wiz.portal.userjs.session()
-		sessmgr.desktopLogout = $('#sessionDesktop')
-		sessmgr.desktopLogin = $('#sessionDesktop')
-		sessmgr.mobileLogout = $('#sessionMobileLogout')
-		sessmgr.mobileLogin = $('#sessionMobileLogin')
-		sessmgr.mobileLoginBtn = $('#sessionMobileLoginBtn')
-		sessmgr.init()
-
-		if wiz?.session?.acct? # user is logged in
-			sessmgr.enableLogout()
-		else
-			sessmgr.enableLogin()
-
 # vim: foldmethod=marker wrap
