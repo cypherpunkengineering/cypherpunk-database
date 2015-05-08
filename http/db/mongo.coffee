@@ -359,6 +359,14 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 		@find(req, res, criteria, projection, opts, cb)
 	#}}}
 
+	countDocumentsWithElement: (req, res, elementID, cb) => #{{{
+		criteria = @criteria()
+		criteria[elementID] =
+			'$exists': true
+		projection = @projection()
+		@count(req, res, criteria, projection, cb)
+	#}}}
+
 	list: (req, res, id) => #{{{
 		@findOne req, res, @getDocKey(id), @getArrayKey(), (results) =>
 			responseData = []
