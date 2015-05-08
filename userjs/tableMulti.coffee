@@ -59,4 +59,9 @@ class wiz.portal.userjs.table.multi extends wiz.portal.userjs.table.base
 			@insertDialogFormFieldsCreateOne(d, schema, record)
 	#}}}
 
+	tablesReload: () => #{{{
+		for t of @types.recordTypes when type = @types.recordTypes[t]
+			type.dt.fnDraw()
+	#}}}
+
 # vim: foldmethod=marker wrap
