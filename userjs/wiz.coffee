@@ -48,6 +48,10 @@ wiz =
 
 	sessionLoad: () ->
 		wiz.session = {}
-		wiz.session = JSON.parse(sessionStorage.wiz) if sessionStorage.wiz?
+		if sessionStorage.wiz?
+			if typeof sessionStorage.wiz is 'object'
+				wiz.session = sessionStorage.wiz
+			else if typeof sessionStorage.wiz is 'string'
+				wiz.session = JSON.parse(sessionStorage.wiz)
 
 wiz.sessionLoad()
