@@ -35,9 +35,6 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 	]
 	stringBooleanEnabled: 'yes'
 	stringBooleanDisabled: 'no'
-	iconInsert: '/admin/_img/icons/32/record_insert.png'
-	iconDrop: '/admin/_img/icons/32/record_drop.png'
-	iconExport: '/admin/_img/icons/32/export_excel.png'
 	#}}}
 	#{{{ data
 	insertDialogFormArgs: [
@@ -105,13 +102,14 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 	tableCheckmark: () => #{{{
 		tableCheckmark = $('<th>')
 			.css('width', '35px')
-			.append('<img src="/admin/_img/icons/checkmark.gif">')
+			.append('<img src="' + @urlImgBase + '/_img/icons/checkmark.gif">')
 
 		return tableCheckmark
 	#}}}
 
 	init: (@data) => #{{{
 		#@urlBase ?= wiz.getParentURL() + '/api'
+		@urlImgBase ?= ''
 		@urlListBase ?= @urlBase + '/list'
 		@urlFindOneByID ?= @urlBase + '/findOneByID'
 		@urlList ?= @urlBase + '/list'
@@ -119,6 +117,10 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		@urlUpdate ?= @urlBase + '/update'
 		@urlDrop ?= @urlBase + '/drop'
 		@urlExport ?= @urlBase + '/export'
+
+		@iconInsert = @urlImgBase + '/_img/icons/32/record_insert.png'
+		@iconDrop = @urlImgBase + '/_img/icons/32/record_drop.png'
+		@iconExport = @urlImgBase + '/_img/icons/32/export_excel.png'
 
 		@idBodyHeader = @container[0].id + 'Header'
 		@idBodyToolbar = @container[0].id + 'Toolbar'
