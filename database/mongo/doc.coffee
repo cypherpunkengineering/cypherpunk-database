@@ -33,6 +33,8 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 
 	@fromUser: (req, res, userType, userData, updating = false) => #{{{
 
+		err = null
+
 		if not schemaType = @types[userType]
 			err = "invalid record type: #{userType}"
 		else if schemaType.creatable? and schemaType.creatable is false
@@ -71,33 +73,20 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 						err = '(12)' + errorTooLong
 
 					else
-						err = null #ok
-
 						# convert to int
 						userData[field] = parseInt(userData[field])
-
-				else if typeof userData[field] is 'string' # field value is string
-
-					if not wiz.framework.util.strval.validate(schemaType.data[field].type, userData[field]) # field value passes regex check
-
-						err = '(21)' + errorIncorrectType
-
-					else if userData[field].length > schemaType.data[field].maxlen # field value is proper length
-
-						err = '(22)' + errorTooLong
-
-					else
-
-						err = null # ok
 
 				else if schemaType.data[field].type == 'array' # schema requires array
 
 					# convert to array with one element if necessary
-					userData[field] = [ userData[field] ] if not userData[field] instanceof Array
+					if userData[field] not instanceof Array
+						userData[field] = [ userData[field] ]
 
 					# validate max element count
 					if userData[field].length > (schemaType.data[field].maxElements or 0)
 
+						console.log userData[field]
+						console.log userData[field].length
 						err = '(32)' + errorTooMany
 
 					# validate each element value and maxlen
@@ -111,13 +100,19 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 
 							err = '(34)' + errorTooLong
 
+				else if typeof userData[field] is 'string' # field value is string
+
+					if not wiz.framework.util.strval.validate(schemaType.data[field].type, userData[field]) # field value passes regex check
+
+						err = '(21)' + errorIncorrectType
+
+					else if userData[field].length > schemaType.data[field].maxlen # field value is proper length
+
+						err = '(22)' + errorTooLong
+
 				else if schemaType.data[field].type == 'boolean' # true or false
 
-					if userData[field] == 'on' or userData[field] == 'off'
-
-						err = null
-
-					else
+					if userData[field] != 'on' and userData[field] != 'off'
 
 						err = '(41)' + errorIncorrectType + ' ' + element
 
