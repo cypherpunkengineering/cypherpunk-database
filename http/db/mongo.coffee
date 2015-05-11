@@ -242,6 +242,9 @@ class wiz.framework.http.database.mongo.base
 			for datum of userUpdate[@dataKey]
 				objToUpdate[datum] = userUpdate[@dataKey][datum]
 
+			# save original doc id
+			objToUpdate[@docKey] = result[@docKey]
+
 			# pass update object to super
 			@updateByID req, res, result[@docKey], objToUpdate
 	#}}}
