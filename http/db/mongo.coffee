@@ -59,14 +59,20 @@ class wiz.framework.http.database.mongo.base
 			upsert: @upsert
 		return options
 	#}}}
-	getDocKey: (id) => #{{{
-		criteria = @criteria()
+	getDocKey: (req, id) => #{{{
+		criteria = @criteria(req)
 		criteria[@docKey] = id
 		return criteria
 	#}}}
+	getArray: (doc, key) => #{{{
+		return [] unless ar = doc?[@dataKey]?[key]
+		return ar if ar instanceof Array
+		return [ ar ] if typeof ar is 'string'
+		return []
+	#}}}
 
 	findAll: (req, res, cb) => #{{{
-		criteria = @criteria()
+		criteria = @criteria(req)
 		projection = @projection()
 		opts = {}
 		@find(req, res, criteria, projection, opts, cb)
@@ -87,7 +93,7 @@ class wiz.framework.http.database.mongo.base
 				res.send 200, result
 	#}}}
 	findOneByID: (req, res, id, cb) => #{{{
-		criteria = @getDocKey(id)
+		criteria = @getDocKey(req, id)
 		projection = @projection()
 		@findOne req, res, criteria, projection, cb
 	#}}}
@@ -125,7 +131,7 @@ class wiz.framework.http.database.mongo.base
 		@updateCustomDataByID(req, res, docID, @dataKey, fieldsToUpdate, cb)
 	#}}}
 	updateCustomDataByID: (req, res, docID, dataKey, fieldsToUpdate, cb) => #{{{
-		criteria = @criteria()
+		criteria = @criteria(req)
 		criteria[@docKey] = docID
 		update =
 			'$set':
@@ -190,7 +196,7 @@ class wiz.framework.http.database.mongo.base
 	list: (req, res, userType) => #{{{
 		return res.send 400, 'invalid type' if not schemaType = @schema.types[userType]
 
-		criteria = @criteria()
+		criteria = @criteria(req)
 		criteria[@typeKey] = schemaType[@typeKey]
 
 		projection = @projection()
@@ -225,7 +231,7 @@ class wiz.framework.http.database.mongo.base
 				return res.send 200
 	#}}}
 	update: (req, res, id) => #{{{
-		criteria = @criteria()
+		criteria = @criteria(req)
 		criteria[@docKey] = id
 		projection = @projection()
 		@findOne req, res, criteria, projection, (req, res, result) =>
@@ -275,8 +281,8 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 		return baseProjection
 	#}}}
 
-	getDocKeyWithElementID: (criteriaID, elementID) => #{{{
-		criteria = @getDocKey(criteriaID)
+	getDocKeyWithElementID: (req, criteriaID, elementID) => #{{{
+		criteria = @getDocKey(req, criteriaID)
 		criteria[@arrayKey] = {}
 		criteria[@arrayKey].$elemMatch = {}
 		criteria[@arrayKey].$elemMatch[@elementKey] = elementID
@@ -321,7 +327,7 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 
 	findElementByID: (req, res, criteriaID, elementID, cb) => #{{{
 		return cb(null) if not criteriaID or not elementID
-		@findElementByCustom(req, res, @getDocKeyWithElementID(criteriaID, elementID), @getArrayKey(), @elementKey, elementID, cb)
+		@findElementByCustom(req, res, @getDocKeyWithElementID(req, criteriaID, elementID), @getArrayKey(), @elementKey, elementID, cb)
 	#}}}
 	findElementByCustom: (req, res, criteria, projection, elementKey, elementID, cb) => #{{{
 		@findOne req, res, criteria, projection, (req, res, result) =>
@@ -342,20 +348,20 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 		@findOne(req, res, criteria, projection, cb)
 	#}}}
 	findElementsByKeyFromAllDocuments: (req, res, value, cb) => #{{{
-		criteria = @criteria()
+		criteria = @criteria(req)
 		criteria["#{@arrayKey}.#{@elementKey}"] = value
 		projection = @projection()
 		@find(req, res, criteria, projection, cb)
 	#}}}
 	findByArrayElementKey: (req, res, value, cb) => #{{{
-		criteria = @criteria()
+		criteria = @criteria(req)
 		criteria["#{@arrayKey}.#{@elementKey}"] = value
 		projection = @projection()
 		opts = {}
 		@find(req, res, criteria, projection, opts, cb)
 	#}}}
 	findDocumentsWithElement: (req, res, elementID, opts, cb) => #{{{
-		criteria = @criteria()
+		criteria = @criteria(req)
 		criteria[elementID] =
 			'$exists': true
 		projection = @projection()
@@ -363,7 +369,7 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 	#}}}
 
 	countDocumentsWithElement: (req, res, elementID, cb) => #{{{
-		criteria = @criteria()
+		criteria = @criteria(req)
 		criteria[elementID] =
 			'$exists': true
 		projection = @projection()
@@ -371,7 +377,7 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 	#}}}
 
 	list: (req, res, id) => #{{{
-		@findOne req, res, @getDocKey(id), @getArrayKey(), (results) =>
+		@findOne req, res, @getDocKey(req, id), @getArrayKey(), (results) =>
 			responseData = []
 			if not results or not results[@arrayKey] or not results[@arrayKey].length > 0
 				return @listResponse(req, res, responseData)
@@ -390,7 +396,7 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 	#}}}
 
 	insertElementCustom: (req, res, criteriaID, objToInsert, cb) => #{{{
-		criteria = @getDocKey criteriaID
+		criteria = @getDocKey(req, criteriaID)
 		update = @getUpdatePushArray req, objToInsert
 		options = @getUpdateOptions()
 		@updateCustom(req, res, criteria, update, options, cb)
@@ -411,9 +417,9 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 			for t, toDelete of objsToDelete
 				# TODO: check permissions!!
 				if elementID
-					criteria = @getDocKeyWithElementID(criteriaID, elementID)
+					criteria = @getDocKeyWithElementID(req, criteriaID, elementID)
 				else
-					criteria = @getDocKey(criteriaID)
+					criteria = @getDocKey(req, criteriaID)
 				update = @getUpdatePullArray(req, toDelete, pullKey)
 				options = @getUpdateOptions()
 				@updateCustom req, res, criteria, update, options, (result) =>
