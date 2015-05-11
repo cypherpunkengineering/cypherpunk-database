@@ -15,12 +15,9 @@ class wiz.framework.http.acct.authenticate.base extends wiz.framework.http.resou
 
 		out =
 			auth: req?.session?.acct?.auth
-			email: req?.session?.acct?.email
-			fullname: req?.session?.acct?.fullname
+			email: req?.session?.acct?.data?.email
+			fullname: req?.session?.acct?.data?.fullname
 			lastlogin: req?.session?.acct?.lastlogin
-			# temp hack
-			walletGUID: req?.session?.acct?.walletGUID
-			walletPassword: req?.session?.acct?.walletPassword
 
 		return out
 	#}}}
@@ -33,6 +30,11 @@ class wiz.framework.http.acct.authenticate.base extends wiz.framework.http.resou
 
 		# TODO: implement multiple factor auth (ie. half-logged-in)
 		req.session.acct = acct
+
+		req.session.powerLevel = 0
+		if @server.powerLevel and acct.type
+			req.session.powerLevel = @server.powerLevel[acct.type]
+
 		req.session.auth = 1337 # XXX: temp hack
 
 		# send session secret and acct info

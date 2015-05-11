@@ -19,14 +19,15 @@ wiz.package 'wiz.framework.http.acct.authenticate.userpasswd'
 class wiz.framework.http.acct.authenticate.userpasswd extends wiz.framework.http.acct.authenticate.base
 	level: wiz.framework.http.resource.power.level.stranger
 	mask: wiz.framework.http.resource.power.mask.always
+	dataKey: 'data'
 
-	pwHash: (plaintext) => #{{{
+	@pwHash: (plaintext) => #{{{
 		hash = wiz.framework.crypto.hash.salthash(plaintext)
 		return hash
 	#}}}
 	pwValidate: (req, res, user, plaintextPW) => #{{{
-		userPW = @pwHash(plaintextPW)
-		return true if user?.pw? and userPW? and user.pw == userPW
+		userPW = @constructor.pwHash(plaintextPW)
+		return true if user?[@dataKey].password? and userPW? and user[@dataKey].password == userPW
 		return false
 	#}}}
 

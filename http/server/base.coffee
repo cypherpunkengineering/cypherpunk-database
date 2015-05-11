@@ -36,6 +36,8 @@ class wiz.framework.http.server.base extends wiz.framework.http.base
 	#}}}
 	init: () => # for app-side initialization {{{
 		wiz.log.crit 'root resource is missing!' unless @root
+		@powerLevel ?= new wiz.framework.http.resource.power.level()
+		@powerMask ?= new wiz.framework.http.resource.power.mask()
 		@root.load()
 		@root.init()
 	#}}}
