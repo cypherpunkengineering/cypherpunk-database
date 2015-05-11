@@ -32,8 +32,10 @@ class wiz.framework.http.acct.authenticate.base extends wiz.framework.http.resou
 		req.session.acct = acct
 
 		req.session.powerLevel = 0
-		if @server.powerLevel and acct.type
+		if @server.powerLevel and acct.type and @server.powerLevel[acct.type]
 			req.session.powerLevel = @server.powerLevel[acct.type]
+		else
+			wiz.log.crit "unable to set user's power level!"
 
 		req.session.auth = 1337 # XXX: temp hack
 
