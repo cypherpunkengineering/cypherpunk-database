@@ -54,51 +54,76 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 
 			wiz.log.debug 'validating schema field ' + field
 
-			baseError = "field #{schemaType.data[field].label} should be type #{schemaType.data[field].type}"
+			errorIncorrectType = "field #{schemaType.data[field].label} must be type #{schemaType.data[field].type}"
+			errorTooLong = "field #{schemaType.data[field].label} is too long, cannot be more than #{schemaType.data[field].maxlen} characters."
+			errorTooMany = "field #{schemaType.data[field].label} cannot contain more than #{schemaType.data[field].maxElements} selections."
 
 			if userData?[field]? # field exists
 
 				if schemaType.data[field].type == 'int' # schema requires int type
 
-					if wiz.framework.util.strval.validate(schemaType.data[field].type, userData[field].toString()) and # field value passes regex check
-					userData[field].toString().length <= schemaType.data[field].maxlen # field value is proper length
+					if not wiz.framework.util.strval.validate(schemaType.data[field].type, userData[field].toString()) # field value passes regex check
+
+						err = '(11)' + errorIncorrectType
+
+					else if userData[field].toString().length > schemaType.data[field].maxlen # field value is proper length
+
+						err = '(12)' + errorTooLong
+
+					else
+						err = null #ok
 
 						# convert to int
 						userData[field] = parseInt(userData[field])
+
+				else if typeof userData[field] is 'string' # field value is string
+
+					if not wiz.framework.util.strval.validate(schemaType.data[field].type, userData[field]) # field value passes regex check
+
+						err = '(21)' + errorIncorrectType
+
+					else if userData[field].length > schemaType.data[field].maxlen # field value is proper length
+
+						err = '(22)' + errorTooLong
+
 					else
-						err = '(1)' + baseError
 
-				else if (
-					typeof userData[field] is 'string' and # field value is string
-					userData[field].length <= schemaType.data[field].maxlen and # field value is proper length
-					wiz.framework.util.strval.validate(schemaType.data[field].type, userData[field]) # field value passes regex check
-				)
-
-					err = null # ok
+						err = null # ok
 
 				else if schemaType.data[field].type == 'array' # schema requires array
 
-					if not userData[field] instanceof Array # field value is array
-						userData[field] = [ userData[field] ]
+					# convert to array with one element if necessary
+					userData[field] = [ userData[field] ] if not userData[field] instanceof Array
 
-					err = null # ok
+					# validate max element count
 					if userData[field].length > (schemaType.data[field].maxElements or 0)
-						err = '(2)' + baseError
-					for element of userData[field]
-						if not wiz.framework.util.strval.validate(schemaType.data[field].arrayType, element) or element.length > (schemaType.data[field].maxlen or 0)
-							err = '(3)' + baseError + ' ' + element
 
-				else if schemaType.data[field].type == 'boolean' # schema requires array
+						err = '(32)' + errorTooMany
+
+					# validate each element value and maxlen
+					for element of userData[field]
+
+						if not wiz.framework.util.strval.validate(schemaType.data[field].arrayType, element)
+
+							err = '(33)' + errorIncorrectType + ' ' + element
+
+						else if element.length > (schemaType.data[field].maxlen or 0)
+
+							err = '(34)' + errorTooLong
+
+				else if schemaType.data[field].type == 'boolean' # true or false
 
 					if userData[field] == 'on' or userData[field] == 'off'
+
 						err = null
+
 					else
-						err = '(4)' + baseError + ' ' + element
+
+						err = '(41)' + errorIncorrectType + ' ' + element
 
 				else # invalid field value
-					#TODO console.log schemaType.data[field].maxlen # field value is proper length
 
-					err = '(9)' + baseError
+					err = '(9)' + errorIncorrectType
 
 			else
 				err = "missing required field #{field}" unless not schemaType.data.required or updating
