@@ -60,7 +60,7 @@ class wiz.portal.userjs.table.multi extends wiz.portal.userjs.table.base
 	#}}}
 
 	tablesReload: () => #{{{
-		for t of @types.recordTypes when type = @types.recordTypes[t]
+		for t of @data.recordTypes when type = @data.recordTypes[t]
 			type.dt.fnDraw()
 	#}}}
 
