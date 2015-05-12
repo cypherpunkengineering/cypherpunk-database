@@ -4,6 +4,7 @@
 require '../../..'
 require '../../resource/base'
 require '../../db/mongo'
+require '../../../util/datetime'
 require '../session'
 
 wiz.package 'wiz.framework.http.acct.db.accounts'
@@ -30,6 +31,14 @@ class wiz.framework.http.acct.db.accounts extends wiz.framework.http.database.mo
 
 	findOneByEmail: (req, res, email, cb) => #{{{
 		@findOneByKey req, res, "#{@dataKey}.#{@emailKey}", email, @projection(), cb
+	#}}}
+
+	updateLastLoginTS: (req, res, cb) => #{{{
+		if not req?.session?.acct?.id?
+			wiz.log.err "unable to update last login timestamp - session is null?"
+			return
+		now = wiz.framework.util.datetime.unixFullTS()
+		@updateCustomDataByID req, res, req.session.acct.id, 'lastLoginTS', now, cb
 	#}}}
 
 # vim: foldmethod=marker wrap

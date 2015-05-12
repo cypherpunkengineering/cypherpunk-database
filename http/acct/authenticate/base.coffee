@@ -46,6 +46,7 @@ class wiz.framework.http.acct.authenticate.base extends wiz.framework.http.resou
 			acct: @acctinfo(req)
 
 		res.send 200, out
+		@parent.parent.db.accounts.updateLastLoginTS req, res, (result) =>
 	#}}}
 
 # vim: foldmethod=marker wrap
