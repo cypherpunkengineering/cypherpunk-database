@@ -41,17 +41,16 @@ wiz =
 		return wiz.getUrlVars()[name]
 
 	sessionDestroy: () ->
-		sessionStorage.wiz = {}
+		sessionStorage.removeItem('wiz')
 
 	sessionSave: () ->
-		sessionStorage.wiz = JSON.stringify(wiz.session)
+		if wiz.session? and typeof wiz.session is 'object'
+			sessionStorage.setItem('wiz', JSON.stringify wiz.session)
 
 	sessionLoad: () ->
 		wiz.session = {}
-		if sessionStorage.wiz?
-			if typeof sessionStorage.wiz is 'object'
-				wiz.session = sessionStorage.wiz
-			else if typeof sessionStorage.wiz is 'string'
-				wiz.session = JSON.parse(sessionStorage.wiz)
+		sessionString = sessionStorage.getItem('wiz')
+		if sessionString? and typeof sessionString is 'string'
+			wiz.session = JSON.parse(sessionString)
 
 wiz.sessionLoad()

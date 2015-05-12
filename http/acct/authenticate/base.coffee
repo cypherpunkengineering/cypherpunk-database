@@ -18,6 +18,7 @@ class wiz.framework.http.acct.authenticate.base extends wiz.framework.http.resou
 			email: req?.session?.acct?.data?.email
 			fullname: req?.session?.acct?.data?.fullname
 			lastlogin: req?.session?.acct?.lastlogin
+			powerLevel: req?.session?.powerLevel
 
 		return out
 	#}}}
