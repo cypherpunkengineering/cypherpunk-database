@@ -30,10 +30,13 @@ class wiz.framework.database.mongo.doc
 	#}}}
 
 class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.mongo.doc
+	@docKey: 'id'
+	@dataKey: 'data'
 
 	@fromUser: (req, res, userType, userData, updating = false) => #{{{
 
 		err = null
+		outputData = {}
 
 		if not schemaType = @types[userType]
 			err = "invalid record type: #{userType}"
@@ -57,36 +60,44 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 			wiz.log.debug 'validating schema field ' + field
 
 			errorIncorrectType = "field #{schemaType.data[field].label} must be type #{schemaType.data[field].type}"
+			errorTooShort = "field #{schemaType.data[field].label} is too short, cannot be less than #{schemaType.data[field].minlen} characters."
 			errorTooLong = "field #{schemaType.data[field].label} is too long, cannot be more than #{schemaType.data[field].maxlen} characters."
 			errorTooMany = "field #{schemaType.data[field].label} cannot contain more than #{schemaType.data[field].maxElements} selections."
 
 			if userData?[field]? # field exists
 
-				if schemaType.data[field].type == 'int' # schema requires int type
+				userRequired += 1 if schemaType.data.required is true
+
+				if schemaType.data[field].type == 'int' #{{{ schema requires int type
 
 					if not wiz.framework.util.strval.validate(schemaType.data[field].type, userData[field].toString()) # field value passes regex check
 
 						err = '(11)' + errorIncorrectType
 
-					else if userData[field].toString().length > schemaType.data[field].maxlen # field value is proper length
+					else if userData[field].toString().length < (schemaType.data[field].minlen or 0) # field value is proper length
 
-						err = '(12)' + errorTooLong
+						err = '(12)' + errorTooShort
+
+					else if userData[field].toString().length > (schemaType.data[field].maxlen or 99999) # field value is proper length
+
+						err = '(13)' + errorTooLong
 
 					else
-						# convert to int
-						userData[field] = parseInt(userData[field])
+						# convert to int and store in output
+						outputData[field] = parseInt(userData[field])
+				#}}}
+				else if schemaType.data[field].type == 'array' #{{{ schema requires array
 
-				else if schemaType.data[field].type == 'array' # schema requires array
+					# create destination array
+					outputData[field] = []
 
-					# convert to array with one element if necessary
+					# convert userData field to array with one element if necessary
 					if userData[field] not instanceof Array
 						userData[field] = [ userData[field] ]
 
 					# validate max element count
 					if userData[field].length > (schemaType.data[field].maxElements or 0)
 
-						console.log userData[field]
-						console.log userData[field].length
 						err = '(32)' + errorTooMany
 
 					# validate each element value and maxlen
@@ -96,35 +107,54 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 
 							err = '(33)' + errorIncorrectType + ' ' + element
 
-						else if element.length > (schemaType.data[field].maxlen or 0)
+						else if element.length < (schemaType.data[field].minlen or 0)
 
-							err = '(34)' + errorTooLong
+							err = '(34)' + errorTooShort
 
-				else if typeof userData[field] is 'string' # field value is string
+						else if element.length > (schemaType.data[field].maxlen or 99999)
 
-					if not wiz.framework.util.strval.validate(schemaType.data[field].type, userData[field]) # field value passes regex check
+							err = '(35)' + errorTooLong
 
-						err = '(21)' + errorIncorrectType
-
-					else if userData[field].length > schemaType.data[field].maxlen # field value is proper length
-
-						err = '(22)' + errorTooLong
-
-				else if schemaType.data[field].type == 'boolean' # true or false
+						else
+							# store in output
+							outputData[field] = userData[field]
+				#}}}
+				else if schemaType.data[field].type == 'boolean' #{{{ true or false
 
 					if userData[field] != 'on' and userData[field] != 'off'
 
 						err = '(41)' + errorIncorrectType + ' ' + element
 
-				else # invalid field value
+					else
+						# store in output
+						outputData[field] = userData[field]
+
+				#}}}
+				else if typeof userData[field] == 'string' #{{{ field value is string
+
+					if not wiz.framework.util.strval.validate(schemaType.data[field].type, userData[field]) # field value passes regex check
+
+						err = '(21)' + errorIncorrectType
+
+					else if userData[field].length < (schemaType.data[field].minlen or 0) # field value is proper length
+
+						err = '(22)' + errorTooShort
+
+					else if userData[field].length > (schemaType.data[field].maxlen or 99999) # field value is proper length
+
+						err = '(23)' + errorTooLong
+
+					else
+						# store in output
+						outputData[field] = userData[field]
+				#}}}
+				else #{{{ invalid field value
 
 					err = '(9)' + errorIncorrectType
+				#}}}
 
 			else
 				err = "missing required field #{field}" unless not schemaType.data.required or updating
-
-				if schemaType.data[field].type == 'int' # convert to number
-					userData[field] = parseInt(userData[field])
 
 			if err
 
@@ -132,17 +162,37 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 				res.send(400, err)
 				return false
 
-			else
-				userRequired += 1 if schemaType.data.required is true # increment count and continue
-
-
 		if not updating and userRequired < schemaRequired
 			err = "missing required valid fields (only #{userRequired} of required #{schemaRequired} fields)"
 			wiz.log.err(err)
 			res.send(400, err)
 			return false
 
-		return new this(userType, userData)
+		return new this(userType, outputData)
+	#}}}
+	@fromUserUpdate: (req, res, userType, origObj, userData) => #{{{
+		docOld = new this(userType, origObj[@dataKey])
+		return false unless docOld
+		docNew = @fromUser(req, res, userType, userData, true)
+		return false unless docNew
+
+		@fromUserMerge(req, res, userType, docOld, docNew)
+		#this.__super__.constructor.fromUserMerge(req, res, userType, docOld, docNew)
+	#}}}
+	@fromUserMerge: (req, res, userType, docOld, docNew) => #{{{
+		return false if not schemaType = @types[userType]
+		# create new doc to merge old doc with new doc
+		doc = new this(userType, {})
+		for key of schemaType.data
+			if docNew[@dataKey][key]?
+				doc[@dataKey][key] = docNew[@dataKey][key]
+			else
+				doc[@dataKey][key] = docOld[@dataKey][key]
+
+		# restore original document id
+		doc[@docKey] = docOld[@docKey]
+
+		return doc
 	#}}}
 
 	@fromJSON: (jso) => #{{{

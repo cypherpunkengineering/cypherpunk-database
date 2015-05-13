@@ -236,13 +236,14 @@ class wiz.framework.http.database.mongo.base
 		projection = @projection()
 		@findOne req, res, criteria, projection, (req, res, result) =>
 			# verify existing record exists
-			return res.send 404 unless result and result[@docKey]
+			return res.send 404 unless result and result[@docKey] and result[@dataKey]
 
 			# get existing record data
 			objToUpdate = result[@dataKey]
 
 			# validate user provided update object
-			return unless userUpdate = @schema.fromUser(req, res, result[@typeKey], req.body[@dataKey], true)
+			userData = (req.body[@dataKey] or req.body)
+			return unless userUpdate = @schema.fromUserUpdate(req, res, result[@typeKey], result, userData)
 
 			# update fields from post-validated user provided object
 			for datum of userUpdate[@dataKey]
