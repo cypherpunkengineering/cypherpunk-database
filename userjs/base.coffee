@@ -8,6 +8,9 @@ class wiz.framework.app.base
 		@container = $('#wizBody1')
 		@toolbar = $('#wizBody')
 
+	dataContainer: 'data'
+	idBraces: (ar, id) -> "#{ar}[#{id}]"
+
 	init:() => #{{{
 	#}}}
 

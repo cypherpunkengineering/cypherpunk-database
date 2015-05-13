@@ -401,7 +401,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		.append(
 			@controlGroup
 				controls: controls
-				inputID: "data[#{id}]"
+				inputID: @idBraces(@dataContainer, id)
 				inputLabel: datum.label
 				inputName: datum.name
 				inputType: datum.input
@@ -413,12 +413,15 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 				inputBlur: @formFieldValidate
 		)
 	#}}}
+	insertDialogFormSerialize: () => #{{{
+		@insertDialogForm.serializeArray()
+	#}}}
 	insertDialogFormSubmit: (e) => #{{{
 
 		e.preventDefault()
 		return false if not @insertDialogForm
 
-		recordToInsert = @insertDialogForm.serializeArray()
+		recordToInsert = @insertDialogFormSerialize()
 		return false if not recordToInsert or recordToInsert.length < 1
 
 		if @insertDialog.attr('updateRecordID')
