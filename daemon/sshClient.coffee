@@ -30,11 +30,25 @@ class wiz.framework.daemon.sshClient
 	init: () => #{{{
 		@conn = new ssh()
 		@conn.on 'ready', @onReady
-		@conn.connect(@config)
+		@conn.on 'error', @onError
+		try
+			@conn.connect(@config)
+		catch e
+			wiz.log.err e.toString()
+			@cb(null)
 	#}}}
 	onReady: () => #{{{
 		wiz.log.info "SSH connection to #{@config.host} established"
 		@conn.shell(@onShellReady)
+	#}}}
+	onError: (err) => #{{{
+		wiz.log.info "SSH connection to #{@config.host} failed: #{err}"
+		try
+			@stream.end()
+			@conn.end()
+		catch e
+			wiz.log.err e.toString()
+		@cb(null)
 	#}}}
 	onShellReady: (err, @stream) => #{{{
 		if err
@@ -47,6 +61,7 @@ class wiz.framework.daemon.sshClient
 		@stream.on 'close', @onStreamClose
 		@stream.on 'data', @onStreamData
 		@stream.stderr.on 'data', @onStreamStdErrData
+		@stream.on 'error', @onError
 
 		@sendCommands()
 	#}}}
