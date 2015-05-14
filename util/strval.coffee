@@ -87,6 +87,11 @@ class wiz.framework.util.strval
 		strRegex = '[13][a-km-zA-HJ-NP-Z0-9]{26,33}'
 		return (new RegExp( '^' + strRegex + '$' )).test(str)
 
+	# check if valid string
+	@base64imgblob_valid : (str) ->
+		strRegex = 'data:image\/[a-z]*;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?'
+		return (new RegExp( '^' + strRegex + '$' )).test(str)
+
 	# check if valid integer
 	@int_valid : (i) ->
 		return parseFloat(i) == parseInt(i) && (!isNaN(i) && i % 1 == 0)
@@ -135,6 +140,8 @@ class wiz.framework.util.strval
 				return (@ascii_valid(value) && value.indexOf('"') == -1 && value.indexOf("'") == -1)
 			when 'asciiNoSpace'
 				return (@ascii_valid(value) && value.indexOf(' ') == -1)
+			when 'base64imgblob'
+				return @base64imgblob_valid(value)
 			when 'boolean'
 				return @boolean_valid(value)
 			when 'fqdn'
