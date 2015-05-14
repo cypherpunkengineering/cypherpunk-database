@@ -87,7 +87,7 @@ class wiz.framework.http.database.mongo.base
 					return cb req, res, null if cb
 					return res.send 500
 
-				wiz.log.info "FINDONE OK: #{debugstr}" if @debug
+				wiz.log.debug "FINDONE OK: #{debugstr}" if @debug
 				wiz.log.debug "FINDONE RESULT: #{JSON.stringify(result)}" if @debug
 				return cb req, res, result if cb
 				res.send 200, result
@@ -123,7 +123,7 @@ class wiz.framework.http.database.mongo.base
 					return cb null if cb
 					return res.send 500
 
-				wiz.log.info "UPDATE OK: #{debugstr}"
+				wiz.log.debug "UPDATE OK: #{debugstr}" if @debug
 				return cb result if cb
 				return res.send 200
 	#}}}
@@ -155,7 +155,7 @@ class wiz.framework.http.database.mongo.base
 					cb false if cb
 					return
 
-				wiz.log.info "DROP OK: #{debugstr}"
+				wiz.log.debug "DROP OK: #{debugstr}" if @debug
 				res.send 200 if res
 				cb true if cb
 				return
@@ -171,7 +171,7 @@ class wiz.framework.http.database.mongo.base
 					return cb null if cb
 					return res.send 500
 
-				wiz.log.info "COUNT OK: #{debugstr}"
+				wiz.log.debug "COUNT OK: #{debugstr}" if @debug
 				return cb count if cb
 				return res.send 200
 	#}}}
@@ -189,7 +189,7 @@ class wiz.framework.http.database.mongo.base
 					return cb null if cb
 					return res.send 500
 
-				wiz.log.info "FIND OK: #{debugstr}" if @debug
+				wiz.log.debug "FIND OK: #{debugstr}" if @debug
 				return cb results if cb
 				return res.send 200, results
 	#}}}
@@ -226,7 +226,7 @@ class wiz.framework.http.database.mongo.base
 					return cb null if cb
 					return res.send 500
 
-				wiz.log.info "INSERT OK: #{debugstr}"
+				wiz.log.debug "INSERT OK: #{debugstr}" if @debug
 				return cb criteria if cb
 				return res.send 200
 	#}}}
