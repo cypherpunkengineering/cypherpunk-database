@@ -410,6 +410,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 				inputArgType: datum.type
 				inputPlaceholder: datum.placeholder
 				inputSelopts: datum.selopts
+				inputArgs: datum.inputArgs
 				inputBlur: @formFieldValidate
 		)
 	#}}}
@@ -431,9 +432,11 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 
 		return false
 	#}}}
-	setUpdateRecordID: (data) =>
+
+	setUpdateRecordID: (data) => #{{{
 		if data
 			@insertDialog.attr('updateRecordID', data.id)
+	#}}}
 	updateDialogOpen: (e) => #{{{
 		id = $(e.target.parentNode.parentNode).attr('id')
 		@ajax 'GET', @urlFindOneByID + '/' + id, null, (data) =>

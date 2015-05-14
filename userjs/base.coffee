@@ -157,6 +157,7 @@ class wiz.framework.app.base
 							value: args.inputValue
 							blur: args.inputBlur
 							selopts: args.inputSelopts
+							inputArgs: args.inputArgs
 			)
 
 		return controlGroup
@@ -195,7 +196,9 @@ class wiz.framework.app.base
 		args.type ?= 'text'
 
 		# for pull-down box options
+		# FIXME: move into separate method with separate args
 		if (args.type == 'select' or args.type == 'multiSelect') and args.selopts
+
 			input = $('<select>')
 			if args.type == 'multiSelect'
 				input.attr('multiple', 'multiple')
@@ -207,6 +210,7 @@ class wiz.framework.app.base
 						enableCaseInsensitiveFiltering: true
 						enableClickableOptGroups: true
 				setTimeout cb, 100
+				# FIXME: there has to be an event we can listen for
 
 			for k, v of args.selopts
 				if typeof v is 'object'
@@ -224,9 +228,24 @@ class wiz.framework.app.base
 							selected: (k?.toString() == args?.value?.toString())
 					)
 		else if args.type == 'checkbox'
+
 			input = $('<input>')
 			input.attr('checked', true) if args.value is 'on' or args.value is 'true'
+
+		else if args.type == 'image'
+
+			input = $('<input>')
+			args.type = 'file'
+			args.accept = 'image/*'
+			args.inputArgs ?=
+				previewFileType: 'image'
+			cb = () =>
+				input.fileinput(args.inputArgs)
+			setTimeout cb, 100
+			# FIXME: there has to be an event we can listen for
+
 		else
+
 			input = $('<input>')
 
 		input.addClass(c) for c in args.classes
@@ -239,6 +258,7 @@ class wiz.framework.app.base
 		input.attr('value', args.value) if args.value? and args.type isnt 'select'
 		input.attr('argtype', args.argtype) if args.argtype
 		input.attr('maxlength', args.maxlength) if args.maxlength?
+		input.attr('accept', args.accept) if args.accept?
 		input.css('width', args.width) if args.width?
 		input.blur(args.blur) if args.blur?
 		input.click(args.click) if args.click?
