@@ -103,7 +103,7 @@ class wiz.framework.util.strval
 
 	# check if valid string
 	@url_valid : (str) ->
-		strRegex = 'https:\/\/[^ "]+'
+		strRegex = '(http|https):\/\/[^ "]+'
 		return (new RegExp( '^' + strRegex + '$' )).test(str)
 
 	# check if valid 8 digit hotp code
