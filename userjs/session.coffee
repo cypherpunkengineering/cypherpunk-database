@@ -43,7 +43,7 @@ class wiz.portal.userjs.session extends wiz.framework.app.base
 		@urlAuthenticateUserPW ?= @urlBase + '/account/authenticate/userpasswd'
 		@urlAuthenticateYubiKeyHOTP ?= @urlBase + '/account/authenticate/yubikeyhotp'
 		@urlLogout ?= @urlBase + '/account/logout'
-		@urlLogin ?= @urlBase + '/account/login'
+		@urlLogin ?= @urlBase + '/login'
 		@urlMyAccount ?= @urlBase + '/account/me'
 		super()
 	#}}}
