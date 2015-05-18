@@ -121,7 +121,8 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 	#}}}
 
 	handler: (req, res) => #{{{ default handler
-		wiz.log.err 'default handler? handler not defined'
+		wiz.log.err 'default handler? handler not defined for '+req.url
+		@handler404(req, res)
 	#}}}
 	handler403: (req, res) => #{{{ default 403 handler
 		try
