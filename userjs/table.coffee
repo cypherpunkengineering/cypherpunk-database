@@ -118,9 +118,9 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		@urlDrop ?= @urlBase + '/drop'
 		@urlExport ?= @urlBase + '/export'
 
-		@iconInsert = @urlImgBase + '/_img/icons/32/record_insert.png'
-		@iconDrop = @urlImgBase + '/_img/icons/32/record_drop.png'
-		@iconExport = @urlImgBase + '/_img/icons/32/export_excel.png'
+		@iconInsert = 'fa-user-plus'
+		@iconDrop = 'fa-trash-o'
+		@iconExport = 'fa-download'
 
 		@idBodyHeader = @container[0].id + 'Header'
 		@idBodyToolbar = @container[0].id + 'Toolbar'

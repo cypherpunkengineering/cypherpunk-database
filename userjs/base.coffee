@@ -269,6 +269,7 @@ class wiz.framework.app.base
 	selopt: (args) => #{{{
 		input = $('<option>')
 		input.attr('value', args.value) if args.value?
+		input.attr('data-img-src', args.imgsrc) if args.imgsrc?
 		input.text(args.text) if args.text?
 		input.attr('selected', true) if args.selected
 		return input
@@ -292,9 +293,10 @@ class wiz.framework.app.base
 		args.classes.push 'btn'
 		args.text ?= 'click me'
 
-		button = $('<button>')
+		button = $('<a>')
 		button.addClass(c) for c in args.classes
 		button.attr('id', args.id) if args.id
+		button.attr('href', '#')
 		button.text(args.text)
 		button.click(args.click) if args.click
 
@@ -338,24 +340,31 @@ class wiz.framework.app.base
 	toolbarAction: (args) => #{{{
 		args ?= {}
 		args.href ?= '#'
-		args.icon ?= '/_img/icons/32/user_ninja.png'
+		args.classes ?= []
+		args.classes.push 'fa'
+		args.classes.push 'fa-2x'
+		args.classes.push args.icon
 		args.text ?= ''
 		args.click ?= () -> true
 		@toolbar
 		.append(
-			$('<a></a>')
+			btn = $('<a>')
 			.addClass('btn')
 			.attr('href', args.href)
 			.click(args.click)
-			.append(
-				$('<img></img>')
-				.attr('src', args.icon)
-			)
-			.append(' ')
-			.append(
-				$('<span></span>')
-				.text(args.text)
-			)
+		)
+
+		btn
+		.append(
+			i = $('<i>')
+		)
+		i.addClass(c) for c in args.classes
+
+		btn
+		.append(' ')
+		.append(
+			$('<span></span>')
+			.text(args.text)
 		)
 	#}}}
 
