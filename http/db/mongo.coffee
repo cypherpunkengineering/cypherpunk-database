@@ -77,6 +77,11 @@ class wiz.framework.http.database.mongo.base
 		opts = {}
 		@find(req, res, criteria, projection, opts, cb)
 	#}}}
+	findByKey: (req, res, k, v, projection, opts, cb) => #{{{
+		criteria = {}
+		criteria[k] = v
+		@find req, res, criteria, projection, opts, cb
+	#}}}
 	findOne: (req, res, criteria, projection, cb) => #{{{
 		debugstr = "#{@collectionName}.findOne(#{JSON.stringify(criteria)}, #{JSON.stringify(projection)})"
 		wiz.log.debug debugstr if @debug
