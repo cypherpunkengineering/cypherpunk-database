@@ -235,7 +235,12 @@ class wiz.framework.http.database.mongo.base
 				return cb criteria if cb
 				return res.send 200
 	#}}}
-	update: (req, res, id, cb = null) => #{{{
+	update: (req, res, id, cb) => #{{{
+		# validate user provided update object
+		userData = (req.body[@dataKey] or req.body)
+		@updateOneFromUser(req, res, id, userData, cb)
+	#}}}
+	updateOneFromUser: (req, res, id, userData, cb = null) => #{{{
 		criteria = @criteria(req)
 		criteria[@docKey] = id
 		projection = @projection()
@@ -243,18 +248,15 @@ class wiz.framework.http.database.mongo.base
 			# verify existing record exists
 			return res.send 404 unless result and result[@docKey] and result[@dataKey]
 
-			# validate user provided update object
-			userData = (req.body[@dataKey] or req.body)
-
 			# pre-validate hook
-			@updateHookPreValidate req, res, result, userData, () =>
+			@updateOneFromUserHookPreValidate req, res, result, userData, () =>
 
 				# validate user data
 				return unless objToUpdate = @schema.fromUserUpdate(req, res, result[@typeKey], result, userData)
 				dataToUpdate = objToUpdate[@dataKey]
 
 				# post-validate hook
-				@updateHookPostValidate req, res, result, userData, dataToUpdate, () =>
+				@updateOneFromUserHookPostValidate req, res, result, userData, dataToUpdate, () =>
 
 					# pass update object to super
 					@updateDataByID req, res, result[@docKey], dataToUpdate, (result) =>
@@ -263,10 +265,10 @@ class wiz.framework.http.database.mongo.base
 						return res.send 200 if result
 						return res.send 500, "update database failed"
 	#}}}
-	updateHookPreValidate: (req, res, currentData, userData, cb) => #{{{
+	updateOneFromUserHookPreValidate: (req, res, currentData, userData, cb) => #{{{
 		cb()
 	#}}}
-	updateHookPostValidate: (req, res, currentData, userData, mergedData, cb) => #{{{
+	updateOneFromUserHookPostValidate: (req, res, currentData, userData, mergedData, cb) => #{{{
 		cb()
 	#}}}
 	drop: (req, res, cb) => #{{{ default drop ajax handler
