@@ -20,8 +20,8 @@ class wiz.framework.app.base
 		401: (jqXHR, textStatus, errorThrown) ->
 			window.location.href = sessionManager.urlBase + '/login?for=' + escape(wiz.getURL())
 		403: (jqXHR, textStatus, errorThrown) ->
-			alert('access denied')
-			#window.location.href = sessionManager.urlBase + '/login?for=' + escape(wiz.getURL())
+			#alert('access denied')
+			window.location.href = sessionManager.urlBase + '/login?for=' + escape(wiz.getURL())
 	#}}}
 
 	ajax: (type, url, data, success, error) => #{{{
