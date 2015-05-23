@@ -132,16 +132,16 @@ class wiz.framework.http.database.mongo.base
 				return cb result if cb
 				return res.send 200
 	#}}}
-	updateByID: (req, res, docID, fieldsToUpdate, cb) => #{{{
-		@updateCustomDataByID(req, res, docID, @dataKey, fieldsToUpdate, cb)
+	updateDataByID: (req, res, docID, dataToUpdate, cb) => #{{{
+		@updateCustomDataByID(req, res, docID, @dataKey, dataToUpdate, cb)
 	#}}}
-	updateCustomDataByID: (req, res, docID, dataKey, fieldsToUpdate, cb) => #{{{
+	updateCustomDataByID: (req, res, docID, dataKey, dataToUpdate, cb) => #{{{
 		criteria = @criteria(req)
 		criteria[@docKey] = docID
 		update =
 			'$set':
 				updated: wiz.framework.util.datetime.unixFullTS()
-		update['$set'][dataKey] = fieldsToUpdate
+		update['$set'][dataKey] = dataToUpdate
 		options = @getUpdateOptions()
 		@updateCustom(req, res, criteria, update, options, cb)
 	#}}}
@@ -235,7 +235,7 @@ class wiz.framework.http.database.mongo.base
 				return cb criteria if cb
 				return res.send 200
 	#}}}
-	update: (req, res, id) => #{{{
+	update: (req, res, id, cb = null) => #{{{
 		criteria = @criteria(req)
 		criteria[@docKey] = id
 		projection = @projection()
@@ -243,22 +243,31 @@ class wiz.framework.http.database.mongo.base
 			# verify existing record exists
 			return res.send 404 unless result and result[@docKey] and result[@dataKey]
 
-			# get existing record data
-			objToUpdate = result[@dataKey]
-
 			# validate user provided update object
 			userData = (req.body[@dataKey] or req.body)
-			return unless userUpdate = @schema.fromUserUpdate(req, res, result[@typeKey], result, userData)
 
-			# update fields from post-validated user provided object
-			for datum of userUpdate[@dataKey]
-				objToUpdate[datum] = userUpdate[@dataKey][datum]
+			# pre-validate hook
+			@updateHookPreValidate req, res, result, userData, () =>
 
-			# save original doc id
-			objToUpdate[@docKey] = result[@docKey]
+				# validate user data
+				return unless objToUpdate = @schema.fromUserUpdate(req, res, result[@typeKey], result, userData)
+				dataToUpdate = objToUpdate[@dataKey]
 
-			# pass update object to super
-			@updateByID req, res, result[@docKey], objToUpdate
+				# post-validate hook
+				@updateHookPostValidate req, res, result, userData, dataToUpdate, () =>
+
+					# pass update object to super
+					@updateDataByID req, res, result[@docKey], dataToUpdate, (result) =>
+						# allow default responses to be overriden with custom callback
+						return cb(result) if cb
+						return res.send 200 if result
+						return res.send 500, "update database failed"
+	#}}}
+	updateHookPreValidate: (req, res, currentData, userData, cb) => #{{{
+		cb()
+	#}}}
+	updateHookPostValidate: (req, res, currentData, userData, mergedData, cb) => #{{{
+		cb()
 	#}}}
 	drop: (req, res, cb) => #{{{ default drop ajax handler
 		# TODO: need extensible method (send event?) for other modules to delete related objects from their databases onUserDeleted
