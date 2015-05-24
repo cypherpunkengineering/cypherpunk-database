@@ -109,6 +109,9 @@ class wiz.framework.http.server.base extends wiz.framework.http.base
 			res.setHeader 'Set-Cookie', cookie
 		#}}}
 		res.send = (numeric = 200, content = '', err = null) => #{{{ for sending response
+			if res.alreadySent
+				wiz.log.crit '******* response already sent!'
+				return
 
 			# set numeric
 			res.statusCode = numeric
@@ -167,6 +170,7 @@ class wiz.framework.http.server.base extends wiz.framework.http.base
 					res.write content
 
 			res.end() unless numeric < 200
+			res.alreadySent = true
 		#}}}
 		res.on 'finish', () => #{{{ log all requests
 			# TODO: implement post-response-middleware
