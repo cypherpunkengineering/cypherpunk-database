@@ -256,7 +256,7 @@ class wiz.framework.http.database.mongo.base
 				dataToUpdate = objToUpdate[@dataKey]
 
 				# post-validate hook
-				@updateOneFromUserHookPostValidate req, res, result, userData, dataToUpdate, () =>
+				@updateOneFromUserHookPostValidate req, res, result, objToUpdate, () =>
 
 					# pass update object to super
 					@updateDataByID req, res, result[@docKey], dataToUpdate, (result) =>
@@ -265,10 +265,10 @@ class wiz.framework.http.database.mongo.base
 						return res.send 200 if result
 						return res.send 500, "update database failed"
 	#}}}
-	updateOneFromUserHookPreValidate: (req, res, currentData, userData, cb) => #{{{
+	updateOneFromUserHookPreValidate: (req, res, currentObj, userData, cb) => #{{{
 		cb()
 	#}}}
-	updateOneFromUserHookPostValidate: (req, res, currentData, userData, mergedData, cb) => #{{{
+	updateOneFromUserHookPostValidate: (req, res, currentObj, objToUpdate, cb) => #{{{
 		cb()
 	#}}}
 	drop: (req, res, cb) => #{{{ default drop ajax handler
