@@ -6,6 +6,8 @@ require '../../crypto/hash'
 
 wiz.package 'wiz.framework.http.database.mongo'
 
+#TODO: rewrite so all args are properties of "args" object?
+
 class wiz.framework.http.database.mongo.driver extends wiz.framework.database.mongo.driver
 	constructor: (@server, @parent, @config, @serverOptions, @dbOptions) -> #{{{
 		super()
@@ -76,6 +78,12 @@ class wiz.framework.http.database.mongo.base
 		projection = @projection()
 		opts = {}
 		@find(req, res, criteria, projection, opts, cb)
+	#}}}
+	findByType: (req, res, type, cb) => #{{{
+		if type
+			@findByKey(req, res, @typeKey, type, @projection(), {}, cb)
+		else
+			@findAll(req, res, cb)
 	#}}}
 	findByKey: (req, res, k, v, projection, opts, cb) => #{{{
 		criteria = {}
@@ -379,6 +387,9 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 	#}}}
 	findDocumentsWithElement: (req, res, elementID, opts, cb) => #{{{
 		criteria = @criteria(req)
+		@findDocumentsWithElementCustom(req, res, criteria, elementID, opts, cb)
+	#}}}
+	findDocumentsWithElementCustom: (req, res, criteria, elementID, opts, cb) => #{{{
 		criteria[elementID] =
 			'$exists': true
 		projection = @projection()
@@ -387,6 +398,9 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 
 	countDocumentsWithElement: (req, res, elementID, cb) => #{{{
 		criteria = @criteria(req)
+		@countDocumentsWithElementCustom(req, res, criteria, elementID, cb)
+	#}}}
+	countDocumentsWithElementCustom: (req, res, criteria, elementID, cb) => #{{{
 		criteria[elementID] =
 			'$exists': true
 		projection = @projection()
