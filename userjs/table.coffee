@@ -78,6 +78,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 								.addClass('recordCheckbox')
 							)
 		fnDrawCallback: () ->
+			return if not @fnSettings()
 			if @fnSettings().fnRecordsDisplay() > @fnSettings()._iDisplayLength
 				$(this).parent().find('.dataTables_paginate').show()
 				$(this).parent().find('.dataTables_filter').show()
@@ -213,63 +214,63 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 	initTableAll: () => #{{{
 		@initTableOne t for t in @t
 	#}}}
-	initTableOne: (t) => #{{{
-		t.container ?= @container
+	initTableOne: (rt) => #{{{
+		rt.container ?= @container
 
-		t.container
+		rt.container
 		.append(
-			t.tableToolbar = $('<div>')
+			rt.tableToolbar = $('<div>')
 			.attr('id', @idBodyToolbar)
 		)
 
-		@initTableToolbar t
-		@initTableContainer t
+		@initTableToolbar rt
+		@initTableContainer rt
 
 		# create params for DT and call DT
-		@initParams t
-		@initTableDT t
+		@initParams rt
+		@initTableDT rt
 	#}}}
-	initTableContainer: (t) => #{{{
-		t.container
+	initTableContainer: (rt) => #{{{
+		rt.container
 		.append(
-			t.table = $('<table>')
+			rt.table = $('<table>')
 			.addClass('table')
 			.addClass('display')
-			.append(@initTableHead t)
-			.append(@initTableBody t)
+			.append(@initTableHead rt)
+			.append(@initTableBody rt)
 		)
 	#}}}
-	initTableHead: (t) => #{{{
+	initTableHead: (rt) => #{{{
 		# create thead and tr
-		t.tableHead = $('<thead>')
+		rt.tableHead = $('<thead>')
 		.append(
-			t.tableHeadRow = $('<tr>')
+			rt.tableHeadRow = $('<tr>')
 		)
 
 		# optionally create checkbox in first column header
 		if @tableCheckmarkAppend
-			t.tableHeadRow
+			rt.tableHeadRow
 			.append(
 				@tableCheckmark()
 			)
 
 		# allow easy override
-		@initTableHeadStrings(t)
+		@initTableHeadStrings(rt)
 
-		return t.tableHead
+		return rt.tableHead
 	#}}}
-	initTableHeadStrings: (t) => #{{{
-		t.stringTableHeaders = @stringTableHeaders
+	initTableHeadStrings: (rt) => #{{{
+		rt.stringTableHeaders = @stringTableHeaders
 
-		for header in t.stringTableHeaders
-			t.tableHeadRow
+		for header in rt.stringTableHeaders
+			rt.tableHeadRow
 			.append(
 				$('<th>')
 				.text(header)
 			)
 	#}}}
-	initTableBody: (t) => #{{{
-		t.tableBody = $('<tbody>')
+	initTableBody: (rt) => #{{{
+		rt.tableBody = $('<tbody>')
 		.append(
 			$('<tr>')
 			.append(
@@ -277,26 +278,26 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 			)
 		)
 
-		return t.tableBody
+		return rt.tableBody
 	#}}}
 
-	initParams: (t) => #{{{
-		t.params = $.extend {}, @baseParams
+	initParams: (rt) => #{{{
+		rt.params = $.extend {}, @baseParams
 	#}}}
-	initTableDT: (t) => #{{{
-		t.dt = t.table.dataTable t.params
+	initTableDT: (rt) => #{{{
+		rt.dt = rt.table.dataTable rt.params
 	#}}}
-	initTableToolbar: (t) => #{{{
-		t.stringTableToolbarText ?= @stringTableToolbarText
+	initTableToolbar: (rt) => #{{{
+		rt.stringTableToolbarText ?= @stringTableToolbarText
 
-		if t.stringTableToolbarText
-			t.tableToolbar
+		if rt.stringTableToolbarText
+			rt.tableToolbar
 			.append(
-				t.tableToolbarText = $('<h4>')
-					.text(t.stringTableToolbarText)
+				rt.tableToolbarText = $('<h4>')
+					.text(rt.stringTableToolbarText)
 			)
 		else
-			t.tableToolbar
+			rt.tableToolbar
 			.append(
 				$('<br>')
 			)
