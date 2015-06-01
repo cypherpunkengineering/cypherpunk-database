@@ -157,8 +157,14 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 				next(req, res, req.next)
 			else
 				process.nextTick =>
+					# sanity check
 					wiz.assert(handler, "invalid handler for #{@getFullPath()}")
-					handler(req, res)
+
+					try # to handle the request if we can
+						handler(req, res)
+					catch e # otherwise send 500 error
+						console.log e.stack
+						@handler500 req, res, e.toString()
 
 		req.next()
 	#}}}
