@@ -123,6 +123,9 @@ class wiz.framework.util.strval
 				return false
 		return true
 
+	# check if valid alphanumeric
+	@alphanumeric_valid : (str) -> /^[A-Za-z0-9]*$/.test(str)
+
 	# compare two strings insensitively
 	@strncmp : (str1, str2, n) ->
 		str1 = str1.substring 0, n
@@ -134,6 +137,8 @@ class wiz.framework.util.strval
 			console.log 'non-string type passed to string validation method'
 			return false
 		switch argtype
+			when 'alphanumeric'
+				return @alphanumeric_valid(value)
 			when 'ascii'
 				return @ascii_valid(value)
 			when 'asciiNoQuote'
