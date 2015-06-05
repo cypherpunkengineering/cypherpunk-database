@@ -85,7 +85,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 				$(this).parent().find('.dataTables_length').show()
 			else
 				$(this).parent().find('.dataTables_paginate').hide()
-				$(this).parent().find('.dataTables_filter').hide()
+				#$(this).parent().find('.dataTables_filter').hide()
 				if @fnSettings().fnRecordsDisplay() < 11
 					$(this).parent().find('.dataTables_length').hide()
 
@@ -194,12 +194,12 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		# http://datatables.net/ref#sDom
 		# <'row-fluid'<'span6'T><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>
 		sDom = ''
+		sDom +=		'<"span4"f>'
 		sDom += '<"row-fluid"'
 		sDom +=		'<"span3"'
 		if @baseParams.bPaginate
 			sDom +=		'l'
 		sDom +=		'>'
-		sDom +=		'<"span4"f>'
 		sDom +=		'<"span5"p>'
 		sDom +=		'r'
 		sDom +=	'>'
