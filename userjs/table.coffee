@@ -78,8 +78,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 								.addClass('recordCheckbox')
 							)
 		fnDrawCallback: () ->
-			return if not @fnSettings()
-			if @fnSettings().fnRecordsDisplay() > @fnSettings()._iDisplayLength
+			if not @fnSettings() or @fnSettings().fnRecordsDisplay() > @fnSettings()._iDisplayLength
 				$(this).parent().find('.dataTables_paginate').show()
 				$(this).parent().find('.dataTables_filter').show()
 				$(this).parent().find('.dataTables_length').show()
