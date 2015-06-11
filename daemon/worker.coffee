@@ -100,7 +100,7 @@ class wiz.framework.daemon.worker extends wiz.framework.database.mongo.driver
 
 	pendingTask: 0
 	queueTask: (taskName, task) => #{{{
-		wiz.log.info "queueing task #{taskName}" if @debug
+		wiz.log.info "queued task (#{@pendingTask} pending) for #{taskName}" if @debug
 		# schedule task according to amount of pending tasks
 		setTimeout task, (@taskdelay * @pendingTask)
 		@pendingTask += 1
@@ -111,7 +111,7 @@ class wiz.framework.daemon.worker extends wiz.framework.database.mongo.driver
 
 		# check if any pending tasks
 		if @pendingTask > 0
-			wiz.log.debug "waiting on #{@pendingTask} pending tasks" if @debug
+			wiz.log.debug "#{@pendingTask} tasks pending" if @debug
 			return
 
 		setTimeout @checkIfAllTasksCompleted, 500
