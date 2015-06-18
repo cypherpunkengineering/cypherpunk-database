@@ -60,7 +60,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 		bProcessing: true
 		bServerSide: true
 		bStateSave: false # in big tables this creates too-long cookie length and breaks everything
-		iDisplayLength: 10
+		iDisplayLength: 25
 		sAjaxSource: ''
 		sDom: ''
 		fnRowCallback: (nRow, aData, iDisplayIndex, iDisplayIndexFull) ->
