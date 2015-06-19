@@ -575,11 +575,11 @@ class wiz.framework.app.base
 	#}}}
 
 	displayAsUSD: (amount) => #{{{
-		dollars = Math.floor(amount / 100)
-		cents = ('00' + amount % 100).slice(-2)
+		dollars = Math.abs(Math.floor(amount / 100))
+		cents = ('00' + Math.abs(amount) % 100).slice(-2)
 		usd = '$' + dollars + '.' + cents
 		out = usd
-		out = '-(' + usd + ')' if amount < 0
+		out = "(#{usd})" if amount < 0
 		return out
 	#}}}
 	displayAsBTC: (amount) => #{{{
