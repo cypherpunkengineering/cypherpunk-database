@@ -126,6 +126,9 @@ class wiz.framework.util.strval
 	# check if valid alphanumeric
 	@alphanumeric_valid : (str) -> /^[A-Za-z0-9]*$/.test(str)
 
+	# check if valid alphanumericdot
+	@alphanumericdot_valid : (str) -> /^[A-Za-z0-9\.]*$/.test(str)
+
 	# compare two strings insensitively
 	@strncmp : (str1, str2, n) ->
 		str1 = str1.substring 0, n
@@ -139,6 +142,8 @@ class wiz.framework.util.strval
 		switch argtype
 			when 'alphanumeric'
 				return @alphanumeric_valid(value)
+			when 'alphanumericdot'
+				return @alphanumericdot_valid(value)
 			when 'ascii'
 				return @ascii_valid(value)
 			when 'asciiNoQuote'
