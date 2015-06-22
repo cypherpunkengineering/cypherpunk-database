@@ -132,5 +132,10 @@ class wiz.framework.database.mongo.driver
 		key += '.' + ('0' + date.getHours()).slice(-2)
 		return key
 	#}}}
+	dayhourToDate: (ts) => #{{{ date like this: 2012.04.01.09
+		s = ts.split '.'
+		# month is zero-index
+		return new Date(s[0], s[1] - 1, s[2], s[3])
+	#}}}
 
 # vim: foldmethod=marker wrap
