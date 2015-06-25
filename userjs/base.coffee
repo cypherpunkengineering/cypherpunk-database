@@ -575,7 +575,7 @@ class wiz.framework.app.base
 	#}}}
 
 	displayAsUSD: (amount) => #{{{
-		dollars = Math.abs(Math.floor(amount / 100))
+		dollars = Math.floor(Math.abs(amount / 100))
 		cents = ('00' + Math.abs(amount) % 100).slice(-2)
 		usd = '$' + dollars + '.' + cents
 		out = usd
