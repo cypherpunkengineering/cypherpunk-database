@@ -43,41 +43,40 @@ class cypherpunk.backend.admin.userjs.userProfile extends wiz.framework.app.base
 	#}}}
 
 	createAccountDetailsForm: () => #{{{
-		@container.append(
-			@accountDetailsForm = @form
-				classes: [ 'form-horizontal' ]
-			.submit(@submitAccountDetailsForm)
+		@accountDetailsForm = @form
+			classes: [ 'form-horizontal' ]
+		.submit(@submitAccountDetailsForm)
+		.append(
+			@legend
+				text: @stringAccountDetails
+		)
+		if wiz.session?.acct?.fullname? then @accountDetailsForm.append(
+			@controlGroup
+				inputID: @idBraces(@dataContainer, @idFullName)
+				inputType: 'text'
+				inputValue: wiz.session?.acct?.fullname
+				inputLabel: @stringFullNameL
+				inputPlaceholder: @stringFullNamePH
+		)
+		@accountDetailsForm.append(
+			@controlGroup
+				inputID: @idBraces(@dataContainer, @idEmail)
+				inputType: 'text'
+				inputValue: wiz.session?.acct?.email
+				inputLabel: @stringEmailL
+				inputPlaceholder: @stringEmailPH
+		)
+		.append(
+			$('<div>').addClass('form-actions')
 			.append(
-				@legend
-					text: @stringAccountDetails
-			)
-			.append(
-				@controlGroup
-					inputID: @idBraces(@dataContainer, @idFullName)
-					inputType: 'text'
-					inputValue: wiz.session?.acct?.fullname
-					inputLabel: @stringFullNameL
-					inputPlaceholder: @stringFullNamePH
-			)
-			.append(
-				@controlGroup
-					inputID: @idBraces(@dataContainer, @idEmail)
-					inputType: 'text'
-					inputValue: wiz.session?.acct?.email
-					inputLabel: @stringEmailL
-					inputPlaceholder: @stringEmailPH
-			)
-			.append(
-				$('<div>').addClass('form-actions')
-				.append(
-					@button
-						classes: [ 'btn-primary' ]
-						id: @idAccountDetailsSubmit
-						text: @stringAccountDetailsSubmit
-						click: @submitAccountDetailsForm
-				)
+				@button
+					classes: [ 'btn-primary' ]
+					id: @idAccountDetailsSubmit
+					text: @stringAccountDetailsSubmit
+					click: @submitAccountDetailsForm
 			)
 		)
+		@container.append(@accountDetailsForm)
 	#}}}
 	createChangePasswordForm: () => #{{{
 		@container.append(
