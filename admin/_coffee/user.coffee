@@ -1,0 +1,80 @@
+# copyright 2012 J. Maurice <j@wiz.biz>
+
+wiz.package 'cypherpunk.backend.admin.userjs.manageUser'
+
+class cypherpunk.backend.admin.userjs.manageUser.table extends wiz.portal.userjs.table.multiMulti
+
+	urlBase: wiz.getParentURL(2) + '/api/user'
+	#{{{ strings
+	stringNuggets: 'users'
+	stringInsertButton: 'Add user'
+	stringInsertSubmit: 'Add user'
+	stringInsertRecordDialogTitle: 'Add user'
+	stringInsertRecordSelectLabel: 'user type'
+	stringUpdateButton: 'Manage User'
+	stringDropButton: 'Drop users'
+	stringDropSubmit: 'Drop users'
+	stringDropRecordDialogTitle: 'Drop user'
+	stringSelectUserType: 'select user type...'
+	stringTitle: 'User Management'
+	stringTableHeaders: [
+		'Full Name'
+		'E-Mail Address'
+		'Last Logged In'
+	]
+	#}}}
+	initTableHeadStrings: (t) => #{{{
+		t.stringTableHeaders = @stringTableHeaders
+
+		for header in t.stringTableHeaders
+			t.tableHeadRow
+			.append(
+				$('<th>')
+				.text(header)
+			)
+	#}}}
+	initParams: (t) => #{{{
+		super t
+		t.params.bPaginate = true
+		t.params.sAjaxSource = @urlListBase + '/' + $(t.table).attr('recordType')
+		t.params.fnRowCallback = (nRow, aData, iDisplayIndex, iDisplayIndexFull) =>
+			# @baseParams.fnRowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull)
+			row = $('td', nRow)
+			row.each (i) =>
+				switch i
+					when 0
+						$(row[i]).html('')
+						$(row[i])
+						.append(
+							_this.button
+								classes: [ 'btn-primary' ]
+								text: @stringUpdateButton
+								click: @updateDialogOpen
+						)
+					when 3
+						if aData[i] == 0
+							ts = 'never'
+						else
+							ts = new Date(aData[i])
+						$(row[i]).text(ts)
+					else
+						$(row[i])
+						.text(aData[i])
+		return t.params
+	#}}}
+	initTableToolbar: (t) => #{{{
+		t.stringTableToolbarText = t.description + 's'
+		super t
+	#}}}
+	insertDialogFormSelectCreate: (data) => #{{{
+		super(data)
+		@insertDialogFormSelect.attr('disabled', true) if data?
+	#}}}
+
+manageUserTable = null
+$(document).ready =>
+	manageUserTable = new cypherpunk.backend.admin.userjs.manageUser.table()
+	manageUserTable.ajax 'GET', manageUserTable.urlBase + '/types', null, (types) =>
+		manageUserTable.init(types)
+
+# vim: foldmethod=marker wrap

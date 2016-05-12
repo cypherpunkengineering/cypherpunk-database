@@ -1,0 +1,39 @@
+.tableToolbar div {
+	display: inline-block;
+	float: left;
+}
+
+/* move "show X entries" pull-down to right side */
+.dataTables_length {
+	width: auto;
+	float: right;
+}
+
+
+div.dataTables_length select {
+	width: 75px;
+}
+
+div.dataTables_length {
+	width: 100%;
+}
+
+div.dataTables_filter label {
+	float: right;
+	width: 460px;
+}
+
+div.dataTables_info {
+	padding-top: 8px;
+}
+
+div.dataTables_paginate {
+	float: right;
+	margin: 0;
+	display: none;
+}
+
+table {
+	margin: 1em 0;
+	clear: both;
+}
