@@ -34,7 +34,7 @@ class cypherpunk.backend.logout extends cypherpunk.backend.base
 class cypherpunk.backend.home extends cypherpunk.backend.template
 	level: cypherpunk.backend.server.power.level.customer
 	handler: (req, res) => #{{{
-		@redirect(req, res, @parent.getFullPath() + '/account/me')
+		@redirect(req, res, @parent.getFullPath() + '/account/overview')
 	#}}}
 
 class cypherpunk.backend.module extends wiz.framework.http.resource.root
