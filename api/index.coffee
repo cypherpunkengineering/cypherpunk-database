@@ -11,6 +11,7 @@ class cypherpunk.backend.api.base extends cypherpunk.backend.base
 	level: cypherpunk.backend.server.power.level.admin
 
 require './user'
+require './vpn'
 
 class cypherpunk.backend.api.module extends cypherpunk.backend.api.base
 	mongo: null
@@ -49,6 +50,7 @@ class cypherpunk.backend.api.module extends cypherpunk.backend.api.base
 		@wizDB = new wiz.framework.http.database.mongo.driver(@server, this, @wizDBmongo.mongoConfig, @wizDBmongo.mongoServerOptions, @wizDBmongo.mongoDbOptions)
 
 		@user = @routeAdd new cypherpunk.backend.api.user.resource(@server, this, 'user')
+		@vpn = @routeAdd new cypherpunk.backend.api.vpn.resource(@server, this, 'vpn')
 
 	init: () =>
 		@cypherpunkDB.init()
