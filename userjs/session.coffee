@@ -215,7 +215,7 @@ class wiz.portal.userjs.session extends wiz.framework.app.base
 			.addClass('dropdown-toggle')
 			.attr('data-toggle', 'dropdown')
 			.attr('href', '#')
-			.text(wiz.session.acct.fullname)
+			.text(wiz.session.acct.fullname or wiz.session.acct.email)
 			.append(
 				$('<b>')
 				.addClass('caret')
