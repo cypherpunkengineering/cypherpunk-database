@@ -6,9 +6,9 @@ require '../util/strval'
 
 https = require 'https'
 
-wiz.package 'wiz.framework.bitcoin.fxrateapi'
+wiz.package 'wiz.framework.money.fxrateapi'
 
-class wiz.framework.bitcoin.fxrateapi
+class wiz.framework.money.fxrateapi
 	class httpreq extends wiz.framework.http.client.base
 
 	debug: true
