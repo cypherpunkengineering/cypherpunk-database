@@ -1,0 +1,55 @@
+extends wiz
+block wizBody
+  .plans
+    .plan
+      h3.plan-title Started
+      p.plan-price
+        | $19 
+        span.plan-unit per month
+      ul.plan-features
+        li.plan-feature
+          | 2 
+          span.plan-feature-name websites
+        li.plan-feature
+          | 5
+          span.plan-feature-unit GB
+          span.plan-feature-name storage
+        li.plan-feature
+          | 3 
+          span.plan-feature-name users
+      a.plan-button(href='/buy') Choose Plan
+    .plan.plan-highlight
+      p.plan-recommended Recommended
+      h3.plan-title Team
+      p.plan-price
+        | $49 
+        span.plan-unit per month
+      ul.plan-features
+        li.plan-feature
+          | 5 
+          span.plan-feature-name websites
+        li.plan-feature
+          | 20
+          span.plan-feature-unit GB
+          span.plan-feature-name storage
+        li.plan-feature
+          | 10 
+          span.plan-feature-name users
+      a.plan-button(href='/buy') Choose Plan
+    .plan
+      h3.plan-title Premium
+      p.plan-price
+        | $99 
+        span.plan-unit per month
+      ul.plan-features
+        li.plan-feature
+          | 20 
+          span.plan-feature-name websites
+        li.plan-feature
+          | 50
+          span.plan-feature-unit GB
+          span.plan-feature-name storage
+        li.plan-feature
+          | 25 
+          span.plan-feature-name users
+      a.plan-button(href='/buy') Choose Plan

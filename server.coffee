@@ -9,8 +9,9 @@ require './power'
 wiz.package 'cypherpunk.backend.server'
 
 class cypherpunk.backend.server.csp extends wiz.framework.http.server.csp
-	frame: [ "'self'" ]
+	frame: [ "'self'", "https://*.stripe.com" ]
 	img: [ "'self'" ]
+	script: [ "'self'", "https://js.stripe.com", "'unsafe-inline'" ]
 
 class cypherpunk.backend.server.main extends wiz.framework.http.server.base
 	powerLevel: cypherpunk.backend.server.power.level
