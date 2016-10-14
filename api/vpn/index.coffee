@@ -26,11 +26,23 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			for country in wiz.framework.util.world.regionMap[region]
 				regionList[region][country] = []
 				regionList[region][country].push
-					city: 'Location 1'
-					ip: '1.2.3.4'
+					city: 'Tokyo Development'
+					ipDefault: '208.111.52.34'
+					ipNone: '208.111.52.35'
+					ipStrong: '208.111.52.36'
+					ipStealth: '208.111.52.37'
 				regionList[region][country].push
-					city: 'Location 2'
-					ip: '5.6.7.8'
+					city: 'Tokyo Production'
+					ipDefault: '208.111.52.2'
+					ipNone: '208.111.52.12'
+					ipStrong: '208.111.52.22'
+					ipStealth: '208.111.52.32'
+				regionList[region][country].push
+					city: 'Honolulu'
+					ipDefault: '199.68.252.203'
+					ipNone: '199.68.252.203'
+					ipStrong: '199.68.252.203'
+					ipStealth: '199.68.252.203'
 
 		res.send 200, regionList
 	#}}}
