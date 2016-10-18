@@ -79,16 +79,16 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			regionName: 'Honolulu, Hawaii'
 
 			ovHostname: 'honolulu.vpn.cypherpunk.network'
-			ovDefault: '208.111.48.133'
-			ovNone: '208.111.48.134'
-			ovStrong: '208.111.48.135'
-			ovStealth: '208.111.48.136'
+			ovDefault: '208.111.48.146'
+			ovNone: '208.111.48.147'
+			ovStrong: '208.111.48.148'
+			ovStealth: '208.111.48.149'
 
 			ipsecHostname: 'honolulu.vpn.cypherpunk.network'
-			ipsecDefault: '208.111.48.137'
+			ipsecDefault: '208.111.48.150'
 
-			httpDefault: '208.111.48.138'
-			socksDefault: '208.111.48.139'
+			httpDefault: '208.111.48.151'
+			socksDefault: '208.111.48.152'
 
 		regionList.NA.US.push
 			id: 'newyork'
