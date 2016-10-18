@@ -27,7 +27,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 				regionList[region][country] = []
 
 		regionList.AS.JP.push
-			regionName: 'Tokyo Development'
+			regionName: 'Tokyo Dev, Japan'
 
 			ovHostname: 'freebsd-test.tokyo.vpn.cypherpunk.network'
 			ovDefault: '208.111.52.34'
@@ -42,7 +42,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.AS.JP.push
-			regionName: 'Tokyo 1'
+			regionName: 'Tokyo 1, Japan'
 
 			ovHostname: 'freebsd1.tokyo.vpn.cypherpunk.network'
 			ovDefault: '208.111.52.1'
@@ -57,7 +57,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.AS.JP.push
-			regionName: 'Tokyo 2'
+			regionName: 'Tokyo 2, Japan'
 
 			ovHostname: 'freebsd2.tokyo.vpn.cypherpunk.network'
 			ovDefault: '208.111.52.2'
@@ -72,7 +72,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			regionName: 'Honolulu'
+			regionName: 'Honolulu, Hawaii'
 
 			ovHostname: 'honolulu.vpn.cypherpunk.network'
 			ovDefault: '208.111.48.133'
@@ -87,7 +87,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '208.111.48.139'
 
 		regionList.NA.US.push
-			regionName: 'New York'
+			regionName: 'New York, New York'
 
 			ovHostname: 'newyork.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -102,7 +102,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			regionName: 'Silicon Valley'
+			regionName: 'Silicon Valley, California'
 
 			ovHostname: 'siliconvalley.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -117,7 +117,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			regionName: 'Los Angeles'
+			regionName: 'Los Angeles, California'
 
 			ovHostname: 'losangeles.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -132,7 +132,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			regionName: 'Seattle'
+			regionName: 'Seattle, Washington'
 
 			ovHostname: 'seattle.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -147,7 +147,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			regionName: 'Dallas'
+			regionName: 'Dallas, Texas'
 
 			ovHostname: 'dallas.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -162,7 +162,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			regionName: 'Atlanta'
+			regionName: 'Atlanta, Georgia'
 
 			ovHostname: 'atlanta.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -177,7 +177,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.NA.CA.push
-			regionName: 'Toronto'
+			regionName: 'Toronto, Canada'
 
 			ovHostname: 'toronto.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -192,7 +192,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.NA.CA.push
-			regionName: 'Vancouver'
+			regionName: 'Vancouver, Canada'
 
 			ovHostname: 'vancouver.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -207,7 +207,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.SA.BR.push
-			regionName: 'Sao Paulo'
+			regionName: 'Sao Paulo, Brazil'
 
 			ovHostname: 'saopaulo.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -222,7 +222,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.EU.GB.push
-			regionName: 'London'
+			regionName: 'London, UK'
 
 			ovHostname: 'london.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -237,7 +237,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.EU.FR.push
-			regionName: 'Paris'
+			regionName: 'Paris, France'
 
 			ovHostname: 'paris.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -252,7 +252,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.EU.CH.push
-			regionName: 'Zurich'
+			regionName: 'Zurich, Switzerland'
 
 			ovHostname: 'zurich.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -267,7 +267,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.EU.NL.push
-			regionName: 'Amsterdam'
+			regionName: 'Amsterdam, Netherlands'
 
 			ovHostname: 'amsterdam.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -282,7 +282,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.EU.DE.push
-			regionName: 'Germany'
+			regionName: 'Frankfurt, Germany'
 
 			ovHostname: 'frankfurt.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
@@ -297,7 +297,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.EU.TR.push
-			regionName: 'Istanbul'
+			regionName: 'Istanbul, Turkey'
 
 			ovHostname: 'istanbul.vpn.cypherpunk.network'
 			ovDefault: '255.255.255.255'
