@@ -36,7 +36,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			ovStrong: '208.111.52.36'
 			ovStealth: '208.111.52.37'
 
-			ipsecHostname: 'freebsd-test.tokyo.vpn.cypherpunk.network'
+			ipsecHostname: 'tokyo.vpn.cypherpunk.network'
 			ipsecDefault: '208.111.52.34'
 
 			httpDefault: '255.255.255.255'
@@ -52,7 +52,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			ovStrong: '208.111.52.21'
 			ovStealth: '208.111.52.31'
 
-			ipsecHostname: 'freebsd2.tokyo.vpn.cypherpunk.network'
+			ipsecHostname: 'tokyo.vpn.cypherpunk.network'
 			ipsecDefault: '208.111.52.41'
 
 			httpDefault: '255.255.255.255'
@@ -68,7 +68,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			ovStrong: '208.111.52.22'
 			ovStealth: '208.111.52.32'
 
-			ipsecHostname: 'freebsd2.tokyo.vpn.cypherpunk.network'
+			ipsecHostname: 'tokyo.vpn.cypherpunk.network'
 			ipsecDefault: '208.111.52.42'
 
 			httpDefault: '255.255.255.255'
@@ -78,7 +78,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			id: 'honolulu'
 			regionName: 'Honolulu, Hawaii'
 
-			ovHostname: 'honolulu.vpn.cypherpunk.network'
+			ovHostname: 'vpn3.honolulu.vpn.cypherpunk.network'
 			ovDefault: '208.111.48.146'
 			ovNone: '208.111.48.147'
 			ovStrong: '208.111.48.148'
