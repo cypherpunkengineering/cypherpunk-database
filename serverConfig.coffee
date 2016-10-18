@@ -10,8 +10,8 @@ class cypherpunk.backend.server.config extends wiz.framework.http.server.configB
 
 	constructor: () ->
 
-		if wiz.hostname is 'cypherpunk.wiz.biz'
-			@listeners[0].host = '172.19.11.111'
+		if wiz.hostname is 'cypherpunk-backend-dev'
+			@listeners[0].host = '10.111.52.113'
 			@listeners[0].port = 11080
 		else if wiz.hostname is 'wizbook3-ubuntu'
 			@listeners[0].host = '192.168.32.128'
