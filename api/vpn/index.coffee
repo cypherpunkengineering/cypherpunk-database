@@ -27,164 +27,319 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 				regionList[region][country] = []
 
 		regionList.AS.JP.push
-			city: 'Tokyo Development'
-			commonName: 'freebsd-test.tokyo.vpn.cypherpunk.network'
-			ipDefault: '208.111.52.34'
-			ipNone: '208.111.52.35'
-			ipStrong: '208.111.52.36'
-			ipStealth: '208.111.52.37'
+			regionName: 'Tokyo Development'
+
+			ovHostname: 'freebsd-test.tokyo.vpn.cypherpunk.network'
+			ovDefault: '208.111.52.34'
+			ovNone: '208.111.52.35'
+			ovStrong: '208.111.52.36'
+			ovStealth: '208.111.52.37'
+
+			ipsecHostname: 'freebsd-test.tokyo.vpn.cypherpunk.network'
+			ipsecDefault: '208.111.52.34'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.AS.JP.push
-			city: 'Tokyo Production'
-			commonName: 'freebsd2.tokyo.vpn.cypherpunk.network'
-			ipDefault: '208.111.52.2'
-			ipNone: '208.111.52.12'
-			ipStrong: '208.111.52.22'
-			ipStealth: '208.111.52.32'
+			regionName: 'Tokyo 1'
+
+			ovHostname: 'freebsd1.tokyo.vpn.cypherpunk.network'
+			ovDefault: '208.111.52.1'
+			ovNone: '208.111.52.11'
+			ovStrong: '208.111.52.21'
+			ovStealth: '208.111.52.31'
+
+			ipsecHostname: 'freebsd2.tokyo.vpn.cypherpunk.network'
+			ipsecDefault: '208.111.52.41'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
+
+		regionList.AS.JP.push
+			regionName: 'Tokyo 2'
+
+			ovHostname: 'freebsd2.tokyo.vpn.cypherpunk.network'
+			ovDefault: '208.111.52.2'
+			ovNone: '208.111.52.12'
+			ovStrong: '208.111.52.22'
+			ovStealth: '208.111.52.32'
+
+			ipsecHostname: 'freebsd2.tokyo.vpn.cypherpunk.network'
+			ipsecDefault: '208.111.52.42'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			city: 'New York'
-			commonName: 'newyork.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Honolulu'
+
+			ovHostname: 'honolulu.vpn.cypherpunk.network'
+			ovDefault: '208.111.48.133'
+			ovNone: '208.111.48.134'
+			ovStrong: '208.111.48.135'
+			ovStealth: '208.111.48.136'
+
+			ipsecHostname: 'honolulu.vpn.cypherpunk.network'
+			ipsecDefault: '208.111.48.137'
+
+			httpDefault: '208.111.48.138'
+			socksDefault: '208.111.48.139'
 
 		regionList.NA.US.push
-			city: 'Silicon Valley'
-			commonName: 'siliconvalley.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'New York'
+
+			ovHostname: 'newyork.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'newyork.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			city: 'Los Angeles'
-			commonName: 'losangeles.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Silicon Valley'
+
+			ovHostname: 'siliconvalley.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'siliconvalley.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			city: 'Seattle'
-			commonName: 'seattle.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Los Angeles'
+
+			ovHostname: 'losangeles.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'losangeles.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			city: 'dallas'
-			commonName: 'dallas.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Seattle'
+
+			ovHostname: 'seattle.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'seattle.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			city: 'Atlanta'
-			commonName: 'atlanta.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Dallas'
+
+			ovHostname: 'dallas.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'dallas.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.NA.US.push
-			city: 'Honolulu'
-			commonName: 'honolulu.vpn.cypherpunk.network'
-			ipDefault: '199.68.252.203'
-			ipNone: '199.68.252.203'
-			ipStrong: '199.68.252.203'
-			ipStealth: '199.68.252.203'
+			regionName: 'Atlanta'
+
+			ovHostname: 'atlanta.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'atlanta.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.NA.CA.push
-			city: 'Toronto'
-			commonName: 'toronto.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Toronto'
+
+			ovHostname: 'toronto.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'toronto.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.NA.CA.push
-			city: 'vancouver'
-			commonName: 'vancouver.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Vancouver'
+
+			ovHostname: 'vancouver.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'vancouver.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.SA.BR.push
-			city: 'Sao Paulo'
-			commonName: 'saopaulo.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Sao Paulo'
+
+			ovHostname: 'saopaulo.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'saopaulo.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.EU.GB.push
-			city: 'London'
-			commonName: 'london.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'London'
+
+			ovHostname: 'london.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'london.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.EU.FR.push
-			city: 'Paris'
-			commonName: 'paris.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Paris'
+
+			ovHostname: 'paris.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'paris.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.EU.CH.push
-			city: 'Zurich'
-			commonName: 'zurich.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Zurich'
+
+			ovHostname: 'zurich.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'zurich.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.EU.NL.push
-			city: 'Amsterdam'
-			commonName: 'Amsterdam.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Amsterdam'
+
+			ovHostname: 'amsterdam.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'amsterdam.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.EU.DE.push
-			city: 'Germany'
-			commonName: 'frankfurt.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Germany'
+
+			ovHostname: 'frankfurt.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'frankfurt.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.EU.TR.push
-			city: 'Istanbul'
-			commonName: 'istanbul.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Istanbul'
+
+			ovHostname: 'istanbul.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'instanbul.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.AS.HK.push
-			city: 'Hong Kong'
-			commonName: 'hongkong.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Hong Kong'
+
+			ovHostname: 'hongkong.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'hongkong.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		regionList.AS.SG.push
-			city: 'Singapore'
-			commonName: 'singapore.vpn.cypherpunk.network'
-			ipDefault: '255.255.255.255'
-			ipNone: '255.255.255.255'
-			ipStrong: '255.255.255.255'
-			ipStealth: '255.255.255.255'
+			regionName: 'Singapore'
+
+			ovHostname: 'singapore.vpn.cypherpunk.network'
+			ovDefault: '255.255.255.255'
+			ovNone: '255.255.255.255'
+			ovStrong: '255.255.255.255'
+			ovStealth: '255.255.255.255'
+
+			ipsecHostname: 'singapore.vpn.cypherpunk.network'
+			ipsecDefault: '255.255.255.255'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
 
 		#console.log regionList
 		res.send 200, regionList
