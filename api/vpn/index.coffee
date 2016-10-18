@@ -27,23 +27,27 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 				regionList[region][country] = []
 				regionList[region][country].push
 					city: 'Tokyo Development'
+					commonName: 'freebsd-test.tokyo.vpn.cypherpunk.network'
 					ipDefault: '208.111.52.34'
 					ipNone: '208.111.52.35'
 					ipStrong: '208.111.52.36'
 					ipStealth: '208.111.52.37'
 				regionList[region][country].push
 					city: 'Tokyo Production'
+					commonName: 'freebsd2.tokyo.vpn.cypherpunk.network'
 					ipDefault: '208.111.52.2'
 					ipNone: '208.111.52.12'
 					ipStrong: '208.111.52.22'
 					ipStealth: '208.111.52.32'
 				regionList[region][country].push
 					city: 'Honolulu'
+					commonName: 'honolulu.vpn.cypherpunk.network'
 					ipDefault: '199.68.252.203'
 					ipNone: '199.68.252.203'
 					ipStrong: '199.68.252.203'
 					ipStealth: '199.68.252.203'
 
+		#console.log regionList
 		res.send 200, regionList
 	#}}}
 
