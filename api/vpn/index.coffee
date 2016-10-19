@@ -27,8 +27,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 				regionList[region][country] = []
 
 		regionList.AS.JP.push
-			id: 'tokyodev'
-			regionName: 'Tokyo Dev, Japan'
+			id: 'tokyodev3'
+			regionName: 'Dev 3, Japan'
 
 			ovHostname: 'freebsd-test.tokyo.vpn.cypherpunk.network'
 			ovDefault: '208.111.52.34'
@@ -43,8 +43,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			socksDefault: '255.255.255.255'
 
 		regionList.AS.JP.push
-			id: 'tokyo1'
-			regionName: 'Tokyo 1, Japan'
+			id: 'tokyodev1'
+			regionName: 'Dev 1, Japan'
 
 			ovHostname: 'freebsd1.tokyo.vpn.cypherpunk.network'
 			ovDefault: '208.111.52.1'
@@ -60,7 +60,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 
 		regionList.AS.JP.push
 			id: 'tokyo2'
-			regionName: 'Tokyo 2, Japan'
+			regionName: 'Tokyo, Japan'
 
 			ovHostname: 'freebsd2.tokyo.vpn.cypherpunk.network'
 			ovDefault: '208.111.52.2'
