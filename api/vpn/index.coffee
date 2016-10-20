@@ -19,14 +19,14 @@ class cypherpunk.backend.api.vpn.resource extends cypherpunk.backend.api.base
 
 class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.customer
-	handler: (req, res) => #{{{
+	handler: (req, res) =>
 		regionList = {}
 		for region of wiz.framework.util.world.regionMap
 			regionList[region] = {}
 			for country in wiz.framework.util.world.regionMap[region]
 				regionList[region][country] = []
 
-		regionList.AS.JP.push
+		regionList.AS.JP.push # {{{
 			id: 'tokyodev3'
 
 			regionName: 'Dev 3, Japan'
@@ -44,7 +44,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.AS.JP.push
+		# }}}
+		regionList.AS.JP.push # {{{
 			id: 'tokyodev1'
 
 			regionName: 'Dev 1, Japan'
@@ -62,7 +63,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.AS.JP.push
+		# }}}
+		regionList.AS.JP.push # {{{
 			id: 'tokyo2'
 
 			regionName: 'Tokyo, Japan'
@@ -80,7 +82,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.NA.US.push
+		# }}}
+		regionList.NA.US.push # {{{
 			id: 'honolulu'
 
 			regionName: 'Honolulu, Hawaii'
@@ -98,7 +101,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '208.111.48.151'
 			socksDefault: '208.111.48.152'
 
-		regionList.NA.US.push
+		# }}}
+		regionList.NA.US.push # {{{
 			id: 'newyork'
 
 			regionName: 'New York, New York'
@@ -116,7 +120,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.NA.US.push
+		# }}}
+		regionList.NA.US.push # {{{
 			id: 'siliconvalley'
 
 			regionName: 'Silicon Valley, California'
@@ -134,7 +139,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.NA.US.push
+		# }}}
+		regionList.NA.US.push # {{{
 			id: 'losangeles'
 
 			regionName: 'Los Angeles, California'
@@ -152,7 +158,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.NA.US.push
+		# }}}
+		regionList.NA.US.push # {{{
 			id: 'seattle'
 
 			regionName: 'Seattle, Washington'
@@ -170,7 +177,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.NA.US.push
+		# }}}
+		regionList.NA.US.push # {{{
 			id: 'dallas'
 
 			regionName: 'Dallas, Texas'
@@ -188,7 +196,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.NA.US.push
+		# }}}
+		regionList.NA.US.push # {{{
 			id: 'atlanta'
 
 			regionName: 'Atlanta, Georgia'
@@ -206,7 +215,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.NA.CA.push
+		# }}}
+		regionList.NA.CA.push # {{{
 			id: 'toronto'
 
 			regionName: 'Toronto, Canada'
@@ -224,7 +234,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.NA.CA.push
+		# }}}
+		regionList.NA.CA.push # {{{
 			id: 'vancouver'
 
 			regionName: 'Vancouver, Canada'
@@ -242,7 +253,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.SA.BR.push
+		# }}}
+		regionList.SA.BR.push # {{{
 			id: 'saopaulo'
 
 			regionName: 'Sao Paulo, Brazil'
@@ -260,7 +272,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.EU.GB.push
+		# }}}
+		regionList.EU.GB.push # {{{
 			id: 'london'
 
 			regionName: 'London, UK'
@@ -278,7 +291,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.EU.FR.push
+		# }}}
+		regionList.EU.FR.push # {{{
 			id: 'paris'
 
 			regionName: 'Paris, France'
@@ -296,7 +310,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.EU.CH.push
+		# }}}
+		regionList.EU.CH.push # {{{
 			id: 'zurich'
 
 			regionName: 'Zurich, Switzerland'
@@ -314,7 +329,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.EU.NL.push
+		# }}}
+		regionList.EU.NL.push # {{{
 			id: 'amsterdam'
 
 			regionName: 'Amsterdam, Netherlands'
@@ -332,7 +348,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.EU.DE.push
+		# }}}
+		regionList.EU.DE.push # {{{
 			id: 'frankfurt'
 
 			regionName: 'Frankfurt, Germany'
@@ -350,7 +367,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.EU.TR.push
+		# }}}
+		regionList.EU.TR.push # {{{
 			id: 'istanbul'
 
 			regionName: 'Istanbul, Turkey'
@@ -368,7 +386,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.AS.HK.push
+		# }}}
+		regionList.AS.HK.push # {{{
 			id: 'hongkong'
 
 			regionName: 'Hong Kong'
@@ -386,7 +405,8 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		regionList.AS.SG.push
+		# }}}
+		regionList.AS.SG.push # {{{
 			id: 'singapore'
 
 			regionName: 'Singapore'
@@ -403,9 +423,9 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
+		#}}}
 
 		#console.log regionList
 		res.send 200, regionList
-	#}}}
 
 # vim: foldmethod=marker wrap
