@@ -12,6 +12,7 @@ class cypherpunk.backend.api.base extends cypherpunk.backend.base
 
 require './user'
 require './vpn'
+require './subscription'
 
 class cypherpunk.backend.api.module extends cypherpunk.backend.api.base
 	mongo: null
@@ -51,6 +52,7 @@ class cypherpunk.backend.api.module extends cypherpunk.backend.api.base
 
 		@user = @routeAdd new cypherpunk.backend.api.user.resource(@server, this, 'user')
 		@vpn = @routeAdd new cypherpunk.backend.api.vpn.resource(@server, this, 'vpn')
+		@subscription = @routeAdd new cypherpunk.backend.api.subscription.resource(@server, this, 'subscription')
 
 	init: () =>
 		@cypherpunkDB.init()
