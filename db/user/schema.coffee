@@ -14,7 +14,11 @@ class type
 class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.docMultiType
 
 	@passwordKey: 'password'
+	@customerKey: 'customer'
 
+	@fromStranger: (req, res) => #{{{
+		return @fromUser(req, res, 'customer', req.body)
+	#}}}
 	@fromUser: (req, res, userType, userData, updating = false) => #{{{
 
 		this.__super__.constructor.types = @types
