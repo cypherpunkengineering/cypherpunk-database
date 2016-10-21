@@ -41,7 +41,7 @@ class wiz.framework.http.acct.authenticate.userpasswd extends wiz.framework.http
 			if user?.id and @pwValidate(req, res, user, req.body.password)
 				return @onAuthenticateSuccess(req, res, user)
 
-			return res.send 400, 'username/password verification failed'
+			return res.send 400, 'user/pass authentication failed'
 	#}}}
 
 # vim: foldmethod=marker wrap

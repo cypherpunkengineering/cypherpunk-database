@@ -7,8 +7,9 @@ require '../db/mongo'
 require './session'
 
 require './db'
+require './identify'
 require './authenticate'
-require './otpkeys'
+#require './otpkeys'
 require './logout'
 
 wiz.package 'wiz.framework.http.acct.module'
@@ -72,16 +73,19 @@ class wiz.framework.http.acct.module extends wiz.framework.http.resource.base
 		# create db classes with db driver instance
 		@db =
 			accounts: new wiz.framework.http.acct.db.accounts(@server, this, @mongo)
-			otpkeys: new wiz.framework.http.acct.db.otpkeys(@server, this, @mongo)
+			#otpkeys: new wiz.framework.http.acct.db.otpkeys(@server, this, @mongo)
 
 		# logout and destroy session
 		@routeAdd new wiz.framework.http.acct.logout(@server, this, 'logout', 'POST')
 
 		# load the account authentication sub-module
+		@routeAdd new wiz.framework.http.acct.identify.module(@server, this, 'identify')
+
+		# load the account authentication sub-module
 		@routeAdd new wiz.framework.http.acct.authenticate.module(@server, this, 'authenticate')
 
 		# load the account otpkeys sub-module
-		@routeAdd new wiz.framework.http.acct.otpkeys.module(@server, this, 'otpkeys')
+		# @routeAdd new wiz.framework.http.acct.otpkeys.module(@server, this, 'otpkeys')
 
 	init: () =>
 		# connect to db
