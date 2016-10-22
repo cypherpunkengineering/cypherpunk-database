@@ -78,7 +78,55 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 		) #}}}
-		support: (new type 'support', 'Support Staff', 'list', #{{{
+		affiliate: (new type 'affiliate', 'Affiliate', 'list', #{{{
+			email:
+				label: 'email address'
+				placeholder: 'satoshin@gmx.com'
+				type: 'email'
+				maxlen: 30
+				required: true
+
+			fullname:
+				label: 'full name'
+				type: 'ascii'
+				maxlen: 50
+				placeholder: 'Satoshi Nakamoto'
+				required: true
+
+			password:
+				label: 'set password'
+				type: 'asciiNoSpace'
+				minlen: 6
+				maxlen: 50
+				placeholder: ''
+				required: true
+
+		) #}}}
+		support: (new type 'support', 'Support Agent', 'list', #{{{
+			email:
+				label: 'email address'
+				placeholder: 'satoshin@gmx.com'
+				type: 'email'
+				maxlen: 30
+				required: true
+
+			fullname:
+				label: 'full name'
+				type: 'ascii'
+				maxlen: 50
+				placeholder: 'Satoshi Nakamoto'
+				required: true
+
+			password:
+				label: 'set password'
+				type: 'asciiNoSpace'
+				minlen: 6
+				maxlen: 50
+				placeholder: ''
+				required: true
+
+		) #}}}
+		legal: (new type 'legal', 'Attorney', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'

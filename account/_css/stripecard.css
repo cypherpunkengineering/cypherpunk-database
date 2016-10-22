@@ -1,0 +1,153 @@
+button {
+    background: #0e99e5;
+    box-shadow: 0 0 2px 0 rgba(0,0,0,.07),0 3px 8px 0 rgba(0,0,0,.1);
+    border-bottom: 1px solid #098dd5;
+    border-radius: 4px;
+    height: 32px;
+    font-size: 14px;
+    color: #fff;
+    font-weight: 500;
+    padding: 0 12px;
+    line-height: 32px;
+    cursor: pointer;
+    outline: none;
+    font-family: Whitney SSm A,Whitney SSm B,Helvetica,Arial;
+    display: inline-block;
+    text-decoration: none
+}
+
+button:not(:first-child),button:not(:first-child) {
+    margin-top: 14px
+}
+
+button.disabled,button:disabled {
+    color: hsla(0,0%,100%,.7)
+}
+
+button:active,button:active {
+    background: #0076b1;
+    border-bottom-color: #066599
+}
+
+button.success,button.success {
+    background: #12c349;
+    border-bottom-color: #0db140;
+    color: #d0ffdf
+}
+
+button.arrow,button.arrow {
+    background-image: url(/img/documentation/icon-arrow-white.svg);
+    background-size: 12px 12px;
+    background-position: calc(100% - 10px) 11px;
+    background-repeat: no-repeat;
+    padding-right: 26px
+}
+
+.row
+{
+	height: 45px;
+}
+
+.card-form
+{
+    width: 312px;
+    background: #fff;
+    box-shadow: 0 0 2px 0 rgba(0,0,0,.07),0 3px 8px 0 rgba(0,0,0,.1);
+    border-radius: 5px;
+    font-size: 14px;
+    padding: 2px 12px
+}
+
+.card-form .row
+{
+    border-bottom: 1px solid #ededed;
+    display: flex;
+    flex-direction: row
+}
+
+.card-form .row:last-child
+{
+    text-align: right;
+    border: none;
+    flex-direction: column;
+    align-items: flex-end
+}
+
+.card-form .column
+{
+    position: relative;
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    width: 100%
+}
+
+.card-form .column:not(:first-child) label
+{
+    margin-left: 14px
+}
+
+.card-form .column:not(:first-child):after
+{
+    content: '';
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 1px
+}
+
+.card-form input,.card-form label
+{
+    padding: 14px 0;
+    font-size: 14px;
+    line-height: 16px;
+    outline: none
+}
+
+.card-form label
+{
+    display: inline-block;
+    width: 82px;
+    font-weight: 600;
+    flex-shrink: 0
+}
+
+.card-form .cvc label
+{
+    width: 60px
+}
+
+.card-form input
+{
+    border: none;
+    background: none;
+    width: 100%
+}
+
+.card-form button
+{
+    width: calc(50% - 14px);
+    margin-top: 10px;
+    margin-bottom: 8px
+}
+
+.card-form .errors
+{
+    color: #e13760;
+    font-size: 13px;
+    background: #fffbfc;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 8px;
+    margin: 6px 0 0;
+    line-height: 18px
+}
+
+.card-form .errors:empty
+{
+    display: none
+}
+

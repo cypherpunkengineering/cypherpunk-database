@@ -1,0 +1,21 @@
+extends wiz
+
+block wizBody
+	script(type='text/javascript').
+		Stripe.setPublishableKey('pk_test_V8lLSY93CP6w9SFgqCmw8FUg');
+	.container
+		.column.no-shrink
+			form#payment-form.card-form
+				.row
+					label Number
+					input#number(type='text', size='20', value='4242 4242 4242 4242', data-stripe='number')
+				.row
+					.column
+						label Expiry
+						input#exp(type='text', size='12', placeholder='MM / YY', value='12 / 17', data-stripe='exp')
+					.column.cvc
+						label CVC
+						input#cvc(type='text', size='4', value='123', data-stripe='cvc')
+				.errors
+				.row
+					button.arrow(type='submit') Submit

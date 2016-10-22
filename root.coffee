@@ -39,14 +39,18 @@ class cypherpunk.backend.home extends cypherpunk.backend.template
 
 class cypherpunk.backend.module extends wiz.framework.http.resource.root
 	load: () => #{{{
-		# top-level stuff
-		@routeAdd new cypherpunk.backend.home(@server, this, '')
+		# top-level public content
+		require './public'
+		@routeAdd new cypherpunk.backend.public.root(@server, this, '')
+		#@routeAdd new cypherpunk.backend.public.buy(@server, this, 'buy')
+
+		# login->home
 		@routeAdd new cypherpunk.backend.home(@server, this, 'home')
 		@routeAdd new cypherpunk.backend.login(@server, this, 'login')
 
 		# static resources
 		@routeAdd new wiz.framework.http.resource.coffeeFolder(@server, this, '_coffee', __dirname)
-		@routeAdd new wiz.framework.http.resource.folder(@server, this, 'fonts', __dirname)
+		@routeAdd new wiz.framework.http.resource.folder(@server, this, '_font', __dirname)
 		@routeAdd new wiz.framework.http.resource.folder(@server, this, '_img', __dirname)
 		@routeAdd new wiz.framework.http.resource.folder(@server, this, '_css', __dirname)
 		@routeAdd new wiz.framework.http.resource.folder(@server, this, '_js', __dirname)

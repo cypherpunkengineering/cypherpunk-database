@@ -61,6 +61,11 @@ class cypherpunk.backend.template extends cypherpunk.backend.jadeTemplate
 			@server.root.css('table.css')
 		]
 
+		@args.wizCSSfa ?=
+		[
+			@server.root.css('font-awesome.min.css')
+		]
+
 		@args.wizJS ?= [
 			@server.root.js('jquery-2.1.3.min.js')
 			@server.root.js('bootstrap.min.js')

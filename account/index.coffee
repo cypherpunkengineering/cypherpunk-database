@@ -3,6 +3,7 @@
 require './_framework'
 require './_framework/http/acct'
 require './_framework/http/resource/base'
+require './_framework/money/stripe'
 
 require '../template'
 
@@ -19,7 +20,6 @@ class cypherpunk.backend.account.overview extends cypherpunk.backend.template
 	init: () => #{{{
 		super()
 		@args.wizTitle = 'Account Overview'
-		@args.wizJS.push @parent.coffee('accountOverview')
 	#}}}
 
 class cypherpunk.backend.account.profile extends cypherpunk.backend.template
@@ -51,7 +51,9 @@ class cypherpunk.backend.account.module extends wiz.framework.http.acct.module
 
 		# static resources
 		@routeAdd new wiz.framework.http.resource.coffeeFolder(@server, this, '_coffee', __dirname)
+		@routeAdd new wiz.framework.http.resource.folder(@server, this, '_img', __dirname)
 		@routeAdd new wiz.framework.http.resource.folder(@server, this, '_css', __dirname)
+		@routeAdd new wiz.framework.http.resource.folder(@server, this, '_js', __dirname)
 
 		# public account creation api
 		@routeAdd new cypherpunk.backend.account.register.module(@server, this, 'register')
@@ -59,5 +61,6 @@ class cypherpunk.backend.account.module extends wiz.framework.http.acct.module
 		# top-level my account page
 		@routeAdd new cypherpunk.backend.account.overview(@server, this, 'overview')
 		@routeAdd new cypherpunk.backend.account.profile(@server, this, 'profile')
+		#@routeAdd new cypherpunk.backend.account.test(@server, this, 'test', 'POST')
 
 # vim: foldmethod=marker wrap
