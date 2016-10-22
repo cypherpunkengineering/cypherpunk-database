@@ -144,19 +144,19 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			id: 'losangeles'
 
 			regionName: 'Los Angeles, California'
-			regionLevel: 9999
+			regionLevel: 2000
 
-			ovHostname: 'losangeles.vpn.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovHostname: 'freebsd1.losangeles.vpn.cypherpunk.network'
+			ovDefault: '174.136.108.243'
+			ovNone: '174.136.108.244'
+			ovStrong: '174.136.108.245'
+			ovStealth: '174.136.108.246'
 
-			ipsecHostname: 'losangeles.vpn.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecHostname: 'freebsd1.losangeles.vpn.cypherpunk.network'
+			ipsecDefault: '174.136.108.247'
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: '174.136.108.248'
+			socksDefault: '174.136.108.249'
 
 		# }}}
 		regionList.NA.US.push # {{{
