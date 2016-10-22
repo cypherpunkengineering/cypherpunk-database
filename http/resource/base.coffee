@@ -90,6 +90,8 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		(
 			# a route for any method
 			route.method is 'ANY' or
+			# a route for OPTIONS method
+			req.method is 'OPTIONS' or
 			# a route for a specific method
 			route.method is req.method or
 			# a route for GET should also support HEAD
@@ -146,6 +148,12 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 			wiz.log.err err
 			res.send 500, 'server error'
 	#}}}
+	handlerOPTIONS: (req, res) => #{{{ default handler for OPTIONS method
+		return res.send 404 unless req.route?
+		res.setHeader 'Allow', req.route.method
+		res.send 200
+
+	#}}}
 
 	serve: (req, res, middleware = @middleware, handler = @handler) => # {{{
 		req._index_middleware = 0
@@ -156,15 +164,18 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 				req._index_middleware++
 				next(req, res, req.next)
 			else
-				process.nextTick =>
-					# sanity check
-					wiz.assert(handler, "invalid handler for #{@getFullPath()}")
+				# sanity check
+				wiz.assert(handler, "invalid handler for #{@getFullPath()}")
 
-					try # to handle the request if we can
-						handler(req, res)
-					catch e # otherwise send 500 error
-						console.log e.stack
-						@handler500 req, res, e.toString()
+				try # to handle the request if we can
+					if req.method is 'OPTIONS'
+						@handlerOPTIONS(req, res)
+					else
+						@handler(req, res)
+
+				catch e # otherwise send 500 error
+					console.log e.stack
+					@handler500 req, res, e.toString()
 
 		req.next()
 	#}}}
@@ -192,7 +203,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 			return true
 
 		# public pages for friends require a session
-		if req.session and @level is wiz.framework.http.resource.power.level.friend and
+		if req.session?.acct? and @level is wiz.framework.http.resource.power.level.friend and
 		(
 			@mask is wiz.framework.http.resource.power.mask.always or
 			@mask is wiz.framework.http.resource.power.mask.public
