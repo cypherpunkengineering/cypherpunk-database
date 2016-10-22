@@ -7,6 +7,8 @@ require './_framework/money/stripe'
 
 require '../template'
 
+require './register'
+
 wiz.package 'cypherpunk.backend.account'
 
 class cypherpunk.backend.account.overview extends cypherpunk.backend.template
@@ -52,6 +54,9 @@ class cypherpunk.backend.account.module extends wiz.framework.http.acct.module
 		@routeAdd new wiz.framework.http.resource.folder(@server, this, '_img', __dirname)
 		@routeAdd new wiz.framework.http.resource.folder(@server, this, '_css', __dirname)
 		@routeAdd new wiz.framework.http.resource.folder(@server, this, '_js', __dirname)
+
+		# public account creation api
+		@routeAdd new cypherpunk.backend.account.register.module(@server, this, 'register')
 
 		# top-level my account page
 		@routeAdd new cypherpunk.backend.account.overview(@server, this, 'overview')

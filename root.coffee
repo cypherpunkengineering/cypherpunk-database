@@ -57,7 +57,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 
 		# api module
 		require './api'
-		@routeAdd new cypherpunk.backend.api.module(@server, this, 'api')
+		@api = @routeAdd new cypherpunk.backend.api.module(@server, this, 'api')
 
 		# account module, based on framework classes
 		require './account'
@@ -66,7 +66,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 
 		# admin module
 		require './admin'
-		@routeAdd new cypherpunk.backend.admin.module(@server, this, 'admin')
+		@admin = @routeAdd new cypherpunk.backend.admin.module(@server, this, 'admin')
 
 		@stripeWrapper = new wiz.framework.money.stripe
 			apiKey: 'sk_test_UxTTPDN0LGZaD9NBtVUxuksJ'

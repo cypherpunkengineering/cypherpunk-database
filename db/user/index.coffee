@@ -58,8 +58,9 @@ class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseA
 
 				@listResponse(req, res, responseData, recordCount)
 	#}}}
-	insert: (req, res) => #{{{
-		return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
+	insert: (req, res, recordToInsert = null) => #{{{
+		if recordToInsert is null
+			return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
 		super req, res, recordToInsert, (result) =>
 			res.send 200
 	#}}}
@@ -106,6 +107,12 @@ class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseA
 	#}}}
 	myAccountDetails: (req, res) => #{{{
 		@update(req, res, req.session.acct.id)
+	#}}}
+
+	# public stranger APIs
+	signup: (req, res) => #{{{
+		return unless recordToInsert = @schema.fromStranger(req, res)
+		@insert req, res, recordToInsert
 	#}}}
 
 # vim: foldmethod=marker wrap
