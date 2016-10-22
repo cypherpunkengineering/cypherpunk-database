@@ -152,7 +152,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			ovStrong: '174.136.108.245'
 			ovStealth: '174.136.108.246'
 
-			ipsecHostname: 'freebsd1.losangeles.vpn.cypherpunk.network'
+			ipsecHostname: 'losangeles.vpn.cypherpunk.network'
 			ipsecDefault: '174.136.108.247'
 
 			httpDefault: '174.136.108.248'
