@@ -11,8 +11,8 @@ class cypherpunk.backend.public.root extends cypherpunk.backend.template
 
 	init: () => #{{{
 		super()
-		@file = wiz.rootpath + @parent.jade('buy.jade')
-		@args.wizCSS.push @parent.css('buy.css')
+#		@file = wiz.rootpath + @parent.jade('buy.jade')
+#		@args.wizCSS.push @parent.css('buy.css')
 		@args.wizTitle = 'cypherpunk'
 	#}}}
 

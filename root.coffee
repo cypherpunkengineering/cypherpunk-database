@@ -42,7 +42,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		# top-level public content
 		require './public'
 		@routeAdd new cypherpunk.backend.public.root(@server, this, '')
-		@routeAdd new cypherpunk.backend.public.buy(@server, this, 'buy')
+		#@routeAdd new cypherpunk.backend.public.buy(@server, this, 'buy')
 
 		# login->home
 		@routeAdd new cypherpunk.backend.home(@server, this, 'home')
