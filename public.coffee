@@ -34,30 +34,4 @@ class cypherpunk.backend.public.buy extends cypherpunk.backend.template
 		@args.wizJS.push @parent.coffee('card')
 	#}}}
 
-class cypherpunk.backend.public.subscribe extends cypherpunk.backend.template
-#	level: cypherpunk.backend.server.power.level.friend
-#	mask: cypherpunk.backend.server.power.mask.auth
-	level: cypherpunk.backend.server.power.level.stranger
-	mask: cypherpunk.backend.server.power.mask.public
-#	middleware: wiz.framework.http.acct.session.base
-	nav: false
-
-	init: () => #{{{
-		@method = 'POST'
-		super()
-	#}}}
-
-	handler: (req, res) => #{{{
-		args =
-			source: req.body.stripeToken
-			plan: "monthly"
-			email: "foo@foo.com"
-		console.log args
-		@parent.Stripe.customers.create args, (err, customer) =>
-			console.log err
-			return res.send 500, err if err
-			console.log customer
-			return res.send 200, 'ok!!'
-	#}}}
-
 # vim: foldmethod=marker wrap
