@@ -45,7 +45,7 @@ class wiz.framework.money.stripe
 		'VND'
 	] # }}}
 
-	constructor: () ->
+	constructor: (@options) ->
 		@Stripe = Stripe @options.apiKey
 
 	getInstance: () =>
