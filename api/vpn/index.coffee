@@ -106,19 +106,19 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			id: 'newyork'
 
 			regionName: 'New York, New York'
-			regionLevel: 9999
+			regionLevel: 2000
 
-			ovHostname: 'newyork.vpn.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovHostname: 'freebsd1.newyork.vpn.cypherpunk.network'
+			ovDefault: '204.145.66.35'
+			ovNone: '204.145.66.36'
+			ovStrong: '204.145.66.37'
+			ovStealth: '204.145.66.38'
 
 			ipsecHostname: 'newyork.vpn.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: '204.145.66.39'
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: '204.145.66.40'
+			socksDefault: '204.145.66.41'
 
 		# }}}
 		regionList.NA.US.push # {{{
