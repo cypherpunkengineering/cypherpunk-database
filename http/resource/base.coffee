@@ -171,7 +171,8 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 					if req.method is 'OPTIONS'
 						@handlerOPTIONS(req, res)
 					else
-						@handler(req, res)
+						# do not hardcode to @handler, must be handler in case of catchall callback from serve => thing above
+						handler(req, res)
 
 				catch e # otherwise send 500 error
 					console.log e.stack
