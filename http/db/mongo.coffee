@@ -233,7 +233,7 @@ class wiz.framework.http.database.mongo.base
 		debugstr = "#{@collectionName}.insert(#{JSON.stringify(criteria)})"
 		wiz.log.debug debugstr if @debug
 		@mongo.collection res, @collectionName, (collection) =>
-			collection.insert criteria.toJSON(), (err, criteria) =>
+			collection.insert criteria.toDB(), (err, criteria) =>
 				if err
 					wiz.log.err "INSERT FAILED: #{debugstr} -> #{err}"
 					return cb null if cb
