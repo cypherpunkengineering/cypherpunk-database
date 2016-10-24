@@ -298,7 +298,7 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			regionName: 'Paris, France'
 			regionLevel: 9999
 
-			ovHostname: 'paris.vpn.cypherpunk.network'
+			ovHostname: 'freebsd1.paris.vpn.cypherpunk.network'
 			ovDefault: '159.8.80.208'
 			ovNone: '159.8.80.209'
 			ovStrong: '159.8.80.210'
