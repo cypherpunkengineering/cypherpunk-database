@@ -84,6 +84,10 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		@SendGrid = @sendgrid.SendGrid
 
 	#}}}
+	init: () => #{{{
+		super()
+		@accountDB = @api.user.database
+	#}}}
 	handler: (req, res) => #{{{
 		@redirect(req, res, @getFullPath() + '/home')
 	#}}}

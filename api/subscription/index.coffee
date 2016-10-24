@@ -25,7 +25,7 @@ class cypherpunk.backend.api.subscription.resource extends cypherpunk.backend.ap
 class cypherpunk.backend.api.subscription.status extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.customer
 	mask: cypherpunk.backend.server.power.mask.auth
-	middleware: wiz.framework.http.acct.session.base
+	middleware: wiz.framework.http.acct.session.refresh
 	handler: (req, res) =>
 
 		start = new Date()
