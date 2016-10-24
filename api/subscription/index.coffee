@@ -32,9 +32,13 @@ class cypherpunk.backend.api.subscription.status extends cypherpunk.backend.api.
 		expiration = new Date(+start)
 		expiration.setDate(start.getDate() + 100)
 
+		# type is free,premium
+		# renewal is monthly, semiannually, annually
+
 		out =
 			type: 'premium'
 			renewal: 'monthly'
+			confirmed: req.session.user.confirmed
 			expiration: wiz.framework.util.datetime.unixTS(expiration)
 
 		#console.log out

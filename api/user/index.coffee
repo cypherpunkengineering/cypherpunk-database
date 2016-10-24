@@ -12,7 +12,7 @@ wiz.package 'cypherpunk.backend.api.user'
 class cypherpunk.backend.api.user.resource extends cypherpunk.backend.api.base
 	database: null
 
-	init: () =>
+	init: () => #{{{
 		@database = new cypherpunk.backend.db.user(@server, this, @parent.wizDB)
 		# api methods
 		@routeAdd new cypherpunk.backend.api.user.types(@server, this, 'types')
@@ -25,6 +25,79 @@ class cypherpunk.backend.api.user.resource extends cypherpunk.backend.api.base
 		@routeAdd new cypherpunk.backend.api.user.myAccountPassword(@server, this, 'myAccountPassword', 'POST')
 		@routeAdd new cypherpunk.backend.api.user.myAccountDetails(@server, this, 'myAccountDetails', 'POST')
 		super()
+	#}}}
+
+	sendWelcomeMail: (user, cb) => #{{{
+		mailData =
+			from:
+				name: "Cypherpunk Privacy"
+				email: "welcome@cypherpunk.com"
+			personalizations: [
+				{
+					to: [
+						{
+							email: user.data.email
+						}
+					]
+					subject: 'Welcome to Cypherpunk Privacy'
+				}
+			]
+			headers:
+				'X-Accept-Language': 'en'
+				'X-Mailer': 'CypherpunkPrivacyMail'
+			content: [
+				{
+					type: 'text/plain'
+					value: 'Please confirm your account: '+@generateConfirmationURL(user)
+				}
+			]
+
+		@sendMail(mailData, cb)
+	#}}}
+	sendUpgradeMail: (user, cb) => #{{{
+		mailData =
+			from:
+				name: "Cypherpunk Privacy"
+				email: "welcome@cypherpunk.com"
+			personalizations: [
+				{
+					to: [
+						{
+							email: user.data.email
+						}
+					]
+					subject: 'Your account has been upgraded'
+				}
+			]
+			headers:
+				'X-Accept-Language': 'en'
+				'X-Mailer': 'CypherpunkPrivacyMail'
+			content: [
+				{
+					type: 'text/plain'
+					value: 'Please confirm your account'
+				}
+			]
+
+		@sendMail(mailData, cb)
+	#}}}
+	sendMail: (mailData, cb) => #{{{
+		if @debug
+			console.log 'send mail to sendgrid:'
+			console.log mailData
+		@server.root.sendgrid.mail mailData, (error, response) =>
+			if @debug
+				console.log 'got callback from sendgrid:'
+				console.log response.statusCode
+				console.log response.headers
+				console.log response.body
+			if error
+				console.log error
+			cb()
+	#}}}
+	generateConfirmationURL: (user) => #{{{
+		"https://cypherpunk.engineering/account/confirm/#{user.id}?confirmationToken=#{user.confirmationToken}"
+	#}}}
 
 class cypherpunk.backend.api.user.types extends cypherpunk.backend.api.base
 	handler: (req, res) => #{{{

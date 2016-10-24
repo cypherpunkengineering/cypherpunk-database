@@ -15,7 +15,15 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 	@passwordKey: 'password'
 	@customerKey: 'customer'
+	@confirmedKey: 'confirmed'
+	@confirmationTokenKey: 'confirmed'
 
+	constructor: (@type, @data) -> #{{{
+		super(@type, @data)
+		this[@confirmedKey] = false
+		this[@confirmationTokenKey] ?= wiz.framework.crypto.hash.digest
+			payload: this
+	#}}}
 	@fromStranger: (req, res) => #{{{
 		return @fromUser(req, res, 'customer', req.body)
 	#}}}
@@ -77,6 +85,12 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				maxlen: 50
 				placeholder: ''
 				required: true
+
+			confirmed:
+				label: 'email confirmed'
+				type: 'boolean'
+				required: false
+				default: true
 		) #}}}
 		affiliate: (new type 'affiliate', 'Affiliate', 'list', #{{{
 			email:

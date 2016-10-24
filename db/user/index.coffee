@@ -18,6 +18,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseA
 	passwordOldKey: 'passwordOld'
 	fullnameKey: 'fullname'
 	emailKey: 'email'
+	confirmedKey: 'confirmed'
 
 	# DataTable methods
 	findOneByID: (req, res, id, cb) => #{{{
@@ -117,8 +118,9 @@ class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseA
 	#}}}
 
 	# public stranger APIs
-	signup: (req, res, cb) => #{{{
+	signup: (req, res, confirmed, cb) => #{{{
 		return unless recordToInsert = @schema.fromStranger(req, res)
+		recordToInsert[@dataKey][@confirmedKey] = confirmed
 		@insert req, res, recordToInsert, cb
 	#}}}
 

@@ -7,6 +7,7 @@ require './_framework/http/resource/base'
 require '../template'
 
 require './register'
+require './confirm'
 
 wiz.package 'cypherpunk.backend.account'
 
@@ -56,6 +57,8 @@ class cypherpunk.backend.account.module extends wiz.framework.http.acct.module
 
 		# public account creation api
 		@routeAdd new cypherpunk.backend.account.register.module(@server, this, 'register')
+		# public account confirmation api
+		@routeAdd new cypherpunk.backend.account.confirm.module(@server, this, 'confirm')
 
 		# top-level my account page
 		@routeAdd new cypherpunk.backend.account.overview(@server, this, 'overview')
