@@ -40,9 +40,8 @@ class cypherpunk.backend.account.profile extends cypherpunk.backend.template
 	#}}}
 
 class cypherpunk.backend.account.module extends wiz.framework.http.acct.module
-	level: cypherpunk.backend.server.power.level.friend
-	mask: cypherpunk.backend.server.power.mask.auth
-	middleware: wiz.framework.http.acct.session.base
+	level: cypherpunk.backend.server.power.level.stranger
+	mask: cypherpunk.backend.server.power.mask.public
 	nav: false
 
 	load: () =>

@@ -18,11 +18,8 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 	@confirmedKey: 'confirmed'
 	@confirmationTokenKey: 'confirmationToken'
 
-	constructor: (@type, @data) -> #{{{
-		super(@type, @data)
-		this[@confirmedKey] = false
-		this[@confirmationTokenKey] ?= wiz.framework.crypto.hash.digest
-			payload: this
+	constructor: () -> #{{{ XXX cannot use this constructor
+		throw Error this constructor cannot be used because of the below __super__.constructor() call
 	#}}}
 	@fromStranger: (req, res) => #{{{
 		return @fromUser(req, res, 'customer', req.body)
@@ -31,6 +28,10 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 		this.__super__.constructor.types = @types
 		doc = this.__super__.constructor.fromUser(req, res, userType, userData, updating)
+		doc[@confirmedKey] = false
+		doc[@confirmationTokenKey] ?= wiz.framework.crypto.hash.digest
+			payload: doc
+
 		return false unless doc
 
 		if doc?[@dataKey]?[@passwordKey]?  # hash password
