@@ -117,9 +117,9 @@ class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseA
 	#}}}
 
 	# public stranger APIs
-	signup: (req, res) => #{{{
+	signup: (req, res, cb) => #{{{
 		return unless recordToInsert = @schema.fromStranger(req, res)
-		@insert req, res, recordToInsert
+		@insert req, res, recordToInsert, cb
 	#}}}
 
 # vim: foldmethod=marker wrap
