@@ -11,7 +11,7 @@ class cypherpunk.backend.account.register.signup extends cypherpunk.backend.base
 	level: cypherpunk.backend.server.power.level.stranger
 	mask: cypherpunk.backend.server.power.mask.public
 	handler: (req, res) => #{{{
-		@server.root.api.user.findOneByEmail req, res, req.body.email, (req, res, user) =>
+		@server.root.api.user.findOneByID req, res, req.body.email, (req, res, user) =>
 			if user?
 				res.send 409, 'Account Already Exists'
 				return
