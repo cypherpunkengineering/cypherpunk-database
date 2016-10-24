@@ -11,7 +11,7 @@ wiz.package 'cypherpunk.backend.db.user'
 
 class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseArray
 	collectionName: 'accounts'
-	debug: false
+	debug: true
 	schema: cypherpunk.backend.db.user.schema
 	upsert: false
 	passwordKey: 'password'
@@ -64,6 +64,9 @@ class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseA
 			return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
 
 		return super(req, res, recordToInsert, cb) if cb != null
+
+		console.log 'recordToInsert is:'
+		console.log recordToInsert
 
 		super req, res, recordToInsert, (result) =>
 			res.send 200
