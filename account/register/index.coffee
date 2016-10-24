@@ -19,7 +19,7 @@ class cypherpunk.backend.account.register.signup extends cypherpunk.backend.base
 
 			return res.send 409, 'Email already registered' if user isnt null
 
-			@server.root.api.user.database.signup req, res, (user) =>
+			@server.root.api.user.database.signup req, res, false, (user) =>
 
 				return res.send 500, 'Unable to create account' unless user?
 
@@ -32,7 +32,7 @@ class cypherpunk.backend.account.register.signup extends cypherpunk.backend.base
 						return
 					wiz.log.info "Sent welcome email to #{user.email}"
 
-				out = @parent.parent.authenticate.doUserLogin(req, res, user)
+				out = @parent.parent.authenticate.password.doUserLogin(req, res, user)
 				res.send 202, out
 	#}}}
 
