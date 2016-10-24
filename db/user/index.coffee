@@ -58,9 +58,12 @@ class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseA
 
 				@listResponse(req, res, responseData, recordCount)
 	#}}}
-	insert: (req, res, recordToInsert = null) => #{{{
+	insert: (req, res, recordToInsert = null, cb = null) => #{{{
 		if recordToInsert is null
 			return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
+
+		return super(req, res, recordToInsert, cb) if cb != null
+
 		super req, res, recordToInsert, (result) =>
 			res.send 200
 	#}}}

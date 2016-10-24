@@ -3,7 +3,6 @@
 require './_framework'
 require './_framework/http/acct'
 require './_framework/http/resource/base'
-require './_framework/money/stripe'
 
 require '../template'
 

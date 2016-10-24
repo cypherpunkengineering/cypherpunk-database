@@ -10,6 +10,9 @@ require './_framework/http/resource/coffee-script'
 require './_framework/http/acct'
 require './_framework/http/acct/session'
 
+require './_framework/thirdparty/stripe'
+require './_framework/thirdparty/sendgrid'
+
 wiz.package 'cypherpunk.backend'
 
 require './template'
@@ -38,6 +41,75 @@ class cypherpunk.backend.home extends cypherpunk.backend.template
 	#}}}
 
 class cypherpunk.backend.module extends wiz.framework.http.resource.root
+	sendWelcomeMail: (customerEmail, cb) => #{{{
+		mailData =
+			from:
+				name: "Cypherpunk Privacy"
+				email: "welcome@cypherpunk.com"
+			personalizations: [
+				{
+					to: [
+						{
+							email: customerEmail
+						}
+					]
+					subject: 'Welcome to Cypherpunk Privacy'
+				}
+			]
+			headers:
+				'X-Accept-Language': 'en'
+				'X-Mailer': 'CypherpunkPrivacyMail'
+			content: [
+				{
+					type: 'text/plain'
+					value: 'Please confirm your account'
+				}
+			]
+
+		@sendMail(mailData, cb)
+	#}}}
+	sendUpgradeMail: (customerEmail, cb) => #{{{
+		mailData =
+			from:
+				name: "Cypherpunk Privacy"
+				email: "welcome@cypherpunk.com"
+			personalizations: [
+				{
+					to: [
+						{
+							email: customerEmail
+						}
+					]
+					subject: 'Your account has been upgraded'
+				}
+			]
+			headers:
+				'X-Accept-Language': 'en'
+				'X-Mailer': 'CypherpunkPrivacyMail'
+			content: [
+				{
+					type: 'text/plain'
+					value: 'Please confirm your account'
+				}
+			]
+
+		@sendMail(mailData, cb)
+	#}}}
+	sendMail: (mailData, cb) => #{{{
+		if @debug
+			console.log 'send mail to sendgrid:'
+			console.log mailData
+		@server.root.sendgrid.mail mailData, (error, response) =>
+			if @debug
+				console.log 'got callback from sendgrid:'
+				console.log response.statusCode
+				console.log response.headers
+				console.log response.body
+			if error
+				console.log error
+			cb()
+	#}}}
+
 	load: () => #{{{
 		# top-level public content
 		require './public'
@@ -61,17 +133,25 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 
 		# account module, based on framework classes
 		require './account'
-		@routeAdd new cypherpunk.backend.account.module(@server, this, 'account')
+		@account = @routeAdd new cypherpunk.backend.account.module(@server, this, 'account')
 		@routeAdd new cypherpunk.backend.logout(@server, this, 'logout')
 
 		# admin module
 		require './admin'
 		@admin = @routeAdd new cypherpunk.backend.admin.module(@server, this, 'admin')
 
-		@stripeWrapper = new wiz.framework.money.stripe
+		# init stripe SDK
+		@stripe = new wiz.framework.thirdparty.stripe
 			apiKey: 'sk_test_UxTTPDN0LGZaD9NBtVUxuksJ'
-		@Stripe = @stripeWrapper.Stripe
-		#@stripe.init()
+		@stripe.init()
+		@Stripe = @stripe.Stripe
+
+		# init sendgrid SDK
+		@sendgrid = new wiz.framework.thirdparty.sendgrid
+			apiKey: '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'
+		@sendgrid.init()
+		@SendGrid = @sendgrid.SendGrid
+
 	#}}}
 	handler: (req, res) => #{{{
 		@redirect(req, res, @getFullPath() + '/home')

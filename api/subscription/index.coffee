@@ -6,10 +6,14 @@ require './_framework/http/acct/session'
 require './_framework/http/db/mongo'
 require './_framework/util/world'
 
+require './_framework/thirdparty/stripe'
+require './_framework/thirdparty/sendgrid'
+
 wiz.package 'cypherpunk.backend.api.subscription'
 
 class cypherpunk.backend.api.subscription.resource extends cypherpunk.backend.api.base
 	database: null
+	debug: true
 
 	init: () =>
 		#@database = new cypherpunk.backend.db.subscription(@server, this, @parent.wizDB)
@@ -60,13 +64,15 @@ class cypherpunk.backend.api.subscription.purchase extends cypherpunk.backend.ap
 			plan: req.body.plan
 			email: req.body.email
 
-		console.log args
 		try
-			@server.root.Stripe.customers.create args, (err, customer) =>
-				console.log err
-				return res.send 500, err if err
-				console.log customer
-				return res.send 200, 'ok!!'
+			@server.root.Stripe.customers.create args, (stripeError, stripeCustomerData) =>
+				console.log stripeError if stripeError
+				return res.send 500, stripeError if stripeError
+				console.log 'customer data from stripe'
+				console.log stripeCustomerData
+				@server.root.sendWelcomeMail args.email, (sendgridError) =>
+					return res.send 500 if sendgridError
+					res.send 200, 'ok!!'
 		catch e
 			console.log e
 			res.send 500
