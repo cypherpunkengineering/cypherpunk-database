@@ -75,6 +75,10 @@ class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseA
 	#}}}
 
 	# custom APIs
+	findOneByEmail: (req, res, email, cb) => #{{{
+		@findOneByKey req, res, "#{@dataKey}.#{@emailKey}", email, @projection(), cb
+	#}}}
+
 	myAccountPassword: (req, res) => #{{{
 		# check if no session
 		#return res.send 401, 'missing session id' if not req.session?.acct?.id?
