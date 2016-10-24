@@ -47,6 +47,13 @@ class wiz.framework.http.acct.session
 			req.session = undefined
 			req.next() # call next middleware
 	#}}}
+	@reload: (req, res) => #{{{ refresh acct object from db
+		return req.next() if not req.session?.acct?.id?
+		req.server.root.accountDB.findOneByID req, res, req.session.acct.id, (acct) =>
+			return req.next() if not acct?
+			req.session.acct = acct
+			req.next()
+	#}}}
 	@checkSecret: (req, res) => # {{{ check if CSRF secret token matches
 		if req.session?.secret and req.body?.secret
 			serverSecret = wiz.framework.crypto.hash.salthash(req.session.secret)
@@ -97,6 +104,9 @@ class wiz.framework.http.acct.session
 	] #}}}
 	@secret: @base.concat [ #{{{ above list and check CSRF secret token
 		@checkSecret
+	] #}}}
+	@refresh: @base.concat [ #{{{ above list and check CSRF secret token
+		@reload
 	] #}}}
 
 	@save: (req) => # save session to db after sending response {{{
