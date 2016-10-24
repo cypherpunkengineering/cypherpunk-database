@@ -6,9 +6,9 @@ require '../util/strval'
 
 https = require 'https'
 
-wiz.package 'wiz.framework.money.bciapi'
+wiz.package 'wiz.framework.thirdparty.bciapi'
 
-class wiz.framework.money.bciapi
+class wiz.framework.thirdparty.bciapi
 	class httpreq extends wiz.framework.http.client.base
 
 	debug: true

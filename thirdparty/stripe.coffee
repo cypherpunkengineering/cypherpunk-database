@@ -2,9 +2,9 @@ require '..'
 
 Stripe = require 'stripe'
 
-wiz.package 'wiz.framework.money.stripe'
+wiz.package 'wiz.framework.thirdparty.stripe'
 
-class wiz.framework.money.stripe
+class wiz.framework.thirdparty.stripe
 	Stripe: null
 
 	@currencies: [ # {{{
@@ -47,6 +47,9 @@ class wiz.framework.money.stripe
 
 	constructor: (@options) ->
 		@Stripe = Stripe @options.apiKey
+
+	init: () =>
+		# nothing
 
 	getInstance: () =>
 		@Stripe
