@@ -299,16 +299,16 @@ class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
 			regionLevel: 9999
 
 			ovHostname: 'paris.vpn.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: '159.8.80.208'
+			ovNone: '159.8.80.209'
+			ovStrong: '159.8.80.210'
+			ovStealth: '159.8.80.211'
 
 			ipsecHostname: 'paris.vpn.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: '159.8.80.212'
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: '159.8.80.213'
+			socksDefault: '159.8.80.214'
 
 		# }}}
 		regionList.EU.CH.push # {{{
