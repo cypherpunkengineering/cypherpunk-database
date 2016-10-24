@@ -16,7 +16,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 	@passwordKey: 'password'
 	@customerKey: 'customer'
 	@confirmedKey: 'confirmed'
-	@confirmationTokenKey: 'confirmed'
+	@confirmationTokenKey: 'confirmationToken'
 
 	constructor: (@type, @data) -> #{{{
 		super(@type, @data)

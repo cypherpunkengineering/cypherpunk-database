@@ -23,10 +23,14 @@ class cypherpunk.backend.account.register.signup extends cypherpunk.backend.base
 
 				return res.send 500, 'Unable to create account' unless user?
 
+				wiz.log.info "Registered new user account for #{user.email}"
+
 				@server.root.sendWelcomeMail user, (sendgridError) =>
 					if sendgridError
-						wiz.log.err "Unable to send email to #{args.email} due to sendgrid error"
+						wiz.log.err "Unable to send email to #{user.email} due to sendgrid error"
 						console.log sendgridError
+						return
+					wiz.log.info "Sent welcome email to #{user.email}"
 
 				out = @parent.parent.doUserLogin(req, res, user)
 				res.send 202, out
