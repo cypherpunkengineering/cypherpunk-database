@@ -36,9 +36,9 @@ class cypherpunk.backend.api.subscription.status extends cypherpunk.backend.api.
 		# renewal is monthly, semiannually, annually
 
 		out =
-			type: 'premium'
-			renewal: 'monthly'
-			confirmed: req.session.user.confirmed
+			type: req.session.acct?.data?.subscriptionType or 'premium'
+			renewal: req.session.acct?.data?.subscriptionRenewal or 'monthly'
+			confirmed: req.session.acct?.confirmed
 			expiration: wiz.framework.util.datetime.unixTS(expiration)
 
 		#console.log out
