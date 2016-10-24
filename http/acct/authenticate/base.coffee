@@ -16,13 +16,20 @@ class wiz.framework.http.acct.authenticate.base extends wiz.framework.http.resou
 		out =
 			auth: req?.session?.acct?.auth
 			email: req?.session?.acct?.data?.email
+			confirmed: req?.session?.data?.confirmed
 			fullname: req?.session?.acct?.data?.fullname
-			lastlogin: req?.session?.acct?.lastlogin
+			#lastlogin: req?.session?.acct?.lastlogin
 			powerLevel: req?.session?.powerLevel
 
 		return out
 	#}}}
 	onAuthenticateSuccess: (req, res, acct) => #{{{
+		out = @doUserLogin(req, res, acct)
+		res.send 200, out
+		@parent.parent.db.accounts.updateLastLoginTS req, res, (result) =>
+	#}}}
+
+	doUserLogin: (req, res, acct) => #{{{
 		# TODO: call logout() here before creating new session
 		# TODO: maybe better for security purposes if we dont allow a new login until existing session is logged out?
 
@@ -45,8 +52,7 @@ class wiz.framework.http.acct.authenticate.base extends wiz.framework.http.resou
 			secret: req.session.secret
 			acct: @acctinfo(req)
 
-		res.send 200, out
-		@parent.parent.db.accounts.updateLastLoginTS req, res, (result) =>
+		return out
 	#}}}
 
 # vim: foldmethod=marker wrap
