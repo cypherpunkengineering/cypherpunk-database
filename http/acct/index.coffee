@@ -78,11 +78,11 @@ class wiz.framework.http.acct.module extends wiz.framework.http.resource.base
 		# logout and destroy session
 		@routeAdd new wiz.framework.http.acct.logout(@server, this, 'logout', 'POST')
 
-		# load the account authentication sub-module
-		@routeAdd new wiz.framework.http.acct.identify.module(@server, this, 'identify')
+		# load the account identify sub-module
+		@identify = @routeAdd new wiz.framework.http.acct.identify.module(@server, this, 'identify')
 
 		# load the account authentication sub-module
-		@routeAdd new wiz.framework.http.acct.authenticate.module(@server, this, 'authenticate')
+		@authenticate = @routeAdd new wiz.framework.http.acct.authenticate.module(@server, this, 'authenticate')
 
 		# load the account otpkeys sub-module
 		# @routeAdd new wiz.framework.http.acct.otpkeys.module(@server, this, 'otpkeys')
