@@ -74,7 +74,7 @@ class cypherpunk.backend.api.subscription.purchase extends cypherpunk.backend.ap
 				return res.send 500, stripeError if stripeError
 				console.log 'customer data from stripe'
 				console.log stripeCustomerData
-				@server.root.sendWelcomeMail args.email, (sendgridError) =>
+				@server.root.api.user.sendWelcomeMail args.email, (sendgridError) =>
 					return res.send 500 if sendgridError
 					res.send 200, 'ok!!'
 		catch e
