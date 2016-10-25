@@ -26,7 +26,11 @@ class cypherpunk.backend.account.confirm.module extends cypherpunk.backend.base
 			return res.send 401, 'invalid token' if req.params.confirmationToken != user.confirmationToken
 			@server.root.api.user.database.updateCustomDataByID req, res, accountID, @server.root.api.user.database.schema.confirmedKey, true, (result) =>
 				res.send 500, 'Unable to confirm account' if not result?
-				res.send 200, 'CONFIRMED!'
+
+				# start session
+				user.confirmed = true
+				out = @server.root.account.authenticate.password.doUserLogin(req, res, user)
+				res.send 200, out
 	#}}}
 
 # vim: foldmethod=marker wrap
