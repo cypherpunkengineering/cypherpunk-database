@@ -96,7 +96,7 @@ class cypherpunk.backend.api.user.resource extends cypherpunk.backend.api.base
 			cb()
 	#}}}
 	generateConfirmationURL: (user) => #{{{
-		"https://cypherpunk.engineering/account/confirm/#{user.id}?confirmationToken=#{user.confirmationToken}"
+		"https://cypherpunk.engineering/confirmation/#{user.id}?confirmationToken=#{user.confirmationToken}"
 	#}}}
 
 class cypherpunk.backend.api.user.types extends cypherpunk.backend.api.base
