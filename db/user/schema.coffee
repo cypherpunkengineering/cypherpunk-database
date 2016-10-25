@@ -17,6 +17,9 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 	@customerKey: 'customer'
 	@confirmedKey: 'confirmed'
 	@confirmationTokenKey: 'confirmationToken'
+	@subscriptionTypeKey: 'subscriptionType'
+	@subscriptionRenewalKey: 'subscriptionRenewal'
+	@subscriptionExpirationKey: 'subscriptionExpiration'
 
 	constructor: () -> #{{{ XXX cannot use this constructor
 		throw Error this constructor cannot be used because of the below __super__.constructor() call
@@ -28,7 +31,13 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 		this.__super__.constructor.types = @types
 		doc = this.__super__.constructor.fromUser(req, res, userType, userData, updating)
+
 		doc[@confirmedKey] = false
+
+		doc[@dataKey][@subscriptionTypeKey] ?= 'free'
+		doc[@dataKey][@subscriptionRenewalKey] ?= 'none'
+		doc[@dataKey][@subscriptionExpirationKey] ?= '0'
+
 		doc[@confirmationTokenKey] ?= wiz.framework.crypto.hash.digest
 			payload: doc
 
@@ -87,11 +96,29 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 
-			confirmed:
-				label: 'email confirmed'
-				type: 'boolean'
-				required: false
-				default: true
+			subscriptionType:
+				label: 'subscription type'
+				type: 'asciiNoSpace'
+				minlen: 1
+				maxlen: 50
+				placeholder: ''
+				required: true
+
+			subscriptionRenewal:
+				label: 'subscription renewal'
+				type: 'asciiNoSpace'
+				minlen: 1
+				maxlen: 50
+				placeholder: ''
+				required: true
+
+			subscriptionExpiration:
+				label: 'subscription expiration'
+				type: 'asciiNoSpace'
+				minlen: 1
+				maxlen: 50
+				placeholder: ''
+				required: true
 		) #}}}
 		affiliate: (new type 'affiliate', 'Affiliate', 'list', #{{{
 			email:

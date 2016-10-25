@@ -28,6 +28,10 @@ class cypherpunk.backend.api.user.resource extends cypherpunk.backend.api.base
 	#}}}
 
 	sendWelcomeMail: (user, cb) => #{{{
+		if not user?.data?.email?
+			wiz.log.err 'no user email!!'
+			return
+
 		mailData =
 			from:
 				name: "Cypherpunk Privacy"
@@ -54,7 +58,40 @@ class cypherpunk.backend.api.user.resource extends cypherpunk.backend.api.base
 
 		@sendMail(mailData, cb)
 	#}}}
+	sendPurchaseMail: (user, cb) => #{{{
+		if not user?.data?.email?
+			wiz.log.err 'no user email!!'
+			return
+		mailData =
+			from:
+				name: "Cypherpunk Privacy"
+				email: "welcome@cypherpunk.com"
+			personalizations: [
+				{
+					to: [
+						{
+							email: user.data.email
+						}
+					]
+					subject: "You've got Premium access to Cypherpunk Privacy"
+				}
+			]
+			headers:
+				'X-Accept-Language': 'en'
+				'X-Mailer': 'CypherpunkPrivacyMail'
+			content: [
+				{
+					type: 'text/plain'
+					value: "You're premium! Thanks for purchasing"
+				}
+			]
+
+		@sendMail(mailData, cb)
+	#}}}
 	sendUpgradeMail: (user, cb) => #{{{
+		if not user?.data?.email?
+			wiz.log.err 'no user email!!'
+			return
 		mailData =
 			from:
 				name: "Cypherpunk Privacy"

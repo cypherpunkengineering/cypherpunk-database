@@ -20,6 +20,7 @@ class cypherpunk.backend.api.subscription.resource extends cypherpunk.backend.ap
 		# api methods
 		@routeAdd new cypherpunk.backend.api.subscription.status(@server, this, 'status')
 		@routeAdd new cypherpunk.backend.api.subscription.purchase(@server, this, 'purchase', 'POST')
+		@routeAdd new cypherpunk.backend.api.subscription.upgrade(@server, this, 'upgrade', 'POST')
 		super()
 
 class cypherpunk.backend.api.subscription.status extends cypherpunk.backend.api.base
@@ -28,18 +29,14 @@ class cypherpunk.backend.api.subscription.status extends cypherpunk.backend.api.
 	middleware: wiz.framework.http.acct.session.refresh
 	handler: (req, res) =>
 
-		start = new Date()
-		expiration = new Date(+start)
-		expiration.setDate(start.getDate() + 100)
-
 		# type is free,premium
 		# renewal is monthly, semiannually, annually
 
 		out =
-			type: req.session.acct?.data?.subscriptionType or 'premium'
-			renewal: req.session.acct?.data?.subscriptionRenewal or 'monthly'
+			type: req.session.acct?.data?.subscriptionType or 'free'
+			renewal: req.session.acct?.data?.subscriptionRenewal or 'none'
 			confirmed: req.session.acct?.confirmed
-			expiration: wiz.framework.util.datetime.unixTS(expiration)
+			expiration: req.session.acct?.data?.subscriptionExpiration or '0'
 
 		#console.log out
 		res.send 200, out
@@ -55,28 +52,108 @@ class cypherpunk.backend.api.subscription.purchase extends cypherpunk.backend.ap
 		res.setHeader 'Access-Control-Allow-Headers', 'Content-type, Cookie'
 		super(req, res)
 	#}}}
-
 	handler: (req, res) => #{{{
-		return res.send 400, 'missing parameters' unless (req.body?.token? and req.body?.plan? and req.body?.email?)
-		return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
-		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
+		return res.send 400, 'missing parameters' unless (req.body?.email?)
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.email is 'string'
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
 
-		args =
+		@server.root.api.user.database.findOneByEmail req, res, req.body.email, (req, res, user) =>
+
+			return res.send 409, 'Email already registered' if user isnt null
+
+			cypherpunk.backend.api.subscription.common.purchase(req, res)
+	#}}}
+
+class cypherpunk.backend.api.subscription.upgrade extends cypherpunk.backend.api.base
+	level: cypherpunk.backend.server.power.level.friend
+	mask: cypherpunk.backend.server.power.mask.auth
+	nav: false
+
+	handlerOPTIONS: (req, res) => #{{{
+		res.setHeader 'Access-Control-Allow-Origin', '*'
+		res.setHeader 'Access-Control-Allow-Methods', 'POST,OPTIONS'
+		res.setHeader 'Access-Control-Allow-Headers', 'Content-type, Cookie'
+		super(req, res)
+	#}}}
+	handler: (req, res) => #{{{
+		cypherpunk.backend.api.subscription.common.purchase(req, res)
+	#}}}
+
+class cypherpunk.backend.api.subscription.common
+	@purchase: (req, res) => #{{{
+		return res.send 400, 'missing parameters' unless (req.body?.token? and req.body?.plan?)
+		return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
+		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
+
+		subscriptionStart = new Date()
+		subscriptionExpiration = new Date(+subscriptionStart)
+
+		console.log req.body.plan[0...7]
+		console.log req.body.plan[0...11]
+
+		if req.body.plan[0...7] == "monthly"
+			subscriptionRenewal = "monthly"
+			subscriptionExpiration.setDate(subscriptionStart.getDate() + 30)
+		else if req.body.plan[0...11] == "semiannually"
+			subscriptionRenewal = "semiannually"
+			subscriptionExpiration.setDate(subscriptionStart.getDate() + 180)
+		else if req.body.plan[0...8] == "annually"
+			subscriptionRenewal = "annually"
+			subscriptionExpiration.setDate(subscriptionStart.getDate() + 365)
+		else
+			return res.send 400, "Invalid plan selected"
+
+		subscriptionData =
+			confirmed: true
+			subscriptionType: 'premium'
+			subscriptionRenewal: subscriptionRenewal
+			subscriptionExpiration: subscriptionExpiration
+
+		email = req.session?.acct?.email
+		email ?= req.body.email
+
+		stripeArgs =
 			source: req.body.token
 			plan: req.body.plan
-			email: req.body.email
+			email: email
+
+		@purchaseStripe req, res, stripeArgs, (stripeCustomerData) =>
+
+			# XXX TODO: check for stripe errors, declines, etc.
+
+			# if upgrading, just update session, will be auto-saved to db
+			if req.session?.acct?.id?
+				req.session.acct.data.subscriptionType = subscriptionData.subscriptionType
+				req.session.acct.data.subscriptionRenewal = subscriptionData.subscriptionRenewal
+				req.session.acct.data.subscriptionExpiration = subscriptionData.subscriptionExpiration
+				return res.send 200
+
+			# if no account yet, create one
+			@server.root.api.user.database.signup req, res, subscriptionData, (result) =>
+
+				if result instanceof Array
+					user = result[0]
+				else
+					user = result
+
+				req.server.root.api.user.sendPurchaseMail user, (sendgridError) =>
+					if sendgridError
+						wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
+						console.log sendgridError
+
+				out = req.server.root.account.authenticate.password.doUserLogin(req, res, user)
+				res.send 200, out
+	#}}}
+	@purchaseStripe: (req, res, stripeArgs, cb) => #{{{
 
 		try
-			@server.root.Stripe.customers.create args, (stripeError, stripeCustomerData) =>
+			req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
 				console.log stripeError if stripeError
 				return res.send 500, stripeError if stripeError
 				console.log 'customer data from stripe'
 				console.log stripeCustomerData
-				@server.root.api.user.sendWelcomeMail args.email, (sendgridError) =>
-					return res.send 500 if sendgridError
-					res.send 200, 'ok!!'
+				cb(stripeCustomerData)
+
 		catch e
 			console.log e
 			res.send 500

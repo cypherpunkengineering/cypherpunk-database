@@ -121,9 +121,16 @@ class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseA
 	#}}}
 
 	# public stranger APIs
-	signup: (req, res, confirmed, cb) => #{{{
+	signup: (req, res, subscriptionData, cb) => #{{{
 		return unless recordToInsert = @schema.fromStranger(req, res)
-		recordToInsert[@dataKey][@confirmedKey] = confirmed
+		if subscriptionData?.confirmed?
+			recordToInsert[@schema.confirmedKey] = subscriptionData.confirmed
+		if subscriptionData?.subscriptionType?
+			recordToInsert[@dataKey][@schema.subscriptionTypeKey] = subscriptionData.subscriptionType
+		if subscriptionData?.subscriptionRenewal?
+			recordToInsert[@dataKey][@schema.subscriptionRenewalKey] = subscriptionData.subscriptionRenewal
+		if subscriptionData?.subscriptionExpirationpi?
+			recordToInsert[@dataKey][@schema.subscriptionExpirationKey] = subscriptionData.subscriptionExpiration
 		@insert req, res, recordToInsert, cb
 	#}}}
 
