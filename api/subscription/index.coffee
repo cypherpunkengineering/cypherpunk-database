@@ -126,7 +126,11 @@ class cypherpunk.backend.api.subscription.common
 				req.session.acct.data.subscriptionType = subscriptionData.subscriptionType
 				req.session.acct.data.subscriptionRenewal = subscriptionData.subscriptionRenewal
 				req.session.acct.data.subscriptionExpiration = subscriptionData.subscriptionExpiration
-				return res.send 200
+				req.server.root.api.user.database.updateDataByID req, res, req.session.acct.id, req.session.acct.data, (result) =>
+					return res.send 500 if not result
+					return res.send 200
+
+				return
 
 			# if no account yet, create one
 			req.server.root.api.user.database.signup req, res, subscriptionData, (result) =>
