@@ -129,7 +129,7 @@ class cypherpunk.backend.api.subscription.common
 				return res.send 200
 
 			# if no account yet, create one
-			@server.root.api.user.database.signup req, res, subscriptionData, (result) =>
+			req.server.root.api.user.database.signup req, res, subscriptionData, (result) =>
 
 				if result instanceof Array
 					user = result[0]
