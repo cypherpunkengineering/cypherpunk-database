@@ -21,7 +21,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseA
 	confirmedKey: 'confirmed'
 
 	# DataTable methods
-	findOneByID: (req, res, id, cb) => #{{{
+	findOneByID: (req, res, id, cb) => #{{{ removes password hash
 		super req, res, id, (req, res, result) =>
 			return cb(null) if not result and cb
 			return res.send 404 if not result
@@ -70,6 +70,21 @@ class cypherpunk.backend.db.user extends wiz.framework.http.database.mongo.baseA
 
 		super req, res, recordToInsert, (result) =>
 			res.send 200
+	#}}}
+	updateUserData: (req, res, userID, userData, cb = null) => #{{{ restores password hash
+		@findOneByKey req, res, @docKey, userID, @projection(), (req, res, result) =>
+			return cb(null) if not result and cb
+			return res.send 404 if not result
+			console.log result
+			return res.send 500 if not result[@dataKey]?
+			userData[@passwordKey] = result[@dataKey][@passwordKey]
+			@updateDataByID req, res, userID, userData, (req2, res2, result2) =>
+				return cb(result2) if cb
+				return res.send 500 if not result2
+				return res.send 200
+	#}}}
+	updateCurrentUserData: (req, res, cb = null) => #{{{
+		@updateUserData(req, res, req.session.acct.id, req.session.acct.data, cb)
 	#}}}
 	drop: (req, res) => #{{{
 		return res.send 501 # TODO: implement drop

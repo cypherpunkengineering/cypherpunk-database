@@ -36,7 +36,7 @@ class cypherpunk.backend.api.subscription.status extends cypherpunk.backend.api.
 			type: req.session.acct?.data?.subscriptionType or 'free'
 			renewal: req.session.acct?.data?.subscriptionRenewal or 'none'
 			confirmed: req.session.acct?.confirmed
-			expiration: req.session.acct?.data?.subscriptionExpiration or '0'
+			expiration: req.session.acct?.data?.subscriptionExpiration or 'none'
 
 		#console.log out
 		res.send 200, out
@@ -94,7 +94,7 @@ class cypherpunk.backend.api.subscription.common
 		if req.body.plan[0...7] == "monthly"
 			subscriptionRenewal = "monthly"
 			subscriptionExpiration.setDate(subscriptionStart.getDate() + 30)
-		else if req.body.plan[0...11] == "semiannually"
+		else if req.body.plan[0...12] == "semiannually"
 			subscriptionRenewal = "semiannually"
 			subscriptionExpiration.setDate(subscriptionStart.getDate() + 180)
 		else if req.body.plan[0...8] == "annually"
@@ -126,9 +126,10 @@ class cypherpunk.backend.api.subscription.common
 				req.session.acct.data.subscriptionType = subscriptionData.subscriptionType
 				req.session.acct.data.subscriptionRenewal = subscriptionData.subscriptionRenewal
 				req.session.acct.data.subscriptionExpiration = subscriptionData.subscriptionExpiration
-				req.server.root.api.user.database.updateDataByID req, res, req.session.acct.id, req.session.acct.data, (result) =>
-					return res.send 500 if not result
-					return res.send 200
+
+				req.server.root.api.user.database.updateCurrentUserData req, res, (result2) =>
+					# TODO: add transaction ID etc.
+					res.send 200, result2
 
 				return
 
