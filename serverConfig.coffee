@@ -11,6 +11,7 @@ class cypherpunk.backend.server.config extends wiz.framework.http.server.configB
 	constructor: () ->
 
 		if wiz.hostname is 'cypherpunk-backend-dev'
+			@behindReverseProxy = true
 			@listeners[0].host = '10.111.52.113'
 			@listeners[0].port = 11080
 		else if wiz.hostname is 'wizbook3-ubuntu'
