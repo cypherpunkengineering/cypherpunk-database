@@ -22,7 +22,7 @@ class wiz.framework.http.middleware.base
 	# header parsing methods
 	@parseIP: (req, res, cb) => #{{{
 		if req.server.config.behindReverseProxy is true
-			req.ip = req.headers['x-forwarded-for']
+			req.ip = req.headers['x-original-ip']
 
 		req.ip ?= wiz.framework.util.strval.inet6_prefix_trim(req.connection?.remoteAddress or '0.0.0.0')
 		return cb()
