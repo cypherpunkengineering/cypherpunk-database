@@ -20,7 +20,7 @@ class wiz.framework.http.acct.identify.base extends wiz.framework.http.resource.
 		req.session.auth = 0
 
 		# send 200 OK
-		res.send 200, "identified"
+		res.send 200
 	#}}}
 
 # vim: foldmethod=marker wrap

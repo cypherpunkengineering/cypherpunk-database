@@ -26,7 +26,7 @@ class wiz.framework.http.acct.identify.email extends wiz.framework.http.acct.ide
 
 		return @parent.parent.db.accounts.findOneByEmail req, res, req.body.email, (req, res, user) =>
 			return @onIdentifySuccess(req, res, user) if user?.id?
-			return res.send 401, 'email identification failed'
+			return res.send 401
 	#}}}
 
 # vim: foldmethod=marker wrap
