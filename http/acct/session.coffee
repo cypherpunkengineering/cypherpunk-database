@@ -150,7 +150,7 @@ class wiz.framework.http.acct.session
 		c = # c is for cookie
 			name: wiz.framework.http.acct.session.cookieName
 			val: req.session.id
-			expires: new Date(req.session.last.getTime() + (req.session.expires * 60 * 1000))
+			#expires: new Date(req.session.last.getTime() + (req.session.expires * 60 * 1000))
 
 		res.setCookie(c)
 		#wiz.log.debug "set session cookie #{JSON.stringify(req.cookie)}"
