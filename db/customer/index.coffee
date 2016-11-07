@@ -15,7 +15,6 @@ class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.custo
 	upsert: false
 	passwordKey: 'password'
 	passwordOldKey: 'passwordOld'
-	confirmedKey: 'confirmed'
 
 	# DataTable methods
 	findOneByID: (req, res, id, cb) => #{{{ removes password hash
@@ -27,11 +26,11 @@ class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.custo
 			return cb(result) if result and cb
 			return res.send 200, result
 	#}}}
-	list: (req, res, customerType) => #{{{
-		return res.send 400, 'invalid type' if not schemaType = @schema.types[customerType]
+	list: (req, res, customerPlan) => #{{{
+		return res.send 400, 'invalid type' if not schemaPlan = @schema.types[customerPlan]
 
 		criteria = @criteria(req)
-		criteria[@typeKey] = schemaType[@typeKey]
+		criteria[@typeKey] = schemaPlan[@typeKey]
 
 		projection = @projection()
 		opts =
@@ -134,14 +133,14 @@ class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.custo
 	# public stranger APIs
 	signup: (req, res, subscriptionData, cb) => #{{{
 		return unless recordToInsert = @schema.fromStranger(req, res)
-		if subscriptionData?.confirmed?
-			recordToInsert[@schema.confirmedKey] = subscriptionData.confirmed
-		if subscriptionData?.subscriptionType?
-			recordToInsert[@dataKey][@schema.subscriptionTypeKey] = subscriptionData.subscriptionType
-		if subscriptionData?.subscriptionRenewal?
-			recordToInsert[@dataKey][@schema.subscriptionRenewalKey] = subscriptionData.subscriptionRenewal
-		if subscriptionData?.subscriptionExpirationpi?
-			recordToInsert[@dataKey][@schema.subscriptionExpirationKey] = subscriptionData.subscriptionExpiration
+		if subscriptionData?[@schema.confirmedKey]?
+			recordToInsert[@dataKey][@schema.confirmedKey] = subscriptionData[@schema.confirmedKey]
+		if subscriptionData?[@schema.subscriptionPlanKey]?
+			recordToInsert[@dataKey][@schema.subscriptionPlanKey] = subscriptionData[@schema.subscriptionPlanKey]
+		if subscriptionData?[@schema.subscriptionRenewalKey]?
+			recordToInsert[@dataKey][@schema.subscriptionRenewalKey] = subscriptionData[@schema.subscriptionRenewalKey]
+		if subscriptionData?[@schema.subscriptionExpirationKey]?
+			recordToInsert[@dataKey][@schema.subscriptionExpirationKey] = subscriptionData[@schema.subscriptionExpirationKey]
 		@insert req, res, recordToInsert, cb
 	#}}}
 

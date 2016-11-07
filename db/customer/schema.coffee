@@ -31,8 +31,7 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 
 		return false unless doc
 
-		doc[@confirmedKey] = false
-
+		doc[@dataKey][@confirmedKey] ?= false
 		doc[@dataKey][@subscriptionPlanKey] ?= 'free'
 		doc[@dataKey][@subscriptionRenewalKey] ?= 'none'
 		doc[@dataKey][@subscriptionExpirationKey] ?= '0'
@@ -85,34 +84,15 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 				maxlen: 30
 				required: true
 
+			confirmed:
+				label: 'email confirmed'
+				type: 'boolean'
+				required: true
+
 			password:
 				label: 'set password'
 				type: 'asciiNoSpace'
 				minlen: 6
-				maxlen: 50
-				placeholder: ''
-				required: true
-
-			subscriptionPlan:
-				label: 'subscription plan'
-				type: 'asciiNoSpace'
-				minlen: 1
-				maxlen: 50
-				placeholder: ''
-				required: true
-
-			subscriptionRenewal:
-				label: 'subscription renewal'
-				type: 'asciiNoSpace'
-				minlen: 1
-				maxlen: 50
-				placeholder: ''
-				required: true
-
-			subscriptionExpiration:
-				label: 'subscription expiration'
-				type: 'asciiNoSpace'
-				minlen: 1
 				maxlen: 50
 				placeholder: ''
 				required: true
@@ -123,6 +103,11 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 				placeholder: 'satoshin@gmx.com'
 				type: 'email'
 				maxlen: 30
+				required: true
+
+			confirmed:
+				label: 'email confirmed'
+				type: 'boolean'
 				required: true
 
 			password:

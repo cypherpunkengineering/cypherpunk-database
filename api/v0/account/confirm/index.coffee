@@ -12,25 +12,34 @@ class cypherpunk.backend.api.v0.account.confirm.resource extends cypherpunk.back
 	mask: cypherpunk.backend.server.power.mask.public
 	nav: false
 
+	getVars: () =>
+		@database = @server.root.api.customer.database
+		@schema = @database.schema
+		@dataKey = @schema.dataKey
+		@confirmedKey = @schema.confirmedKey
+
 	# public account email verification api
-	catchall: (req, res, accountID) => #{{{
+	catchall: (req, res, accountID) =>
 		return res.send 400, 'missing parameters' unless (accountID? and req.params?.confirmationToken?)
 		return res.send 400, 'missing or invalid account ID' unless wiz.framework.util.strval.alphanumeric_valid(accountID)
 
 		wiz.log.debug 'accountID is '+accountID
 		wiz.log.debug 'confirmationToken is '+req.params.confirmationToken
 
-		return res.send 400 unless accountID?
 		@server.root.api.customer.database.findOneByID req, res, accountID, (user) =>
-			return res.send 404 unless user?
-			return res.send 401, 'invalid token' if req.params.confirmationToken != user.confirmationToken
-			@server.root.api.customer.database.updateCustomDataByID req, res, accountID, @server.root.api.customer.database.schema.confirmedKey, true, (result) =>
-				res.send 500, 'Unable to confirm account' if not result?
+			return res.send 404 unless (user?.confirmationToken? and typeof user.confirmationToken is "string")
+			return res.send 404 unless (user.confirmationToken.length > 1 && req.params.confirmationToken == user.confirmationToken)
 
-				# start session
-				user.confirmed = true
+			# mark as confirmed
+			@getVars()
+			user[@dataKey][@confirmedKey] = true
+
+			# update user object in database
+			@server.root.api.customer.database.updateUserData req, res, accountID, user[@dataKey], (result) =>
+				return res.send 500, 'Unable to confirm account' if not result?
+
+				# start new session for confirmed user
 				out = @server.root.account.authenticate.password.doUserLogin(req, res, user)
 				res.send 200, out
-	#}}}
 
 # vim: foldmethod=marker wrap
