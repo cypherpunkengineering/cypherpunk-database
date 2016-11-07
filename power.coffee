@@ -11,13 +11,13 @@ class cypherpunk.backend.server.power.mask extends wiz.framework.http.resource.p
 	@domain: 5
 
 class cypherpunk.backend.server.power.level extends wiz.framework.http.resource.power.level
-	@customer: 2001
-	@support: 3001
-	@reseller: 4001
-	@admin: 5001
+	@customerFree: 2001
+	@customerPremium: 3001
+	@affiliate: 4001
+	@support: 6001
+	@admin: 7001
 	@developer: 8001
 	@wiz: 9001
-
 
 # vim: foldmethod=marker wrap
 

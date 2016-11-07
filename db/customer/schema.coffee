@@ -4,37 +4,34 @@ require './_framework'
 require './_framework/database/mongo/doc'
 require './_framework/util/strval'
 require './_framework/util/datetime'
-require './_framework/http/acct/authenticate/userpasswd'
+require './_framework/http/account/authenticate/userpasswd'
 
-wiz.package 'cypherpunk.backend.db.user.schema'
+wiz.package 'cypherpunk.backend.db.customer.schema'
 
 class type
 	constructor: (@type, @description, @verb, @data, @creatable = true) ->
 
-class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.docMultiType
+class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo.docMultiType
 
 	@passwordKey: 'password'
 	@customerKey: 'customer'
 	@confirmedKey: 'confirmed'
 	@confirmationTokenKey: 'confirmationToken'
-	@subscriptionTypeKey: 'subscriptionType'
+	@subscriptionPlanKey: 'subscriptionPlan'
 	@subscriptionRenewalKey: 'subscriptionRenewal'
 	@subscriptionExpirationKey: 'subscriptionExpiration'
 
-	constructor: () -> #{{{ XXX cannot use this constructor
-		throw Error this constructor cannot be used because of the below __super__.constructor() call
-	#}}}
 	@fromStranger: (req, res) => #{{{
-		return @fromUser(req, res, 'customer', req.body)
+		return @fromUser(req, res, 'free', req.body)
 	#}}}
-	@fromUser: (req, res, userType, userData, updating = false) => #{{{
+	@fromUser: (req, res, customerType, customerData, updating = false) => #{{{
 
 		this.__super__.constructor.types = @types
-		doc = this.__super__.constructor.fromUser(req, res, userType, userData, updating)
+		doc = this.__super__.constructor.fromUser(req, res, customerType, customerData, updating)
 
 		doc[@confirmedKey] = false
 
-		doc[@dataKey][@subscriptionTypeKey] ?= 'free'
+		doc[@dataKey][@subscriptionPlanKey] ?= 'free'
 		doc[@dataKey][@subscriptionRenewalKey] ?= 'none'
 		doc[@dataKey][@subscriptionExpirationKey] ?= '0'
 
@@ -44,29 +41,29 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 		return false unless doc
 
 		if doc?[@dataKey]?[@passwordKey]?  # hash password
-			doc[@dataKey][@passwordKey] = wiz.framework.http.acct.authenticate.userpasswd.pwHash(doc[@dataKey][@passwordKey])
+			doc[@dataKey][@passwordKey] = wiz.framework.http.account.authenticate.userpasswd.pwHash(doc[@dataKey][@passwordKey])
 
 		return doc
 	#}}}
-	@fromUserUpdate: (req, res, userType, origObj, userData) => #{{{
+	@fromUserUpdate: (req, res, customerType, origObj, customerData) => #{{{
 
 		# if updating, we might have no password passed.
 		# if so, delete it, and restore the original pw hash
 		# to the resulting object.
-		if userData[@passwordKey]? and typeof userData[@passwordKey] is 'string'
+		if customerData[@passwordKey]? and typeof customerData[@passwordKey] is 'string'
 			# only update password if valid new password specified
-			if userData[@passwordKey] == ''
-				delete userData[@passwordKey]
+			if customerData[@passwordKey] == ''
+				delete customerData[@passwordKey]
 
 		# create old and new documents for merging
-		docOld = new this(userType, origObj[@dataKey])
+		docOld = new this(customerType, origObj[@dataKey])
 		return false unless docOld
-		docNew = @fromUser(req, res, userType, userData, true)
+		docNew = @fromUser(req, res, customerType, customerData, true)
 		return false unless docNew
 
 		# merge docs
 		this.__super__.constructor.types = @types
-		doc = this.__super__.constructor.fromUserMerge(req, res, userType, docOld, docNew)
+		doc = this.__super__.constructor.fromUserMerge(req, res, customerType, docOld, docNew)
 		return false unless doc
 
 		# restore original password hash
@@ -80,7 +77,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 		constructor: (@type, @description, @verb, @data, @creatable = true) ->
 	@types:
 	#}}}
-		customer: (new type 'customer', 'Customer', 'list', #{{{
+		customerFree: (new type 'customerFree', 'Free Customer', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
@@ -96,8 +93,8 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 
-			subscriptionType:
-				label: 'subscription type'
+			subscriptionPlan:
+				label: 'subscription plan'
 				type: 'asciiNoSpace'
 				minlen: 1
 				maxlen: 50
@@ -120,19 +117,12 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 		) #}}}
-		affiliate: (new type 'affiliate', 'Affiliate', 'list', #{{{
+		customerPremium: (new type 'customerPremium', 'Premium Customer', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
 				type: 'email'
 				maxlen: 30
-				required: true
-
-			fullname:
-				label: 'full name'
-				type: 'ascii'
-				maxlen: 50
-				placeholder: 'Satoshi Nakamoto'
 				required: true
 
 			password:
@@ -143,74 +133,26 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 
-		) #}}}
-		support: (new type 'support', 'Support Agent', 'list', #{{{
-			email:
-				label: 'email address'
-				placeholder: 'satoshin@gmx.com'
-				type: 'email'
-				maxlen: 30
-				required: true
-
-			fullname:
-				label: 'full name'
-				type: 'ascii'
-				maxlen: 50
-				placeholder: 'Satoshi Nakamoto'
-				required: true
-
-			password:
-				label: 'set password'
+			subscriptionPlan:
+				label: 'subscription plan'
 				type: 'asciiNoSpace'
-				minlen: 6
+				minlen: 1
 				maxlen: 50
 				placeholder: ''
 				required: true
 
-		) #}}}
-		legal: (new type 'legal', 'Attorney', 'list', #{{{
-			email:
-				label: 'email address'
-				placeholder: 'satoshin@gmx.com'
-				type: 'email'
-				maxlen: 30
-				required: true
-
-			fullname:
-				label: 'full name'
-				type: 'ascii'
-				maxlen: 50
-				placeholder: 'Satoshi Nakamoto'
-				required: true
-
-			password:
-				label: 'set password'
+			subscriptionRenewal:
+				label: 'subscription renewal'
 				type: 'asciiNoSpace'
-				minlen: 6
+				minlen: 1
 				maxlen: 50
 				placeholder: ''
 				required: true
 
-		) #}}}
-		admin: (new type 'admin', 'Administrator', 'list', #{{{
-			email:
-				label: 'email address'
-				placeholder: 'satoshin@gmx.com'
-				type: 'email'
-				maxlen: 30
-				required: true
-
-			fullname:
-				label: 'full name'
-				type: 'ascii'
-				maxlen: 50
-				placeholder: 'Satoshi Nakamoto'
-				required: true
-
-			password:
-				label: 'set password'
+			subscriptionExpiration:
+				label: 'subscription expiration'
 				type: 'asciiNoSpace'
-				minlen: 6
+				minlen: 1
 				maxlen: 50
 				placeholder: ''
 				required: true

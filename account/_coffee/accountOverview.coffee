@@ -9,7 +9,7 @@ class cypherpunk.backend.admin.userjs.accountOverview extends wiz.framework.app.
 		)
 
 $(document).ready =>
-	myacct = new cypherpunk.backend.admin.userjs.accountOverview()
-	myacct.init()
+	myaccount = new cypherpunk.backend.admin.userjs.accountOverview()
+	myaccount.init()
 
 # vim: foldmethod=marker wrap

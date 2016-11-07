@@ -1,22 +1,22 @@
 # copyright 2012 J. Maurice <j@wiz.biz>
 
-wiz.package 'cypherpunk.backend.admin.userjs.manageUser'
+wiz.package 'cypherpunk.backend.admin.userjs.manageStaff'
 
-class cypherpunk.backend.admin.userjs.manageUser.table extends wiz.portal.userjs.table.multiMulti
+class cypherpunk.backend.admin.userjs.manageStaff.table extends wiz.portal.userjs.table.multiMulti
 
-	urlBase: wiz.getParentURL(2) + '/api/user'
+	urlBase: wiz.getParentURL(2) + '/api/staff'
 	#{{{ strings
-	stringNuggets: 'users'
-	stringInsertButton: 'Add user'
-	stringInsertSubmit: 'Add user'
-	stringInsertRecordDialogTitle: 'Add user'
-	stringInsertRecordSelectLabel: 'user type'
-	stringUpdateButton: 'Manage User'
-	stringDropButton: 'Drop users'
-	stringDropSubmit: 'Drop users'
-	stringDropRecordDialogTitle: 'Drop user'
-	stringSelectUserType: 'select user type...'
-	stringTitle: 'User Management'
+	stringNuggets: 'staffs'
+	stringInsertButton: 'Add staff'
+	stringInsertSubmit: 'Add staff'
+	stringInsertRecordDialogTitle: 'Add staff'
+	stringInsertRecordSelectLabel: 'staff type'
+	stringUpdateButton: 'Manage Staff'
+	stringDropButton: 'Drop staffs'
+	stringDropSubmit: 'Drop staffs'
+	stringDropRecordDialogTitle: 'Drop staff'
+	stringSelectStaffType: 'select staff type...'
+	stringTitle: 'Staff Management'
 	stringTableHeaders: [
 		'Full Name'
 		'E-Mail Address'
@@ -71,10 +71,10 @@ class cypherpunk.backend.admin.userjs.manageUser.table extends wiz.portal.userjs
 		@insertDialogFormSelect.attr('disabled', true) if data?
 	#}}}
 
-manageUserTable = null
+manageStaffTable = null
 $(document).ready =>
-	manageUserTable = new cypherpunk.backend.admin.userjs.manageUser.table()
-	manageUserTable.ajax 'GET', manageUserTable.urlBase + '/types', null, (types) =>
-		manageUserTable.init(types)
+	manageStaffTable = new cypherpunk.backend.admin.userjs.manageStaff.table()
+	manageStaffTable.ajax 'GET', manageStaffTable.urlBase + '/types', null, (types) =>
+		manageStaffTable.init(types)
 
 # vim: foldmethod=marker wrap

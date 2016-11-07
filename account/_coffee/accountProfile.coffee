@@ -43,7 +43,7 @@ class cypherpunk.backend.admin.userjs.myAccount extends wiz.framework.app.base
 #		@otpAuth.otpStatus()
 
 $(document).ready =>
-	myacct = new cypherpunk.backend.admin.userjs.myAccount()
-	myacct.init()
+	myaccount = new cypherpunk.backend.admin.userjs.myAccount()
+	myaccount.init()
 
 # vim: foldmethod=marker wrap

@@ -2,22 +2,22 @@
 
 require './_framework'
 require './_framework/http/resource/base'
-require './_framework/http/acct/session'
+require './_framework/http/account/session'
 require './_framework/http/db/mongo'
 require './_framework/util/world'
 
-wiz.package 'cypherpunk.backend.api.vpn'
+wiz.package 'cypherpunk.backend.api.v0.vpn'
 
-class cypherpunk.backend.api.vpn.resource extends cypherpunk.backend.api.base
+class cypherpunk.backend.api.v0.vpn.module extends cypherpunk.backend.api.base
 	database: null
 
 	init: () =>
-		#@database = new cypherpunk.backend.db.vpn(@server, this, @parent.wizDB)
+		#@database = new cypherpunk.backend.db.vpn(@server, this, @parent.parent.cypherpunkDB)
 		# api methods
-		@routeAdd new cypherpunk.backend.api.vpn.serverList(@server, this, 'serverList')
+		@routeAdd new cypherpunk.backend.api.v0.vpn.serverList(@server, this, 'serverList')
 		super()
 
-class cypherpunk.backend.api.vpn.serverList extends cypherpunk.backend.api.base
+class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.customer
 	handler: (req, res) =>
 		regionList = {}

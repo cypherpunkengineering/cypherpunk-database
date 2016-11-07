@@ -1,20 +1,20 @@
 # copyright J. Maurice <j@wiz.biz>
 
 require './_framework'
-require './_framework/http/acct'
+require './_framework/http/account'
 require './_framework/http/resource/base'
 
-wiz.package 'cypherpunk.backend.admin.user'
+wiz.package 'cypherpunk.backend.admin.staff'
 
-class cypherpunk.backend.admin.user.resource extends cypherpunk.backend.admin.template
+class cypherpunk.backend.admin.staff.resource extends cypherpunk.backend.admin.template
 	nav: true
-	title: 'Users'
+	title: 'Staff'
 	init: () =>
 		super()
-		@args.wizTitle = 'Manage Users'
+		@args.wizTitle = 'Manage Staff'
 		@args.wizCSS = @args.wizCSS.concat(@args.wizCSSdt)
 		@args.wizJS = @args.wizJS.concat(@args.wizJSdtMultiMulti)
 		@args.wizBodies += 1
-		@args.wizJS.push @parent.coffee('user')
+		@args.wizJS.push @parent.coffee('staff')
 
 # vim: foldmethod=marker wrap

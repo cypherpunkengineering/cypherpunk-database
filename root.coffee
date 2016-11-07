@@ -7,8 +7,8 @@ require './_framework/http/resource/root'
 require './_framework/http/resource/power'
 require './_framework/http/resource/jade'
 require './_framework/http/resource/coffee-script'
-require './_framework/http/acct'
-require './_framework/http/acct/session'
+require './_framework/http/account'
+require './_framework/http/account/session'
 
 require './_framework/thirdparty/stripe'
 require './_framework/thirdparty/sendgrid'
@@ -30,7 +30,7 @@ class cypherpunk.backend.login extends cypherpunk.backend.template
 
 class cypherpunk.backend.logout extends cypherpunk.backend.base
 	handler: (req, res) => #{{{
-		wiz.framework.http.acct.session.logout(req, res)
+		wiz.framework.http.account.session.logout(req, res)
 		@redirect(req, res, @path)
 	#}}}
 
@@ -86,7 +86,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 	#}}}
 	init: () => #{{{
 		super()
-		@accountDB = @api.user.database
+		#@accountDB = @api.account.database
 	#}}}
 	handler: (req, res) => #{{{
 		@redirect(req, res, @getFullPath() + '/home')

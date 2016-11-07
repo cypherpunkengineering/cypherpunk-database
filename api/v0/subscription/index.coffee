@@ -2,46 +2,46 @@
 
 require './_framework'
 require './_framework/http/resource/base'
-require './_framework/http/acct/session'
+require './_framework/http/account/session'
 require './_framework/http/db/mongo'
 require './_framework/util/world'
 
 require './_framework/thirdparty/stripe'
 require './_framework/thirdparty/sendgrid'
 
-wiz.package 'cypherpunk.backend.api.subscription'
+wiz.package 'cypherpunk.backend.api.v0.subscription'
 
-class cypherpunk.backend.api.subscription.resource extends cypherpunk.backend.api.base
+class cypherpunk.backend.api.v0.subscription.module extends cypherpunk.backend.api.base
 	database: null
 	debug: true
 
 	init: () =>
-		#@database = new cypherpunk.backend.db.subscription(@server, this, @parent.wizDB)
+		#@database = new cypherpunk.backend.db.subscription(@server, this, @parent.parent.cypherpunkDB)
 		# api methods
-		@routeAdd new cypherpunk.backend.api.subscription.status(@server, this, 'status')
-		@routeAdd new cypherpunk.backend.api.subscription.purchase(@server, this, 'purchase', 'POST')
-		@routeAdd new cypherpunk.backend.api.subscription.upgrade(@server, this, 'upgrade', 'POST')
+		@routeAdd new cypherpunk.backend.api.v0.subscription.status(@server, this, 'status')
+		@routeAdd new cypherpunk.backend.api.v0.subscription.purchase(@server, this, 'purchase', 'POST')
+		@routeAdd new cypherpunk.backend.api.v0.subscription.upgrade(@server, this, 'upgrade', 'POST')
 		super()
 
-class cypherpunk.backend.api.subscription.status extends cypherpunk.backend.api.base
+class cypherpunk.backend.api.v0.subscription.status extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.customer
 	mask: cypherpunk.backend.server.power.mask.auth
-	middleware: wiz.framework.http.acct.session.refresh
+	middleware: wiz.framework.http.account.session.refresh
 	handler: (req, res) =>
 
 		# type is free,premium
 		# renewal is monthly, semiannually, annually
 
 		out =
-			type: req.session.acct?.data?.subscriptionType or 'free'
-			renewal: req.session.acct?.data?.subscriptionRenewal or 'none'
-			confirmed: req.session.acct?.confirmed
-			expiration: req.session.acct?.data?.subscriptionExpiration or 'none'
+			type: req.session.account?.data?.subscriptionType or 'free'
+			renewal: req.session.account?.data?.subscriptionRenewal or 'none'
+			confirmed: req.session.account?.confirmed
+			expiration: req.session.account?.data?.subscriptionExpiration or 'none'
 
 		#console.log out
 		res.send 200, out
 
-class cypherpunk.backend.api.subscription.purchase extends cypherpunk.backend.api.base
+class cypherpunk.backend.api.v0.subscription.purchase extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.stranger
 	mask: cypherpunk.backend.server.power.mask.public
 	nav: false
@@ -61,10 +61,10 @@ class cypherpunk.backend.api.subscription.purchase extends cypherpunk.backend.ap
 
 			return res.send 409, 'Email already registered' if user isnt null
 
-			cypherpunk.backend.api.subscription.common.purchase(req, res)
+			cypherpunk.backend.api.v0.subscription.common.purchase(req, res)
 	#}}}
 
-class cypherpunk.backend.api.subscription.upgrade extends cypherpunk.backend.api.base
+class cypherpunk.backend.api.v0.subscription.upgrade extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.friend
 	mask: cypherpunk.backend.server.power.mask.auth
 	nav: false
@@ -76,10 +76,10 @@ class cypherpunk.backend.api.subscription.upgrade extends cypherpunk.backend.api
 		super(req, res)
 	#}}}
 	handler: (req, res) => #{{{
-		cypherpunk.backend.api.subscription.common.purchase(req, res)
+		cypherpunk.backend.api.v0.subscription.common.purchase(req, res)
 	#}}}
 
-class cypherpunk.backend.api.subscription.common
+class cypherpunk.backend.api.v0.subscription.common
 	@purchase: (req, res) => #{{{
 		return res.send 400, 'missing parameters' unless (req.body?.token? and req.body?.plan?)
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
@@ -109,7 +109,7 @@ class cypherpunk.backend.api.subscription.common
 			subscriptionRenewal: subscriptionRenewal
 			subscriptionExpiration: subscriptionExpiration
 
-		email = req.session?.acct?.email
+		email = req.session?.account?.email
 		email ?= req.body.email
 
 		stripeArgs =
@@ -122,10 +122,10 @@ class cypherpunk.backend.api.subscription.common
 			# XXX TODO: check for stripe errors, declines, etc.
 
 			# if upgrading, just update session, will be auto-saved to db
-			if req.session?.acct?.id?
-				req.session.acct.data.subscriptionType = subscriptionData.subscriptionType
-				req.session.acct.data.subscriptionRenewal = subscriptionData.subscriptionRenewal
-				req.session.acct.data.subscriptionExpiration = subscriptionData.subscriptionExpiration
+			if req.session?.account?.id?
+				req.session.account.data.subscriptionType = subscriptionData.subscriptionType
+				req.session.account.data.subscriptionRenewal = subscriptionData.subscriptionRenewal
+				req.session.account.data.subscriptionExpiration = subscriptionData.subscriptionExpiration
 
 				req.server.root.api.user.database.updateCurrentUserData req, res, (result2) =>
 					# TODO: add transaction ID etc.

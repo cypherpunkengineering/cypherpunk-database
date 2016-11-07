@@ -6,8 +6,8 @@ require './_framework/http/resource/base'
 require './_framework/http/resource/power'
 require './_framework/http/resource/jade'
 require './_framework/http/resource/coffee-script'
-require './_framework/http/acct'
-require './_framework/http/acct/session'
+require './_framework/http/account'
+require './_framework/http/account/session'
 
 require './power'
 
@@ -16,7 +16,7 @@ wiz.package 'cypherpunk.backend.base'
 class cypherpunk.backend.base extends wiz.framework.http.resource.base
 	level: cypherpunk.backend.server.power.level.admin
 	mask: cypherpunk.backend.server.power.mask.auth
-	middleware: wiz.framework.http.acct.session.base
+	middleware: wiz.framework.http.account.session.base
 	handler: (req, res) =>
 		wiz.log.debug "Default handler redirect to root page for #{req.url}"
 		@redirect(req, res, '/')
@@ -26,7 +26,7 @@ wiz.package 'cypherpunk.backend.jadeTemplate'
 class cypherpunk.backend.jadeTemplate extends wiz.framework.http.resource.jadeTemplate
 	level: cypherpunk.backend.server.power.level.admin
 	mask: cypherpunk.backend.server.power.mask.auth
-	middleware: wiz.framework.http.acct.session.base.concat [
+	middleware: wiz.framework.http.account.session.base.concat [
 	]
 	handler403: (req, res) =>
 		wiz.log.debug "Redirect to login page for #{req.url}"

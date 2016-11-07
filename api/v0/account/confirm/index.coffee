@@ -1,13 +1,13 @@
 # copyright J. Maurice <j@wiz.biz>
 
 require './_framework'
-require './_framework/http/acct'
+require './_framework/http/account'
 require './_framework/http/resource/base'
 require './_framework/thirdparty/stripe'
 
-wiz.package 'cypherpunk.backend.account.confirm'
+wiz.package 'cypherpunk.backend.api.v0.account.confirm'
 
-class cypherpunk.backend.account.confirm.module extends cypherpunk.backend.base
+class cypherpunk.backend.api.v0.account.confirm.resource extends cypherpunk.backend.base
 	level: cypherpunk.backend.server.power.level.stranger
 	mask: cypherpunk.backend.server.power.mask.public
 	nav: false

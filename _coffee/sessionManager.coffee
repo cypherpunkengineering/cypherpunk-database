@@ -15,7 +15,7 @@ class cypherpunk.backend.userjs.sessionManager extends wiz.portal.userjs.session
 
 		super()
 
-		if wiz?.session?.acct? # user is logged in
+		if wiz?.session?.account? # user is logged in
 			@enableLogout()
 		else
 			@enableLogin()
@@ -23,7 +23,7 @@ class cypherpunk.backend.userjs.sessionManager extends wiz.portal.userjs.session
 		@loginBox() if @isLoginPage
 
 	loginBox: () =>
-		if wiz.session?.acct? and wiz.getUrlVars().indexOf('for') == -1 # we think we're logged in and we're not in a redirect loop
+		if wiz.session?.account? and wiz.getUrlVars().indexOf('for') == -1 # we think we're logged in and we're not in a redirect loop
 			@onLoginCompleted('OK') # redirect
 		else # show login box
 			@container.append(@createLoginFormMain())

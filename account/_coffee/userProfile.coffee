@@ -36,8 +36,8 @@ class cypherpunk.backend.admin.userjs.userProfile extends wiz.framework.app.base
 	stringChangePasswordSubmit: 'Change Password'
 	#}}}
 	init: () => #{{{
-		@urlChangePassword = sessionManager.urlBase + '/api/user/myAccountPassword'
-		@urlAccountDetails = sessionManager.urlBase + '/api/user/myAccountDetails'
+		@urlChangePassword = sessionManager.urlBase + '/api/staff/myAccountPassword'
+		@urlAccountDetails = sessionManager.urlBase + '/api/staff/myAccountDetails'
 		@createAccountDetailsForm()
 		@createChangePasswordForm()
 	#}}}
@@ -50,11 +50,11 @@ class cypherpunk.backend.admin.userjs.userProfile extends wiz.framework.app.base
 			@legend
 				text: @stringAccountDetails
 		)
-		if wiz.session?.acct?.fullname? then @accountDetailsForm.append(
+		if wiz.session?.account?.fullname? then @accountDetailsForm.append(
 			@controlGroup
 				inputID: @idBraces(@dataContainer, @idFullName)
 				inputType: 'text'
-				inputValue: wiz.session?.acct?.fullname
+				inputValue: wiz.session?.account?.fullname
 				inputLabel: @stringFullNameL
 				inputPlaceholder: @stringFullNamePH
 		)
@@ -62,7 +62,7 @@ class cypherpunk.backend.admin.userjs.userProfile extends wiz.framework.app.base
 			@controlGroup
 				inputID: @idBraces(@dataContainer, @idEmail)
 				inputType: 'text'
-				inputValue: wiz.session?.acct?.email
+				inputValue: wiz.session?.account?.email
 				inputLabel: @stringEmailL
 				inputPlaceholder: @stringEmailPH
 		)
