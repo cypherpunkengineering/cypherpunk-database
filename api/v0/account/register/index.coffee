@@ -15,11 +15,11 @@ class cypherpunk.backend.api.v0.account.register.signup extends cypherpunk.backe
 		return res.send 400, 'missing parameters' unless req.body?.email?
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
 
-		@server.root.api.customer.customer.findOneByEmail req, res, req.body.email, (req, res, user) =>
+		@server.root.api.customer.database.findOneByEmail req, res, req.body.email, (req, res, user) =>
 
 			return res.send 409, 'Email already registered' if user isnt null
 
-			@server.root.api.customer.customer.signup req, res, false, (result) =>
+			@server.root.api.customer.database.signup req, res, false, (result) =>
 
 				if result instanceof Array
 					user = result[0]
@@ -30,7 +30,7 @@ class cypherpunk.backend.api.v0.account.register.signup extends cypherpunk.backe
 
 				wiz.log.info "Registered new user account for #{user.data.email}"
 
-				@server.root.api.customer.sendWelcomeMail user, (sendgridError) =>
+				@server.root.sendWelcomeMail user, (sendgridError) =>
 					if sendgridError
 						wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error"
 						console.log sendgridError

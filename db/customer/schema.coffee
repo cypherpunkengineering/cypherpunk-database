@@ -22,12 +22,14 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 	@subscriptionExpirationKey: 'subscriptionExpiration'
 
 	@fromStranger: (req, res) => #{{{
-		return @fromUser(req, res, 'free', req.body)
+		return @fromUser(req, res, 'customerFree', req.body)
 	#}}}
 	@fromUser: (req, res, customerType, customerData, updating = false) => #{{{
 
 		this.__super__.constructor.types = @types
 		doc = this.__super__.constructor.fromUser(req, res, customerType, customerData, updating)
+
+		return false unless doc
 
 		doc[@confirmedKey] = false
 
@@ -37,8 +39,6 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 
 		doc[@confirmationTokenKey] ?= wiz.framework.crypto.hash.digest
 			payload: doc
-
-		return false unless doc
 
 		if doc?[@dataKey]?[@passwordKey]?  # hash password
 			doc[@dataKey][@passwordKey] = wiz.framework.http.account.authenticate.userpasswd.pwHash(doc[@dataKey][@passwordKey])

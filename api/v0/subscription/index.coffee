@@ -141,7 +141,7 @@ class cypherpunk.backend.api.v0.subscription.common
 				else
 					user = result
 
-				req.server.root.api.customer.sendPurchaseMail user, (sendgridError) =>
+				req.server.root.sendPurchaseMail user, (sendgridError) =>
 					if sendgridError
 						wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
 						console.log sendgridError

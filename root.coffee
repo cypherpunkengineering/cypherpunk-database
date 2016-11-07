@@ -92,4 +92,113 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		@redirect(req, res, @getFullPath() + '/home')
 	#}}}
 
+	sendWelcomeMail: (customer, cb) => #{{{
+		if not customer?.data?.email?
+			wiz.log.err 'no customer email!!'
+			return
+
+		mailData =
+			from:
+				name: "Cypherpunk Privacy"
+				email: "welcome@cypherpunk.com"
+			personalizations: [
+				{
+					to: [
+						{
+							email: customer.data.email
+						}
+					]
+					subject: 'Welcome to Cypherpunk Privacy'
+				}
+			]
+			headers:
+				'X-Accept-Language': 'en'
+				'X-Mailer': 'CypherpunkPrivacyMail'
+			content: [
+				{
+					type: 'text/plain'
+					value: 'Please confirm your account: '+@generateConfirmationURL(customer)
+				}
+			]
+
+		@sendMail(mailData, cb)
+	#}}}
+	sendPurchaseMail: (customer, cb) => #{{{
+		if not customer?.data?.email?
+			wiz.log.err 'no customer email!!'
+			return
+		mailData =
+			from:
+				name: "Cypherpunk Privacy"
+				email: "welcome@cypherpunk.com"
+			personalizations: [
+				{
+					to: [
+						{
+							email: customer.data.email
+						}
+					]
+					subject: "You've got Premium access to Cypherpunk Privacy"
+				}
+			]
+			headers:
+				'X-Accept-Language': 'en'
+				'X-Mailer': 'CypherpunkPrivacyMail'
+			content: [
+				{
+					type: 'text/plain'
+					value: "You're premium! Thanks for purchasing"
+				}
+			]
+
+		@sendMail(mailData, cb)
+	#}}}
+	sendUpgradeMail: (customer, cb) => #{{{
+		if not customer?.data?.email?
+			wiz.log.err 'no customer email!!'
+			return
+		mailData =
+			from:
+				name: "Cypherpunk Privacy"
+				email: "welcome@cypherpunk.com"
+			personalizations: [
+				{
+					to: [
+						{
+							email: customer.data.email
+						}
+					]
+					subject: 'Your account has been upgraded'
+				}
+			]
+			headers:
+				'X-Accept-Language': 'en'
+				'X-Mailer': 'CypherpunkPrivacyMail'
+			content: [
+				{
+					type: 'text/plain'
+					value: 'Please confirm your account'
+				}
+			]
+
+		@sendMail(mailData, cb)
+	#}}}
+	sendMail: (mailData, cb) => #{{{
+		if @debug
+			console.log 'send mail to sendgrid:'
+			console.log mailData
+		@server.root.sendgrid.mail mailData, (error, response) =>
+			if @debug
+				console.log 'got callback from sendgrid:'
+				console.log response.statusCode
+				console.log response.headers
+				console.log response.body
+			if error
+				console.log error
+			cb()
+	#}}}
+	generateConfirmationURL: (customer) => #{{{
+		"https://cypherpunk.engineering/confirmation/#{customer.id}?confirmationToken=#{customer.confirmationToken}"
+	#}}}
+
 # vim: foldmethod=marker wrap
