@@ -86,7 +86,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 	#}}}
 	init: () => #{{{
 		super()
-		#@accountDB = @api.account.database
+		@accountDB = @api.customer.database
 	#}}}
 	handler: (req, res) => #{{{
 		@redirect(req, res, @getFullPath() + '/home')

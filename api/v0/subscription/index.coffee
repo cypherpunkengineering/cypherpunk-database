@@ -57,7 +57,7 @@ class cypherpunk.backend.api.v0.subscription.purchase extends cypherpunk.backend
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.email is 'string'
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
 
-		@server.root.api.user.database.findOneByEmail req, res, req.body.email, (req, res, user) =>
+		@server.root.api.customer.database.findOneByEmail req, res, req.body.email, (req, res, user) =>
 
 			return res.send 409, 'Email already registered' if user isnt null
 
@@ -127,21 +127,21 @@ class cypherpunk.backend.api.v0.subscription.common
 				req.session.account.data.subscriptionRenewal = subscriptionData.subscriptionRenewal
 				req.session.account.data.subscriptionExpiration = subscriptionData.subscriptionExpiration
 
-				req.server.root.api.user.database.updateCurrentUserData req, res, (result2) =>
+				req.server.root.api.customer.database.updateCurrentUserData req, res, (result2) =>
 					# TODO: add transaction ID etc.
 					res.send 200, result2
 
 				return
 
 			# if no account yet, create one
-			req.server.root.api.user.database.signup req, res, subscriptionData, (result) =>
+			req.server.root.api.customer.database.signup req, res, subscriptionData, (result) =>
 
 				if result instanceof Array
 					user = result[0]
 				else
 					user = result
 
-				req.server.root.api.user.sendPurchaseMail user, (sendgridError) =>
+				req.server.root.api.customer.sendPurchaseMail user, (sendgridError) =>
 					if sendgridError
 						wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
 						console.log sendgridError

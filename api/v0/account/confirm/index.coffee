@@ -21,10 +21,10 @@ class cypherpunk.backend.api.v0.account.confirm.resource extends cypherpunk.back
 		wiz.log.debug 'confirmationToken is '+req.params.confirmationToken
 
 		return res.send 400 unless accountID?
-		@server.root.api.user.database.findOneByID req, res, accountID, (user) =>
+		@server.root.api.customer.database.findOneByID req, res, accountID, (user) =>
 			return res.send 404 unless user?
 			return res.send 401, 'invalid token' if req.params.confirmationToken != user.confirmationToken
-			@server.root.api.user.database.updateCustomDataByID req, res, accountID, @server.root.api.user.database.schema.confirmedKey, true, (result) =>
+			@server.root.api.customer.database.updateCustomDataByID req, res, accountID, @server.root.api.customer.database.schema.confirmedKey, true, (result) =>
 				res.send 500, 'Unable to confirm account' if not result?
 
 				# start session
