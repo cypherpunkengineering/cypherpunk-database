@@ -12,7 +12,7 @@ require './authenticate'
 #require './otpkeys'
 require './logout'
 
-wiz.package 'wiz.framework.http.acct.module'
+wiz.package 'wiz.framework.http.account.module'
 
 # user login is a two-step process:
 #{{{ 1. identification
@@ -52,43 +52,31 @@ wiz.package 'wiz.framework.http.acct.module'
 #
 #}}}
 
-class wiz.framework.http.acct.module extends wiz.framework.http.resource.base
-	#{{{ database config
-	mongoConfig:
-		hostname: 'localhost'
-		database: 'wizacct'
-
-	mongoServerOptions:
-		auto_reconnect: true
-		poolSize: 2
-
-	mongoDbOptions:
-		reaper: true
-		safe: true
-	#}}}
+class wiz.framework.http.account.module extends wiz.framework.http.resource.base
 	load: () =>
 		# create db driver
-		@mongo = new wiz.framework.http.database.mongo.driver(@server, this, @mongoConfig, @mongoServerOptions, @mongoDbOptions)
+		#@mongo = null # new wiz.framework.http.database.mongo.driver(@server, this, @mongoConfig, @mongoServerOptions, @mongoDbOptions)
 
 		# create db classes with db driver instance
-		@db =
-			accounts: new wiz.framework.http.acct.db.accounts(@server, this, @mongo)
-			#otpkeys: new wiz.framework.http.acct.db.otpkeys(@server, this, @mongo)
+		#@db = null
+		#customers: new wiz.framework.http.account.db.customers(@server, this, @mongo)
+		#staff: new wiz.framework.http.account.db.staff(@server, this, @mongo)
+		#otpkeys: new wiz.framework.http.account.db.otpkeys(@server, this, @mongo)
 
 		# logout and destroy session
-		@routeAdd new wiz.framework.http.acct.logout(@server, this, 'logout', 'POST')
+		@routeAdd new wiz.framework.http.account.logout(@server, this, 'logout', 'POST')
 
 		# load the account identify sub-module
-		@identify = @routeAdd new wiz.framework.http.acct.identify.module(@server, this, 'identify')
+		@identify = @routeAdd new wiz.framework.http.account.identify.module(@server, this, 'identify')
 
 		# load the account authentication sub-module
-		@authenticate = @routeAdd new wiz.framework.http.acct.authenticate.module(@server, this, 'authenticate')
+		@authenticate = @routeAdd new wiz.framework.http.account.authenticate.module(@server, this, 'authenticate')
 
 		# load the account otpkeys sub-module
-		# @routeAdd new wiz.framework.http.acct.otpkeys.module(@server, this, 'otpkeys')
+		# @routeAdd new wiz.framework.http.account.otpkeys.module(@server, this, 'otpkeys')
 
 	init: () =>
 		# connect to db
-		@mongo.init()
+		#@mongo.init()
 
 # vim: foldmethod=marker wrap

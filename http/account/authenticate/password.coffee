@@ -4,7 +4,7 @@ require '../../..'
 require '../../../crypto/hash'
 require './base'
 
-wiz.package 'wiz.framework.http.acct.authenticate.password'
+wiz.package 'wiz.framework.http.account.authenticate.password'
 
 # Example username/password authentication request:
 #
@@ -15,11 +15,12 @@ wiz.package 'wiz.framework.http.acct.authenticate.password'
 #	}
 #
 
-class wiz.framework.http.acct.authenticate.password extends wiz.framework.http.acct.authenticate.base
+class wiz.framework.http.account.authenticate.password extends wiz.framework.http.account.authenticate.base
 	level: wiz.framework.http.resource.power.level.stranger
 	mask: wiz.framework.http.resource.power.mask.always
-	middleware: wiz.framework.http.acct.session.base
+	middleware: wiz.framework.http.account.session.refresh
 	dataKey: 'data'
+	passwordKey: 'password'
 
 	@pwHash: (plaintext) => #{{{
 		hash = wiz.framework.crypto.hash.salthash(plaintext)
@@ -27,7 +28,7 @@ class wiz.framework.http.acct.authenticate.password extends wiz.framework.http.a
 	#}}}
 	pwValidate: (req, res, user, plaintextPW) => #{{{
 		userPW = @constructor.pwHash(plaintextPW)
-		return true if user?[@dataKey].password? and userPW? and user[@dataKey].password == userPW
+		return true if user?[@dataKey]?[@passwordKey]? and userPW? and user[@dataKey][@passwordKey] == userPW
 		return false
 	#}}}
 
@@ -38,11 +39,11 @@ class wiz.framework.http.acct.authenticate.password extends wiz.framework.http.a
 		if req.session?.auth? and req.session.auth != 0
 			return res.send 400, 'already authenticated'
 
-		if not req.body?.password? or typeof req.body.password != 'string'
+		if not req.body?[@passwordKey]? or typeof req.body[@passwordKey] != 'string'
 			return res.send 400, 'missing or invalid password'
 
-		if @pwValidate(req, res, req.session.acct, req.body.password)
-			return @onAuthenticateSuccess(req, res, req.session.acct)
+		if @pwValidate(req, res, req.session.account, req.body[@passwordKey])
+			return @onAuthenticateSuccess(req, res, req.session.account)
 
 		return res.send 401, 'password authentication failed'
 	#}}}

@@ -5,7 +5,7 @@ require '../../util/list'
 
 require '../base'
 require '../resource/base'
-require '../acct/session'
+require '../account/session'
 require './config'
 require './csp'
 
@@ -175,7 +175,7 @@ class wiz.framework.http.server.base extends wiz.framework.http.base
 		res.on 'finish', () => #{{{ log all requests
 			# TODO: implement post-response-middleware
 			# save session, set cookie header
-			wiz.framework.http.acct.session.save(req)
+			wiz.framework.http.account.session.save(req)
 
 			# log the result of the request
 			@log req, res, out unless res?.route?.log is false

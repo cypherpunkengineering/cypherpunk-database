@@ -7,17 +7,17 @@ crypto = require 'crypto'
 redis = require 'redis'
 BigInteger = require '../../crypto/jsbn'
 
-wiz.package 'wiz.framework.http.acct.session'
+wiz.package 'wiz.framework.http.account.session'
 
 wiz.sessions = redis.createClient()
 
-class wiz.framework.http.acct.session
+class wiz.framework.http.account.session
 	@cookieName: 'cypherpunk.session' # must be static for middleware
 
 	@load: (req, res) => # middleware to load session if cookie present {{{
 		try
 			# get session cookie
-			cookie = req.cookies?[wiz.framework.http.acct.session.cookieName]
+			cookie = req.cookies?[wiz.framework.http.account.session.cookieName]
 			return req.next() if not cookie
 
 			# get session id from session cookie
@@ -38,7 +38,7 @@ class wiz.framework.http.acct.session
 
 				req.session = JSON.parse(datum)
 				req.session.last = new Date() # update session time
-				wiz.framework.http.acct.session.cookie(req, res)
+				wiz.framework.http.account.session.cookie(req, res)
 				#console.log req.session
 				return req.next() # call next middleware
 
@@ -47,11 +47,11 @@ class wiz.framework.http.acct.session
 			req.session = undefined
 			req.next() # call next middleware
 	#}}}
-	@reload: (req, res) => #{{{ refresh acct object from db
-		return req.next() if not req.session?.acct?.id?
-		req.server.root.accountDB.findOneByID req, res, req.session.acct.id, (acct) =>
-			return req.next() if not acct?
-			req.session.acct = acct
+	@reload: (req, res) => #{{{ refresh account object from db
+		return req.next() if not req.session?.account?.id?
+		req.server.root.accountDB.findOneByID req, res, req.session.account.id, (account) =>
+			return req.next() if not account?
+			req.session.account = account
 			req.next()
 	#}}}
 	@checkSecret: (req, res) => # {{{ check if CSRF secret token matches
@@ -122,7 +122,7 @@ class wiz.framework.http.acct.session
 
 		# default session values
 		req.session.auth = false
-		req.session.acct = null
+		req.session.account = null
 		req.session.expires = 60 # minutes
 		req.session.realm = 'cypherpunk'
 
@@ -135,7 +135,7 @@ class wiz.framework.http.acct.session
 		req.session.key = wiz.framework.crypto.hash.salthash(req.session.id, 'base64')
 
 		# generate session cookie
-		wiz.framework.http.acct.session.cookie(req, res)
+		wiz.framework.http.account.session.cookie(req, res)
 	#}}}
 	@logout: (req, res) => #{{{ destroy session
 		if req?.session?.key
@@ -148,7 +148,7 @@ class wiz.framework.http.acct.session
 			return wiz.log.crit 'invalid session, unable to set-cookie'
 
 		c = # c is for cookie
-			name: wiz.framework.http.acct.session.cookieName
+			name: wiz.framework.http.account.session.cookieName
 			val: req.session.id
 			#expires: new Date(req.session.last.getTime() + (req.session.expires * 60 * 1000))
 

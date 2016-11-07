@@ -4,7 +4,7 @@ require '../../..'
 require '../../../crypto/otp'
 require './base'
 
-wiz.package 'wiz.framework.http.acct.authenticate.skeletonkey'
+wiz.package 'wiz.framework.http.account.authenticate.skeletonkey'
 
 # Example SkeletonKey authentication request:
 #
@@ -16,7 +16,7 @@ wiz.package 'wiz.framework.http.acct.authenticate.skeletonkey'
 #	}
 #
 
-class wiz.framework.http.acct.authenticate.skeletonkey extends wiz.framework.http.acct.authenticate.base
+class wiz.framework.http.account.authenticate.skeletonkey extends wiz.framework.http.account.authenticate.base
 
 	handler: (req, res) => #{{{
 		console.log req.body
@@ -26,17 +26,17 @@ class wiz.framework.http.acct.authenticate.skeletonkey extends wiz.framework.htt
 		# XXX TODO: fail if invalid keynum given
 		#return @fail(req, res, 'invalid keynum') if not wiz.framework.util.strval.leetcode_valid(req.body.leetcode)
 
-		# get acctID and acctOTP data for matching keyID
+		# get accountID and accountOTP data for matching keyID
 		keyID = req.body.keynum
 		keyID = '01960755'
-		@parent.parent.db.otpkeys.findAcctByYubiID req, res, keyID, (req, res, acctID, acctOTP) =>
+		@parent.parent.database.otpkeys.findAcctByYubiID req, res, keyID, (req, res, accountID, accountOTP) =>
 
 			# fail if no matching account is found
-			return @fail(req, res, 'no such acct') if not acctID or not acctOTP
+			return @fail(req, res, 'no such account') if not accountID or not accountOTP
 
 			# get yubikey secret/counter from otpkeys database
-			secret = new Buffer(acctOTP.secret16, 'hex')
-			counter = acctOTP.counter10
+			secret = new Buffer(accountOTP.secret16, 'hex')
+			counter = accountOTP.counter10
 
 			# validate given yubikey leetcode is correct
 			#validation = wiz.framework.crypto.otp.validateHOTP(secret, counter, userOTP)
@@ -45,13 +45,13 @@ class wiz.framework.http.acct.authenticate.skeletonkey extends wiz.framework.htt
 			#return @fail(req, res, 'otp incorrect') if validation.result isnt true
 
 			# query full account object
-			@parent.parent.db.accounts.findOneByID req, res, acctID, (req, res, acct) =>
+			@parent.parent.database.accounts.findOneByID req, res, accountID, (req, res, account) =>
 
 				# fail if account object cant be retrieved
-				return @fail(req, res, 'no such acct') if not acct
+				return @fail(req, res, 'no such account') if not account
 
 				# pass account object to success callback
-				return @onAuthenticateSuccess(req, res, acct)
+				return @onAuthenticateSuccess(req, res, account)
 	#}}}
 
 	fail: (req, res, err) => #{{{

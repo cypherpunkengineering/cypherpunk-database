@@ -6,11 +6,11 @@ require '../../../crypto/hash'
 require '../../resource/base'
 require '../../db/mongo'
 require '../session'
-require './accounts'
+require './customers'
 
-wiz.package 'wiz.framework.http.acct.db.otpkeys'
+wiz.package 'wiz.framework.http.account.db.otpkeys'
 
-class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.accounts
+class wiz.framework.http.account.db.otpkeys extends wiz.framework.http.account.db.customers
 
 	arrayKey: 'otp'
 	elementKey: 'key'
@@ -20,7 +20,7 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.acco
 	otpTokenCounter10: 'counter10'
 	otpTokenRequire: 'require'
 
-	findAcctByYubiID: (req, res, keyID, cb) => #{{{ find user acct from yubikey id
+	findAcctByYubiID: (req, res, keyID, cb) => #{{{ find user account from yubikey id
 		authKey = null
 		user = null
 
@@ -38,36 +38,36 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.acco
 			return cb(req, res, result._id, result[@arrayKey][0])
 	#}}}
 
-	otpStatus: (req, res, acct, otpkeyID) => #{{{
-		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
+	otpStatus: (req, res, account, otpkeyID) => #{{{
+		return res.send 500 if not account?.id? or not otpkeyID # TODO: move this to middleware
 
-		@findElementByID req, res, acct.id, otpkeyID, (result) =>
+		@findElementByID req, res, account.id, otpkeyID, (result) =>
 			otp = {}
 			otp = result if result?.key?
 
 			res.send 200,
-				email: acct.email
+				email: account.email
 				otp: otp
 	#}}}
-	otpDisable: (req, res, acct, otpkeyID) => #{{{
-		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
+	otpDisable: (req, res, account, otpkeyID) => #{{{
+		return res.send 500 if not account?.id? or not otpkeyID # TODO: move this to middleware
 
-		@otpToggle req, res, acct, otpkeyID, false
+		@otpToggle req, res, account, otpkeyID, false
 	#}}}
-	otpToggle: (req, res, acct, otpkeyID, setting, cb) => #{{{
-		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
+	otpToggle: (req, res, account, otpkeyID, setting, cb) => #{{{
+		return res.send 500 if not account?.id? or not otpkeyID # TODO: move this to middleware
 
-		doc = @getDocKeyWithElementID acct.id, otpkeyID
+		doc = @getDocKeyWithElementID account.id, otpkeyID
 		nugget = {}
 		nugget[@otpTokenRequire] = setting
 		update = @getUpdateSetObj req, nugget
 		options = { upsert: false }
 		@updateCustom req, res, doc, update, options, cb
 	#}}}
-	otpIncrementCounter: (req, res, acct, otpkeyID, offset, cb) => #{{{
-		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
+	otpIncrementCounter: (req, res, account, otpkeyID, offset, cb) => #{{{
+		return res.send 500 if not account?.id? or not otpkeyID # TODO: move this to middleware
 
-		doc = @getDocKeyWithElementID acct.id, otpkeyID
+		doc = @getDocKeyWithElementID account.id, otpkeyID
 		# {"$inc":{"users.$.otp.counter10":1}, "$set":{"users.$.updated":1337}}
 		update = {}
 		update["$inc"] = {}
@@ -75,10 +75,10 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.acco
 		options = { upsert: false }
 		@updateCustom req, res, doc, update, options, cb
 	#}}}
-	otpEnable: (req, res, acct, otpkeyID) => #{{{
-		return res.send 500 if not acct?.id? or not otpkeyID # TODO: move this to middleware
+	otpEnable: (req, res, account, otpkeyID) => #{{{
+		return res.send 500 if not account?.id? or not otpkeyID # TODO: move this to middleware
 
-		@findElementByID req, res, acct.id, otpkeyID, (result) =>
+		@findElementByID req, res, account.id, otpkeyID, (result) =>
 			if result?.secret16?
 
 				# store secret in buffer for crypto methods
@@ -87,20 +87,20 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.acco
 				# if matches HOTP, enable OTP and increment OTP counter
 				validationHOTP = wiz.framework.crypto.otp.validateHOTP(secret, result.counter10, req.body.userotp)
 				if validationHOTP.result is true
-					return @otpToggle req, res, acct, otpkeyID, true, (res2) =>
+					return @otpToggle req, res, account, otpkeyID, true, (res2) =>
 						return res.send 500, 'otp toggle failed' if res2 is null
-						@otpIncrementCounter req, res, acct, otpkeyID, validationHOTP.offset
+						@otpIncrementCounter req, res, account, otpkeyID, validationHOTP.offset
 
 				# if matches TOTP, enable OTP
 				validationTOTP = wiz.framework.crypto.otp.validateTOTP(secret, req.body.userotp)
 				if validationTOTP.result is true
-					return @otpToggle req, res, acct, otpkeyID, true
+					return @otpToggle req, res, account, otpkeyID, true
 
 			# otherwise auth fails
 			res.send 400, 'validation failure'
 	#}}}
-	otpGenerate: (req, res, acct, otpkeyID) => #{{{
-		doc = @getDocKeyWithElementID acct.id, otpkeyID
+	otpGenerate: (req, res, account, otpkeyID) => #{{{
+		doc = @getDocKeyWithElementID account.id, otpkeyID
 		key = wiz.framework.crypto.otp.generateSecret(20)
 		if not key.base32
 			wiz.log.err "Unable to generate key!"
@@ -112,7 +112,7 @@ class wiz.framework.http.acct.db.otpkeys extends wiz.framework.http.acct.db.acco
 		update = @getUpdateSetObj req, nugget
 		options = { upsert: false }
 		@updateCustom req, res, doc, update, options, () =>
-			@otpToggle req, res, acct, otpkeyID, false
+			@otpToggle req, res, account, otpkeyID, false
 	#}}}
 
 # vim: foldmethod=marker wrap

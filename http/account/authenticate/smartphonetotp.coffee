@@ -4,7 +4,7 @@ require '../../..'
 require '../../../crypto/otp'
 require './base'
 
-wiz.package 'wiz.framework.http.acct.authenticate.smartphonetotp'
+wiz.package 'wiz.framework.http.account.authenticate.smartphonetotp'
 
 # Example Smartphone TOTP authentication request:
 #
@@ -15,7 +15,7 @@ wiz.package 'wiz.framework.http.acct.authenticate.smartphonetotp'
 #	}
 #
 
-class wiz.framework.http.acct.authenticate.smartphonetotp extends wiz.framework.http.acct.authenticate.base
+class wiz.framework.http.account.authenticate.smartphonetotp extends wiz.framework.http.account.authenticate.base
 
 	otpValidate: (req, res, user, userOTP) => #{{{
 		validation = wiz.framework.crypto.otp.validateTOTP(user.secret, userOTP)

@@ -185,15 +185,15 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		# sanity check
 		return false if not req?
 
-		#wiz.log.debug "session power level is #{req.session?.acct?.level} and required power level for #{@getFullPath()} is #{@level}"
+		#wiz.log.debug "session power level is #{req.session?.account?.level} and required power level for #{@getFullPath()} is #{@level}"
 
 		# err on the side of security
 		return false if @level is wiz.framework.http.resource.power.level.unknown
 		return false if @mask is wiz.framework.http.resource.power.level.unknown
 
 		# don't bother checking for pages that require a session if there is no session
-		return false if not req.session?.acct? and @level > wiz.framework.http.resource.power.level.stranger
-		return false if not req.session?.acct? and @mask > wiz.framework.http.resource.power.mask.public
+		return false if not req.session?.account? and @level > wiz.framework.http.resource.power.level.stranger
+		return false if not req.session?.account? and @mask > wiz.framework.http.resource.power.mask.public
 
 		# public pages for strangers always allowed
 		if @level is wiz.framework.http.resource.power.level.stranger and
@@ -204,7 +204,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 			return true
 
 		# public pages for friends require a session
-		if req.session?.acct? and @level is wiz.framework.http.resource.power.level.friend and
+		if req.session?.account? and @level is wiz.framework.http.resource.power.level.friend and
 		(
 			@mask is wiz.framework.http.resource.power.mask.always or
 			@mask is wiz.framework.http.resource.power.mask.public

@@ -13,7 +13,7 @@ class wiz.portal.userjs.session extends wiz.framework.app.base
 	#}}}
 	#{{{ static constants
 
-	idLogin: 'login'
+	idLogin: 'email'
 	stringLogin: 'Login'
 	stringLoginL: 'Email'
 	stringLoginPH: 'user@example.com'
@@ -215,7 +215,7 @@ class wiz.portal.userjs.session extends wiz.framework.app.base
 			.addClass('dropdown-toggle')
 			.attr('data-toggle', 'dropdown')
 			.attr('href', '#')
-			.text(wiz.session.acct.fullname or wiz.session.acct.email)
+			.text(wiz.session.account.fullname or wiz.session.account.email)
 			.append(
 				$('<b>')
 				.addClass('caret')
@@ -259,15 +259,15 @@ class wiz.portal.userjs.session extends wiz.framework.app.base
 	#}}}
 
 	onLoginSuccessful: (data) => #{{{
-		if not data or not data.secret or not data.acct
+		if not data or not data.secret or not data.account
 			return alert 'Error: invalid authentication response received'
 
-		# save acct data in global wiz object
-		wiz.session.acct = data.acct
+		# save account data in global wiz object
+		wiz.session.account = data.account
 		wiz.sessionSave()
 
 		#
-		# @showUserBox(wiz.session.acct)
+		# @showUserBox(wiz.session.account)
 
 		# proceed to next page
 		@onLoginCompleted()
