@@ -26,7 +26,7 @@ class wiz.framework.http.account.authenticate.base extends wiz.framework.http.re
 	onAuthenticateSuccess: (req, res, account) => #{{{
 		out = @doUserLogin(req, res, account)
 		res.send 200, out
-		@parent.parent.database.updateLastLoginTS req, res, (result) =>
+		req.server.root.accountDB.updateLastLoginTS req, res, (req2, res2, result) =>
 	#}}}
 
 	doUserLogin: (req, res, account) => #{{{

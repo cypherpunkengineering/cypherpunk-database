@@ -49,7 +49,7 @@ class wiz.framework.http.account.session
 	#}}}
 	@reload: (req, res) => #{{{ refresh account object from db
 		return req.next() if not req.session?.account?.id?
-		req.server.root.accountDB.findOneByID req, res, req.session.account.id, (account) =>
+		req.server.root.accountDB.findOneByID req, res, req.session.account.id, (req2, res2, account) =>
 			return req.next() if not account?
 			req.session.account = account
 			req.next()
@@ -112,6 +112,9 @@ class wiz.framework.http.account.session
 	@save: (req) => # save session to db after sending response {{{
 		if req?.session?.key
 			#wiz.log.debug "storing session key #{req.session.key} data #{JSON.stringify(req.session)}"
+			#for x of req.session
+				#console.log x
+				#console.log req.session[x]
 			wiz.sessions.set(req.session.key, JSON.stringify(req.session))
 	#}}}
 	@start: (req, res) => #{{{ start new session
