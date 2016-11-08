@@ -33,9 +33,9 @@ class cypherpunk.backend.api.v0.subscription.status extends cypherpunk.backend.a
 		# renewal is monthly, semiannually, annually
 
 		out =
-			type: req.session.account?.data?.subscriptionType or 'free'
+			type: req.session.account?.data?.subscriptionPlan or 'free'
 			renewal: req.session.account?.data?.subscriptionRenewal or 'none'
-			confirmed: req.session.account?.confirmed
+			confirmed: (if req.session.account?.data?.confirmed then true else false)
 			expiration: req.session.account?.data?.subscriptionExpiration or 'none'
 
 		#console.log out
@@ -105,7 +105,7 @@ class cypherpunk.backend.api.v0.subscription.common
 
 		subscriptionData =
 			confirmed: true
-			subscriptionType: 'premium'
+			subscriptionPlan: 'premium'
 			subscriptionRenewal: subscriptionRenewal
 			subscriptionExpiration: subscriptionExpiration
 
@@ -123,13 +123,14 @@ class cypherpunk.backend.api.v0.subscription.common
 
 			# if upgrading, just update session, will be auto-saved to db
 			if req.session?.account?.id?
-				req.session.account.data.subscriptionType = subscriptionData.subscriptionType
+				req.session.account.data.subscriptionPlan = subscriptionData.subscriptionPlan
 				req.session.account.data.subscriptionRenewal = subscriptionData.subscriptionRenewal
 				req.session.account.data.subscriptionExpiration = subscriptionData.subscriptionExpiration
 
-				req.server.root.api.customer.database.updateCurrentUserData req, res, (result2) =>
+				req.server.root.api.customer.database.updateCurrentUserData req, res, (req, res, result2) =>
 					# TODO: add transaction ID etc.
-					res.send 200, result2
+					console.log result2
+					res.send 200
 
 				return
 
