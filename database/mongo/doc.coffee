@@ -7,7 +7,7 @@ wiz.package 'wiz.framework.database.mongo'
 
 class wiz.framework.database.mongo.doc
 	immutable: false
-	constructor: (@data) -> #{{{
+	constructor: (@data = {}) -> #{{{
 		# create unique id using headers/session data as salt
 		@id ?= wiz.framework.crypto.hash.digest
 			payload: this
