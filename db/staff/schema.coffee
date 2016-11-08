@@ -59,30 +59,6 @@ class cypherpunk.backend.db.staff.schema extends wiz.framework.database.mongo.do
 		constructor: (@type, @description, @verb, @data, @creatable = true) ->
 	@types:
 	#}}}
-		affiliate: (new type 'affiliate', 'Affiliate', 'list', #{{{
-			email:
-				label: 'email address'
-				placeholder: 'satoshin@gmx.com'
-				type: 'email'
-				maxlen: 30
-				required: true
-
-			fullname:
-				label: 'full name'
-				type: 'ascii'
-				maxlen: 50
-				placeholder: 'Satoshi Nakamoto'
-				required: true
-
-			password:
-				label: 'set password'
-				type: 'asciiNoSpace'
-				minlen: 6
-				maxlen: 50
-				placeholder: ''
-				required: true
-
-		) #}}}
 		support: (new type 'support', 'Support Agent', 'list', #{{{
 			email:
 				label: 'email address'

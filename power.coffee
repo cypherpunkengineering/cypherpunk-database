@@ -11,9 +11,8 @@ class cypherpunk.backend.server.power.mask extends wiz.framework.http.resource.p
 	@domain: 5
 
 class cypherpunk.backend.server.power.level extends wiz.framework.http.resource.power.level
-	@customerFree: 2001
-	@customerPremium: 3001
-	@affiliate: 4001
+	@customer: 2001
+	@affiliate: 3001
 	@support: 6001
 	@admin: 7001
 	@developer: 8001

@@ -18,7 +18,7 @@ class cypherpunk.backend.api.v0.vpn.module extends cypherpunk.backend.api.base
 		super()
 
 class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.base
-	level: cypherpunk.backend.server.power.level.customerFree
+	level: cypherpunk.backend.server.power.level.customer
 	handler: (req, res) =>
 		regionList = {}
 		for region of wiz.framework.util.world.regionMap

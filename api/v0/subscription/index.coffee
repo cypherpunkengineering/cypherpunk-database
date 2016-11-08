@@ -24,7 +24,7 @@ class cypherpunk.backend.api.v0.subscription.module extends cypherpunk.backend.a
 		super()
 
 class cypherpunk.backend.api.v0.subscription.status extends cypherpunk.backend.api.base
-	level: cypherpunk.backend.server.power.level.customerFree
+	level: cypherpunk.backend.server.power.level.customer
 	mask: cypherpunk.backend.server.power.mask.auth
 	middleware: wiz.framework.http.account.session.refresh
 	handler: (req, res) =>

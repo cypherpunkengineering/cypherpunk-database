@@ -15,6 +15,7 @@ class cypherpunk.backend.admin.template extends cypherpunk.backend.template
 
 require './staff'
 require './customer'
+require './affiliate'
 
 class cypherpunk.backend.admin.module extends cypherpunk.backend.admin.base
 	nav: true
@@ -29,7 +30,8 @@ class cypherpunk.backend.admin.module extends cypherpunk.backend.admin.base
 		#@routeAdd new wiz.framework.http.resource.folder(@server, this, '_css', __dirname)
 
 		# top-level management pages
-		@routeAdd new cypherpunk.backend.admin.staff.resource(@server, this, 'staffs')
+		@routeAdd new cypherpunk.backend.admin.staff.resource(@server, this, 'staff')
 		@routeAdd new cypherpunk.backend.admin.customer.resource(@server, this, 'customers')
+		@routeAdd new cypherpunk.backend.admin.affiliate.resource(@server, this, 'affiliates')
 
 # vim: foldmethod=marker wrap

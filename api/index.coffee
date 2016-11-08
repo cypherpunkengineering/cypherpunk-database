@@ -12,6 +12,7 @@ class cypherpunk.backend.api.base extends cypherpunk.backend.base
 
 require './staff'
 require './customer'
+require './affiliate'
 require './transaction'
 
 require './v0'
@@ -38,6 +39,7 @@ class cypherpunk.backend.api.module extends cypherpunk.backend.api.base
 
 		@staff = @routeAdd new cypherpunk.backend.api.staff.resource(@server, this, 'staff')
 		@customer = @routeAdd new cypherpunk.backend.api.customer.resource(@server, this, 'customer')
+		@affiliate = @routeAdd new cypherpunk.backend.api.affiliate.resource(@server, this, 'affiliate')
 		@transaction = @routeAdd new cypherpunk.backend.api.transaction.resource(@server, this, 'transaction')
 
 		@v0 = @routeAdd new cypherpunk.backend.api.v0.module(@server, this, 'v0')

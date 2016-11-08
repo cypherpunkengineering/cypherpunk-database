@@ -6,15 +6,15 @@ require './_framework/util/strval'
 require './_framework/util/datetime'
 require './_framework/http/account/authenticate/userpasswd'
 
-wiz.package 'cypherpunk.backend.db.customer.schema'
+wiz.package 'cypherpunk.backend.db.affiliate.schema'
 
 class type
 	constructor: (@type, @description, @verb, @data, @creatable = true) ->
 
-class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo.docMultiType
+class cypherpunk.backend.db.affiliate.schema extends wiz.framework.database.mongo.docMultiType
 
 	@passwordKey: 'password'
-	@customerKey: 'customer'
+	@affiliateKey: 'affiliate'
 	@confirmedKey: 'confirmed'
 	@confirmationTokenKey: 'confirmationToken'
 	@subscriptionPlanKey: 'subscriptionPlan'
@@ -22,12 +22,12 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 	@subscriptionExpirationKey: 'subscriptionExpiration'
 
 	@fromStranger: (req, res) => #{{{
-		return @fromUser(req, res, 'customer', req.body)
+		return @fromUser(req, res, 'affiliate', req.body)
 	#}}}
-	@fromUser: (req, res, customerType, customerData, updating = false) => #{{{
+	@fromUser: (req, res, affiliateType, affiliateData, updating = false) => #{{{
 
 		this.__super__.constructor.types = @types
-		doc = this.__super__.constructor.fromUser(req, res, customerType, customerData, updating)
+		doc = this.__super__.constructor.fromUser(req, res, affiliateType, affiliateData, updating)
 
 		return false unless doc
 
@@ -44,25 +44,25 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 
 		return doc
 	#}}}
-	@fromUserUpdate: (req, res, customerType, origObj, customerData) => #{{{
+	@fromUserUpdate: (req, res, affiliateType, origObj, affiliateData) => #{{{
 
 		# if updating, we might have no password passed.
 		# if so, delete it, and restore the original pw hash
 		# to the resulting object.
-		if customerData[@passwordKey]? and typeof customerData[@passwordKey] is 'string'
+		if affiliateData[@passwordKey]? and typeof affiliateData[@passwordKey] is 'string'
 			# only update password if valid new password specified
-			if customerData[@passwordKey] == ''
-				delete customerData[@passwordKey]
+			if affiliateData[@passwordKey] == ''
+				delete affiliateData[@passwordKey]
 
 		# create old and new documents for merging
-		docOld = new this(customerType, origObj[@dataKey])
+		docOld = new this(affiliateType, origObj[@dataKey])
 		return false unless docOld
-		docNew = @fromUser(req, res, customerType, customerData, true)
+		docNew = @fromUser(req, res, affiliateType, affiliateData, true)
 		return false unless docNew
 
 		# merge docs
 		this.__super__.constructor.types = @types
-		doc = this.__super__.constructor.fromUserMerge(req, res, customerType, docOld, docNew)
+		doc = this.__super__.constructor.fromUserMerge(req, res, affiliateType, docOld, docNew)
 		return false unless doc
 
 		# restore original password hash
@@ -76,7 +76,7 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 		constructor: (@type, @description, @verb, @data, @creatable = true) ->
 	@types:
 	#}}}
-		customer: (new type 'customer', 'Customer', 'list', #{{{
+		affiliate: (new type 'affiliate', 'Affiliate', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
@@ -84,9 +84,11 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 				maxlen: 30
 				required: true
 
-			confirmed:
-				label: 'email confirmed'
-				type: 'boolean'
+			fullname:
+				label: 'full name'
+				type: 'ascii'
+				maxlen: 50
+				placeholder: 'Satoshi Nakamoto'
 				required: true
 
 			password:
@@ -97,29 +99,6 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 				placeholder: ''
 				required: true
 
-			subscriptionPlan:
-				label: 'subscription plan'
-				type: 'asciiNoSpace'
-				minlen: 1
-				maxlen: 50
-				placeholder: ''
-				required: true
-
-			subscriptionRenewal:
-				label: 'subscription renewal'
-				type: 'asciiNoSpace'
-				minlen: 1
-				maxlen: 50
-				placeholder: ''
-				required: true
-
-			subscriptionExpiration:
-				label: 'subscription expiration'
-				type: 'asciiNoSpace'
-				minlen: 1
-				maxlen: 50
-				placeholder: ''
-				required: true
 		) #}}}
 
 # vim: foldmethod=marker wrap
