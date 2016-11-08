@@ -19,7 +19,7 @@ class wiz.framework.http.database.mongo.driver extends wiz.framework.database.mo
 				return null
 			wiz.log.debug "connected to database #{@config.database}"
 	#}}}
-	collection: (res, collectionName, cb) => #{{{
+	collection: (req, res, collectionName, cb) => #{{{
 		super collectionName, (err, collection) =>
 			# only call cb if we have collection
 			if err or not collection
@@ -88,32 +88,32 @@ class wiz.framework.http.database.mongo.base
 	findByKey: (req, res, k, v, projection, opts, cb) => #{{{
 		criteria = {}
 		criteria[k] = v
-		@find req, res, criteria, projection, opts, cb
+		@find(req, res, criteria, projection, opts, cb)
 	#}}}
 	findOne: (req, res, criteria, projection, cb) => #{{{
 		debugstr = "#{@collectionName}.findOne(#{JSON.stringify(criteria)}, #{JSON.stringify(projection)})"
 		wiz.log.debug debugstr if @debug
-		@mongo.collection res, @collectionName, (collection) =>
+		@mongo.collection req, res, @collectionName, (collection) =>
 			collection.findOne criteria, projection, (err, result) =>
 				if err
 					wiz.log.err "FINDONE FAILED: #{debugstr} -> #{err}"
-					return cb req, res, null if cb
+					return cb(req, res, null) if cb
 					return res.send 500
 
 				wiz.log.debug "FINDONE OK: #{debugstr}" if @debug
 				wiz.log.debug "FINDONE RESULT: #{JSON.stringify(result)}" if @debug
-				return cb req, res, result if cb
+				return cb(req, res, result) if cb
 				res.send 200, result
 	#}}}
 	findOneByID: (req, res, id, cb) => #{{{
 		criteria = @getDocKey(req, id)
 		projection = @projection()
-		@findOne req, res, criteria, projection, cb
+		@findOne(req, res, criteria, projection, cb)
 	#}}}
 	findOneByKey: (req, res, k, v, projection, cb) => #{{{
 		criteria = {}
 		criteria[k] = v
-		@findOne req, res, criteria, projection, cb
+		@findOne(req, res, criteria, projection, cb)
 	#}}}
 
 	listResponse: (req, res, data, recordCount) => #{{{
@@ -129,15 +129,15 @@ class wiz.framework.http.database.mongo.base
 	updateCustom: (req, res, criteria, update, options, cb) => #{{{
 		debugstr = "#{@collectionName}.update(#{JSON.stringify(criteria)}, #{JSON.stringify(update)}, #{JSON.stringify(options)})"
 		wiz.log.debug debugstr if @debug
-		@mongo.collection res, @collectionName, (collection) =>
+		@mongo.collection req, res, @collectionName, (collection) =>
 			collection.update criteria, update, options, (err, result) =>
 				if err
 					wiz.log.err "UPDATE FAILED: #{debugstr} -> #{err}"
-					return cb null if cb
+					return cb(req, res, null) if cb
 					return res.send 500
 
 				wiz.log.debug "UPDATE OK: #{debugstr}" if @debug
-				return cb result if cb
+				return cb(req, res, result) if cb
 				return res.send 200
 	#}}}
 	updateDataByID: (req, res, docID, dataToUpdate, cb) => #{{{
@@ -158,34 +158,34 @@ class wiz.framework.http.database.mongo.base
 		dropQuery =
 			id : { $in : recordsToDelete }
 
-		@parent.parent.mongo.collection res, @collectionName, (collection) =>
+		@mongo.collection req, res, @collectionName, (collection) =>
 			debugstr = "#{@collectionName}.remove(#{JSON.stringify(dropQuery)})"
 			wiz.log.debug debugstr if @debug
 			collection.remove dropQuery, (err, count) =>
 				if err
 					wiz.log.err "DROP FAILED FOR #{recordsToDelete}: #{err}"
 					res.send 500 if res
-					cb false if cb
+					cb(req, res, false) if cb
 					return
 
 				wiz.log.debug "DROP OK: #{debugstr}" if @debug
 				res.send 200 if res
-				cb true if cb
+				cb(req, res, true) if cb
 				return
 	#}}}
 
 	count: (req, res, criteria, projection, cb) => #{{{
 		debugstr = "#{@collectionName}.count(#{JSON.stringify(criteria)}, #{JSON.stringify(projection)})"
 		wiz.log.debug debugstr if @debug
-		@mongo.collection res, @collectionName, (collection) =>
+		@mongo.collection req, res, @collectionName, (collection) =>
 			collection.find(criteria, projection).count (err, count) =>
 				if err
 					wiz.log.err "COUNT FAILED: #{debugstr} -> #{err}"
-					return cb null if cb
+					return cb(req, res, null) if cb
 					return res.send 500
 
 				wiz.log.debug "COUNT OK: #{debugstr}" if @debug
-				return cb count if cb
+				return cb(req, res, count) if cb
 				return res.send 200
 	#}}}
 	find: (req, res, criteria, projection, opts = {}, cb) => #{{{
@@ -194,16 +194,16 @@ class wiz.framework.http.database.mongo.base
 		wiz.assert(opts, "invalid opts: #{opts}")
 		debugstr = "#{@collectionName}.find(#{JSON.stringify(criteria)}, #{JSON.stringify(projection)}, #{JSON.stringify(opts)})"
 		wiz.log.debug debugstr if @debug
-		@mongo.collection res, @collectionName, (collection) =>
+		@mongo.collection req, res, @collectionName, (collection) =>
 			found = collection.find(criteria, projection, opts)
 			found.toArray (err, results) =>
 				if err
 					wiz.log.err "FIND FAILED: #{debugstr} -> #{err}"
-					return cb null if cb
+					return cb(req, res, null) if cb
 					return res.send 500
 
 				wiz.log.debug "FIND OK: #{debugstr}" if @debug
-				return cb results if cb
+				return cb(req, res, results) if cb
 				return res.send 200, results
 	#}}}
 	list: (req, res, userType) => #{{{
@@ -217,8 +217,8 @@ class wiz.framework.http.database.mongo.base
 			skip: if req.params.iDisplayStart then req.params.iDisplayStart else 0
 			limit: if req.params.iDisplayLength > 0 and req.params.iDisplayLength < 200 then req.params.iDisplayLength else 25
 
-		@count req, res, criteria, projection, (recordCount) =>
-			@find req, res, criteria, projection, opts, (results) =>
+		@count req, res, criteria, projection, (req2, res2, recordCount) =>
+			@find req, res, criteria, projection, opts, (req2, res2, results) =>
 				responseData = []
 				if not results or not results.length > 0
 					return @listResponse(req, res, responseData)
@@ -232,15 +232,15 @@ class wiz.framework.http.database.mongo.base
 	insert: (req, res, criteria, cb) => #{{{
 		debugstr = "#{@collectionName}.insert(#{JSON.stringify(criteria)})"
 		wiz.log.debug debugstr if @debug
-		@mongo.collection res, @collectionName, (collection) =>
+		@mongo.collection req, res, @collectionName, (collection) =>
 			collection.insert criteria.toDB(), (err, criteria) =>
 				if err
 					wiz.log.err "INSERT FAILED: #{debugstr} -> #{err}"
-					return cb null if cb
+					return cb(req, res, null) if cb
 					return res.send 500
 
 				wiz.log.debug "INSERT OK: #{debugstr}" if @debug
-				return cb criteria if cb
+				return cb(req, res, criteria) if cb
 				return res.send 200
 	#}}}
 	update: (req, res, id, cb) => #{{{
@@ -267,9 +267,9 @@ class wiz.framework.http.database.mongo.base
 				@updateOneFromUserHookPostValidate req, res, result, objToUpdate, () =>
 
 					# pass update object to super
-					@updateDataByID req, res, result[@docKey], dataToUpdate, (result) =>
+					@updateDataByID req, res, result[@docKey], dataToUpdate, (req, res, result) =>
 						# allow default responses to be overriden with custom callback
-						return cb(result) if cb
+						return cb(req, res, result) if cb
 						return res.send 200 if result
 						return res.send 500, "update database failed"
 	#}}}
@@ -287,7 +287,7 @@ class wiz.framework.http.database.mongo.base
 		if req.body.recordsToDelete and req.body.recordsToDelete.length > 0
 			for id, i in req.body.recordsToDelete
 				recordsToDelete[i] = @mongo.oid(id)
-		@dropMany req, res, recordsToDelete, cb
+		@dropMany(req, res, recordsToDelete, cb)
 	#}}}
 
 class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.database.mongo.base
@@ -351,7 +351,7 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 	#}}}
 
 	findElementByID: (req, res, criteriaID, elementID, cb) => #{{{
-		return cb(null) if not criteriaID or not elementID
+		return cb(req, res, null) if not criteriaID or not elementID
 		@findElementByCustom(req, res, @getDocKeyWithElementID(req, criteriaID, elementID), @getArrayKey(), @elementKey, elementID, cb)
 	#}}}
 	findElementByCustom: (req, res, criteria, projection, elementKey, elementID, cb) => #{{{
@@ -359,8 +359,8 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 			if result and result[@arrayKey]
 				for ri of result[@arrayKey] when r = result[@arrayKey][ri]
 					if r[elementKey] == elementID
-						return cb(r)
-			return cb(null)
+						return cb(req, res, r)
+			return cb(req, res, null)
 	#}}}
 
 	findOneElementByKeyFromAllDocuments: (req, res, value, cb) => #{{{
@@ -408,7 +408,7 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 	#}}}
 
 	list: (req, res, id) => #{{{
-		@findOne req, res, @getDocKey(req, id), @getArrayKey(), (results) =>
+		@findOne req, res, @getDocKey(req, id), @getArrayKey(), (req2, res2, results) =>
 			responseData = []
 			if not results or not results[@arrayKey] or not results[@arrayKey].length > 0
 				return @listResponse(req, res, responseData)
@@ -438,7 +438,7 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 	#}}}
 
 	dropMany: (req, res, criteriaID, elementID, objsToDelete, pullKey = null) => #{{{
-		@mongo.collection res, @collectionName, (collection) =>
+		@mongo.collection req, res, @collectionName, (collection) =>
 			# count records to drop
 			pending = 0
 			for t, toDelete of objsToDelete
@@ -453,7 +453,7 @@ class wiz.framework.http.database.mongo.baseArray extends wiz.framework.http.dat
 					criteria = @getDocKey(req, criteriaID)
 				update = @getUpdatePullArray(req, toDelete, pullKey)
 				options = @getUpdateOptions()
-				@updateCustom req, res, criteria, update, options, (result) =>
+				@updateCustom req, res, criteria, update, options, (req, res, result) =>
 					res.send 200 if (pending -= 1) == 0
 	#}}}
 
