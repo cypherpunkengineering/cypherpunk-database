@@ -13,7 +13,7 @@ class wiz.portal.userjs.session extends wiz.framework.app.base
 	#}}}
 	#{{{ static constants
 
-	idLogin: 'email'
+	idLogin: 'login'
 	stringLogin: 'Login'
 	stringLoginL: 'Email'
 	stringLoginPH: 'user@example.com'
