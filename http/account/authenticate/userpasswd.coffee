@@ -20,7 +20,7 @@ class wiz.framework.http.account.authenticate.userpasswd extends wiz.framework.h
 	level: wiz.framework.http.resource.power.level.stranger
 	mask: wiz.framework.http.resource.power.mask.always
 	dataKey: 'data'
-	emailKey: 'email'
+	emailKey: 'login'
 	passwordKey: 'password'
 
 	@pwHash: (plaintext) => #{{{
