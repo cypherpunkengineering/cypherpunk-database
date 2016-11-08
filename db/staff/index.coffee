@@ -19,12 +19,12 @@ class cypherpunk.backend.db.staff extends wiz.framework.http.account.db.staff
 
 	# DataTable methods
 	findOneByID: (req, res, id, cb) => #{{{ removes password hash
-		super req, res, id, (req, res, result) =>
-			return cb(null) if not result and cb
+		super req, res, id, (req2, res2, result) =>
+			return cb(req2, res2, null) if not result and cb
 			return res.send 404 if not result
 			if result[@dataKey]?
 				result[@dataKey][@passwordKey] = ''
-			return cb(result) if result and cb
+			return cb(req2, res2, result) if result and cb
 			return res.send 200, result
 	#}}}
 	list: (req, res, staffType) => #{{{
@@ -39,8 +39,8 @@ class cypherpunk.backend.db.staff extends wiz.framework.http.account.db.staff
 			limit: if req.params.iDisplayLength > 0 and req.params.iDisplayLength < 200 then req.params.iDisplayLength else 25
 			sort: 'data.fullname'
 
-		@count req, res, criteria, projection, (recordCount) =>
-			@find req, res, criteria, projection, opts, (results) =>
+		@count req, res, criteria, projection, (req2, res2, recordCount) =>
+			@find req, res, criteria, projection, opts, (req3, res3, results) =>
 				responseData = []
 				if not results or not results.length > 0
 					return @listResponse(req, res, responseData)
@@ -65,18 +65,18 @@ class cypherpunk.backend.db.staff extends wiz.framework.http.account.db.staff
 		console.log 'recordToInsert is:'
 		console.log recordToInsert
 
-		super req, res, recordToInsert, (result) =>
+		super req, res, recordToInsert, (req2, res2, result) =>
 			res.send 200
 	#}}}
 	updateUserData: (req, res, staffID, staffData, cb = null) => #{{{ restores password hash
 		@findOneByKey req, res, @docKey, staffID, @projection(), (req, res, result) =>
-			return cb(null) if not result and cb
+			return cb(req, res, null) if not result and cb
 			return res.send 404 if not result
 			console.log result
 			return res.send 500 if not result[@dataKey]?
 			staffData[@passwordKey] = result[@dataKey][@passwordKey]
 			@updateDataByID req, res, staffID, staffData, (req2, res2, result2) =>
-				return cb(result2) if cb
+				return cb(req2, res2, result2) if cb
 				return res.send 500 if not result2
 				return res.send 200
 	#}}}
