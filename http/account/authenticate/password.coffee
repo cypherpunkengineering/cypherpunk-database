@@ -18,7 +18,7 @@ wiz.package 'wiz.framework.http.account.authenticate.password'
 class wiz.framework.http.account.authenticate.password extends wiz.framework.http.account.authenticate.base
 	level: wiz.framework.http.resource.power.level.stranger
 	mask: wiz.framework.http.resource.power.mask.always
-	middleware: wiz.framework.http.account.session.refresh
+	middleware: wiz.framework.http.account.session.base
 	dataKey: 'data'
 	passwordKey: 'password'
 
@@ -28,6 +28,8 @@ class wiz.framework.http.account.authenticate.password extends wiz.framework.htt
 	#}}}
 	pwValidate: (req, res, user, plaintextPW) => #{{{
 		userPW = @constructor.pwHash(plaintextPW)
+		#console.log userPW
+		#console.log user
 		return true if user?[@dataKey]?[@passwordKey]? and userPW? and user[@dataKey][@passwordKey] == userPW
 		return false
 	#}}}
