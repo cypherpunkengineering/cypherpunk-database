@@ -198,7 +198,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 			cb()
 	#}}}
 	generateConfirmationURL: (customer) => #{{{
-		"https://cypherpunk.engineering/confirmation/#{customer.id}?confirmationToken=#{customer.confirmationToken}"
+		"https://cypherpunk.engineering/confirm?accountId=#{customer.id}&confirmationToken=#{customer.confirmationToken}"
 	#}}}
 
 # vim: foldmethod=marker wrap
