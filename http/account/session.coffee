@@ -126,7 +126,7 @@ class wiz.framework.http.account.session
 		# default session values
 		req.session.auth = false
 		req.session.account = null
-		req.session.expires = 60 # minutes
+		req.session.expires = 60 * 24 * 365 # minutes
 		req.session.realm = 'cypherpunk'
 
 		# generate secure session id and secret
@@ -153,7 +153,7 @@ class wiz.framework.http.account.session
 		c = # c is for cookie
 			name: wiz.framework.http.account.session.cookieName
 			val: req.session.id
-			#expires: new Date(req.session.last.getTime() + (req.session.expires * 60 * 1000))
+			expires: new Date(req.session.last.getTime() + (req.session.expires * 60 * 1000))
 
 		res.setCookie(c)
 		#wiz.log.debug "set session cookie #{JSON.stringify(req.cookie)}"
