@@ -19,14 +19,14 @@ class cypherpunk.backend.api.v0.account.register.signup extends cypherpunk.backe
 
 			return res.send 409, 'Email already registered' if user isnt null
 
-			@server.root.api.customer.database.signup req, res, false, (result) =>
+			@server.root.api.customer.database.signup req, res, false, (req2, res2, result) =>
 
 				if result instanceof Array
 					user = result[0]
 				else
 					user = result
 
-				return res.send 500, 'Unable to create account' unless user?
+				return res.send 500, 'Unable to create account' unless user?.data?.email?
 
 				wiz.log.info "Registered new user account for #{user.data.email}"
 

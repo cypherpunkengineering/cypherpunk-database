@@ -22,6 +22,7 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 	@subscriptionExpirationKey: 'subscriptionExpiration'
 
 	@fromStranger: (req, res) => #{{{
+		# FIXME: sanitize all user inputs instead of blindly accepting all given req.body params
 		return @fromUser(req, res, 'customer', req.body)
 	#}}}
 	@fromUser: (req, res, customerType, customerData, updating = false) => #{{{
