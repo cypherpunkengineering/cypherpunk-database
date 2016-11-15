@@ -25,7 +25,7 @@ class wiz.framework.http.account.identify.email extends wiz.framework.http.accou
 		return res.send 400, 'missing parameters' unless req.body?[@emailKey]?
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body[@emailKey])
 
-		return req.server.root.accountDB.findOneByEmail req, res, req.body[@emailKey], (req, res, user) =>
+		return @parent.parent.database.findOneByEmail req, res, req.body[@emailKey], (req, res, user) =>
 			return @onIdentifySuccess(req, res, user) if user?.id?
 			return res.send 401
 	#}}}

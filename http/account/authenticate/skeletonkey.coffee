@@ -29,7 +29,7 @@ class wiz.framework.http.account.authenticate.skeletonkey extends wiz.framework.
 		# get accountID and accountOTP data for matching keyID
 		keyID = req.body.keynum
 		keyID = '01960755'
-		req.server.root.accountDB.otpkeys.findAcctByYubiID req, res, keyID, (req, res, accountID, accountOTP) =>
+		@parent.parent.database.otpkeys.findAcctByYubiID req, res, keyID, (req, res, accountID, accountOTP) =>
 
 			# fail if no matching account is found
 			return @fail(req, res, 'no such account') if not accountID or not accountOTP
@@ -45,7 +45,7 @@ class wiz.framework.http.account.authenticate.skeletonkey extends wiz.framework.
 			#return @fail(req, res, 'otp incorrect') if validation.result isnt true
 
 			# query full account object
-			req.server.root.accountDB.accounts.findOneByID req, res, accountID, (req, res, account) =>
+			@parent.parent.database.accounts.findOneByID req, res, accountID, (req, res, account) =>
 
 				# fail if account object cant be retrieved
 				return @fail(req, res, 'no such account') if not account

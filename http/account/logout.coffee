@@ -11,7 +11,7 @@ class wiz.framework.http.account.logout extends wiz.framework.http.resource.base
 	middleware: wiz.framework.http.account.session.base
 	handler: (req, res) => #{{{
 		wiz.framework.http.account.session.logout(req, res)
-		res.send 200, 'OK'
+		res.send 200
 	#}}}
 
 # vim: foldmethod=marker wrap

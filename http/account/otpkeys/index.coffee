@@ -14,35 +14,35 @@ class wiz.framework.http.account.otpkeys.base extends wiz.framework.http.resourc
 
 class wiz.framework.http.account.otpkeys.list extends wiz.framework.http.account.otpkeys.base
 	handler: (req, res) =>
-		req.server.root.accountDB.otpkeys.list(req, res, req.session.account, OTPID)
+		@parent.parent.database.otpkeys.list(req, res, req.session.account, OTPID)
 
 class wiz.framework.http.account.otpkeys.insert extends wiz.framework.http.account.otpkeys.base
 	handler: (req, res) =>
-		req.server.root.accountDB.otpkeys.insert(req, res, req.session.account, OTPID)
+		@parent.parent.database.otpkeys.insert(req, res, req.session.account, OTPID)
 
 class wiz.framework.http.account.otpkeys.modify extends wiz.framework.http.account.otpkeys.base
 	handler: (req, res) =>
-		req.server.root.accountDB.otpkeys.modify(req, res, req.session.account, OTPID)
+		@parent.parent.database.otpkeys.modify(req, res, req.session.account, OTPID)
 
 class wiz.framework.http.account.otpkeys.drop extends wiz.framework.http.account.otpkeys.base
 	handler: (req, res) =>
-		req.server.root.accountDB.otpkeys.drop(req, res, req.session.account, OTPID)
+		@parent.parent.database.otpkeys.drop(req, res, req.session.account, OTPID)
 
 class wiz.framework.http.account.otpkeys.status extends wiz.framework.http.account.otpkeys.base
 	handler: (req, res) =>
-		req.server.root.accountDB.otpkeys.otpStatus(req, res, req.session.account, OTPID)
+		@parent.parent.database.otpkeys.otpStatus(req, res, req.session.account, OTPID)
 
 class wiz.framework.http.account.otpkeys.enable extends wiz.framework.http.account.otpkeys.base
 	handler: (req, res) =>
-		req.server.root.accountDB.otpkeys.otpEnable(req, res, req.session.account, OTPID)
+		@parent.parent.database.otpkeys.otpEnable(req, res, req.session.account, OTPID)
 
 class wiz.framework.http.account.otpkeys.disable extends wiz.framework.http.account.otpkeys.base
 	handler: (req, res) =>
-		req.server.root.accountDB.otpkeys.otpDisable(req, res, req.session.account, OTPID)
+		@parent.parent.database.otpkeys.otpDisable(req, res, req.session.account, OTPID)
 
 class wiz.framework.http.account.otpkeys.generate extends wiz.framework.http.account.otpkeys.base
 	handler: (req, res) =>
-		req.server.root.accountDB.otpkeys.otpGenerate(req, res, req.session.account, OTPID)
+		@parent.parent.database.otpkeys.otpGenerate(req, res, req.session.account, OTPID)
 
 class wiz.framework.http.account.otpkeys.module extends wiz.framework.http.account.otpkeys.base
 	load: () =>

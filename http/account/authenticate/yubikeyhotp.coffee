@@ -35,7 +35,7 @@ class wiz.framework.http.account.authenticate.yubikeyhotp extends wiz.framework.
 			return @error req, res, "leetcode error: #{e}"
 
 		# get accountID and accountOTP data for matching keyID
-		req.server.root.accountDB.otpkeys.findAcctByYubiID req, res, keyID, (req, res, accountID, accountOTP) =>
+		@parent.parent.database.otpkeys.findAcctByYubiID req, res, keyID, (req, res, accountID, accountOTP) =>
 
 			# fail if no matching account is found
 			return @fail(req, res, 'no such account') if not accountID or not accountOTP
@@ -51,14 +51,14 @@ class wiz.framework.http.account.authenticate.yubikeyhotp extends wiz.framework.
 			return @fail(req, res, 'otp incorrect') if validation.result isnt true
 
 			# query full account object
-			req.server.root.accountDB.accounts.findOneByID req, res, accountID, (req, res, account) =>
+			@parent.parent.database.accounts.findOneByID req, res, accountID, (req, res, account) =>
 
 				# fail if account object cant be retrieved
 				return @fail(req, res, 'no such account') if not account
 
 				console.log 'offset is '+validation.offset
 				# increment hotp counter in otpkeys database
-				req.server.root.accountDB.otpkeys.otpIncrementCounter req, res, account, keyID, validation.offset, (result) =>
+				@parent.parent.database.otpkeys.otpIncrementCounter req, res, account, keyID, validation.offset, (result) =>
 
 					# pass account object to success callback
 					return @onAuthenticateSuccess(req, res, account)
