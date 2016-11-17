@@ -7,7 +7,7 @@ require './_framework/thirdparty/stripe'
 
 wiz.package 'cypherpunk.backend.api.v0.account.confirm'
 
-class cypherpunk.backend.api.v0.account.confirm.resource extends cypherpunk.backend.base
+class cypherpunk.backend.api.v0.account.confirm.email extends cypherpunk.backend.base
 	level: cypherpunk.backend.server.power.level.stranger
 	mask: cypherpunk.backend.server.power.mask.public
 	nav: false
@@ -20,9 +20,9 @@ class cypherpunk.backend.api.v0.account.confirm.resource extends cypherpunk.back
 
 	# public account email verification api
 	handler: (req, res) =>
-		return res.send 400, 'missing parameters' unless (req.params?.accountId? and req.params?.confirmationToken?)
-		accountId = req.params.accountId
-		confirmationToken = req.params.confirmationToken
+		return res.send 400, 'missing parameters' unless (req.body?.accountId? and req.body?.confirmationToken?)
+		accountId = req.body.accountId
+		confirmationToken = req.body.confirmationToken
 
 		return res.send 400, 'missing or invalid accountId' unless wiz.framework.util.strval.alphanumeric_valid(accountId)
 		return res.send 400, 'missing or invalid confirmationToken' unless wiz.framework.util.strval.alphanumeric_valid(confirmationToken)
@@ -30,7 +30,7 @@ class cypherpunk.backend.api.v0.account.confirm.resource extends cypherpunk.back
 		wiz.log.debug 'accountId is '+accountId
 		wiz.log.debug 'confirmationToken is '+confirmationToken
 
-		@server.root.api.customer.database.findOneByID req, res, accountId, (user) =>
+		@server.root.api.customer.database.findOneByID req, res, accountId, (req2, res22, user) =>
 			return res.send 404 unless (user?.confirmationToken? and typeof user.confirmationToken is "string")
 			return res.send 404 unless (user.confirmationToken.length > 1 && confirmationToken == user.confirmationToken)
 
@@ -45,5 +45,17 @@ class cypherpunk.backend.api.v0.account.confirm.resource extends cypherpunk.back
 				# start new session for confirmed user
 				out = @server.root.account.authenticate.password.doUserLogin(req, res, user)
 				res.send 200, out
+
+class cypherpunk.backend.api.v0.account.confirm.resource extends cypherpunk.backend.base
+	level: cypherpunk.backend.server.power.level.stranger
+	mask: cypherpunk.backend.server.power.mask.public
+	nav: false
+
+	load: () =>
+		# inherit
+		super()
+
+		# public account creation api
+		@routeAdd new cypherpunk.backend.api.v0.account.confirm.email(@server, this, 'email', 'POST')
 
 # vim: foldmethod=marker wrap

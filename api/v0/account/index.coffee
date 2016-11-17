@@ -25,7 +25,7 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 		# public account creation api
 		@routeAdd new cypherpunk.backend.api.v0.account.register.resource(@server, this, 'register')
 		# public account confirmation api
-		@routeAdd new cypherpunk.backend.api.v0.account.confirm.resource(@server, this, 'confirm', 'POST')
+		@routeAdd new cypherpunk.backend.api.v0.account.confirm.resource(@server, this, 'confirm')
 	#}}}
 	init: () => #{{{
 		@database = new cypherpunk.backend.db.customer(@server, this, @parent.parent.cypherpunkDB)
