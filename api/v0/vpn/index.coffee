@@ -33,13 +33,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionLevel: 2000
 
 			ovHostname: 'freebsd-test.tokyo.vpn.cypherpunk.network'
-			ovDefault: '208.111.52.34'
-			ovNone: '208.111.52.35'
-			ovStrong: '208.111.52.36'
-			ovStealth: '208.111.52.37'
+			ovDefault: '185.176.52.34'
+			ovNone: '185.176.52.35'
+			ovStrong: '185.176.52.36'
+			ovStealth: '185.176.52.37'
 
 			ipsecHostname: 'tokyo.vpn.cypherpunk.network'
-			ipsecDefault: '208.111.52.34'
+			ipsecDefault: '185.176.52.34'
 
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
