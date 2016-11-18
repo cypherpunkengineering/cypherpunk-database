@@ -39,7 +39,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStealth: '185.176.52.37'
 
 			ipsecHostname: 'tokyo.vpn.cypherpunk.network'
-			ipsecDefault: '185.176.52.34'
+			ipsecDefault: '185.176.52.38'
 
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
