@@ -121,9 +121,9 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 				#}}}
 				else if schemaType.data[field].type == 'boolean' #{{{ true or false
 
-					if userData[field] != 'on' and userData[field] != 'off'
+					if userData[field] != 'true' and userData[field] != 'false'
 
-						err = '(41)' + errorIncorrectType + ' ' + element
+						err = '(41)' + errorIncorrectType + ' ' + userData[field]
 
 					else
 						# store in output

@@ -378,14 +378,14 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 			when 'boolean'
 				schema.input ?= 'select'
 				schema.selopts ?=
-					on:
-						value: 'on'
-						text: @stringBooleanEnabled
-						selected: (record?.data?[id] == 'on')
-					off:
-						value: 'off'
+					false:
+						value: 'false'
 						text: @stringBooleanDisabled
-						selected: (record?.data?[id] == 'off')
+						selected: (record?.data?[id] == 'false')
+					true:
+						value: 'true'
+						text: @stringBooleanEnabled
+						selected: (record?.data?[id] == 'true')
 
 			when 'nugget'
 				nugget ?= schema.nugget
