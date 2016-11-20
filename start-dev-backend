@@ -1,5 +1,5 @@
 #!/bin/bash
 until false;do
-	coffee index.coffee --development 2>&1 | tee $HOME/dev-backend-access.log
+	coffee index.coffee --development 2>&1 | tee -a $HOME/dev-backend-access.log
 	sleep 1
 done
