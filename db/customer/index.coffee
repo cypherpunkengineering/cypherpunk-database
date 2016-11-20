@@ -60,9 +60,6 @@ class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.custo
 
 		return super(req, res, recordToInsert, cb) if cb
 
-		console.log 'recordToInsert is:'
-		console.log recordToInsert
-
 		super req, res, recordToInsert, (req2, res2, result) =>
 			return cb(req2, res2, result) if cb
 			res.send 200

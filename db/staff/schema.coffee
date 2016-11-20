@@ -27,8 +27,7 @@ class cypherpunk.backend.db.staff.schema extends wiz.framework.database.mongo.do
 
 		return doc
 	#}}}
-	@fromUserUpdate: (req, res, staffType, origObj, staffData) => #{{{
-
+	@fromUserUpdate: (req, res, staffType, docOld, staffData) => #{{{
 		# if updating, we might have no password passed.
 		# if so, delete it, and restore the original pw hash
 		# to the resulting object.
@@ -37,16 +36,9 @@ class cypherpunk.backend.db.staff.schema extends wiz.framework.database.mongo.do
 			if staffData[@passwordKey] == ''
 				delete staffData[@passwordKey]
 
-		# create old and new documents for merging
-		docOld = new this(staffType, origObj[@dataKey])
-		return false unless docOld
-		docNew = @fromUser(req, res, staffType, staffData, true)
-		return false unless docNew
-
-		# merge docs
+		# call super
 		this.__super__.constructor.types = @types
-		doc = this.__super__.constructor.fromUserMerge(req, res, staffType, docOld, docNew)
-		return false unless doc
+		doc = this.__super__.constructor.fromUserUpdate(req, res, staffType, docOld, staffData)
 
 		# restore original password hash
 		if not doc[@dataKey]?[@passwordKey]?

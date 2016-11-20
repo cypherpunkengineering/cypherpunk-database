@@ -4,7 +4,11 @@ require './_framework'
 require './_framework/database/mongo/doc'
 require './_framework/util/strval'
 require './_framework/util/datetime'
+require './_framework/crypto/hash'
 require './_framework/http/account/authenticate/userpasswd'
+
+crypto = require 'crypto'
+BigInteger = require './_framework/crypto/jsbn'
 
 wiz.package 'cypherpunk.backend.db.customer.schema'
 
@@ -20,6 +24,9 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 	@subscriptionPlanKey: 'subscriptionPlan'
 	@subscriptionRenewalKey: 'subscriptionRenewal'
 	@subscriptionExpirationKey: 'subscriptionExpiration'
+	@privacyKey: 'privacy'
+	@privacyUserKey: 'username'
+	@privacyPassKey: 'password'
 
 	@fromStranger: (req, res) => #{{{
 		# FIXME: sanitize all user inputs instead of blindly accepting all given req.body params
@@ -31,6 +38,8 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 		doc = this.__super__.constructor.fromUser(req, res, customerType, customerData, updating)
 
 		return false unless doc
+
+		doc = @initParams(doc)
 
 		doc[@dataKey][@confirmedKey] ?= false
 		doc[@dataKey][@subscriptionPlanKey] ?= 'free'
@@ -45,8 +54,7 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 
 		return doc
 	#}}}
-	@fromUserUpdate: (req, res, customerType, origObj, customerData) => #{{{
-
+	@fromUserUpdate: (req, res, customerType, docOld, customerData) => #{{{
 		# if updating, we might have no password passed.
 		# if so, delete it, and restore the original pw hash
 		# to the resulting object.
@@ -55,20 +63,31 @@ class cypherpunk.backend.db.customer.schema extends wiz.framework.database.mongo
 			if customerData[@passwordKey] == ''
 				delete customerData[@passwordKey]
 
-		# create old and new documents for merging
-		docOld = new this(customerType, origObj[@dataKey])
-		return false unless docOld
-		docNew = @fromUser(req, res, customerType, customerData, true)
-		return false unless docNew
+		# init params if necessary
+		docOld = @initParams(docOld)
 
-		# merge docs
+		# call super
 		this.__super__.constructor.types = @types
-		doc = this.__super__.constructor.fromUserMerge(req, res, customerType, docOld, docNew)
-		return false unless doc
+		doc = this.__super__.constructor.fromUserUpdate(req, res, customerType, docOld, customerData)
 
 		# restore original password hash
 		if not doc[@dataKey]?[@passwordKey]?
 			doc[@dataKey][@passwordKey] = origObj[@dataKey][@passwordKey]
+
+		return doc
+	#}}}
+
+	@initParams: (doc) => #{{{
+		doc[@dataKey][@confirmedKey] ?= false
+		doc[@dataKey][@subscriptionPlanKey] ?= 'free'
+		doc[@dataKey][@subscriptionRenewalKey] ?= 'none'
+		doc[@dataKey][@subscriptionExpirationKey] ?= '0'
+
+		doc[@privacyKey] ?= {}
+		user = new BigInteger(crypto.randomBytes(16))
+		doc[@privacyKey][@privacyUserKey] ?= wiz.framework.crypto.convert.biToBase32(user)
+		pass = new BigInteger(crypto.randomBytes(16))
+		doc[@privacyKey][@privacyPassKey] ?= wiz.framework.crypto.convert.biToBase32(pass)
 
 		return doc
 	#}}}

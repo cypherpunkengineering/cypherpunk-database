@@ -19,6 +19,32 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 
 	database: null
 
+	accountinfo: (req) => #{{{ returns a (safe to send) object containing account info from a account object
+		session = req?.session
+		account = session?.account
+		data = account?.data
+		privacy = account?.privacy
+
+		out = {}
+		if session? and account? and data? and privacy?
+			out =
+				secret: session?.secret
+				privacy:
+					username: privacy?.username
+					password: privacy?.password
+				account:
+					id: account?.id
+					email: data?.email
+					confirmed: (if data?.confirmed?.toString() == "true" then true else false)
+					type: data?.subscriptionPlan
+				subscription:
+					renewal: data?.subscriptionRenewal
+					expiration: data?.subscriptionExpiration
+		else
+			wiz.log.err "accountinfo contains missing required data!"
+
+		return out
+	#}}}
 	load: () => #{{{
 		super()
 

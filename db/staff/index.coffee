@@ -62,9 +62,6 @@ class cypherpunk.backend.db.staff extends wiz.framework.http.account.db.staff
 
 		return super(req, res, recordToInsert, cb) if cb != null
 
-		console.log 'recordToInsert is:'
-		console.log recordToInsert
-
 		super req, res, recordToInsert, (req2, res2, result) =>
 			res.send 200
 	#}}}

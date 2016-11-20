@@ -52,9 +52,6 @@ class cypherpunk.backend.db.transaction extends wiz.framework.http.database.mong
 
 		return super(req, res, recordToInsert, cb) if cb != null
 
-		console.log 'recordToInsert is:'
-		console.log recordToInsert
-
 		super req, res, recordToInsert, (result) =>
 			res.send 200
 	#}}}
