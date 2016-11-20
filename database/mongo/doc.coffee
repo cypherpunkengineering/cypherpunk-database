@@ -23,7 +23,13 @@ class wiz.framework.database.mongo.doc
 	#}}}
 	toDB: (req) => #{{{
 		@initTS()
-		return this
+		nugget = {}
+		for key of this when typeof this[key] in [ 'object', 'string', 'number', 'boolean' ]
+			nugget[key] = this[key]
+		return nugget
+	#}}}
+	toString: () => #{{{
+		@toDB()
 	#}}}
 	toJSON: () => #{{{
 		return this
@@ -53,32 +59,32 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 		schemaRequired = 0
 		userRequired = 0
 
-		for field of schemaType.data
+		for field of schemaType[@dataKey]
 
-			schemaRequired += 1 if schemaType.data.required is true
+			schemaRequired += 1 if schemaType[@dataKey].required is true
 
 			wiz.log.debug 'validating schema field ' + field
 
-			errorIncorrectType = "field #{schemaType.data[field].label} must be type #{schemaType.data[field].type}"
-			errorTooShort = "field #{schemaType.data[field].label} is too short, cannot be less than #{schemaType.data[field].minlen} characters."
-			errorTooLong = "field #{schemaType.data[field].label} is too long, cannot be more than #{schemaType.data[field].maxlen} characters."
-			errorTooMany = "field #{schemaType.data[field].label} cannot contain more than #{schemaType.data[field].maxElements} selections."
+			errorIncorrectType = "field #{schemaType[@dataKey][field].label} must be type #{schemaType[@dataKey][field].type}"
+			errorTooShort = "field #{schemaType[@dataKey][field].label} is too short, cannot be less than #{schemaType[@dataKey][field].minlen} characters."
+			errorTooLong = "field #{schemaType[@dataKey][field].label} is too long, cannot be more than #{schemaType[@dataKey][field].maxlen} characters."
+			errorTooMany = "field #{schemaType[@dataKey][field].label} cannot contain more than #{schemaType[@dataKey][field].maxElements} selections."
 
 			if userData?[field]? # field exists
 
-				userRequired += 1 if schemaType.data.required is true
+				userRequired += 1 if schemaType[@dataKey].required is true
 
-				if schemaType.data[field].type == 'int' #{{{ schema requires int type
+				if schemaType[@dataKey][field].type == 'int' #{{{ schema requires int type
 
-					if not wiz.framework.util.strval.validate(schemaType.data[field].type, userData[field].toString()) # field value passes regex check
+					if not wiz.framework.util.strval.validate(schemaType[@dataKey][field].type, userData[field].toString()) # field value passes regex check
 
 						err = '(11)' + errorIncorrectType
 
-					else if userData[field].toString().length < (schemaType.data[field].minlen or 0) # field value is proper length
+					else if userData[field].toString().length < (schemaType[@dataKey][field].minlen or 0) # field value is proper length
 
 						err = '(12)' + errorTooShort
 
-					else if userData[field].toString().length > (schemaType.data[field].maxlen or 99999) # field value is proper length
+					else if userData[field].toString().length > (schemaType[@dataKey][field].maxlen or 99999) # field value is proper length
 
 						err = '(13)' + errorTooLong
 
@@ -86,7 +92,7 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 						# convert to int and store in output
 						outputData[field] = parseInt(userData[field])
 				#}}}
-				else if schemaType.data[field].type == 'array' #{{{ schema requires array
+				else if schemaType[@dataKey][field].type == 'array' #{{{ schema requires array
 
 					# create destination array
 					outputData[field] = []
@@ -96,22 +102,22 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 						userData[field] = [ userData[field] ]
 
 					# validate max element count
-					if userData[field].length > (schemaType.data[field].maxElements or 0)
+					if userData[field].length > (schemaType[@dataKey][field].maxElements or 0)
 
 						err = '(32)' + errorTooMany
 
 					# validate each element value and maxlen
 					for element of userData[field]
 
-						if not wiz.framework.util.strval.validate(schemaType.data[field].arrayType, element)
+						if not wiz.framework.util.strval.validate(schemaType[@dataKey][field].arrayType, element)
 
 							err = '(33)' + errorIncorrectType + ' ' + element
 
-						else if element.length < (schemaType.data[field].minlen or 0)
+						else if element.length < (schemaType[@dataKey][field].minlen or 0)
 
 							err = '(34)' + errorTooShort
 
-						else if element.length > (schemaType.data[field].maxlen or 99999)
+						else if element.length > (schemaType[@dataKey][field].maxlen or 99999)
 
 							err = '(35)' + errorTooLong
 
@@ -119,7 +125,7 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 							# store in output
 							outputData[field] = userData[field]
 				#}}}
-				else if schemaType.data[field].type == 'boolean' #{{{ true or false
+				else if schemaType[@dataKey][field].type == 'boolean' #{{{ true or false
 
 					if userData[field] != 'true' and userData[field] != 'false'
 
@@ -132,15 +138,15 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 				#}}}
 				else if typeof userData[field] == 'string' #{{{ field value is string
 
-					if not wiz.framework.util.strval.validate(schemaType.data[field].type, userData[field]) # field value passes regex check
+					if not wiz.framework.util.strval.validate(schemaType[@dataKey][field].type, userData[field]) # field value passes regex check
 
 						err = '(21)' + errorIncorrectType
 
-					else if userData[field].length < (schemaType.data[field].minlen or 0) # field value is proper length
+					else if userData[field].length < (schemaType[@dataKey][field].minlen or 0) # field value is proper length
 
 						err = '(22)' + errorTooShort
 
-					else if userData[field].length > (schemaType.data[field].maxlen or 99999) # field value is proper length
+					else if userData[field].length > (schemaType[@dataKey][field].maxlen or 99999) # field value is proper length
 
 						err = '(23)' + errorTooLong
 
@@ -154,7 +160,7 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 				#}}}
 
 			else
-				err = "missing required field #{field}" unless not schemaType.data.required or updating
+				err = "missing required field #{field}" unless not schemaType[@dataKey].required or updating
 
 			if err
 
@@ -170,26 +176,48 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 
 		return new this(userType, outputData)
 	#}}}
-	@fromUserUpdate: (req, res, userType, origObj, userData) => #{{{
-		docOld = new this(userType, origObj[@dataKey])
-		return false unless docOld
-		docNew = @fromUser(req, res, userType, userData, true)
-		return false unless docNew
+	@fromUserUpdate: (req, res, userType, docOld, userData) => #{{{
+		# check if old doc given
+		return null unless docOld
 
+		# make new object
+		docNew = @fromUser(req, res, userType, userData, true)
+		return null unless docNew
+
+		# merge new and old
 		@fromUserMerge(req, res, userType, docOld, docNew)
 		#this.__super__.constructor.fromUserMerge(req, res, userType, docOld, docNew)
 	#}}}
 	@fromUserMerge: (req, res, userType, docOld, docNew) => #{{{
-		return false if not schemaType = @types[userType]
+		return null if not schemaType = @types[userType]
+
 		# create new doc to merge old doc with new doc
 		doc = new this(userType, {})
-		for key of schemaType.data
-			if docNew[@dataKey][key]?
-				doc[@dataKey][key] = docNew[@dataKey][key]
-			else
-				doc[@dataKey][key] = docOld[@dataKey][key]
 
-		# restore original document id
+		# merge list of keys from both docs
+		keysListMerged = []
+		keysListMerged.push(k) for k of docOld
+		for k of docNew.toDB()
+			if keysListMerged.indexOf(k) == -1
+				keysListMerged.push(k)
+
+		# merge every key
+		for k in keysListMerged
+			# for data key, merge individually, use new values
+			if k == @dataKey
+				for key of schemaType[@dataKey]
+					if docNew[@dataKey][key]?
+						doc[@dataKey][key] = docNew[@dataKey][key]
+					else
+						doc[@dataKey][key] = docOld[@dataKey][key]
+
+			else # for other keys, use old values, only take new value if old didn't have it
+				if docOld[k]?
+					doc[k] = docOld[k]
+				else
+					doc[k] = docNew[k]
+
+		# explicitly restore original document id
 		doc[@docKey] = docOld[@docKey]
 
 		return doc

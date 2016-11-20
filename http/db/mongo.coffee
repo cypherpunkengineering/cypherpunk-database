@@ -143,15 +143,21 @@ class wiz.framework.http.database.mongo.base
 	updateDataByID: (req, res, docID, dataToUpdate, cb) => #{{{
 		@updateCustomDataByID(req, res, docID, @dataKey, dataToUpdate, cb)
 	#}}}
-	updateCustomDataByID: (req, res, docID, dataKey, dataToUpdate, cb) => #{{{
+	updateCustomDatasetByID: (req, res, docID, dataset, cb) => #{{{
 		criteria = @criteria(req)
 		criteria[@docKey] = docID
 		update =
 			'$set':
 				updated: wiz.framework.util.datetime.unixFullTS()
-		update['$set'][dataKey] = dataToUpdate
+		for k of dataset
+			update['$set'][k] = dataset[k]
 		options = @getUpdateOptions()
 		@updateCustom(req, res, criteria, update, options, cb)
+	#}}}
+	updateCustomDataByID: (req, res, docID, dataKey, dataToUpdate, cb) => #{{{
+		nugget = {}
+		nugget[dataKey] = dataToUpdate
+		@updateCustomDatasetByID(req, res, docID, nugget, cb)
 	#}}}
 
 	dropMany: (req, res, recordsToDelete, cb) => #{{{ send mongo criteria to drop a given array of mongo oid objects
@@ -254,20 +260,22 @@ class wiz.framework.http.database.mongo.base
 		projection = @projection()
 		@findOne req, res, criteria, projection, (req, res, result) =>
 			# verify existing record exists
-			return res.send 404 unless result and result[@docKey] and result[@dataKey]
+			return res.send 404 unless result?
 
 			# pre-validate hook
 			@updateOneFromUserHookPreValidate req, res, result, userData, () =>
 
 				# validate user data
 				return unless objToUpdate = @schema.fromUserUpdate(req, res, result[@typeKey], result, userData)
-				dataToUpdate = objToUpdate[@dataKey]
+
+				# prepare data for update
+				dataToUpdate = objToUpdate.toDB()
 
 				# post-validate hook
-				@updateOneFromUserHookPostValidate req, res, result, objToUpdate, () =>
+				@updateOneFromUserHookPostValidate req, res, result, dataToUpdate, () =>
 
 					# pass update object to super
-					@updateDataByID req, res, result[@docKey], dataToUpdate, (req, res, result) =>
+					@updateCustomDatasetByID req, res, result[@docKey], dataToUpdate, (req, res, result) =>
 						# allow default responses to be overriden with custom callback
 						return cb(req, res, result) if cb
 						return res.send 200 if result
