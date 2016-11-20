@@ -37,7 +37,7 @@ class cypherpunk.backend.api.v0.account.register.signup extends cypherpunk.backe
 						return
 					wiz.log.info "Sent welcome email to #{user.data.email}"
 
-				out = @parent.parent.authenticate.password.doUserLogin(req, res, user)
+				out = @parent.parent.doUserLogin(req, res, user)
 				res.send 202, out
 	#}}}
 

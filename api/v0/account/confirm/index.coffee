@@ -43,7 +43,7 @@ class cypherpunk.backend.api.v0.account.confirm.email extends cypherpunk.backend
 				return res.send 500, 'Unable to confirm account' if not result?
 
 				# start new session for confirmed user
-				out = @server.root.account.authenticate.password.doUserLogin(req, res, user)
+				out = @server.root.account.doUserLogin(req, res, user)
 				res.send 200, out
 
 class cypherpunk.backend.api.v0.account.confirm.resource extends cypherpunk.backend.base

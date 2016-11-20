@@ -67,6 +67,7 @@ class cypherpunk.backend.api.v0.subscription.purchase extends cypherpunk.backend
 class cypherpunk.backend.api.v0.subscription.upgrade extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.friend
 	mask: cypherpunk.backend.server.power.mask.auth
+	middleware: wiz.framework.http.account.session.base
 	nav: false
 
 	handlerOPTIONS: (req, res) => #{{{
@@ -147,7 +148,7 @@ class cypherpunk.backend.api.v0.subscription.common
 						wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
 						console.log sendgridError
 
-				out = req.server.root.account.authenticate.password.doUserLogin(req, res, user)
+				out = req.server.root.account.doUserLogin(req, res, user)
 				res.send 200, out
 	#}}}
 	@purchaseStripe: (req, res, stripeArgs, cb) => #{{{
