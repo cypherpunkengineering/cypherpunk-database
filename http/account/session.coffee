@@ -14,11 +14,36 @@ wiz.sessions = redis.createClient()
 class wiz.framework.http.account.session
 	@cookieName: 'cypherpunk.session' # must be static for middleware
 
-	@load: (req, res) => # middleware to load session if cookie present {{{
+	@getSessionKeyFromSecret: (req, res) => # middleware to load session from secret if provided {{{
+		return req.next() if req.sessionKey?
+		try
+			secret = req.params?.secret
+			secret ?= req.body?.secret
+			return req.next() unless secret
+			#wiz.log.debug "got secret #{secret}"
+
+			wiz.sessions.get secret, (err, datum) =>
+				if err or not datum
+					err ?= "secret not in database"
+					wiz.log.err "error loading secret: #{err}"
+					req.sessionKey = undefined
+					return req.next() # call next middleware
+
+				wiz.log.debug "got session key from secret #{datum}"
+				req.sessionKey = datum
+				return req.next() # call next middleware
+
+		catch e
+			wiz.log.debug "unable to load secret: #{e}"
+			req.sessionKey = undefined
+			req.next() # call next middleware
+	#}}}
+	@getSessionKeyFromCookie: (req, res) => # middleware to load session from cookie if provided {{{
+		return req.next() if req.sessionKey?
 		try
 			# get session cookie
-			cookie = req.cookies?[wiz.framework.http.account.session.cookieName]
-			return req.next() if not cookie
+			cookie = req.cookies?[@cookieName]
+			return req.next() unless cookie
 
 			# get session id from session cookie
 			id = decodeURIComponent(cookie)
@@ -28,8 +53,20 @@ class wiz.framework.http.account.session
 			key = wiz.framework.crypto.hash.salthash(id, 'base64')
 			#wiz.log.debug "got session key #{key}"
 
+			req.sessionKey = key
+			return req.next() # call next middleware
+
+		catch e
+			wiz.log.debug "unable to get session key: #{e}"
+			req.sessionKey = undefined
+			req.next() # call next middleware
+	#}}}
+	@loadSessionFromKey: (req, res) => #{{{ load session by session key
+		try
+			return req.next() unless req.sessionKey?
+
 			# get session from session store by session key
-			wiz.sessions.get key, (err, datum) =>
+			wiz.sessions.get req.sessionKey, (err, datum) =>
 
 				if err or not datum
 					wiz.log.err "error loading session: #{err}" if err
@@ -38,7 +75,7 @@ class wiz.framework.http.account.session
 
 				req.session = JSON.parse(datum)
 				req.session.last = new Date() # update session time
-				wiz.framework.http.account.session.cookie(req, res)
+				@cookie(req, res)
 				#console.log req.session
 				return req.next() # call next middleware
 
@@ -47,10 +84,10 @@ class wiz.framework.http.account.session
 			req.session = undefined
 			req.next() # call next middleware
 	#}}}
-	@reload: (req, res) => #{{{ refresh account object from db
-		return req.next() if not req.session?.account?.id?
+	@refreshSessionFromDB: (req, res) => #{{{ refresh account object from db
+		return req.next() unless req.session?.account?.id?
 		req.server.root.accountDB.findOneByID req, res, req.session.account.id, (req2, res2, account) =>
-			return req.next() if not account?
+			return req.next() unless account?
 			req.session.account = account
 			req.next()
 	#}}}
@@ -98,15 +135,17 @@ class wiz.framework.http.account.session
 
 	# array must come after middleware methods after it is defined
 	@base: wiz.framework.http.resource.middleware.base.concat [ #{{{ base list of middleware required for session use
-		@load
+		@getSessionKeyFromCookie
+		@getSessionKeyFromSecret
+		@loadSessionFromKey
 		wiz.framework.http.resource.middleware.checkAccess
 		@usernav
 	] #}}}
-	@secret: @base.concat [ #{{{ above list and check CSRF secret token
+	@csrf: @base.concat [ #{{{ above list and check CSRF secret token
 		@checkSecret
 	] #}}}
 	@refresh: @base.concat [ #{{{ above list and check CSRF secret token
-		@reload
+		@refreshSessionFromDB
 	] #}}}
 
 	@save: (req) => # save session to db after sending response {{{
@@ -116,6 +155,7 @@ class wiz.framework.http.account.session
 				#console.log x
 				#console.log req.session[x]
 			wiz.sessions.set(req.session.key, JSON.stringify(req.session))
+			wiz.sessions.set(req.session.secret, req.session.key)
 	#}}}
 	@start: (req, res) => #{{{ start new session
 		# create session object
@@ -138,12 +178,12 @@ class wiz.framework.http.account.session
 		req.session.key = wiz.framework.crypto.hash.salthash(req.session.id, 'base64')
 
 		# generate session cookie
-		wiz.framework.http.account.session.cookie(req, res)
+		@cookie(req, res)
 	#}}}
 	@logout: (req, res) => #{{{ destroy session
-		if req?.session?.key
-			wiz.sessions.del(req.session.key)
-			req.session = undefined
+		wiz.sessions.del(req.session.key) if req?.session?.key?
+		wiz.sessions.del(req.session.secret) if req?.session?.secret?
+		req.session = undefined
 	#}}}
 	@cookie: (req, res) => #{{{ set-cookie for the session
 
@@ -151,7 +191,7 @@ class wiz.framework.http.account.session
 			return wiz.log.crit 'invalid session, unable to set-cookie'
 
 		c = # c is for cookie
-			name: wiz.framework.http.account.session.cookieName
+			name: @cookieName
 			val: req.session.id
 			expires: new Date(req.session.last.getTime() + (req.session.expires * 60 * 1000))
 

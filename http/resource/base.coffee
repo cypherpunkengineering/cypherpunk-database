@@ -212,7 +212,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 			return true
 
 		# check if session access level is greater than or equal to required access level
-		return true if req.session.powerLevel >= @level # TODO: check bitmask
+		return true if req.session?.powerLevel >= @level # TODO: check bitmask
 
 		# default deny
 		return false
