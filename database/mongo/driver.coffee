@@ -2,18 +2,18 @@
 
 require '../..'
 
-mongodb = require 'mongodb'
+mongoDB = require('mongodb')
+mongoClient = require('mongodb').MongoClient
 
 wiz.package 'wiz.framework.database.mongo'
 
 class wiz.framework.database.mongo.driver
 
 	debug: false
-	config: {}
-	serverOptions: {}
-	dbOptions: {}
-	port: 27017
-	client: null
+	mongoURI: null
+	mongoOptions:
+		promiseLibrary: require('bluebird')
+	db: null
 
 	init: (cb) => #{{{ init driver instance
 		@connect (err) =>
@@ -21,41 +21,29 @@ class wiz.framework.database.mongo.driver
 			cb(err) if cb
 	#}}}
 	connect: (cb) => #{{{ connect and auth to mongo database
-		unless mongoServer = new mongodb.Server @config.hostname, @port, @serverOptions
-			return cb "mongodb.Server(#{@config.hostname}) failed: #{err}"
-
-		unless mongoDB = new mongodb.Db @config.database, mongoServer, @dbOptions
-			return cb "mongodb.Db(#{@config.hostname}) failed: #{err}"
-
-		mongoDB.open (err, @client) =>
-			if err or not @client
-				return cb "mongoDB.open(#{@config.hostname}) failed: #{err}"
-
-			# if authentication credentials specified, try calling authenticate()
-			if @config?.username
-				@client.authenticate @config.username, @config.password, (err, auth) =>
-					if err or not auth
-						return cb "client.authenticate(#{@config.username}, #{@config.hostname}) failed: #{err}"
+		mongoClient.connect @mongoURI, (err, @db) =>
+			if err or not @db
+				return cb "mongoClient.connect(#{@mongoURI}) failed: #{err}"
 
 			# no error
 			return cb(null)
 	#}}}
 	collection: (collectionName, cb) => #{{{ retreive a mongo collection
-		# check if non-null client
-		return cb 'no database connection!' unless @client
+		# check if non-null db
+		return cb 'no database connection!' unless @db
 
 		# retreive the collection
-		if not collection = new mongodb.Collection(@client, collectionName)
-			return cb "mongodb.Collection(#{@collectionName}) returned null"
+		@db.collection collectionName, (err, collection) =>
+			return cb "db.collection(#{collectionName}) returned null: #{err}" if err
 
-		# no error, return the collection
-		cb null, collection
+			# no error, return the collection
+			cb null, collection
 	#}}}
 	disconnect: () => #{{{ no need to call if auto_connect is enabled
-		@client.close()
+		@db.close()
 	#}}}
 	code: (func) => #{{{
-		return new mongodb.Code(func)
+		return new mongoDB.Code(func)
 	#}}}
 
 	saveSystemJS: (saveSystemJSmapping, cb = null) => #{{{ for storing javascript methods in database
@@ -114,8 +102,8 @@ class wiz.framework.database.mongo.driver
 		return date
 	#}}}
 	oid: (id) => #{{{ get oid of a BSON object
-		BSON = mongodb.BSONPure
-		return new BSON.ObjectID(id)
+#		BSON = mongodb.BSONPure
+#		return new BSON.ObjectID(id)
 	#}}}
 
 	dayFromDate: (date) -> #{{{ date like this: 2012.04.01

@@ -131,6 +131,8 @@ class wiz.framework.http.middleware.base
 				@parseTextCSV(req, res, cb)
 			when undefined # no ct supplied
 				return cb()
+			when null # no ct supplied
+				return cb()
 			else # unsupported ct
 				wiz.log.err 'unknown content type: '+ct
 				return cb()

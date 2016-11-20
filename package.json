@@ -1,14 +1,36 @@
 {
-  "dependencies":
-  {
-    "coffee-script": "1.9.x",
-    "formidable": "1.0.x",
-    "jade": "0.35.x",
-    "redis": "0.9.x",
-    "mongodb": "1.4.x",
-    "qs": "0.6.x",
-    "xml2js": "0.2.x",
-    "stripe": "4.9.x",
-    "ssh2": "0.4.x"
-  }
+  "name": "cypherpunk-backend-framework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "coffee-script": "^1.11.1"
+    "formidable": "^1.0.17",
+    "jade": "^1.11.0",
+    "qs": "^6.3.0",
+    "redis": "^2.6.3",
+    "sendgrid": "^4.7.1",
+    "ssh2": "^0.5.4",
+    "stripe": "^4.12.0",
+    "xml2js": "^0.4.17",
+    "mongodb": "^2.2.11"
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/cypherpunkengineering/cypherpunk-backend-framework.git"
+  },
+  "author": "wiz",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/cypherpunkengineering/cypherpunk-backend-framework/issues"
+  },
+  "homepage": "https://github.com/cypherpunkengineering/cypherpunk-backend-framework#readme"
 }

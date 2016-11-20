@@ -9,21 +9,21 @@ wiz.package 'wiz.framework.http.database.mongo'
 #TODO: rewrite so all args are properties of "args" object?
 
 class wiz.framework.http.database.mongo.driver extends wiz.framework.database.mongo.driver
-	constructor: (@server, @parent, @config, @serverOptions, @dbOptions) -> #{{{
+	constructor: (@server, @parent, @mongoURI) -> #{{{
 		super()
 	#}}}
 	init: () => #{{{
 		super (err) =>
-			if not @client or err
-				wiz.log.err "failed connecting to database #{@config.database} #{err}"
+			if not @db or err
+				wiz.log.err "failed connecting to database #{@mongoURI} #{err}"
 				return null
-			wiz.log.debug "connected to database #{@config.database}"
+			wiz.log.debug "connected to database #{@mongoURI}"
 	#}}}
 	collection: (req, res, collectionName, cb) => #{{{
 		super collectionName, (err, collection) =>
 			# only call cb if we have collection
 			if err or not collection
-				wiz.log.err "unable to retrieve collection #{@config.database}.#{collectionName} #{err}"
+				wiz.log.err "unable to retrieve collection #{@mongoURI}.#{collectionName} #{err}"
 				res.send 500, 'database failure'
 				return null
 			cb collection
