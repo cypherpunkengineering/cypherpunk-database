@@ -61,7 +61,7 @@ class wiz.framework.http.account.authenticate.yubikeyhotp extends wiz.framework.
 				@parent.parent.database.otpkeys.otpIncrementCounter req, res, account, keyID, validation.offset, (result) =>
 
 					# pass account object to success callback
-					return @onAuthenticateSuccess(req, res, account)
+					return @parent.parent.onAuthenticateSuccess(req, res, account)
 	#}}}
 
 	fail: (req, res, err) => #{{{

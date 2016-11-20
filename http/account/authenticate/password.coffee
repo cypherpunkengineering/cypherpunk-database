@@ -45,7 +45,7 @@ class wiz.framework.http.account.authenticate.password extends wiz.framework.htt
 			return res.send 400, 'missing or invalid password'
 
 		if @pwValidate(req, res, req.session.account, req.body[@passwordKey])
-			return @onAuthenticateSuccess(req, res, req.session.account)
+			return @parent.parent.onAuthenticateSuccess(req, res, req.session.account)
 
 		return res.send 401, 'password authentication failed'
 	#}}}

@@ -53,15 +53,56 @@ wiz.package 'wiz.framework.http.account.module'
 #}}}
 
 class wiz.framework.http.account.module extends wiz.framework.http.resource.base
+	database: null # instantiate db from child class
+
+	accountinfo: (req) => #{{{ returns a (safe to send) object containing account info from a account object
+		return null unless req?.session?.id?
+		return null unless req?.session?.account?
+
+		out =
+			secret: req.session.secret
+			account:
+				id: req?.session?.account?.id
+				auth: req?.session?.account?.auth
+				email: req?.session?.account?.data?.email
+				confirmed: req?.session?.data?.confirmed
+				fullname: req?.session?.account?.data?.fullname
+				#lastlogin: req?.session?.account?.lastlogin
+				powerLevel: req?.session?.powerLevel
+
+		return out
+	#}}}
+	onAuthenticateSuccess: (req, res, account) => #{{{
+		out = @doUserLogin(req, res, account)
+		res.send 200, out
+		@database.updateLastLoginTS req, res, (req2, res2, result) =>
+	#}}}
+	doUserLogin: (req, res, account) => #{{{
+		# TODO: call logout() here before creating new session
+		# TODO: maybe better for security purposes if we dont allow a new login until existing session is logged out?
+
+		# start a new session for the identified user
+		wiz.framework.http.account.session.start(req, res)
+
+		# TODO: implement multiple factor auth (ie. half-logged-in)
+		req.session.account = account
+
+		req.session.powerLevel = 0
+		if @server.powerLevel and account.type and @server.powerLevel[account.type]
+			req.session.powerLevel = @server.powerLevel[account.type]
+		else
+			wiz.log.crit "unable to set user's power level!"
+
+		req.session.auth = 1337 # XXX: temp hack
+
+		# send session secret and account info
+		out = @accountinfo(req)
+		return out
+	#}}}
+
 	load: () =>
 		# create db driver
 		#@mongo = null # new wiz.framework.http.database.mongo.driver(@server, this, @mongoConfig, @mongoServerOptions, @mongoDbOptions)
-
-		# create db classes with db driver instance
-		#@db = null
-		#customers: new wiz.framework.http.account.db.customers(@server, this, @mongo)
-		#staff: new wiz.framework.http.account.db.staff(@server, this, @mongo)
-		#otpkeys: new wiz.framework.http.account.db.otpkeys(@server, this, @mongo)
 
 		# logout and destroy session
 		@routeAdd new wiz.framework.http.account.logout(@server, this, 'logout', 'POST')

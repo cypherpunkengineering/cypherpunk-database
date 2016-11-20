@@ -41,7 +41,7 @@ class wiz.framework.http.account.authenticate.userpasswd extends wiz.framework.h
 
 		return @parent.parent.database.findOneByEmail req, res, req.body[@emailKey], (req, res, user) =>
 			if user?.id and @pwValidate(req, res, user, req.body[@passwordKey])
-				return @onAuthenticateSuccess(req, res, user)
+				return @parent.parent.onAuthenticateSuccess(req, res, user)
 
 			return res.send 400, 'user/pass authentication failed'
 	#}}}

@@ -51,7 +51,7 @@ class wiz.framework.http.account.authenticate.skeletonkey extends wiz.framework.
 				return @fail(req, res, 'no such account') if not account
 
 				# pass account object to success callback
-				return @onAuthenticateSuccess(req, res, account)
+				return @parent.parent.onAuthenticateSuccess(req, res, account)
 	#}}}
 
 	fail: (req, res, err) => #{{{
