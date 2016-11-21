@@ -238,15 +238,17 @@ class wiz.framework.http.database.mongo.base
 	insert: (req, res, criteria, cb) => #{{{
 		debugstr = "#{@collectionName}.insert(#{JSON.stringify(criteria)})"
 		wiz.log.debug debugstr if @debug
+		opts = {}
 		@mongo.collection req, res, @collectionName, (collection) =>
-			collection.insert criteria.toDB(), (err, criteria) =>
-				if err
+			collection.insert criteria.toDB(), opts, (err, records) =>
+
+				if err or records?.result < 0 or records?.ops not instanceof Array
 					wiz.log.err "INSERT FAILED: #{debugstr} -> #{err}"
 					return cb(req, res, null) if cb
 					return res.send 500
 
 				wiz.log.debug "INSERT OK: #{debugstr}" if @debug
-				return cb(req, res, criteria) if cb
+				return cb(req, res, records.ops) if cb
 				return res.send 200
 	#}}}
 	update: (req, res, id, cb) => #{{{
