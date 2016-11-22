@@ -7,8 +7,9 @@ require './_framework/http/resource/base'
 wiz.package 'cypherpunk.backend.manage.admin'
 
 class cypherpunk.backend.manage.admin.resource extends cypherpunk.backend.manage.template
+	level: cypherpunk.backend.server.power.level.executive
 	nav: true
-	title: 'Administrator'
+	title: 'Cypherpunk Admins'
 	init: () =>
 		super()
 		@args.wizTitle = 'Manage Administrators'
