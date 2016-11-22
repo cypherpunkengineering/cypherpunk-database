@@ -5,7 +5,7 @@ require './_framework/http/resource/base'
 require './_framework/http/account/session'
 require './_framework/http/db/mongo'
 
-require '../../../db/customer'
+require '../../../db/user'
 
 require './register'
 require './confirm'
@@ -54,7 +54,7 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 		@routeAdd new cypherpunk.backend.api.v0.account.confirm.resource(@server, this, 'confirm')
 	#}}}
 	init: () => #{{{
-		@database = new cypherpunk.backend.db.customer(@server, this, @parent.parent.cypherpunkDB)
+		@database = new cypherpunk.backend.db.user(@server, this, @parent.parent.cypherpunkDB)
 		super()
 	#}}}
 

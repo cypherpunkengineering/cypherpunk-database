@@ -35,7 +35,7 @@ class cypherpunk.backend.logout extends cypherpunk.backend.base
 	#}}}
 
 class cypherpunk.backend.home extends cypherpunk.backend.template
-	level: cypherpunk.backend.server.power.level.customer
+	level: cypherpunk.backend.server.power.level.support
 	handler: (req, res) => #{{{
 		@redirect(req, res, @parent.getFullPath() + '/account/overview')
 	#}}}
@@ -67,9 +67,9 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		@account = @routeAdd new cypherpunk.backend.account.module(@server, this, 'account')
 		@routeAdd new cypherpunk.backend.logout(@server, this, 'logout')
 
-		# admin module
-		require './admin'
-		@admin = @routeAdd new cypherpunk.backend.admin.module(@server, this, 'admin')
+		# manage module
+		require './manage'
+		@manage = @routeAdd new cypherpunk.backend.manage.module(@server, this, 'manage')
 
 		# init stripe SDK
 		@stripe = new wiz.framework.thirdparty.stripe
@@ -86,15 +86,15 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 	#}}}
 	init: () => #{{{
 		super()
-		@accountDB = @api.customer.database
+		@accountDB = @api.user.database
 	#}}}
 	handler: (req, res) => #{{{
 		@redirect(req, res, @getFullPath() + '/home')
 	#}}}
 
-	sendWelcomeMail: (customer, cb) => #{{{
-		if not customer?.data?.email?
-			wiz.log.err 'no customer email!!'
+	sendWelcomeMail: (user, cb) => #{{{
+		if not user?.data?.email?
+			wiz.log.err 'no user email!!'
 			return
 
 		mailData =
@@ -105,7 +105,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 				{
 					to: [
 						{
-							email: customer.data.email
+							email: user.data.email
 						}
 					]
 					subject: 'Welcome to Cypherpunk Privacy'
@@ -117,15 +117,15 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 			content: [
 				{
 					type: 'text/plain'
-					value: 'Please confirm your account: '+@generateConfirmationURL(customer)
+					value: 'Please confirm your account: '+@generateConfirmationURL(user)
 				}
 			]
 
 		@sendMail(mailData, cb)
 	#}}}
-	sendPurchaseMail: (customer, cb) => #{{{
-		if not customer?.data?.email?
-			wiz.log.err 'no customer email!!'
+	sendPurchaseMail: (user, cb) => #{{{
+		if not user?.data?.email?
+			wiz.log.err 'no user email!!'
 			return
 		mailData =
 			from:
@@ -135,7 +135,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 				{
 					to: [
 						{
-							email: customer.data.email
+							email: user.data.email
 						}
 					]
 					subject: "You've got Premium access to Cypherpunk Privacy"
@@ -153,9 +153,9 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 
 		@sendMail(mailData, cb)
 	#}}}
-	sendUpgradeMail: (customer, cb) => #{{{
-		if not customer?.data?.email?
-			wiz.log.err 'no customer email!!'
+	sendUpgradeMail: (user, cb) => #{{{
+		if not user?.data?.email?
+			wiz.log.err 'no user email!!'
 			return
 		mailData =
 			from:
@@ -165,7 +165,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 				{
 					to: [
 						{
-							email: customer.data.email
+							email: user.data.email
 						}
 					]
 					subject: 'Your account has been upgraded'
@@ -197,8 +197,8 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 				console.log error
 			cb()
 	#}}}
-	generateConfirmationURL: (customer) => #{{{
-		"https://cypherpunk.com/confirm?accountId=#{customer.id}&confirmationToken=#{customer.confirmationToken}"
+	generateConfirmationURL: (user) => #{{{
+		"https://cypherpunk.com/confirm?accountId=#{user.id}&confirmationToken=#{user.confirmationToken}"
 	#}}}
 
 # vim: foldmethod=marker wrap

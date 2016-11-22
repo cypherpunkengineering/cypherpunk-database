@@ -6,21 +6,33 @@ require './_framework/http/account/session'
 require './_framework/http/db/mongo'
 require './_framework/util/world'
 
-wiz.package 'cypherpunk.backend.api.v0.vpn'
+wiz.package 'cypherpunk.backend.api.v0.location'
 
-class cypherpunk.backend.api.v0.vpn.module extends cypherpunk.backend.api.base
+class cypherpunk.backend.api.v0.location.module extends cypherpunk.backend.api.base
 	database: null
 
 	init: () =>
-		#@database = new cypherpunk.backend.db.vpn(@server, this, @parent.parent.cypherpunkDB)
+		#@database = new cypherpunk.backend.db.location(@server, this, @parent.parent.cypherpunkDB)
 		# api methods
-		@routeAdd new cypherpunk.backend.api.v0.vpn.serverList(@server, this, 'serverList')
+		@routeAdd new cypherpunk.backend.api.v0.location.list(@server, this, 'list')
 		super()
 
-class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.base
+
+class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.free
-	handler: (req, res) =>
-		regionList = {}
+	handler: (req, res) => @handler404(req, res)
+	catchall: (req, res, routeWord = "") =>
+
+#		regionList = {}
+#		switch routeWord
+#			when "free"
+#				regionList.concat
+#			when "premium"
+#			when "family"
+#			when "enterprise"
+#			when "developer"
+#			else return @handler404(req, res)
+#
 		for region of wiz.framework.util.world.regionMap
 			regionList[region] = {}
 			for country in wiz.framework.util.world.regionMap[region]
@@ -32,13 +44,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Dev 3, Japan'
 			regionEnabled: true
 
-			ovHostname: 'freebsd-test.tokyo.vpn.cypherpunk.network'
+			ovHostname: 'freebsd-test.tokyo.location.cypherpunk.network'
 			ovDefault: '185.176.52.34'
 			ovNone: '185.176.52.35'
 			ovStrong: '185.176.52.36'
 			ovStealth: '185.176.52.37'
 
-			ipsecHostname: 'tokyo.vpn.cypherpunk.network'
+			ipsecHostname: 'tokyo.location.cypherpunk.network'
 			ipsecDefault: '185.176.52.38'
 
 			httpDefault: '255.255.255.255'
@@ -51,13 +63,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Dev 1, Japan'
 			regionEnabled: true
 
-			ovHostname: 'freebsd1.tokyo.vpn.cypherpunk.network'
+			ovHostname: 'freebsd1.tokyo.location.cypherpunk.network'
 			ovDefault: '208.111.52.1'
 			ovNone: '208.111.52.11'
 			ovStrong: '208.111.52.21'
 			ovStealth: '208.111.52.31'
 
-			ipsecHostname: 'tokyo.vpn.cypherpunk.network'
+			ipsecHostname: 'tokyo.location.cypherpunk.network'
 			ipsecDefault: '208.111.52.41'
 
 			httpDefault: '255.255.255.255'
@@ -70,13 +82,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Tokyo, Japan'
 			regionEnabled: true
 
-			ovHostname: 'freebsd2.tokyo.vpn.cypherpunk.network'
+			ovHostname: 'freebsd2.tokyo.location.cypherpunk.network'
 			ovDefault: '208.111.52.2'
 			ovNone: '208.111.52.12'
 			ovStrong: '208.111.52.22'
 			ovStealth: '208.111.52.32'
 
-			ipsecHostname: 'tokyo.vpn.cypherpunk.network'
+			ipsecHostname: 'tokyo.location.cypherpunk.network'
 			ipsecDefault: '208.111.52.42'
 
 			httpDefault: '255.255.255.255'
@@ -89,13 +101,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Honolulu, Hawaii'
 			regionEnabled: true
 
-			ovHostname: 'vpn3.honolulu.vpn.cypherpunk.network'
+			ovHostname: 'location3.honolulu.location.cypherpunk.network'
 			ovDefault: '208.111.48.146'
 			ovNone: '208.111.48.147'
 			ovStrong: '208.111.48.148'
 			ovStealth: '208.111.48.149'
 
-			ipsecHostname: 'honolulu.vpn.cypherpunk.network'
+			ipsecHostname: 'honolulu.location.cypherpunk.network'
 			ipsecDefault: '208.111.48.150'
 
 			httpDefault: '208.111.48.151'
@@ -108,13 +120,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'New York, New York'
 			regionEnabled: true
 
-			ovHostname: 'freebsd1.newyork.vpn.cypherpunk.network'
+			ovHostname: 'freebsd1.newyork.location.cypherpunk.network'
 			ovDefault: '204.145.66.35'
 			ovNone: '204.145.66.36'
 			ovStrong: '204.145.66.37'
 			ovStealth: '204.145.66.38'
 
-			ipsecHostname: 'newyork.vpn.cypherpunk.network'
+			ipsecHostname: 'newyork.location.cypherpunk.network'
 			ipsecDefault: '204.145.66.39'
 
 			httpDefault: '204.145.66.40'
@@ -127,13 +139,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Silicon Valley, California'
 			regionEnabled: false
 
-			ovHostname: 'siliconvalley.vpn.cypherpunk.network'
+			ovHostname: 'siliconvalley.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'siliconvalley.vpn.cypherpunk.network'
+			ipsecHostname: 'siliconvalley.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -146,13 +158,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Los Angeles, California'
 			regionEnabled: true
 
-			ovHostname: 'freebsd1.losangeles.vpn.cypherpunk.network'
+			ovHostname: 'freebsd1.losangeles.location.cypherpunk.network'
 			ovDefault: '174.136.108.243'
 			ovNone: '174.136.108.244'
 			ovStrong: '174.136.108.245'
 			ovStealth: '174.136.108.246'
 
-			ipsecHostname: 'losangeles.vpn.cypherpunk.network'
+			ipsecHostname: 'losangeles.location.cypherpunk.network'
 			ipsecDefault: '174.136.108.247'
 
 			httpDefault: '174.136.108.248'
@@ -165,13 +177,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Seattle, Washington'
 			regionEnabled: false
 
-			ovHostname: 'seattle.vpn.cypherpunk.network'
+			ovHostname: 'seattle.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'seattle.vpn.cypherpunk.network'
+			ipsecHostname: 'seattle.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -184,13 +196,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Dallas, Texas'
 			regionEnabled: false
 
-			ovHostname: 'dallas.vpn.cypherpunk.network'
+			ovHostname: 'dallas.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'dallas.vpn.cypherpunk.network'
+			ipsecHostname: 'dallas.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -203,13 +215,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Atlanta, Georgia'
 			regionEnabled: false
 
-			ovHostname: 'atlanta.vpn.cypherpunk.network'
+			ovHostname: 'atlanta.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'atlanta.vpn.cypherpunk.network'
+			ipsecHostname: 'atlanta.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -222,13 +234,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Toronto, Canada'
 			regionEnabled: false
 
-			ovHostname: 'toronto.vpn.cypherpunk.network'
+			ovHostname: 'toronto.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'toronto.vpn.cypherpunk.network'
+			ipsecHostname: 'toronto.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -241,13 +253,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Vancouver, Canada'
 			regionEnabled: false
 
-			ovHostname: 'vancouver.vpn.cypherpunk.network'
+			ovHostname: 'vancouver.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'vancouver.vpn.cypherpunk.network'
+			ipsecHostname: 'vancouver.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -260,13 +272,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Sao Paulo, Brazil'
 			regionEnabled: false
 
-			ovHostname: 'saopaulo.vpn.cypherpunk.network'
+			ovHostname: 'saopaulo.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'saopaulo.vpn.cypherpunk.network'
+			ipsecHostname: 'saopaulo.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -279,13 +291,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'London, UK'
 			regionEnabled: false
 
-			ovHostname: 'london.vpn.cypherpunk.network'
+			ovHostname: 'london.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'london.vpn.cypherpunk.network'
+			ipsecHostname: 'london.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -298,13 +310,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Paris, France'
 			regionEnabled: true
 
-			ovHostname: 'freebsd1.paris.vpn.cypherpunk.network'
+			ovHostname: 'freebsd1.paris.location.cypherpunk.network'
 			ovDefault: '159.8.80.208'
 			ovNone: '159.8.80.209'
 			ovStrong: '159.8.80.210'
 			ovStealth: '159.8.80.211'
 
-			ipsecHostname: 'paris.vpn.cypherpunk.network'
+			ipsecHostname: 'paris.location.cypherpunk.network'
 			ipsecDefault: '159.8.80.212'
 
 			httpDefault: '159.8.80.213'
@@ -317,13 +329,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Zurich, Switzerland'
 			regionEnabled: false
 
-			ovHostname: 'zurich.vpn.cypherpunk.network'
+			ovHostname: 'zurich.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'zurich.vpn.cypherpunk.network'
+			ipsecHostname: 'zurich.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -336,13 +348,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Amsterdam, Netherlands'
 			regionEnabled: false
 
-			ovHostname: 'amsterdam.vpn.cypherpunk.network'
+			ovHostname: 'amsterdam.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'amsterdam.vpn.cypherpunk.network'
+			ipsecHostname: 'amsterdam.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -355,13 +367,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Frankfurt, Germany'
 			regionEnabled: false
 
-			ovHostname: 'frankfurt.vpn.cypherpunk.network'
+			ovHostname: 'frankfurt.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'frankfurt.vpn.cypherpunk.network'
+			ipsecHostname: 'frankfurt.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -374,13 +386,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Istanbul, Turkey'
 			regionEnabled: false
 
-			ovHostname: 'istanbul.vpn.cypherpunk.network'
+			ovHostname: 'istanbul.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'instanbul.vpn.cypherpunk.network'
+			ipsecHostname: 'instanbul.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -393,13 +405,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Hong Kong'
 			regionEnabled: false
 
-			ovHostname: 'hongkong.vpn.cypherpunk.network'
+			ovHostname: 'hongkong.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'hongkong.vpn.cypherpunk.network'
+			ipsecHostname: 'hongkong.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -412,13 +424,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Singapore'
 			regionEnabled: false
 
-			ovHostname: 'singapore.vpn.cypherpunk.network'
+			ovHostname: 'singapore.location.cypherpunk.network'
 			ovDefault: '255.255.255.255'
 			ovNone: '255.255.255.255'
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'singapore.vpn.cypherpunk.network'
+			ipsecHostname: 'singapore.location.cypherpunk.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'

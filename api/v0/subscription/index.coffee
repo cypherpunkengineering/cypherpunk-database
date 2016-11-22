@@ -24,7 +24,7 @@ class cypherpunk.backend.api.v0.subscription.module extends cypherpunk.backend.a
 		super()
 
 class cypherpunk.backend.api.v0.subscription.status extends cypherpunk.backend.api.base
-	level: cypherpunk.backend.server.power.level.customer
+	level: cypherpunk.backend.server.power.level.free
 	mask: cypherpunk.backend.server.power.mask.auth
 	middleware: wiz.framework.http.account.session.refresh
 	handler: (req, res) =>
@@ -57,7 +57,7 @@ class cypherpunk.backend.api.v0.subscription.purchase extends cypherpunk.backend
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.email is 'string'
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
 
-		@server.root.api.customer.database.findOneByEmail req, res, req.body.email, (req, res, user) =>
+		@server.root.api.user.database.findOneByEmail req, res, req.body.email, (req, res, user) =>
 
 			return res.send 409, 'Email already registered' if user isnt null
 
@@ -128,7 +128,7 @@ class cypherpunk.backend.api.v0.subscription.common
 				req.session.account.data.subscriptionRenewal = subscriptionData.subscriptionRenewal
 				req.session.account.data.subscriptionExpiration = subscriptionData.subscriptionExpiration
 
-				req.server.root.api.customer.database.updateCurrentUserData req, res, (req, res, result2) =>
+				req.server.root.api.user.database.updateCurrentUserData req, res, (req, res, result2) =>
 					# TODO: add transaction ID etc.
 					console.log result2
 					res.send 200
@@ -136,7 +136,7 @@ class cypherpunk.backend.api.v0.subscription.common
 				return
 
 			# if no account yet, create one
-			req.server.root.api.customer.database.signup req, res, subscriptionData, (result) =>
+			req.server.root.api.user.database.signup req, res, subscriptionData, (result) =>
 
 				if result instanceof Array
 					user = result[0]
@@ -154,10 +154,10 @@ class cypherpunk.backend.api.v0.subscription.common
 	@purchaseStripe: (req, res, stripeArgs, cb) => #{{{
 
 		try
-			req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
+			req.server.root.Stripe.users.create stripeArgs, (stripeError, stripeCustomerData) =>
 				console.log stripeError if stripeError
 				return res.send 500, stripeError if stripeError
-				console.log 'customer data from stripe'
+				console.log 'user data from stripe'
 				console.log stripeCustomerData
 				cb(stripeCustomerData)
 

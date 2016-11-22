@@ -11,12 +11,39 @@ class cypherpunk.backend.server.power.mask extends wiz.framework.http.resource.p
 	@domain: 5
 
 class cypherpunk.backend.server.power.level extends wiz.framework.http.resource.power.level
-	@customer: 2001
-	@affiliate: 3001
-	@support: 6001
-	@admin: 7001
-	@developer: 8001
-	@wiz: 9001
+
+	#################### CUSTOMERS
+
+	# customer
+	@free: 2100
+	@premium: 2200
+	@family: 2300
+	@enterprise: 2500
+
+	##################### AFFILIATES
+
+	# affiliate
+	@affiliate: 3100
+
+	##################### STAFF USER
+
+	# staff user accounts
+	@staff: 5100
+
+	# engineer user account
+	@developer: 7100
+
+	##################### STAFF ADMIN
+
+	# staff admin accounts
+	@support: 8100
+	@marketing: 8200
+	@legal: 8300
+	@executive: 8500
+
+	# engineer admin accounts
+	@engineer: 9001
+	@wiz: 9999
 
 # vim: foldmethod=marker wrap
 

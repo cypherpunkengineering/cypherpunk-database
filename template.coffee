@@ -14,7 +14,7 @@ require './power'
 wiz.package 'cypherpunk.backend.base'
 
 class cypherpunk.backend.base extends wiz.framework.http.resource.base
-	level: cypherpunk.backend.server.power.level.admin
+	level: cypherpunk.backend.server.power.level.support
 	mask: cypherpunk.backend.server.power.mask.auth
 	middleware: wiz.framework.http.account.session.base
 	handler: (req, res) =>
@@ -24,7 +24,7 @@ class cypherpunk.backend.base extends wiz.framework.http.resource.base
 wiz.package 'cypherpunk.backend.jadeTemplate'
 
 class cypherpunk.backend.jadeTemplate extends wiz.framework.http.resource.jadeTemplate
-	level: cypherpunk.backend.server.power.level.admin
+	level: cypherpunk.backend.server.power.level.support
 	mask: cypherpunk.backend.server.power.mask.auth
 	middleware: wiz.framework.http.account.session.base.concat [
 	]

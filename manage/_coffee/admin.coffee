@@ -1,23 +1,24 @@
 # copyright 2012 J. Maurice <j@wiz.biz>
 
-wiz.package 'cypherpunk.backend.admin.userjs.manageCustomer'
+wiz.package 'cypherpunk.backend.manage.userjs.admin'
 
-class cypherpunk.backend.admin.userjs.manageCustomer.table extends wiz.portal.userjs.table.multiMulti
+class cypherpunk.backend.manage.userjs.admin.table extends wiz.portal.userjs.table.multiMulti
 
-	urlBase: wiz.getParentURL(2) + '/api/customer'
+	urlBase: wiz.getParentURL(2) + '/api/admin'
 	#{{{ strings
-	stringNuggets: 'customers'
-	stringInsertButton: 'Add customer'
-	stringInsertSubmit: 'Add customer'
-	stringInsertRecordDialogTitle: 'Add customer'
-	stringInsertRecordSelectLabel: 'customer type'
-	stringUpdateButton: 'Manage Customer'
-	stringDropButton: 'Drop customers'
-	stringDropSubmit: 'Drop customers'
-	stringDropRecordDialogTitle: 'Drop customer'
-	stringSelectCustomerType: 'select customer type...'
-	stringTitle: 'Customer Management'
+	stringNuggets: 'administrators'
+	stringInsertButton: 'Add admin'
+	stringInsertSubmit: 'Add admin'
+	stringInsertRecordDialogTitle: 'Add admin'
+	stringInsertRecordSelectLabel: 'admin type'
+	stringUpdateButton: 'Manage Staff'
+	stringDropButton: 'Drop administrators'
+	stringDropSubmit: 'Drop administrators'
+	stringDropRecordDialogTitle: 'Drop admin'
+	stringSelectStaffType: 'select admin type...'
+	stringTitle: 'Staff Management'
 	stringTableHeaders: [
+		'Full Name'
 		'E-Mail Address'
 		'Last Logged In'
 	]
@@ -37,7 +38,6 @@ class cypherpunk.backend.admin.userjs.manageCustomer.table extends wiz.portal.us
 		t.params.bPaginate = true
 		t.params.sAjaxSource = @urlListBase + '/' + $(t.table).attr('recordType')
 		t.params.fnRowCallback = (nRow, aData, iDisplayIndex, iDisplayIndexFull) =>
-			console.log nRow
 			# @baseParams.fnRowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull)
 			row = $('td', nRow)
 			row.each (i) =>
@@ -51,7 +51,7 @@ class cypherpunk.backend.admin.userjs.manageCustomer.table extends wiz.portal.us
 								text: @stringUpdateButton
 								click: @updateDialogOpen
 						)
-					when 2
+					when 3
 						if aData[i] == 0
 							ts = 'never'
 						else
@@ -71,10 +71,10 @@ class cypherpunk.backend.admin.userjs.manageCustomer.table extends wiz.portal.us
 		@insertDialogFormSelect.attr('disabled', true) if data?
 	#}}}
 
-manageCustomerTable = null
+adminTable = null
 $(document).ready =>
-	manageCustomerTable = new cypherpunk.backend.admin.userjs.manageCustomer.table()
-	manageCustomerTable.ajax 'GET', manageCustomerTable.urlBase + '/types', null, (types) =>
-		manageCustomerTable.init(types)
+	adminTable = new cypherpunk.backend.manage.userjs.admin.table()
+	adminTable.ajax 'GET', adminTable.urlBase + '/types', null, (types) =>
+		adminTable.init(types)
 
 # vim: foldmethod=marker wrap

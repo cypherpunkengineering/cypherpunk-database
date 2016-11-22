@@ -58,7 +58,7 @@ class cypherpunk.backend.account.module extends wiz.framework.http.account.modul
 	#}}}
 
 	init: () => #{{{
-		@database = @parent.api.staff.database
+		@database = @parent.api.admin.database
 		super()
 	#}}}
 

@@ -8,37 +8,23 @@ require './_framework/http/db/mongo'
 wiz.package 'cypherpunk.backend.api'
 
 class cypherpunk.backend.api.base extends cypherpunk.backend.base
-	level: cypherpunk.backend.server.power.level.admin
+	level: cypherpunk.backend.server.power.level.support
 
-require './staff'
-require './customer'
+require './admin'
+require './user'
 require './affiliate'
 require './transaction'
 
 require './v0'
 
 class cypherpunk.backend.api.module extends cypherpunk.backend.api.base
-	mongo: null
-
-	#{{{ database config
-	mongoConfig:
-		hostname: 'localhost'
-		database: 'cypherpunk'
-
-	mongoServerOptions:
-		auto_reconnect: true
-		poolSize: 2
-
-	mongoDbOptions:
-		reaper: true
-		safe: true
-	#}}}
 	load: () =>
 		# create cypherpunkDB driver
-		@cypherpunkDB = new wiz.framework.http.database.mongo.driver(@server, this, @mongoConfig, @mongoServerOptions, @mongoDbOptions)
+		@mongoURI = 'mongodb://localhost:27017/cypherpunk'
+		@cypherpunkDB = new wiz.framework.http.database.mongo.driver(@server, this, @mongoURI)
 
-		@staff = @routeAdd new cypherpunk.backend.api.staff.resource(@server, this, 'staff')
-		@customer = @routeAdd new cypherpunk.backend.api.customer.resource(@server, this, 'customer')
+		@admin = @routeAdd new cypherpunk.backend.api.admin.resource(@server, this, 'admin')
+		@user = @routeAdd new cypherpunk.backend.api.user.resource(@server, this, 'user')
 		@affiliate = @routeAdd new cypherpunk.backend.api.affiliate.resource(@server, this, 'affiliate')
 		@transaction = @routeAdd new cypherpunk.backend.api.transaction.resource(@server, this, 'transaction')
 

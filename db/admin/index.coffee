@@ -7,14 +7,15 @@ require './_framework/http/db/mongo'
 
 require './schema'
 
-wiz.package 'cypherpunk.backend.db.customer'
+wiz.package 'cypherpunk.backend.db.admin'
 
-class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.customers
-	schema: cypherpunk.backend.db.customer.schema
+class cypherpunk.backend.db.admin extends wiz.framework.http.account.db.admin
 	debug: true
+	schema: cypherpunk.backend.db.admin.schema
 	upsert: false
 	passwordKey: 'password'
 	passwordOldKey: 'passwordOld'
+	fullnameKey: 'fullname'
 
 	# DataTable methods
 	findOneByID: (req, res, id, cb) => #{{{ removes password hash
@@ -26,17 +27,17 @@ class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.custo
 			return cb(req2, res2, result) if result and cb
 			return res.send 200, result
 	#}}}
-	list: (req, res, customerPlan) => #{{{
-		return res.send 400, 'invalid type' if not schemaPlan = @schema.types[customerPlan]
+	list: (req, res, adminType) => #{{{
+		return res.send 400, 'invalid type' if not schemaType = @schema.types[adminType]
 
 		criteria = @criteria(req)
-		criteria[@typeKey] = schemaPlan[@typeKey]
+		criteria[@typeKey] = schemaType[@typeKey]
 
 		projection = @projection()
 		opts =
 			skip: if req.params.iDisplayStart then req.params.iDisplayStart else 0
 			limit: if req.params.iDisplayLength > 0 and req.params.iDisplayLength < 200 then req.params.iDisplayLength else 25
-			sort: "#{@dataKey}.#{@emailKey}"
+			sort: 'data.fullname'
 
 		@count req, res, criteria, projection, (req2, res2, recordCount) =>
 			@find req, res, criteria, projection, opts, (req3, res3, results) =>
@@ -49,8 +50,9 @@ class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.custo
 						responseData.push
 							DT_RowId : result[@docKey]
 							0: result[@docKey] or 'unknown'
-							1: result[@dataKey][@emailKey] or ''
-							2: result.lastLoginTS or 0
+							1: result[@dataKey].fullname or ''
+							2: result[@dataKey].email or ''
+							3: result.lastLoginTS or 0
 
 				@listResponse(req, res, responseData, recordCount)
 	#}}}
@@ -58,20 +60,19 @@ class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.custo
 		if recordToInsert is null
 			return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
 
-		return super(req, res, recordToInsert, cb) if cb
+		return super(req, res, recordToInsert, cb) if cb != null
 
 		super req, res, recordToInsert, (req2, res2, result) =>
-			return cb(req2, res2, result) if cb
 			res.send 200
 	#}}}
-	updateUserData: (req, res, customerID, customerData, cb = null) => #{{{ restores password hash
-		@findOneByKey req, res, @docKey, customerID, @projection(), (req, res, result) =>
+	updateUserData: (req, res, adminID, adminData, cb = null) => #{{{ restores password hash
+		@findOneByKey req, res, @docKey, adminID, @projection(), (req, res, result) =>
 			return cb(req, res, null) if not result and cb
 			return res.send 404 if not result
 			console.log result
 			return res.send 500 if not result[@dataKey]?
-			customerData[@passwordKey] = result[@dataKey][@passwordKey]
-			@updateDataByID req, res, customerID, customerData, (req2, res2, result2) =>
+			adminData[@passwordKey] = result[@dataKey][@passwordKey]
+			@updateDataByID req, res, adminID, adminData, (req2, res2, result2) =>
 				return cb(req2, res2, result2) if cb
 				return res.send 500 if not result2
 				return res.send 200
@@ -87,9 +88,6 @@ class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.custo
 	#}}}
 
 	# custom APIs
-	findOneByEmail: (req, res, email, cb) => #{{{
-		@findOneByKey req, res, "#{@dataKey}.#{@emailKey}", email, @projection(), cb
-	#}}}
 
 	myAccountPassword: (req, res) => #{{{
 		# check if no session
@@ -101,10 +99,10 @@ class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.custo
 		criteria = @getDocKey(req, req.session.account.id)
 		# get full projection
 		projection = @projection()
-		@findOne req, res, criteria, projection, (req, res, customerObj) =>
+		@findOne req, res, criteria, projection, (req, res, adminObj) =>
 			# abort if existing password doesn't match
-			if not customerObj?[@dataKey]?[@passwordKey]?
-				err = 'missing customer password from db'
+			if not adminObj?[@dataKey]?[@passwordKey]?
+				err = 'missing admin password from db'
 				wiz.log.err err
 				return res.send 500, err
 
@@ -115,7 +113,7 @@ class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.custo
 				return res.send 400, err
 
 			userPasswordHash = wiz.framework.http.account.authenticate.userpasswd.pwHash(passwordOld)
-			dbPasswordHash = customerObj[@dataKey][@passwordKey]
+			dbPasswordHash = adminObj[@dataKey][@passwordKey]
 			if userPasswordHash != dbPasswordHash
 				err = 'existing password is incorrect'
 				wiz.log.err err
@@ -126,20 +124,6 @@ class cypherpunk.backend.db.customer extends wiz.framework.http.account.db.custo
 	#}}}
 	myAccountDetails: (req, res) => #{{{
 		@update(req, res, req.session.account.id)
-	#}}}
-
-	# public stranger APIs
-	signup: (req, res, subscriptionData, cb) => #{{{
-		return unless recordToInsert = @schema.fromStranger(req, res)
-		if subscriptionData?[@schema.confirmedKey]?
-			recordToInsert[@dataKey][@schema.confirmedKey] = subscriptionData[@schema.confirmedKey]
-		if subscriptionData?[@schema.subscriptionPlanKey]?
-			recordToInsert[@dataKey][@schema.subscriptionPlanKey] = subscriptionData[@schema.subscriptionPlanKey]
-		if subscriptionData?[@schema.subscriptionRenewalKey]?
-			recordToInsert[@dataKey][@schema.subscriptionRenewalKey] = subscriptionData[@schema.subscriptionRenewalKey]
-		if subscriptionData?[@schema.subscriptionExpirationKey]?
-			recordToInsert[@dataKey][@schema.subscriptionExpirationKey] = subscriptionData[@schema.subscriptionExpirationKey]
-		@insert req, res, recordToInsert, cb
 	#}}}
 
 # vim: foldmethod=marker wrap

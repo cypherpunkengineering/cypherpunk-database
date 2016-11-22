@@ -13,7 +13,7 @@ class cypherpunk.backend.api.v0.account.confirm.email extends cypherpunk.backend
 	nav: false
 
 	getVars: () =>
-		@database = @server.root.api.customer.database
+		@database = @server.root.api.user.database
 		@schema = @database.schema
 		@dataKey = @schema.dataKey
 		@confirmedKey = @schema.confirmedKey
@@ -30,7 +30,7 @@ class cypherpunk.backend.api.v0.account.confirm.email extends cypherpunk.backend
 		wiz.log.debug 'accountId is '+accountId
 		wiz.log.debug 'confirmationToken is '+confirmationToken
 
-		@server.root.api.customer.database.findOneByID req, res, accountId, (req2, res22, user) =>
+		@server.root.api.user.database.findOneByID req, res, accountId, (req2, res22, user) =>
 			return res.send 404 unless (user?.confirmationToken? and typeof user.confirmationToken is "string")
 			return res.send 404 unless (user.confirmationToken.length > 1 && confirmationToken == user.confirmationToken)
 
@@ -39,7 +39,7 @@ class cypherpunk.backend.api.v0.account.confirm.email extends cypherpunk.backend
 			user[@dataKey][@confirmedKey] = true
 
 			# update user object in database
-			@server.root.api.customer.database.updateUserData req, res, accountId, user[@dataKey], (result) =>
+			@server.root.api.user.database.updateUserData req, res, accountId, user[@dataKey], (result) =>
 				return res.send 500, 'Unable to confirm account' if not result?
 
 				# start new session for confirmed user

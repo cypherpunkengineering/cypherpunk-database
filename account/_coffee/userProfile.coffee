@@ -36,8 +36,8 @@ class cypherpunk.backend.admin.userjs.userProfile extends wiz.framework.app.base
 	stringChangePasswordSubmit: 'Change Password'
 	#}}}
 	init: () => #{{{
-		@urlChangePassword = sessionManager.urlBase + '/api/staff/myAccountPassword'
-		@urlAccountDetails = sessionManager.urlBase + '/api/staff/myAccountDetails'
+		@urlChangePassword = sessionManager.urlBase + '/api/admin/myAccountPassword'
+		@urlAccountDetails = sessionManager.urlBase + '/api/admin/myAccountDetails'
 		@createAccountDetailsForm()
 		@createChangePasswordForm()
 	#}}}

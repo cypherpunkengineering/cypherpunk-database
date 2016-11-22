@@ -4,17 +4,17 @@ require './_framework'
 require './_framework/http/account'
 require './_framework/http/resource/base'
 
-wiz.package 'cypherpunk.backend.admin.affiliate'
+wiz.package 'cypherpunk.backend.manage.admin'
 
-class cypherpunk.backend.admin.affiliate.resource extends cypherpunk.backend.admin.template
+class cypherpunk.backend.manage.admin.resource extends cypherpunk.backend.manage.template
 	nav: true
-	title: 'Affiliate'
+	title: 'Administrator'
 	init: () =>
 		super()
-		@args.wizTitle = 'Manage Affiliate'
+		@args.wizTitle = 'Manage Administrators'
 		@args.wizCSS = @args.wizCSS.concat(@args.wizCSSdt)
 		@args.wizJS = @args.wizJS.concat(@args.wizJSdtMultiMulti)
 		@args.wizBodies += 1
-		@args.wizJS.push @parent.coffee('affiliate')
+		@args.wizJS.push @parent.coffee('admin')
 
 # vim: foldmethod=marker wrap
