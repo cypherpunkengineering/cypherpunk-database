@@ -63,7 +63,7 @@ class cypherpunk.backend.db.transaction.schema extends wiz.framework.database.mo
 		constructor: (@type, @description, @verb, @data, @creatable = true) ->
 	@types:
 	#}}}
-		stripe: (new type 'stripe', 'Stripe', 'list', #{{{
+		stripe: (new type 'stripe', 'Stripe Transaction', 'list', #{{{
 			txid:
 				label: 'transaction id'
 				placeholder: 'XXXXXXXXX'
@@ -78,7 +78,7 @@ class cypherpunk.backend.db.transaction.schema extends wiz.framework.database.mo
 				placeholder: '$XX.XX'
 				required: true
 		) #}}}
-		paypal: (new type 'paypal', 'PayPal', 'list', #{{{
+		paypal: (new type 'paypal', 'PayPal Transaction', 'list', #{{{
 			txid:
 				label: 'transaction id'
 				placeholder: 'XXXXXXXXX'
@@ -93,7 +93,7 @@ class cypherpunk.backend.db.transaction.schema extends wiz.framework.database.mo
 				placeholder: '$XX.XX'
 				required: true
 		) #}}}
-		amazon: (new type 'amazon', 'Amazon', 'list', #{{{
+		amazon: (new type 'amazon', 'Amazon Transaction', 'list', #{{{
 			txid:
 				label: 'transaction id'
 				placeholder: 'XXXXXXXXX'
@@ -108,7 +108,7 @@ class cypherpunk.backend.db.transaction.schema extends wiz.framework.database.mo
 				placeholder: '$XX.XX'
 				required: true
 		) #}}}
-		bitpay: (new type 'bitpay', 'BitPay', 'list', #{{{
+		bitpay: (new type 'bitpay', 'BitPay Transaction', 'list', #{{{
 			txid:
 				label: 'transaction id'
 				placeholder: 'XXXXXXXXX'
@@ -123,7 +123,7 @@ class cypherpunk.backend.db.transaction.schema extends wiz.framework.database.mo
 				placeholder: '$XX.XX'
 				required: true
 		) #}}}
-		googleplay: (new type 'googleplay', 'Google Play', 'list', #{{{
+		googleplay: (new type 'googleplay', 'Google Play Transaction', 'list', #{{{
 			txid:
 				label: 'transaction id'
 				placeholder: 'XXXXXXXXX'
@@ -138,7 +138,7 @@ class cypherpunk.backend.db.transaction.schema extends wiz.framework.database.mo
 				placeholder: '$XX.XX'
 				required: true
 		) #}}}
-		appleitunes: (new type 'appleitunes', 'Apple iTunes', 'list', #{{{
+		appleitunes: (new type 'appleitunes', 'Apple iTunes Transaction', 'list', #{{{
 			txid:
 				label: 'transaction id'
 				placeholder: 'XXXXXXXXX'
