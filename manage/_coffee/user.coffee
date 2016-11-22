@@ -1,8 +1,8 @@
 # copyright 2012 J. Maurice <j@wiz.biz>
 
-wiz.package 'cypherpunk.backend.admin.userjs.manageCustomer'
+wiz.package 'cypherpunk.backend.admin.userjs.manageUser'
 
-class cypherpunk.backend.admin.userjs.manageCustomer.table extends wiz.portal.userjs.table.multiMulti
+class cypherpunk.backend.admin.userjs.manageUser.table extends wiz.portal.userjs.table.multiMulti
 
 	urlBase: wiz.getParentURL(2) + '/api/user'
 	#{{{ strings
@@ -11,12 +11,12 @@ class cypherpunk.backend.admin.userjs.manageCustomer.table extends wiz.portal.us
 	stringInsertSubmit: 'Add user'
 	stringInsertRecordDialogTitle: 'Add user'
 	stringInsertRecordSelectLabel: 'user type'
-	stringUpdateButton: 'Manage Customer'
+	stringUpdateButton: 'Manage User'
 	stringDropButton: 'Drop users'
 	stringDropSubmit: 'Drop users'
 	stringDropRecordDialogTitle: 'Drop user'
-	stringSelectCustomerType: 'select user type...'
-	stringTitle: 'Customer Management'
+	stringSelectUserType: 'select user type...'
+	stringTitle: 'User Management'
 	stringTableHeaders: [
 		'E-Mail Address'
 		'Last Logged In'
@@ -71,10 +71,10 @@ class cypherpunk.backend.admin.userjs.manageCustomer.table extends wiz.portal.us
 		@insertDialogFormSelect.attr('disabled', true) if data?
 	#}}}
 
-manageCustomerTable = null
+manageUserTable = null
 $(document).ready =>
-	manageCustomerTable = new cypherpunk.backend.admin.userjs.manageCustomer.table()
-	manageCustomerTable.ajax 'GET', manageCustomerTable.urlBase + '/types', null, (types) =>
-		manageCustomerTable.init(types)
+	manageUserTable = new cypherpunk.backend.admin.userjs.manageUser.table()
+	manageUserTable.ajax 'GET', manageUserTable.urlBase + '/types', null, (types) =>
+		manageUserTable.init(types)
 
 # vim: foldmethod=marker wrap
