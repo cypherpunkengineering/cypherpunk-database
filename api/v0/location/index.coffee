@@ -23,16 +23,15 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 	handler: (req, res) => @handler404(req, res)
 	catchall: (req, res, routeWord = "") =>
 
-#		regionList = {}
-#		switch routeWord
-#			when "free"
-#				regionList.concat
-#			when "premium"
-#			when "family"
-#			when "enterprise"
-#			when "developer"
-#			else return @handler404(req, res)
-#
+		regionList = {}
+		switch routeWord
+			when "free" then true
+			when "premium" then true
+			when "family" then true
+			when "enterprise" then true
+			when "developer" then true
+			else return @handler404(req, res)
+
 		for region of wiz.framework.util.world.regionMap
 			regionList[region] = {}
 			for country in wiz.framework.util.world.regionMap[region]
