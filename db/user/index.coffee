@@ -58,23 +58,42 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 		if recordToInsert is null
 			return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
 
-		return super(req, res, recordToInsert, cb) if cb
-
 		super req, res, recordToInsert, (req2, res2, result) =>
-			return cb(req2, res2, result) if cb
-			res.send 200
+			result = result[0] if result instanceof Array
+			@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
+				if err
+					wiz.log.err(err)
+					return res.send 500, 'Unable to update database'
+
+				return cb(req2, res2, result) if cb
+				res.send 200
+	#}}}
+	update: (req, res, userID) => #{{{
+		# TODO: return res.send 400, 'invalid type' if not schemaPlan = @schema.types[userPlan]
+		super req, res, userID, (req2, res2, result) =>
+			return res.send 500, "update database failed" if not result
+			@findOneByKey req, res, @docKey, userID, @projection(), (req, res, user) =>
+				@server.root.api.radius.database.updateUserAccess req, res, user, (err) =>
+					return res.send 500, "update database failed" if err
+					return res.send 200
 	#}}}
 	updateUserData: (req, res, userID, userData, cb = null) => #{{{ restores password hash
 		@findOneByKey req, res, @docKey, userID, @projection(), (req, res, result) =>
 			return cb(req, res, null) if not result and cb
 			return res.send 404 if not result
-			console.log result
 			return res.send 500 if not result[@dataKey]?
+			console.log result
 			userData[@passwordKey] = result[@dataKey][@passwordKey]
 			@updateDataByID req, res, userID, userData, (req2, res2, result2) =>
-				return cb(req2, res2, result2) if cb
-				return res.send 500 if not result2
-				return res.send 200
+				# update radius database
+				@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
+					if err
+						wiz.log.err(err)
+						return res.send 500, 'Unable to update database'
+
+					return cb(req2, res2, result2) if cb
+					return res.send 500 if not result2
+					return res.send 200
 	#}}}
 	updateCurrentUserData: (req, res, cb = null) => #{{{
 		@updateUserData(req, res, req.session.account.id, req.session.account.data, cb)

@@ -42,15 +42,9 @@ class cypherpunk.backend.api.v0.account.confirm.email extends cypherpunk.backend
 			@server.root.api.user.database.updateUserData req, res, accountId, user[@dataKey], (result) =>
 				return res.send 500, 'Unable to confirm account' if not result?
 
-				# update radius database
-				@server.root.api.radius.database.updateUserAccess req, res, user, (err) =>
-					if err
-						wiz.log.err(err)
-						return res.send 500, 'Unable to grant access'
-
-					# start new session for confirmed user
-					out = @server.root.account.doUserLogin(req, res, user)
-					res.send 200, out
+				# start new session for confirmed user
+				out = @server.root.account.doUserLogin(req, res, user)
+				res.send 200, out
 
 class cypherpunk.backend.api.v0.account.confirm.resource extends cypherpunk.backend.base
 	level: cypherpunk.backend.server.power.level.stranger
