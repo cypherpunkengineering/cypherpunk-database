@@ -71,6 +71,10 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		require './manage'
 		@manage = @routeAdd new cypherpunk.backend.manage.module(@server, this, 'manage')
 
+		# billing module
+		require './billing'
+		@billing = @routeAdd new cypherpunk.backend.billing.module(@server, this, 'billing')
+
 		# init stripe SDK
 		@stripe = new wiz.framework.thirdparty.stripe
 			apiKey: 'sk_test_UxTTPDN0LGZaD9NBtVUxuksJ'

@@ -64,28 +64,94 @@ class cypherpunk.backend.db.transaction.schema extends wiz.framework.database.mo
 	@types:
 	#}}}
 		stripe: (new type 'stripe', 'Stripe', 'list', #{{{
-			email:
-				label: 'email address'
-				placeholder: 'satoshin@gmx.com'
-				type: 'email'
+			txid:
+				label: 'transaction id'
+				placeholder: 'XXXXXXXXX'
+				type: 'asciiNoSpace'
 				maxlen: 30
 				required: true
 
-			fullname:
-				label: 'full name'
-				type: 'ascii'
+			amount:
+				label: 'transaction amount'
+				type: 'alphanumericdot'
 				maxlen: 50
-				placeholder: 'Satoshi Nakamoto'
+				placeholder: '$XX.XX'
 				required: true
-
-			password:
-				label: 'set password'
+		) #}}}
+		paypal: (new type 'paypal', 'PayPal', 'list', #{{{
+			txid:
+				label: 'transaction id'
+				placeholder: 'XXXXXXXXX'
 				type: 'asciiNoSpace'
-				minlen: 6
-				maxlen: 50
-				placeholder: ''
+				maxlen: 30
 				required: true
 
+			amount:
+				label: 'transaction amount'
+				type: 'alphanumericdot'
+				maxlen: 50
+				placeholder: '$XX.XX'
+				required: true
+		) #}}}
+		amazon: (new type 'amazon', 'Amazon', 'list', #{{{
+			txid:
+				label: 'transaction id'
+				placeholder: 'XXXXXXXXX'
+				type: 'asciiNoSpace'
+				maxlen: 30
+				required: true
+
+			amount:
+				label: 'transaction amount'
+				type: 'alphanumericdot'
+				maxlen: 50
+				placeholder: '$XX.XX'
+				required: true
+		) #}}}
+		bitpay: (new type 'bitpay', 'BitPay', 'list', #{{{
+			txid:
+				label: 'transaction id'
+				placeholder: 'XXXXXXXXX'
+				type: 'asciiNoSpace'
+				maxlen: 30
+				required: true
+
+			amount:
+				label: 'transaction amount'
+				type: 'alphanumericdot'
+				maxlen: 50
+				placeholder: '$XX.XX'
+				required: true
+		) #}}}
+		googleplay: (new type 'googleplay', 'Google Play', 'list', #{{{
+			txid:
+				label: 'transaction id'
+				placeholder: 'XXXXXXXXX'
+				type: 'asciiNoSpace'
+				maxlen: 30
+				required: true
+
+			amount:
+				label: 'transaction amount'
+				type: 'alphanumericdot'
+				maxlen: 50
+				placeholder: '$XX.XX'
+				required: true
+		) #}}}
+		appleitunes: (new type 'appleitunes', 'Apple iTunes', 'list', #{{{
+			txid:
+				label: 'transaction id'
+				placeholder: 'XXXXXXXXX'
+				type: 'asciiNoSpace'
+				maxlen: 30
+				required: true
+
+			amount:
+				label: 'transaction amount'
+				type: 'alphanumericdot'
+				maxlen: 50
+				placeholder: '$XX.XX'
+				required: true
 		) #}}}
 
 # vim: foldmethod=marker wrap

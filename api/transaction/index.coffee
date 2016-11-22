@@ -20,8 +20,6 @@ class cypherpunk.backend.api.transaction.resource extends cypherpunk.backend.api
 		@routeAdd new cypherpunk.backend.api.transaction.findAll(@server, this, 'findAll')
 		@routeAdd new cypherpunk.backend.api.transaction.findByType(@server, this, 'findByType')
 		@routeAdd new cypherpunk.backend.api.transaction.findOneByID(@server, this, 'findOneByID')
-		@routeAdd new cypherpunk.backend.api.transaction.insert(@server, this, 'insert', 'POST')
-		@routeAdd new cypherpunk.backend.api.transaction.update(@server, this, 'update', 'POST')
 		super()
 	#}}}
 
@@ -46,15 +44,6 @@ class cypherpunk.backend.api.transaction.findByType extends cypherpunk.backend.a
 class cypherpunk.backend.api.transaction.findOneByID extends cypherpunk.backend.api.base
 	catchall: (req, res, routeWord) => #{{{
 		@parent.database.findOneByID(req, res, routeWord)
-	#}}}
-class cypherpunk.backend.api.transaction.insert extends cypherpunk.backend.api.base
-	# XXX: add permissions
-	handler: (req, res) => #{{{
-		@parent.database.insert(req, res)
-	#}}}
-class cypherpunk.backend.api.transaction.update extends cypherpunk.backend.api.base
-	catchall: (req, res, routeWord) => #{{{
-		@parent.database.update(req, res, routeWord)
 	#}}}
 
 # vim: foldmethod=marker wrap
