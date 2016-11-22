@@ -8,10 +8,10 @@ wiz.package 'cypherpunk.backend.manage.user'
 
 class cypherpunk.backend.manage.user.resource extends cypherpunk.backend.manage.template
 	nav: true
-	title: 'Privacy Users'
+	title: 'Customer Accounts'
 	init: () =>
 		super()
-		@args.wizTitle = 'Manage Privacy Users'
+		@args.wizTitle = 'Manage Customer Accounts'
 		@args.wizCSS = @args.wizCSS.concat(@args.wizCSSdt)
 		@args.wizJS = @args.wizJS.concat(@args.wizJSdtMultiMulti)
 		@args.wizBodies += 1

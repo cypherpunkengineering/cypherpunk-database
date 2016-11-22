@@ -75,7 +75,7 @@ class cypherpunk.backend.db.admin.schema extends wiz.framework.database.mongo.do
 				placeholder: ''
 				required: true
 		) #}}}
-		marketing: (new type 'marketing', 'Marketing Staff', 'list', #{{{
+		marketing: (new type 'marketing', 'Marketing Employee', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
@@ -98,7 +98,7 @@ class cypherpunk.backend.db.admin.schema extends wiz.framework.database.mongo.do
 				placeholder: ''
 				required: true
 		) #}}}
-		legal: (new type 'legal', 'Legal Agent', 'list', #{{{
+		legal: (new type 'legal', 'Legal Counsel', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'

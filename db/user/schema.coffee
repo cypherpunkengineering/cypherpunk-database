@@ -96,7 +96,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 	#}}}
 
 	# customer accounts
-		free: (new type 'free', 'Free', 'list', #{{{
+		free: (new type 'free', 'Free Account', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
@@ -141,7 +141,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 		) #}}}
-		premium: (new type 'premium', 'Premium', 'list', #{{{
+		premium: (new type 'premium', 'Premium Account', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
@@ -186,7 +186,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 		) #}}}
-		family: (new type 'family', 'Family', 'list', #{{{
+		family: (new type 'family', 'Family Account', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
@@ -231,7 +231,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 		) #}}}
-		enterprise: (new type 'enterprise', 'Enterprise', 'list', #{{{
+		enterprise: (new type 'enterprise', 'Enterprise Account', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
@@ -278,7 +278,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 		) #}}}
 
 	# staff accounts
-		staff: (new type 'staff', 'Cypherpunk Staff', 'list', #{{{
+		staff: (new type 'staff', 'Cypherpunk Account', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
