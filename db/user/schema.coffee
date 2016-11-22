@@ -101,7 +101,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
 				type: 'email'
-				maxlen: 30
+				maxlen: 50
 				required: true
 
 			confirmed:
@@ -146,7 +146,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
 				type: 'email'
-				maxlen: 30
+				maxlen: 50
 				required: true
 
 			confirmed:
@@ -191,7 +191,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
 				type: 'email'
-				maxlen: 30
+				maxlen: 50
 				required: true
 
 			confirmed:
@@ -236,7 +236,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
 				type: 'email'
-				maxlen: 30
+				maxlen: 50
 				required: true
 
 			confirmed:
@@ -283,7 +283,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
 				type: 'email'
-				maxlen: 30
+				maxlen: 50
 				required: true
 
 			confirmed:
@@ -328,7 +328,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
 				type: 'email'
-				maxlen: 30
+				maxlen: 50
 				required: true
 
 			confirmed:
