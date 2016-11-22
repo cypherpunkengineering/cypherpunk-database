@@ -20,24 +20,28 @@ class cypherpunk.backend.db.radius extends wiz.framework.http.database.mysql.dri
 	#}}}
 
 	_queryInsertCheck: (req, res, id, username, password, cb1) => #{{{ insert into radcheck (username, attribute, op, value) values ('<username>', 'NT-Password', ':=', '<NTPASSWORDHASH>')
+		return cb1("missing parameters") if not id? or not username? or not password?
 		q = "REPLACE INTO #{@tables.check} (account, username, attribute, op, value) "
 		q += " VALUES ('#{id}', '#{username}', 'Cleartext-Password', ':=', '#{password}')"
 		@query req, res, q, (req, res, err, rows, fields) =>
 			cb1(err)
 	#}}}
 	_queryDeleteCheck: (req, res, id, cb2) => #{{{ delete from radcheck where id = 'X'
+		return cb2("missing parameters") if not id?
 		q = "DELETE FROM #{@tables.check} WHERE `account` = '#{id}'"
 		@query req, res, q, (req, res, err, rows, fields) =>
 			cb2(err)
 	#}}}
 
 	_queryInsertUsergroup: (req, res, username, groupname, priority, cb3) => #{{{
+		return cb3("missing parameters") if not username? or not groupname? or not priority?
 		q = "REPLACE INTO #{@tables.usergroup} (username, groupname, priority) "
 		q += " VALUES ('#{username}', '#{groupname}', '#{priority}')"
 		@query req, res, q, (req, res, err, rows, fields) =>
 			cb3(err)
 	#}}}
 	_queryDeleteUsergroup: (req, res, username, cb4) => #{{{
+		return cb4("missing parameters") if not username?
 		q = "DELETE FROM #{@tables.usergroup} WHERE `username` = '#{username}'"
 		@query req, res, q, (req, res, err, rows, fields) =>
 			cb4(err)
