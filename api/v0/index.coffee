@@ -14,6 +14,8 @@ require './location'
 wiz.package 'cypherpunk.backend.api.v0'
 
 class cypherpunk.backend.api.v0.module extends cypherpunk.backend.api.base
+	level: cypherpunk.backend.server.power.level.stranger
+	mask: cypherpunk.backend.server.power.mask.public
 	load: () =>
 		super()
 		@routeAdd new cypherpunk.backend.api.v0.account.module(@server, this, 'account')

@@ -9,6 +9,8 @@ require './_framework/util/world'
 wiz.package 'cypherpunk.backend.api.v0.location'
 
 class cypherpunk.backend.api.v0.location.module extends cypherpunk.backend.api.base
+	level: cypherpunk.backend.server.power.level.stranger
+	mask: cypherpunk.backend.server.power.mask.public
 	database: null
 
 	init: () =>
@@ -19,102 +21,16 @@ class cypherpunk.backend.api.v0.location.module extends cypherpunk.backend.api.b
 
 
 class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.base
-	level: cypherpunk.backend.server.power.level.free
+	level: cypherpunk.backend.server.power.level.stranger
+	mask: cypherpunk.backend.server.power.mask.public
 	handler: (req, res) => @handler404(req, res)
-	catchall: (req, res, routeWord = "") =>
 
-		regionList = {}
-		switch routeWord
-			when "free" then true
-			when "premium" then true
-			when "family" then true
-			when "enterprise" then true
-			when "developer" then true
-			else return @handler404(req, res)
-
-		for region of wiz.framework.util.world.regionMap
-			regionList[region] = {}
-			for country in wiz.framework.util.world.regionMap[region]
-				regionList[region][country] = []
-
-		regionList.AS.JP.push # {{{
-			id: 'tokyodev3'
-
-			regionName: 'Dev 3, Japan'
-			regionEnabled: true
-
-			ovHostname: 'freebsd-test.tokyo.location.cypherpunk.network'
-			ovDefault: '185.176.52.34'
-			ovNone: '185.176.52.35'
-			ovStrong: '185.176.52.36'
-			ovStealth: '185.176.52.37'
-
-			ipsecHostname: 'tokyo.location.cypherpunk.network'
-			ipsecDefault: '185.176.52.38'
-
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
-
-		# }}}
-		regionList.AS.JP.push # {{{
-			id: 'tokyodev1'
-
-			regionName: 'Dev 1, Japan'
-			regionEnabled: true
-
-			ovHostname: 'freebsd1.tokyo.location.cypherpunk.network'
-			ovDefault: '208.111.52.1'
-			ovNone: '208.111.52.11'
-			ovStrong: '208.111.52.21'
-			ovStealth: '208.111.52.31'
-
-			ipsecHostname: 'tokyo.location.cypherpunk.network'
-			ipsecDefault: '208.111.52.41'
-
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
-
-		# }}}
-		regionList.AS.JP.push # {{{
-			id: 'tokyo2'
-
-			regionName: 'Tokyo, Japan'
-			regionEnabled: true
-
-			ovHostname: 'freebsd2.tokyo.location.cypherpunk.network'
-			ovDefault: '208.111.52.2'
-			ovNone: '208.111.52.12'
-			ovStrong: '208.111.52.22'
-			ovStealth: '208.111.52.32'
-
-			ipsecHostname: 'tokyo.location.cypherpunk.network'
-			ipsecDefault: '208.111.52.42'
-
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
-
-		# }}}
-		regionList.NA.US.push # {{{
-			id: 'honolulu'
-
-			regionName: 'Honolulu, Hawaii'
-			regionEnabled: true
-
-			ovHostname: 'location3.honolulu.location.cypherpunk.network'
-			ovDefault: '208.111.48.146'
-			ovNone: '208.111.48.147'
-			ovStrong: '208.111.48.148'
-			ovStealth: '208.111.48.149'
-
-			ipsecHostname: 'honolulu.location.cypherpunk.network'
-			ipsecDefault: '208.111.48.150'
-
-			httpDefault: '208.111.48.151'
-			socksDefault: '208.111.48.152'
-
-		# }}}
-		regionList.NA.US.push # {{{
+	locations: () =>
+		locations =
+		newyork: #{{{
 			id: 'newyork'
+			region: 'NA'
+			country: 'US'
 
 			regionName: 'New York, New York'
 			regionEnabled: true
@@ -131,9 +47,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '204.145.66.40'
 			socksDefault: '204.145.66.41'
 
-		# }}}
-		regionList.NA.US.push # {{{
+		#}}}
+		siliconvalley: #{{{
 			id: 'siliconvalley'
+			region: 'NA'
+			country: 'US'
 
 			regionName: 'Silicon Valley, California'
 			regionEnabled: false
@@ -150,9 +68,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.NA.US.push # {{{
+		#}}}
+		losangeles: #{{{
 			id: 'losangeles'
+			region: 'NA'
+			country: 'US'
 
 			regionName: 'Los Angeles, California'
 			regionEnabled: true
@@ -169,9 +89,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '174.136.108.248'
 			socksDefault: '174.136.108.249'
 
-		# }}}
-		regionList.NA.US.push # {{{
+		#}}}
+		seattle: #{{{
 			id: 'seattle'
+			region: 'NA'
+			country: 'US'
 
 			regionName: 'Seattle, Washington'
 			regionEnabled: false
@@ -188,9 +110,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.NA.US.push # {{{
+		#}}}
+		dallas: #{{{
 			id: 'dallas'
+			region: 'NA'
+			country: 'US'
 
 			regionName: 'Dallas, Texas'
 			regionEnabled: false
@@ -207,9 +131,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.NA.US.push # {{{
+		#}}}
+		atlanta: #{{{
 			id: 'atlanta'
+			region: 'NA'
+			country: 'US'
 
 			regionName: 'Atlanta, Georgia'
 			regionEnabled: false
@@ -226,9 +152,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.NA.CA.push # {{{
+		#}}}
+
+		toronto: #{{{
 			id: 'toronto'
+			region: 'NA'
+			country: 'CA'
 
 			regionName: 'Toronto, Canada'
 			regionEnabled: false
@@ -245,9 +174,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.NA.CA.push # {{{
+		#}}}
+		vancouver: #{{{
 			id: 'vancouver'
+			region: 'NA'
+			country: 'CA'
 
 			regionName: 'Vancouver, Canada'
 			regionEnabled: false
@@ -264,9 +195,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.SA.BR.push # {{{
+		#}}}
+		saopaulo: #{{{
 			id: 'saopaulo'
+			region: 'SA'
+			country: 'BR'
 
 			regionName: 'Sao Paulo, Brazil'
 			regionEnabled: false
@@ -283,9 +216,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.EU.GB.push # {{{
+		#}}}
+		london: #{{{
 			id: 'london'
+			region: 'EU'
+			country: 'GB'
 
 			regionName: 'London, UK'
 			regionEnabled: false
@@ -302,9 +237,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.EU.FR.push # {{{
+		#}}}
+		paris: #{{{
 			id: 'paris'
+			region: 'EU'
+			country: 'FR'
 
 			regionName: 'Paris, France'
 			regionEnabled: true
@@ -321,9 +258,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '159.8.80.213'
 			socksDefault: '159.8.80.214'
 
-		# }}}
-		regionList.EU.CH.push # {{{
+		#}}}
+		zurich: #{{{
 			id: 'zurich'
+			region: 'EU'
+			country: 'CH'
 
 			regionName: 'Zurich, Switzerland'
 			regionEnabled: false
@@ -340,9 +279,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.EU.NL.push # {{{
+		#}}}
+		amsterdam: #{{{
 			id: 'amsterdam'
+			region: 'EU'
+			country: 'NL'
 
 			regionName: 'Amsterdam, Netherlands'
 			regionEnabled: false
@@ -359,9 +300,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.EU.DE.push # {{{
+		#}}}
+		frankfurt: #{{{
 			id: 'frankfurt'
+			region: 'EU'
+			country: 'DE'
 
 			regionName: 'Frankfurt, Germany'
 			regionEnabled: false
@@ -378,9 +321,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.EU.TR.push # {{{
+		#}}}
+		istanbul: #{{{
 			id: 'istanbul'
+			region: 'EU'
+			country: 'TR'
 
 			regionName: 'Istanbul, Turkey'
 			regionEnabled: false
@@ -397,9 +342,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.AS.HK.push # {{{
+		#}}}
+		hongkong: #{{{
 			id: 'hongkong'
+			region: 'AS'
+			country: 'HK'
 
 			regionName: 'Hong Kong'
 			regionEnabled: false
@@ -416,9 +363,11 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			httpDefault: '255.255.255.255'
 			socksDefault: '255.255.255.255'
 
-		# }}}
-		regionList.AS.SG.push # {{{
+		#}}}
+		singapore: #{{{
 			id: 'singapore'
+			region: 'AS'
+			country: 'SG'
 
 			regionName: 'Singapore'
 			regionEnabled: false
@@ -436,7 +385,105 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			socksDefault: '255.255.255.255'
 		#}}}
 
-		#console.log regionList
-		res.send 200, regionList
+		tokyodev3: #{{{
+			id: 'tokyodev3'
+			region: 'AS'
+			country: 'JP'
+
+			regionName: 'Dev 3, Japan'
+			regionEnabled: true
+
+			ovHostname: 'freebsd-test.tokyo.location.cypherpunk.network'
+			ovDefault: '185.176.52.34'
+			ovNone: '185.176.52.35'
+			ovStrong: '185.176.52.36'
+			ovStealth: '185.176.52.37'
+
+			ipsecHostname: 'tokyo.location.cypherpunk.network'
+			ipsecDefault: '185.176.52.38'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
+
+		#}}}
+		tokyodev1: #{{{
+			id: 'tokyodev1'
+			region: 'AS'
+			country: 'JP'
+
+			regionName: 'Dev 1, Japan'
+			regionEnabled: true
+
+			ovHostname: 'freebsd1.tokyo.location.cypherpunk.network'
+			ovDefault: '208.111.52.1'
+			ovNone: '208.111.52.11'
+			ovStrong: '208.111.52.21'
+			ovStealth: '208.111.52.31'
+
+			ipsecHostname: 'tokyo.location.cypherpunk.network'
+			ipsecDefault: '208.111.52.41'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
+
+		#}}}
+		tokyo2: #{{{
+			id: 'tokyo2'
+			region: 'AS'
+			country: 'JP'
+
+			regionName: 'Tokyo, Japan'
+			regionEnabled: true
+
+			ovHostname: 'freebsd2.tokyo.location.cypherpunk.network'
+			ovDefault: '208.111.52.2'
+			ovNone: '208.111.52.12'
+			ovStrong: '208.111.52.22'
+			ovStealth: '208.111.52.32'
+
+			ipsecHostname: 'tokyo.location.cypherpunk.network'
+			ipsecDefault: '208.111.52.42'
+
+			httpDefault: '255.255.255.255'
+			socksDefault: '255.255.255.255'
+
+		#}}}
+		honolulu: #{{{
+			id: 'honolulu'
+			region: 'NA'
+			country: 'US'
+
+			regionName: 'Honolulu, Hawaii'
+			regionEnabled: true
+
+			ovHostname: 'location3.honolulu.location.cypherpunk.network'
+			ovDefault: '208.111.48.146'
+			ovNone: '208.111.48.147'
+			ovStrong: '208.111.48.148'
+			ovStealth: '208.111.48.149'
+
+			ipsecHostname: 'honolulu.location.cypherpunk.network'
+			ipsecDefault: '208.111.48.150'
+
+			httpDefault: '208.111.48.151'
+			socksDefault: '208.111.48.152'
+
+		#}}}
+
+		return locations
+
+	catchall: (req, res, routeWord) => #{{{
+		switch routeWord
+			when "free"
+				locations = @locations()
+			when "premium", "family", "enterprise"
+				locations = @locations()
+			when "developer"
+				locations = @locations()
+			else return @handler404(req, res)
+
+		#console.log locations
+		res.send 200, locations
+	#}}}
 
 # vim: foldmethod=marker wrap
