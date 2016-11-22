@@ -11,7 +11,6 @@ class wiz.framework.http.database.mysql.driver extends wiz.framework.database.my
 		@init()
 
 	query: (req, res, q, cb) =>
-		wiz.log.debug q
 		super q, (err, rows, fields) =>
 			return cb(req, res, err, rows, fields) if cb
 			return res.send 500, "Database error" if err
