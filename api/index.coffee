@@ -15,6 +15,8 @@ require './user'
 require './affiliate'
 require './transaction'
 
+require './radius'
+
 require './v0'
 
 class cypherpunk.backend.api.module extends cypherpunk.backend.api.base
@@ -27,6 +29,8 @@ class cypherpunk.backend.api.module extends cypherpunk.backend.api.base
 		@user = @routeAdd new cypherpunk.backend.api.user.resource(@server, this, 'user')
 		@affiliate = @routeAdd new cypherpunk.backend.api.affiliate.resource(@server, this, 'affiliate')
 		@transaction = @routeAdd new cypherpunk.backend.api.transaction.resource(@server, this, 'transaction')
+
+		@radius = @routeAdd new cypherpunk.backend.api.radius.resource(@server, this, 'radius')
 
 		@v0 = @routeAdd new cypherpunk.backend.api.v0.module(@server, this, 'v0')
 
