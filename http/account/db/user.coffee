@@ -7,7 +7,7 @@ require '../../db/mongo'
 require '../../../util/datetime'
 require '../session'
 
-wiz.package 'wiz.framework.http.account.db.customers'
+wiz.package 'wiz.framework.http.account.db.user'
 
 # Example account entry:
 #
@@ -22,8 +22,8 @@ wiz.package 'wiz.framework.http.account.db.customers'
 #	}
 #
 
-class wiz.framework.http.account.db.customers extends wiz.framework.http.database.mongo.baseArray
-	collectionName: 'customer'
+class wiz.framework.http.account.db.user extends wiz.framework.http.database.mongo.baseArray
+	collectionName: 'user'
 	docKey: 'id'
 	dataKey: 'data'
 	emailKey: 'email'

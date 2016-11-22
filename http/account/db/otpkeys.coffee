@@ -6,11 +6,11 @@ require '../../../crypto/hash'
 require '../../resource/base'
 require '../../db/mongo'
 require '../session'
-require './customers'
+require './user'
 
 wiz.package 'wiz.framework.http.account.db.otpkeys'
 
-class wiz.framework.http.account.db.otpkeys extends wiz.framework.http.account.db.customers
+class wiz.framework.http.account.db.otpkeys extends wiz.framework.http.account.db.user
 
 	arrayKey: 'otp'
 	elementKey: 'key'
@@ -68,7 +68,7 @@ class wiz.framework.http.account.db.otpkeys extends wiz.framework.http.account.d
 		return res.send 500 if not account?.id? or not otpkeyID # TODO: move this to middleware
 
 		doc = @getDocKeyWithElementID account.id, otpkeyID
-		# {"$inc":{"users.$.otp.counter10":1}, "$set":{"users.$.updated":1337}}
+		# {"$inc":{"user.$.otp.counter10":1}, "$set":{"user.$.updated":1337}}
 		update = {}
 		update["$inc"] = {}
 		update["$inc"]["#{@arrayKey}.$.#{@otpTokenCounter10}"] = (offset + 1)
