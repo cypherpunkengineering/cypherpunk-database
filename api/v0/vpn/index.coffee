@@ -38,7 +38,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '185.176.52.36'
 			ovStealth: '185.176.52.37'
 
-			ipsecHostname: 'tokyo.vpn.cypherpunk.network'
+			ipsecHostname: 'tokyo.cypherpunk.privacy.network'
 			ipsecDefault: '185.176.52.38'
 
 			httpDefault: '255.255.255.255'
@@ -57,7 +57,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '208.111.52.21'
 			ovStealth: '208.111.52.31'
 
-			ipsecHostname: 'tokyo.vpn.cypherpunk.network'
+			ipsecHostname: 'tokyo.cypherpunk.privacy.network'
 			ipsecDefault: '208.111.52.41'
 
 			httpDefault: '255.255.255.255'
@@ -76,7 +76,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '208.111.52.22'
 			ovStealth: '208.111.52.32'
 
-			ipsecHostname: 'tokyo.vpn.cypherpunk.network'
+			ipsecHostname: 'tokyo.cypherpunk.privacy.network'
 			ipsecDefault: '208.111.52.42'
 
 			httpDefault: '255.255.255.255'
@@ -114,7 +114,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '204.145.66.37'
 			ovStealth: '204.145.66.38'
 
-			ipsecHostname: 'newyork.vpn.cypherpunk.network'
+			ipsecHostname: 'newyork.cypherpunk.privacy.network'
 			ipsecDefault: '204.145.66.39'
 
 			httpDefault: '204.145.66.40'
@@ -133,7 +133,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'siliconvalley.vpn.cypherpunk.network'
+			ipsecHostname: 'siliconvalley.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -152,7 +152,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '174.136.108.245'
 			ovStealth: '174.136.108.246'
 
-			ipsecHostname: 'losangeles.vpn.cypherpunk.network'
+			ipsecHostname: 'losangeles.cypherpunk.privacy.network'
 			ipsecDefault: '174.136.108.247'
 
 			httpDefault: '174.136.108.248'
@@ -171,7 +171,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'seattle.vpn.cypherpunk.network'
+			ipsecHostname: 'seattle.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -190,7 +190,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'dallas.vpn.cypherpunk.network'
+			ipsecHostname: 'dallas.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -209,7 +209,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'atlanta.vpn.cypherpunk.network'
+			ipsecHostname: 'atlanta.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -247,7 +247,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'toronto.vpn.cypherpunk.network'
+			ipsecHostname: 'toronto.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -266,7 +266,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'vancouver.vpn.cypherpunk.network'
+			ipsecHostname: 'vancouver.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -285,7 +285,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'saopaulo.vpn.cypherpunk.network'
+			ipsecHostname: 'saopaulo.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -304,7 +304,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'london.vpn.cypherpunk.network'
+			ipsecHostname: 'london.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -323,7 +323,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '159.8.80.210'
 			ovStealth: '159.8.80.211'
 
-			ipsecHostname: 'paris.vpn.cypherpunk.network'
+			ipsecHostname: 'paris.cypherpunk.privacy.network'
 			ipsecDefault: '159.8.80.212'
 
 			httpDefault: '159.8.80.213'
@@ -342,7 +342,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'zurich.vpn.cypherpunk.network'
+			ipsecHostname: 'zurich.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -361,7 +361,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'amsterdam.vpn.cypherpunk.network'
+			ipsecHostname: 'amsterdam.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -380,7 +380,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'frankfurt.vpn.cypherpunk.network'
+			ipsecHostname: 'frankfurt.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -399,7 +399,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'instanbul.vpn.cypherpunk.network'
+			ipsecHostname: 'instanbul.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -418,7 +418,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'hongkong.vpn.cypherpunk.network'
+			ipsecHostname: 'hongkong.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
@@ -437,7 +437,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			ovStrong: '255.255.255.255'
 			ovStealth: '255.255.255.255'
 
-			ipsecHostname: 'singapore.vpn.cypherpunk.network'
+			ipsecHostname: 'singapore.cypherpunk.privacy.network'
 			ipsecDefault: '255.255.255.255'
 
 			httpDefault: '255.255.255.255'
