@@ -216,6 +216,25 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			socksDefault: '255.255.255.255'
 
 		# }}}
+		regionList.NA.US.push # {{{
+			id: 'saltlakecity'
+
+			regionName: 'Salt Lake City, Utah'
+			regionEnabled: true
+
+			ovHostname: 'saltlakecity.vpn.cypherpunk.network'
+			ovDefault: '173.244.209.73'
+			ovNone: '209.95.56.15'
+			ovStrong: '209.95.56.16'
+			ovStealth: '209.95.56.17'
+
+			ipsecHostname: 'saltlakecity.cypherpunk.privacy.network'
+			ipsecDefault: '209.95.56.18'
+
+			httpDefault: '209.95.56.19'
+			socksDefault: '209.95.56.20'
+
+		# }}}
 		regionList.NA.CA.push # {{{
 			id: 'toronto'
 
