@@ -17,6 +17,15 @@ class cypherpunk.backend.db.radius extends wiz.framework.http.database.mysql.dri
 		premium:
 			name: 'premium'
 			priority: '2'
+		family:
+			name: 'family'
+			priority: '3'
+		enterprise:
+			name: 'enterprise'
+			priority: '10'
+		staff:
+			name: 'staff'
+			priority: '30'
 		developer:
 			name: 'developer'
 			priority: '42'
@@ -81,8 +90,26 @@ class cypherpunk.backend.db.radius extends wiz.framework.http.database.mysql.dri
 					@_grantUserGroup req, res, account, @groups.premium, (err) =>
 						cb7(err)
 
-			when @groups.developer.name
+			when @groups.family.name
 				@_grantAccess req, res, account, @groups.premium, (err) =>
+					return cb7(err) if err?
+					@_grantUserGroup req, res, account, @groups.family, (err) =>
+						cb7(err)
+
+			when @groups.enterprise.name
+				@_grantAccess req, res, account, @groups.family, (err) =>
+					return cb7(err) if err?
+					@_grantUserGroup req, res, account, @groups.enterprise, (err) =>
+						cb7(err)
+
+			when @groups.staff.name
+				@_grantAccess req, res, account, @groups.enterprise, (err) =>
+					return cb7(err) if err?
+					@_grantUserGroup req, res, account, @groups.staff, (err) =>
+						cb7(err)
+
+			when @groups.developer.name
+				@_grantAccess req, res, account, @groups.staff, (err) =>
 					return cb7(err) if err?
 					@_grantUserGroup req, res, account, @groups.developer, (err) =>
 						cb7(err)
