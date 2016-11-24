@@ -222,7 +222,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Salt Lake City, Utah'
 			regionEnabled: true
 
-			ovHostname: 'saltlakecity.vpn.cypherpunk.network'
+			ovHostname: 'freebsd1.saltlakecity.vpn.cypherpunk.network'
 			ovDefault: '173.244.209.73'
 			ovNone: '209.95.56.15'
 			ovStrong: '209.95.56.16'
