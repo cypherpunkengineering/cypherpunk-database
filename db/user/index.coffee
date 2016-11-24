@@ -82,8 +82,8 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			return cb(req, res, null) if not result and cb
 			return res.send 404 if not result
 			return res.send 500 if not result[@dataKey]?
-			console.log result
 			userData[@passwordKey] = result[@dataKey][@passwordKey]
+			console.log result
 			@updateDataByID req, res, userID, userData, (req2, res2, result2) =>
 				# update radius database
 				@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>

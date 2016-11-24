@@ -31,51 +31,54 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 		return @fromUser(req, res, 'free', req.body)
 	#}}}
 	@fromUser: (req, res, userType, userData, updating = false) => #{{{
-
+		# make new doc
 		this.__super__.constructor.types = @types
 		doc = this.__super__.constructor.fromUser(req, res, userType, userData, updating)
-
 		return false unless doc
 
+		# init user params
 		doc = @initParams(doc)
 
-		doc[@dataKey][@confirmedKey] ?= false
-		doc[@dataKey][@subscriptionPlanKey] ?= 'free'
-		doc[@dataKey][@subscriptionRenewalKey] ?= 'none'
-		doc[@dataKey][@subscriptionExpirationKey] ?= '0'
-
-		doc[@confirmationTokenKey] ?= wiz.framework.crypto.hash.digest
-			payload: doc
-
-		if doc?[@dataKey]?[@passwordKey]?  # hash password
+		# hash new password
+		if doc?[@dataKey]?[@passwordKey]? # hash password
 			doc[@dataKey][@passwordKey] = wiz.framework.http.account.authenticate.userpasswd.pwHash(doc[@dataKey][@passwordKey])
 
 		return doc
 	#}}}
 	@fromUserUpdate: (req, res, userType, docOld, userData) => #{{{
+		# check if old doc given
+		return null unless docOld
+
+		# init any un-set params
+		docOld = @initParams(docOld)
+
 		# if updating, we might have no password passed.
 		# if so, delete it, and restore the original pw hash
-		# to the resulting object.
+		# to the resulting new object.
 		if userData[@passwordKey]? and typeof userData[@passwordKey] is 'string'
 			# only update password if valid new password specified
 			if userData[@passwordKey] == ''
 				delete userData[@passwordKey]
 
-		# init params if necessary
-		docOld = @initParams(docOld)
-
-		# call super
+		# make new doc
 		this.__super__.constructor.types = @types
 		doc = this.__super__.constructor.fromUserUpdate(req, res, userType, docOld, userData)
+		return false unless doc
 
-		# restore original password hash
-		if not doc[@dataKey]?[@passwordKey]?
+		# check if changing password
+		if userData[@passwordKey]? and doc?[@dataKey]?[@passwordKey]? # if so, hash password
+			doc[@dataKey][@passwordKey] = wiz.framework.http.account.authenticate.userpasswd.pwHash(doc[@dataKey][@passwordKey])
+
+		else if not doc[@dataKey]?[@passwordKey]? # restore original password hash
 			doc[@dataKey][@passwordKey] = origObj[@dataKey][@passwordKey]
 
 		return doc
 	#}}}
 
 	@initParams: (doc) => #{{{
+		doc[@confirmationTokenKey] ?= wiz.framework.crypto.hash.digest
+			payload: doc
+
 		doc[@dataKey][@confirmedKey] ?= false
 		doc[@dataKey][@subscriptionPlanKey] ?= 'free'
 		doc[@dataKey][@subscriptionRenewalKey] ?= 'none'
