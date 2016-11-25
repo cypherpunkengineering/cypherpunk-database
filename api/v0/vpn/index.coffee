@@ -105,25 +105,6 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 		regionList.NA.US.push # {{{
 			id: 'newyork'
 
-			regionName: 'New York, New York'
-			regionEnabled: true
-
-			ovHostname: 'newyork.cypherpunk.privacy.network'
-			ovDefault: '204.145.66.35'
-			ovNone: '204.145.66.36'
-			ovStrong: '204.145.66.37'
-			ovStealth: '204.145.66.38'
-
-			ipsecHostname: 'newyork.cypherpunk.privacy.network'
-			ipsecDefault: '204.145.66.39'
-
-			httpDefault: '204.145.66.40'
-			socksDefault: '204.145.66.41'
-
-		# }}}
-		regionList.NA.US.push # {{{
-			id: 'newyork2'
-
 			regionName: 'New York2, New York'
 			regionEnabled: true
 
@@ -201,7 +182,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			id: 'losangeles2'
 
 			regionName: 'Los Angeles2, California'
-			regionEnabled: true
+			regionEnabled: false
 
 			ovHostname: 'losangeles.cypherpunk.privacy.network'
 			ovDefault: '162.216.46.242'
@@ -258,7 +239,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			id: 'atlanta'
 
 			regionName: 'Atlanta, Georgia'
-			regionEnabled: true
+			regionEnabled: false
 
 			ovHostname: 'atlanta.cypherpunk.privacy.network'
 			ovDefault: '172.98.49.242'
