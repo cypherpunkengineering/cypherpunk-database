@@ -28,33 +28,33 @@ class cypherpunk.backend.api.network.location.resource extends cypherpunk.backen
 class cypherpunk.backend.api.network.location.types extends cypherpunk.backend.api.network.base
 	handler: (req, res) => #{{{
 		result = {}
-		result.recordTypes = JSON.parse(JSON.stringify(@parent.parent.database.schema.types))
+		result.recordTypes = JSON.parse(JSON.stringify(@parent.database.schema.types))
 		res.send 200, result
 	#}}}
 class cypherpunk.backend.api.network.location.findAll extends cypherpunk.backend.api.network.base
 	handler: (req, res) => #{{{
-		@parent.parent.database.findAll(req, res)
+		@parent.database.findAll(req, res)
 	#}}}
 class cypherpunk.backend.api.network.location.list extends cypherpunk.backend.api.network.base
 	catchall: (req, res, routeWord) => #{{{
-		@parent.parent.database.list(req, res, routeWord)
+		@parent.database.list(req, res, routeWord)
 	#}}}
 class cypherpunk.backend.api.network.location.findByType extends cypherpunk.backend.api.network.base
 	catchall: (req, res, routeWord) => #{{{
-		@parent.parent.database.findByType(req, res, routeWord)
+		@parent.database.findByType(req, res, routeWord)
 	#}}}
 class cypherpunk.backend.api.network.location.findOneByID extends cypherpunk.backend.api.network.base
 	catchall: (req, res, routeWord) => #{{{
-		@parent.parent.database.findOneByID(req, res, routeWord)
+		@parent.database.findOneByID(req, res, routeWord)
 	#}}}
 class cypherpunk.backend.api.network.location.insert extends cypherpunk.backend.api.network.base
 	# XXX: add permissions
 	handler: (req, res) => #{{{
-		@parent.parent.database.insert(req, res)
+		@parent.database.insert(req, res)
 	#}}}
 class cypherpunk.backend.api.network.location.update extends cypherpunk.backend.api.network.base
 	catchall: (req, res, routeWord) => #{{{
-		@parent.parent.database.update(req, res, routeWord)
+		@parent.database.update(req, res, routeWord)
 	#}}}
 
 # vim: foldmethod=marker wrap

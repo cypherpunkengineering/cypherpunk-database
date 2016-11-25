@@ -6,27 +6,27 @@ require './_framework/util/strval'
 require './_framework/util/datetime'
 require './_framework/http/account/authenticate/userpasswd'
 
-wiz.package 'cypherpunk.backend.db.schema.schema'
+wiz.package 'cypherpunk.backend.db.server.schema'
 
 class type
 	constructor: (@type, @description, @verb, @data, @creatable = true) ->
 
-class cypherpunk.backend.db.schema.schema extends wiz.framework.database.mongo.docMultiType
+class cypherpunk.backend.db.server.schema extends wiz.framework.database.mongo.docMultiType
 
 	class type #{{{
 		constructor: (@type, @description, @verb, @data, @creatable = true) ->
 	@types:
 	#}}}
-		stripe: (new type 'stripe', 'Stripe Transaction', 'list', #{{{
-			txid:
-				label: 'schema id'
-				placeholder: 'XXXXXXXXX'
+		server: (new type 'server', 'Privacy Server', 'list', #{{{
+			id:
+				label: 'server id'
+				placeholder: 'tokyo1'
 				type: 'asciiNoSpace'
 				maxlen: 30
 				required: true
 
-			amount:
-				label: 'schema amount'
+			region:
+				label: ''
 				type: 'alphanumericdot'
 				maxlen: 50
 				placeholder: '$XX.XX'

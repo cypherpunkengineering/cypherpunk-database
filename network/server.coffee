@@ -8,7 +8,7 @@ wiz.package 'cypherpunk.backend.network.server'
 
 class cypherpunk.backend.network.server.resource extends cypherpunk.backend.network.template
 	nav: true
-	title: 'Privacy Servers'
+	title: 'Servers'
 	init: () =>
 		super()
 		@args.wizTitle = 'Manage Privacy Servers'

@@ -4,7 +4,7 @@ wiz.package 'cypherpunk.backend.network.userjs.server'
 
 class cypherpunk.backend.network.userjs.server.table extends wiz.portal.userjs.table.multiMulti
 
-	urlBase: wiz.getParentURL(2) + '/api/server'
+	urlBase: wiz.getParentURL(2) + '/api/network/server'
 	#{{{ strings
 	stringNuggets: 'servers'
 	stringInsertButton: 'Add server'

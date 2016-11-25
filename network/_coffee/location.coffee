@@ -4,7 +4,7 @@ wiz.package 'cypherpunk.backend.network.userjs.location'
 
 class cypherpunk.backend.network.userjs.location.table extends wiz.portal.userjs.table.multiMulti
 
-	urlBase: wiz.getParentURL(2) + '/api/location'
+	urlBase: wiz.getParentURL(2) + '/api/network/location'
 	#{{{ strings
 	stringNuggets: 'locations'
 	stringInsertButton: 'Add location'
