@@ -13,6 +13,7 @@ wiz.sessions = redis.createClient()
 
 class wiz.framework.http.account.session
 	@cookieName: 'cypherpunk.session' # must be static for middleware
+	@lifetime = 60 * 24 * 365 # minutes
 
 	@getSessionKeyFromSecret: (req, res) => # middleware to load session from secret if provided {{{
 		return req.next() if req.sessionKey?
@@ -156,6 +157,8 @@ class wiz.framework.http.account.session
 				#console.log req.session[x]
 			wiz.sessions.set(req.session.key, JSON.stringify(req.session))
 			wiz.sessions.set(req.session.secret, req.session.key)
+			wiz.sessions.expire(req.session.key, @lifetime * 60)
+			wiz.sessions.expire(req.session.secret, @lifetime * 60)
 	#}}}
 	@start: (req, res) => #{{{ start new session
 		# create session object
@@ -166,7 +169,7 @@ class wiz.framework.http.account.session
 		# default session values
 		req.session.auth = false
 		req.session.account = null
-		req.session.expires = 60 * 24 * 365 # minutes
+		req.session.expires = @lifetime
 		req.session.realm = 'cypherpunk'
 
 		# generate secure session id and secret
