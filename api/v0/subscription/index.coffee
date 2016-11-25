@@ -35,7 +35,7 @@ class cypherpunk.backend.api.v0.subscription.status extends cypherpunk.backend.a
 		out =
 			type: req.session.account?.data?.subscriptionPlan or 'free'
 			renewal: req.session.account?.data?.subscriptionRenewal or 'none'
-			confirmed: (if req.session.account?.data?.confirmed then true else false)
+			confirmed: (if req.session.account?.data?.confirmed?.toString() == "true" then true else false)
 			expiration: req.session.account?.data?.subscriptionExpiration or 'none'
 
 		#console.log out
@@ -154,6 +154,8 @@ class cypherpunk.backend.api.v0.subscription.common
 	@purchaseStripe: (req, res, stripeArgs, cb) => #{{{
 
 		try
+			console.log req.server.root.Stripe
+			#return res.send 500
 			req.server.root.Stripe.users.create stripeArgs, (stripeError, stripeCustomerData) =>
 				console.log stripeError if stripeError
 				return res.send 500, stripeError if stripeError

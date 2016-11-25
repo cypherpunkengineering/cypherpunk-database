@@ -9,7 +9,7 @@ wiz.package 'cypherpunk.backend.manage.affiliate'
 class cypherpunk.backend.manage.affiliate.resource extends cypherpunk.backend.manage.template
 	level: cypherpunk.backend.server.power.level.marketing
 	nav: true
-	title: 'Affiliate Accounts'
+	title: 'Affiliates'
 	init: () =>
 		super()
 		@args.wizTitle = 'Manage Affiliate Accounts'

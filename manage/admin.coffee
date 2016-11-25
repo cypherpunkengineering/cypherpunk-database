@@ -9,7 +9,7 @@ wiz.package 'cypherpunk.backend.manage.admin'
 class cypherpunk.backend.manage.admin.resource extends cypherpunk.backend.manage.template
 	level: cypherpunk.backend.server.power.level.executive
 	nav: true
-	title: 'Cypherpunk Admins'
+	title: 'Cypherpunks'
 	init: () =>
 		super()
 		@args.wizTitle = 'Manage Administrators'

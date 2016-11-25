@@ -4,18 +4,17 @@ require './_framework'
 require './_framework/http/account'
 require './_framework/http/resource/base'
 
-wiz.package 'cypherpunk.backend.billing.transaction'
+wiz.package 'cypherpunk.backend.network.server'
 
-class cypherpunk.backend.billing.transaction.resource extends cypherpunk.backend.billing.template
-	level: cypherpunk.backend.server.power.level.marketing
+class cypherpunk.backend.network.server.resource extends cypherpunk.backend.network.template
 	nav: true
-	title: 'Transactions'
+	title: 'Privacy Servers'
 	init: () =>
 		super()
-		@args.wizTitle = 'Billing Transactions'
+		@args.wizTitle = 'Manage Privacy Servers'
 		@args.wizCSS = @args.wizCSS.concat(@args.wizCSSdt)
 		@args.wizJS = @args.wizJS.concat(@args.wizJSdtMultiMulti)
 		@args.wizBodies += 1
-		@args.wizJS.push @parent.coffee('transaction')
+		@args.wizJS.push @parent.coffee('server')
 
 # vim: foldmethod=marker wrap

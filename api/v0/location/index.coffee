@@ -32,20 +32,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'NA'
 			country: 'US'
 
-			regionName: 'New York, New York'
-			regionEnabled: true
+			name: 'New York, New York'
+			enabled: true
 
 			ovHostname: 'freebsd1.newyork.location.cypherpunk.network'
-			ovDefault: '204.145.66.35'
-			ovNone: '204.145.66.36'
-			ovStrong: '204.145.66.37'
-			ovStealth: '204.145.66.38'
+			ovDefault: [ '204.145.66.35', '204.145.66.35', '204.145.66.35' ]
+			ovNone: [ '204.145.66.36', '204.145.66.36', '204.145.66.36' ]
+			ovStrong: [ '204.145.66.37', '204.145.66.37', '204.145.66.37' ]
+			ovStealth: [ '204.145.66.38', '204.145.66.38', '204.145.66.38' ]
 
 			ipsecHostname: 'newyork.location.cypherpunk.network'
-			ipsecDefault: '204.145.66.39'
+			ipsecDefault: [ '204.145.66.39', '204.145.66.39', '204.145.66.39' ]
 
-			httpDefault: '204.145.66.40'
-			socksDefault: '204.145.66.41'
+			httpDefault: [ '204.145.66.40', '204.145.66.40', '204.145.66.40' ]
+			socksDefault: [ '204.145.66.41', '204.145.66.41', '204.145.66.41' ]
 
 		#}}}
 		siliconvalley: #{{{
@@ -53,20 +53,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'NA'
 			country: 'US'
 
-			regionName: 'Silicon Valley, California'
-			regionEnabled: false
+			name: 'Silicon Valley, California'
+			enabled: false
 
 			ovHostname: 'siliconvalley.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'siliconvalley.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		losangeles: #{{{
@@ -74,20 +74,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'NA'
 			country: 'US'
 
-			regionName: 'Los Angeles, California'
-			regionEnabled: true
+			name: 'Los Angeles, California'
+			enabled: true
 
 			ovHostname: 'freebsd1.losangeles.location.cypherpunk.network'
-			ovDefault: '174.136.108.243'
-			ovNone: '174.136.108.244'
-			ovStrong: '174.136.108.245'
-			ovStealth: '174.136.108.246'
+			ovDefault: [ '174.136.108.243', '174.136.108.243', '174.136.108.243' ]
+			ovNone: [ '174.136.108.244', '174.136.108.244', '174.136.108.244' ]
+			ovStrong: [ '174.136.108.245', '174.136.108.245', '174.136.108.245' ]
+			ovStealth: [ '174.136.108.246', '174.136.108.246', '174.136.108.246' ]
 
 			ipsecHostname: 'losangeles.location.cypherpunk.network'
-			ipsecDefault: '174.136.108.247'
+			ipsecDefault: [ '174.136.108.247', '174.136.108.247', '174.136.108.247' ]
 
-			httpDefault: '174.136.108.248'
-			socksDefault: '174.136.108.249'
+			httpDefault: [ '174.136.108.248', '174.136.108.248', '174.136.108.248' ]
+			socksDefault: [ '174.136.108.249', '174.136.108.249', '174.136.108.249' ]
 
 		#}}}
 		seattle: #{{{
@@ -95,20 +95,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'NA'
 			country: 'US'
 
-			regionName: 'Seattle, Washington'
-			regionEnabled: false
+			name: 'Seattle, Washington'
+			enabled: false
 
 			ovHostname: 'seattle.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'seattle.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		dallas: #{{{
@@ -116,20 +116,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'NA'
 			country: 'US'
 
-			regionName: 'Dallas, Texas'
-			regionEnabled: false
+			name: 'Dallas, Texas'
+			enabled: false
 
 			ovHostname: 'dallas.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'dallas.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		atlanta: #{{{
@@ -137,20 +137,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'NA'
 			country: 'US'
 
-			regionName: 'Atlanta, Georgia'
-			regionEnabled: false
+			name: 'Atlanta, Georgia'
+			enabled: false
 
 			ovHostname: 'atlanta.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'atlanta.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 
@@ -159,20 +159,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'NA'
 			country: 'CA'
 
-			regionName: 'Toronto, Canada'
-			regionEnabled: false
+			name: 'Toronto, Canada'
+			enabled: false
 
 			ovHostname: 'toronto.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'toronto.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		vancouver: #{{{
@@ -180,20 +180,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'NA'
 			country: 'CA'
 
-			regionName: 'Vancouver, Canada'
-			regionEnabled: false
+			name: 'Vancouver, Canada'
+			enabled: false
 
 			ovHostname: 'vancouver.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'vancouver.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		saopaulo: #{{{
@@ -201,20 +201,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'SA'
 			country: 'BR'
 
-			regionName: 'Sao Paulo, Brazil'
-			regionEnabled: false
+			name: 'Sao Paulo, Brazil'
+			enabled: false
 
 			ovHostname: 'saopaulo.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'saopaulo.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		london: #{{{
@@ -222,20 +222,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'EU'
 			country: 'GB'
 
-			regionName: 'London, UK'
-			regionEnabled: false
+			name: 'London, UK'
+			enabled: false
 
 			ovHostname: 'london.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'london.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		paris: #{{{
@@ -243,20 +243,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'EU'
 			country: 'FR'
 
-			regionName: 'Paris, France'
-			regionEnabled: true
+			name: 'Paris, France'
+			enabled: true
 
 			ovHostname: 'freebsd1.paris.location.cypherpunk.network'
-			ovDefault: '159.8.80.208'
-			ovNone: '159.8.80.209'
-			ovStrong: '159.8.80.210'
-			ovStealth: '159.8.80.211'
+			ovDefault: [ '159.8.80.208', '159.8.80.208', '159.8.80.208' ]
+			ovNone: [ '159.8.80.209', '159.8.80.209', '159.8.80.209' ]
+			ovStrong: [ '159.8.80.210', '159.8.80.210', '159.8.80.210' ]
+			ovStealth: [ '159.8.80.211', '159.8.80.211', '159.8.80.211' ]
 
 			ipsecHostname: 'paris.location.cypherpunk.network'
-			ipsecDefault: '159.8.80.212'
+			ipsecDefault: [ '159.8.80.212', '159.8.80.212', '159.8.80.212' ]
 
-			httpDefault: '159.8.80.213'
-			socksDefault: '159.8.80.214'
+			httpDefault: [ '159.8.80.213', '159.8.80.213', '159.8.80.213' ]
+			socksDefault: [ '159.8.80.214', '159.8.80.214', '159.8.80.214' ]
 
 		#}}}
 		zurich: #{{{
@@ -264,20 +264,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'EU'
 			country: 'CH'
 
-			regionName: 'Zurich, Switzerland'
-			regionEnabled: false
+			name: 'Zurich, Switzerland'
+			enabled: false
 
 			ovHostname: 'zurich.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'zurich.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		amsterdam: #{{{
@@ -285,20 +285,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'EU'
 			country: 'NL'
 
-			regionName: 'Amsterdam, Netherlands'
-			regionEnabled: false
+			name: 'Amsterdam, Netherlands'
+			enabled: false
 
 			ovHostname: 'amsterdam.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'amsterdam.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		frankfurt: #{{{
@@ -306,20 +306,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'EU'
 			country: 'DE'
 
-			regionName: 'Frankfurt, Germany'
-			regionEnabled: false
+			name: 'Frankfurt, Germany'
+			enabled: false
 
 			ovHostname: 'frankfurt.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'frankfurt.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		istanbul: #{{{
@@ -327,20 +327,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'EU'
 			country: 'TR'
 
-			regionName: 'Istanbul, Turkey'
-			regionEnabled: false
+			name: 'Istanbul, Turkey'
+			enabled: false
 
 			ovHostname: 'istanbul.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'instanbul.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		hongkong: #{{{
@@ -348,20 +348,20 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'AS'
 			country: 'HK'
 
-			regionName: 'Hong Kong'
-			regionEnabled: false
+			name: 'Hong Kong'
+			enabled: false
 
 			ovHostname: 'hongkong.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'hongkong.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		singapore: #{{{
@@ -369,104 +369,104 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			region: 'AS'
 			country: 'SG'
 
-			regionName: 'Singapore'
-			regionEnabled: false
+			name: 'Singapore'
+			enabled: false
 
 			ovHostname: 'singapore.location.cypherpunk.network'
-			ovDefault: '255.255.255.255'
-			ovNone: '255.255.255.255'
-			ovStrong: '255.255.255.255'
-			ovStealth: '255.255.255.255'
+			ovDefault: [ ]
+			ovNone: [ ]
+			ovStrong: [ ]
+			ovStealth: [ ]
 
 			ipsecHostname: 'singapore.location.cypherpunk.network'
-			ipsecDefault: '255.255.255.255'
+			ipsecDefault: [ ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 		#}}}
 
 		tokyodev3: #{{{
-			id: 'tokyodev3'
-			region: 'AS'
+			id: 'devtokyo3'
+			region: 'DEV'
 			country: 'JP'
 
-			regionName: 'Dev 3, Japan'
-			regionEnabled: true
+			name: 'Dev 3'
+			enabled: true
 
 			ovHostname: 'freebsd-test.tokyo.location.cypherpunk.network'
-			ovDefault: '185.176.52.34'
-			ovNone: '185.176.52.35'
-			ovStrong: '185.176.52.36'
-			ovStealth: '185.176.52.37'
+			ovDefault: [ '185.176.52.34', '185.176.52.34', '185.176.52.34' ]
+			ovNone: [ '185.176.52.35', '185.176.52.35', '185.176.52.35' ]
+			ovStrong: [ '185.176.52.36', '185.176.52.36', '185.176.52.36' ]
+			ovStealth: [ '185.176.52.37', '185.176.52.37', '185.176.52.37' ]
 
 			ipsecHostname: 'tokyo.location.cypherpunk.network'
-			ipsecDefault: '185.176.52.38'
+			ipsecDefault: [ '185.176.52.38', '185.176.52.38', '185.176.52.38' ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		tokyodev1: #{{{
-			id: 'tokyodev1'
-			region: 'AS'
+			id: 'devtokyo1'
+			region: 'DEV'
 			country: 'JP'
 
-			regionName: 'Dev 1, Japan'
-			regionEnabled: true
+			name: 'Dev 1'
+			enabled: true
 
 			ovHostname: 'freebsd1.tokyo.location.cypherpunk.network'
-			ovDefault: '208.111.52.1'
-			ovNone: '208.111.52.11'
-			ovStrong: '208.111.52.21'
-			ovStealth: '208.111.52.31'
+			ovDefault: [ '208.111.52.1', '208.111.52.1', '208.111.52.1' ]
+			ovNone: [ '208.111.52.11', '208.111.52.11', '208.111.52.11' ]
+			ovStrong: [ '208.111.52.21', '208.111.52.21', '208.111.52.21' ]
+			ovStealth: [ '208.111.52.31', '208.111.52.31', '208.111.52.31' ]
 
 			ipsecHostname: 'tokyo.location.cypherpunk.network'
-			ipsecDefault: '208.111.52.41'
+			ipsecDefault: [ '208.111.52.41', '208.111.52.41', '208.111.52.41' ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
-		tokyo2: #{{{
-			id: 'tokyo2'
-			region: 'AS'
+		devtokyo2: #{{{
+			id: 'devtokyo2'
+			region: 'DEV'
 			country: 'JP'
 
-			regionName: 'Tokyo, Japan'
-			regionEnabled: true
+			name: 'Dev 2'
+			enabled: true
 
 			ovHostname: 'freebsd2.tokyo.location.cypherpunk.network'
-			ovDefault: '208.111.52.2'
-			ovNone: '208.111.52.12'
-			ovStrong: '208.111.52.22'
-			ovStealth: '208.111.52.32'
+			ovDefault: [ '208.111.52.2', '208.111.52.2', '208.111.52.2' ]
+			ovNone: [ '208.111.52.12', '208.111.52.12', '208.111.52.12' ]
+			ovStrong: [ '208.111.52.22', '208.111.52.22', '208.111.52.22' ]
+			ovStealth: [ '208.111.52.32', '208.111.52.32', '208.111.52.32' ]
 
 			ipsecHostname: 'tokyo.location.cypherpunk.network'
-			ipsecDefault: '208.111.52.42'
+			ipsecDefault: [ '208.111.52.42', '208.111.52.42', '208.111.52.42' ]
 
-			httpDefault: '255.255.255.255'
-			socksDefault: '255.255.255.255'
+			httpDefault: [ ]
+			socksDefault: [ ]
 
 		#}}}
 		honolulu: #{{{
-			id: 'honolulu'
+			id: 'devhonolulu'
 			region: 'NA'
 			country: 'US'
 
-			regionName: 'Honolulu, Hawaii'
-			regionEnabled: true
+			name: 'Honolulu, Hawaii'
+			enabled: true
 
 			ovHostname: 'location3.honolulu.location.cypherpunk.network'
-			ovDefault: '208.111.48.146'
-			ovNone: '208.111.48.147'
-			ovStrong: '208.111.48.148'
-			ovStealth: '208.111.48.149'
+			ovDefault: [ '208.111.48.146', '208.111.48.146', '208.111.48.146' ]
+			ovNone: [ '208.111.48.147', '208.111.48.147', '208.111.48.147' ]
+			ovStrong: [ '208.111.48.148', '208.111.48.148', '208.111.48.148' ]
+			ovStealth: [ '208.111.48.149', '208.111.48.149', '208.111.48.149' ]
 
 			ipsecHostname: 'honolulu.location.cypherpunk.network'
-			ipsecDefault: '208.111.48.150'
+			ipsecDefault: [ '208.111.48.150', '208.111.48.150', '208.111.48.150' ]
 
-			httpDefault: '208.111.48.151'
-			socksDefault: '208.111.48.152'
+			httpDefault: [ '208.111.48.151', '208.111.48.151', '208.111.48.151' ]
+			socksDefault: [ '208.111.48.152', '208.111.48.152', '208.111.48.152' ]
 
 		#}}}
 

@@ -7,9 +7,10 @@ require './_framework/http/db/mongo'
 require './_framework/util/world'
 
 require './account'
+require './location'
+require './network'
 require './subscription'
 require './vpn'
-require './location'
 
 wiz.package 'cypherpunk.backend.api.v0'
 
@@ -19,9 +20,10 @@ class cypherpunk.backend.api.v0.module extends cypherpunk.backend.api.base
 	load: () =>
 		super()
 		@routeAdd new cypherpunk.backend.api.v0.account.module(@server, this, 'account')
+		@routeAdd new cypherpunk.backend.api.v0.location.module(@server, this, 'location')
+		@routeAdd new cypherpunk.backend.api.v0.network.module(@server, this, 'network')
 		@routeAdd new cypherpunk.backend.api.v0.subscription.module(@server, this, 'subscription')
 		@routeAdd new cypherpunk.backend.api.v0.vpn.module(@server, this, 'vpn')
-		@routeAdd new cypherpunk.backend.api.v0.location.module(@server, this, 'location')
 
 # POST /api/v0/account/identify/email
 # POST /api/v0/account/authenticate/password

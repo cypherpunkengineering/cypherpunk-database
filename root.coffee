@@ -67,18 +67,21 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		@account = @routeAdd new cypherpunk.backend.account.module(@server, this, 'account')
 		@routeAdd new cypherpunk.backend.logout(@server, this, 'logout')
 
-		# manage module
-		require './manage'
-		@manage = @routeAdd new cypherpunk.backend.manage.module(@server, this, 'manage')
-
 		# billing module
 		require './billing'
 		@billing = @routeAdd new cypherpunk.backend.billing.module(@server, this, 'billing')
 
+		# network module
+		require './network'
+		@network = @routeAdd new cypherpunk.backend.network.module(@server, this, 'network')
+
+		# manage module
+		require './manage'
+		@manage = @routeAdd new cypherpunk.backend.manage.module(@server, this, 'manage')
+
 		# init stripe SDK
 		@stripe = new wiz.framework.thirdparty.stripe
 			apiKey: 'sk_test_UxTTPDN0LGZaD9NBtVUxuksJ'
-		@stripe.init()
 		@Stripe = @stripe.Stripe
 
 		# init sendgrid SDK
@@ -90,6 +93,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 	#}}}
 	init: () => #{{{
 		super()
+		@stripe.init()
 		@accountDB = @api.user.database
 	#}}}
 	handler: (req, res) => #{{{

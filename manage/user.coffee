@@ -8,7 +8,7 @@ wiz.package 'cypherpunk.backend.manage.user'
 
 class cypherpunk.backend.manage.user.resource extends cypherpunk.backend.manage.template
 	nav: true
-	title: 'Customer Accounts'
+	title: 'Customers'
 	init: () =>
 		super()
 		@args.wizTitle = 'Manage Customer Accounts'
