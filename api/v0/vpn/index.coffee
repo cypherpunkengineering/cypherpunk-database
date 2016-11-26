@@ -105,7 +105,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 		regionList.NA.US.push # {{{
 			id: 'newyork'
 
-			regionName: 'New York2, New York'
+			regionName: 'New York, New York'
 			regionEnabled: true
 
 			ovHostname: 'newyork.cypherpunk.privacy.network'
@@ -124,7 +124,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 		regionList.NA.US.push # {{{
 			id: 'newjersey'
 
-			regionName: 'New Jersey'
+			regionName: 'Newark, New Jersey'
 			regionEnabled: false
 
 			ovHostname: 'newjersey.cypherpunk.privacy.network'
