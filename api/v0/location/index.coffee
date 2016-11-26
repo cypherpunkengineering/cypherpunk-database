@@ -589,7 +589,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				out = @addLocationsOfType(out, "premium", true)
 				out = @addLocationsOfType(out, "free", true)
 
-			when "premium", "family", "enterprise"
+			when "premium", "family", "enterprise", "staff"
 				out = @addLocationsOfType(out, "premium", true)
 				out = @addLocationsOfType(out, "free", true)
 
