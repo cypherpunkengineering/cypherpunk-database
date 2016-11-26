@@ -10,6 +10,7 @@ require './db'
 require './identify'
 require './authenticate'
 #require './otpkeys'
+require './status'
 require './logout'
 
 wiz.package 'wiz.framework.http.account.module'
@@ -103,6 +104,9 @@ class wiz.framework.http.account.module extends wiz.framework.http.resource.base
 	load: () =>
 		# create db driver
 		#@mongo = null # new wiz.framework.http.database.mongo.driver(@server, this, @mongoConfig, @mongoServerOptions, @mongoDbOptions)
+
+		# status
+		@routeAdd new wiz.framework.http.account.status(@server, this, 'status')
 
 		# logout and destroy session
 		@routeAdd new wiz.framework.http.account.logout(@server, this, 'logout', 'POST')
