@@ -36,7 +36,7 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 					id: account?.id
 					email: data?.email
 					confirmed: (if data?.confirmed?.toString() == "true" then true else false)
-					type: data?.subscriptionPlan
+					type: account?.type
 				subscription:
 					renewal: data?.subscriptionRenewal
 					expiration: data?.subscriptionExpiration
