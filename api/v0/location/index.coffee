@@ -287,7 +287,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ '104.200.133.248' ]
 			#}}}
 			saltlakecity: #{{{
-				id: 'saltlakecityt'
+				id: 'saltlakecity'
 				region: 'NA'
 				country: 'US'
 
