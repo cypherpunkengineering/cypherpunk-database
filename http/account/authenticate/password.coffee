@@ -38,9 +38,6 @@ class wiz.framework.http.account.authenticate.password extends wiz.framework.htt
 		if not req.session?.id?
 			return res.send 400, 'must identify first'
 
-		if req.session?.auth? and req.session.auth != 0
-			return res.send 400, 'already authenticated'
-
 		if not req.body?[@passwordKey]? or typeof req.body[@passwordKey] != 'string'
 			return res.send 400, 'missing or invalid password'
 
