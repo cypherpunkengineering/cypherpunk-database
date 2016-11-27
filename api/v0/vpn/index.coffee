@@ -51,13 +51,13 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			regionName: 'Dev 1, Japan'
 			regionEnabled: true
 
-			ovHostname: 'tokyo.cypherpunk.privacy.network'
+			ovHostname: 'freebsd1.tokyo.vpn.cypherpunk.network'
 			ovDefault: '208.111.52.1'
 			ovNone: '208.111.52.11'
 			ovStrong: '208.111.52.21'
 			ovStealth: '208.111.52.31'
 
-			ipsecHostname: 'tokyo.cypherpunk.privacy.network'
+			ipsecHostname: 'freebsd1.tokyo.vpn.cypherpunk.network'
 			ipsecDefault: '208.111.52.41'
 
 			httpDefault: '255.255.255.255'
