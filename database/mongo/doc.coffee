@@ -69,6 +69,7 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 			errorTooShort = "field #{schemaType[@dataKey][field].label} is too short, cannot be less than #{schemaType[@dataKey][field].minlen} characters."
 			errorTooLong = "field #{schemaType[@dataKey][field].label} is too long, cannot be more than #{schemaType[@dataKey][field].maxlen} characters."
 			errorTooMany = "field #{schemaType[@dataKey][field].label} cannot contain more than #{schemaType[@dataKey][field].maxElements} selections."
+			errorInvalidIsodate = "field #{schemaType[@dataKey][field].label} is not a valid ISODate."
 
 			if userData?[field]? # field exists
 
@@ -153,6 +154,20 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 					else
 						# store in output
 						outputData[field] = userData[field]
+				#}}}
+				else if typeof userData[field] == 'isodate' #{{{ field value is isodate
+
+					isodate = null
+					try
+						isodate = ISODate userData[field]
+					catch e
+						isodate = null
+
+					if not isodate
+						err = '(51)' + errorInvalidIsodate
+					else
+						# store in output
+						outputData[field] = isodate
 				#}}}
 				else #{{{ invalid field value
 
