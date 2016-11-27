@@ -1,22 +1,22 @@
 # copyright 2012 J. Maurice <j@wiz.biz>
 
-wiz.package 'cypherpunk.backend.admin.userjs.manageAffiliate'
+wiz.package 'cypherpunk.backend.billing.userjs.billingSubscription'
 
-class cypherpunk.backend.admin.userjs.manageAffiliate.table extends wiz.portal.userjs.table.multiMulti
+class cypherpunk.backend.billing.userjs.billingSubscription.table extends wiz.portal.userjs.table.multiMulti
 
-	urlBase: wiz.getParentURL(2) + '/api/affiliate'
+	urlBase: wiz.getParentURL(2) + '/api/subscription'
 	#{{{ strings
-	stringNuggets: 'affiliates'
-	stringInsertButton: 'Add affiliate'
-	stringInsertSubmit: 'Add affiliate'
-	stringInsertRecordDialogTitle: 'Add affiliate'
-	stringInsertRecordSelectLabel: 'affiliate type'
-	stringUpdateButton: 'Manage Affiliate'
-	stringDropButton: 'Drop affiliates'
-	stringDropSubmit: 'Drop affiliates'
-	stringDropRecordDialogTitle: 'Drop affiliate'
-	stringSelectType: 'select affiliate type...'
-	stringTitle: 'Affiliate Management'
+	stringNuggets: 'subscriptions'
+	stringInsertButton: null # 'Start subscription'
+	stringInsertSubmit: 'Start subscription'
+	stringInsertRecordDialogTitle: 'Start subscription'
+	stringInsertRecordSelectLabel: 'subscription type'
+	stringUpdateButton: 'Manage Subscription'
+	stringDropButton: null # 'Cancel subscription'
+	stringDropSubmit: 'Cancel subscription'
+	stringDropRecordDialogTitle: 'Cancel subscription'
+	stringSelectType: 'select subscription type...'
+	stringTitle: null # 'Subscription Management'
 	stringTableHeaders: [
 		'E-Mail Address'
 		'Last Logged In'
@@ -71,10 +71,10 @@ class cypherpunk.backend.admin.userjs.manageAffiliate.table extends wiz.portal.u
 		@insertDialogFormSelect.attr('disabled', true) if data?
 	#}}}
 
-manageAffiliateTable = null
+billingSubscriptionTable = null
 $(document).ready =>
-	manageAffiliateTable = new cypherpunk.backend.admin.userjs.manageAffiliate.table()
-	manageAffiliateTable.ajax 'GET', manageAffiliateTable.urlBase + '/types', null, (types) =>
-		manageAffiliateTable.init(types)
+	billingSubscriptionTable = new cypherpunk.backend.billing.userjs.billingSubscription.table()
+	billingSubscriptionTable.ajax 'GET', billingSubscriptionTable.urlBase + '/types', null, (types) =>
+		billingSubscriptionTable.init(types)
 
 # vim: foldmethod=marker wrap

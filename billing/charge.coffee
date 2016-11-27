@@ -4,18 +4,18 @@ require './_framework'
 require './_framework/http/account'
 require './_framework/http/resource/base'
 
-wiz.package 'cypherpunk.backend.manage.admin'
+wiz.package 'cypherpunk.backend.billing.charge'
 
-class cypherpunk.backend.manage.admin.resource extends cypherpunk.backend.manage.template
-	level: cypherpunk.backend.server.power.level.executive
+class cypherpunk.backend.billing.charge.resource extends cypherpunk.backend.billing.template
+	level: cypherpunk.backend.server.power.level.marketing
 	nav: true
-	title: 'Admins'
+	title: 'Charges'
 	init: () =>
 		super()
-		@args.wizTitle = 'Manage Administrators'
+		@args.wizTitle = 'Billing Charges'
 		@args.wizCSS = @args.wizCSS.concat(@args.wizCSSdt)
 		@args.wizJS = @args.wizJS.concat(@args.wizJSdtMultiMulti)
 		@args.wizBodies += 1
-		@args.wizJS.push @parent.coffee('admin')
+		@args.wizJS.push @parent.coffee('charge')
 
 # vim: foldmethod=marker wrap

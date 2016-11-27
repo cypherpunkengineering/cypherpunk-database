@@ -15,7 +15,7 @@ class cypherpunk.backend.admin.userjs.manageUser.table extends wiz.portal.userjs
 	stringDropButton: 'Drop users'
 	stringDropSubmit: 'Drop users'
 	stringDropRecordDialogTitle: 'Drop user'
-	stringSelectUserType: 'select user type...'
+	stringSelectType: 'select user type...'
 	stringTitle: 'User Management'
 	stringTableHeaders: [
 		'E-Mail Address'

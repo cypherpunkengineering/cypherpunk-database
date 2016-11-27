@@ -1,22 +1,22 @@
 # copyright 2012 J. Maurice <j@wiz.biz>
 
-wiz.package 'cypherpunk.backend.admin.userjs.manageAffiliate'
+wiz.package 'cypherpunk.backend.billing.userjs.billingInvoice'
 
-class cypherpunk.backend.admin.userjs.manageAffiliate.table extends wiz.portal.userjs.table.multiMulti
+class cypherpunk.backend.billing.userjs.billingInvoice.table extends wiz.portal.userjs.table.multiMulti
 
-	urlBase: wiz.getParentURL(2) + '/api/affiliate'
+	urlBase: wiz.getParentURL(2) + '/api/invoice'
 	#{{{ strings
-	stringNuggets: 'affiliates'
-	stringInsertButton: 'Add affiliate'
-	stringInsertSubmit: 'Add affiliate'
-	stringInsertRecordDialogTitle: 'Add affiliate'
-	stringInsertRecordSelectLabel: 'affiliate type'
-	stringUpdateButton: 'Manage Affiliate'
-	stringDropButton: 'Drop affiliates'
-	stringDropSubmit: 'Drop affiliates'
-	stringDropRecordDialogTitle: 'Drop affiliate'
-	stringSelectType: 'select affiliate type...'
-	stringTitle: 'Affiliate Management'
+	stringNuggets: 'invoices'
+	stringInsertButton: null
+	stringInsertSubmit: 'Add invoice'
+	stringInsertRecordDialogTitle: 'Add invoice'
+	stringInsertRecordSelectLabel: 'invoice type'
+	stringUpdateButton: 'Manage Invoice'
+	stringDropButton: null
+	stringDropSubmit: 'Drop invoices'
+	stringDropRecordDialogTitle: 'Drop invoice'
+	stringSelectType: 'select invoice type...'
+	stringTitle: null # 'Invoice Management'
 	stringTableHeaders: [
 		'E-Mail Address'
 		'Last Logged In'
@@ -71,10 +71,10 @@ class cypherpunk.backend.admin.userjs.manageAffiliate.table extends wiz.portal.u
 		@insertDialogFormSelect.attr('disabled', true) if data?
 	#}}}
 
-manageAffiliateTable = null
+billingInvoiceTable = null
 $(document).ready =>
-	manageAffiliateTable = new cypherpunk.backend.admin.userjs.manageAffiliate.table()
-	manageAffiliateTable.ajax 'GET', manageAffiliateTable.urlBase + '/types', null, (types) =>
-		manageAffiliateTable.init(types)
+	billingInvoiceTable = new cypherpunk.backend.billing.userjs.billingInvoice.table()
+	billingInvoiceTable.ajax 'GET', billingInvoiceTable.urlBase + '/types', null, (types) =>
+		billingInvoiceTable.init(types)
 
 # vim: foldmethod=marker wrap

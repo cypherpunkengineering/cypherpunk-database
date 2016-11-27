@@ -1,22 +1,22 @@
 # copyright 2012 J. Maurice <j@wiz.biz>
 
-wiz.package 'cypherpunk.backend.billing.userjs.billingTransaction'
+wiz.package 'cypherpunk.backend.billing.userjs.billingReceipt'
 
-class cypherpunk.backend.billing.userjs.billingTransaction.table extends wiz.portal.userjs.table.multiMulti
+class cypherpunk.backend.billing.userjs.billingReceipt.table extends wiz.portal.userjs.table.multiMulti
 
-	urlBase: wiz.getParentURL(2) + '/api/transaction'
+	urlBase: wiz.getParentURL(2) + '/api/receipt'
 	#{{{ strings
-	stringNuggets: 'transactions'
-	stringInsertButton: 'Add transaction'
-	stringInsertSubmit: 'Add transaction'
-	stringInsertRecordDialogTitle: 'Add transaction'
-	stringInsertRecordSelectLabel: 'transaction type'
-	stringUpdateButton: 'Manage Transaction'
-	stringDropButton: 'Drop transactions'
-	stringDropSubmit: 'Drop transactions'
-	stringDropRecordDialogTitle: 'Drop transaction'
-	stringSelectTransactionType: 'select transaction type...'
-	stringTitle: 'Transaction Management'
+	stringNuggets: 'receipts'
+	stringInsertButton: null
+	stringInsertSubmit: 'Add receipt'
+	stringInsertRecordDialogTitle: 'Add receipt'
+	stringInsertRecordSelectLabel: 'receipt type'
+	stringUpdateButton: 'Manage Receipt'
+	stringDropButton: null
+	stringDropSubmit: 'Drop receipts'
+	stringDropRecordDialogTitle: 'Drop receipt'
+	stringSelectType: 'select receipt type...'
+	stringTitle: null # 'Receipt Management'
 	stringTableHeaders: [
 		'E-Mail Address'
 		'Last Logged In'
@@ -71,10 +71,10 @@ class cypherpunk.backend.billing.userjs.billingTransaction.table extends wiz.por
 		@insertDialogFormSelect.attr('disabled', true) if data?
 	#}}}
 
-billingTransactionTable = null
+billingReceiptTable = null
 $(document).ready =>
-	billingTransactionTable = new cypherpunk.backend.billing.userjs.billingTransaction.table()
-	billingTransactionTable.ajax 'GET', billingTransactionTable.urlBase + '/types', null, (types) =>
-		billingTransactionTable.init(types)
+	billingReceiptTable = new cypherpunk.backend.billing.userjs.billingReceipt.table()
+	billingReceiptTable.ajax 'GET', billingReceiptTable.urlBase + '/types', null, (types) =>
+		billingReceiptTable.init(types)
 
 # vim: foldmethod=marker wrap

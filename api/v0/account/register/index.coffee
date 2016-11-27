@@ -19,7 +19,7 @@ class cypherpunk.backend.api.v0.account.register.signup extends cypherpunk.backe
 
 			return res.send 409, 'Email already registered' if user isnt null
 
-			@server.root.api.user.database.signup req, res, false, (req2, res2, result) =>
+			@server.root.api.user.database.signup req, res, null, (req2, res2, result) =>
 
 				if result instanceof Array
 					user = result[0]

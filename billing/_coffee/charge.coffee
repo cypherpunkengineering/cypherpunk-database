@@ -1,22 +1,22 @@
 # copyright 2012 J. Maurice <j@wiz.biz>
 
-wiz.package 'cypherpunk.backend.admin.userjs.manageAffiliate'
+wiz.package 'cypherpunk.backend.billing.userjs.charge'
 
-class cypherpunk.backend.admin.userjs.manageAffiliate.table extends wiz.portal.userjs.table.multiMulti
+class cypherpunk.backend.billing.userjs.charge.table extends wiz.portal.userjs.table.multiMulti
 
-	urlBase: wiz.getParentURL(2) + '/api/affiliate'
+	urlBase: wiz.getParentURL(2) + '/api/charge'
 	#{{{ strings
-	stringNuggets: 'affiliates'
-	stringInsertButton: 'Add affiliate'
-	stringInsertSubmit: 'Add affiliate'
-	stringInsertRecordDialogTitle: 'Add affiliate'
-	stringInsertRecordSelectLabel: 'affiliate type'
-	stringUpdateButton: 'Manage Affiliate'
-	stringDropButton: 'Drop affiliates'
-	stringDropSubmit: 'Drop affiliates'
-	stringDropRecordDialogTitle: 'Drop affiliate'
-	stringSelectType: 'select affiliate type...'
-	stringTitle: 'Affiliate Management'
+	stringNuggets: 'charges'
+	stringInsertButton: null
+	stringInsertSubmit: 'Add charge'
+	stringInsertRecordDialogTitle: 'Add charge'
+	stringInsertRecordSelectLabel: 'charge type'
+	stringUpdateButton: 'Manage Charge'
+	stringDropButton: null
+	stringDropSubmit: 'Drop charges'
+	stringDropRecordDialogTitle: 'Drop charge'
+	stringSelectType: 'select charge type...'
+	stringTitle: null
 	stringTableHeaders: [
 		'E-Mail Address'
 		'Last Logged In'
@@ -71,10 +71,10 @@ class cypherpunk.backend.admin.userjs.manageAffiliate.table extends wiz.portal.u
 		@insertDialogFormSelect.attr('disabled', true) if data?
 	#}}}
 
-manageAffiliateTable = null
+chargeTable = null
 $(document).ready =>
-	manageAffiliateTable = new cypherpunk.backend.admin.userjs.manageAffiliate.table()
-	manageAffiliateTable.ajax 'GET', manageAffiliateTable.urlBase + '/types', null, (types) =>
-		manageAffiliateTable.init(types)
+	chargeTable = new cypherpunk.backend.billing.userjs.charge.table()
+	chargeTable.ajax 'GET', chargeTable.urlBase + '/types', null, (types) =>
+		chargeTable.init(types)
 
 # vim: foldmethod=marker wrap

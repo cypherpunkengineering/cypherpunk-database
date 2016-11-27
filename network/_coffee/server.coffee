@@ -15,7 +15,7 @@ class cypherpunk.backend.network.userjs.server.table extends wiz.portal.userjs.t
 	stringDropButton: 'Drop servers'
 	stringDropSubmit: 'Drop servers'
 	stringDropRecordDialogTitle: 'Drop server'
-	stringSelectUserType: 'select server type...'
+	stringSelectType: 'select server type...'
 	stringTitle: 'User Management'
 	stringTableHeaders: [
 		'E-Mail Address'

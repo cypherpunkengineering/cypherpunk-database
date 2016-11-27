@@ -14,7 +14,11 @@ require './admin'
 require './user'
 require './affiliate'
 
-require './transaction'
+require './subscription'
+require './invoice'
+require './charge'
+require './receipt'
+require './refund'
 
 require './network'
 
@@ -32,7 +36,11 @@ class cypherpunk.backend.api.module extends cypherpunk.backend.api.base
 		@user = @routeAdd new cypherpunk.backend.api.user.resource(@server, this, 'user')
 		@affiliate = @routeAdd new cypherpunk.backend.api.affiliate.resource(@server, this, 'affiliate')
 
-		@transaction = @routeAdd new cypherpunk.backend.api.transaction.resource(@server, this, 'transaction')
+		@subscription = @routeAdd new cypherpunk.backend.api.subscription.resource(@server, this, 'subscription')
+		@invoice = @routeAdd new cypherpunk.backend.api.invoice.resource(@server, this, 'invoice')
+		@charge = @routeAdd new cypherpunk.backend.api.charge.resource(@server, this, 'charge')
+		@receipt = @routeAdd new cypherpunk.backend.api.receipt.resource(@server, this, 'receipt')
+		@refund = @routeAdd new cypherpunk.backend.api.refund.resource(@server, this, 'refund')
 
 		@network = @routeAdd new cypherpunk.backend.api.network.module(@server, this, 'network')
 

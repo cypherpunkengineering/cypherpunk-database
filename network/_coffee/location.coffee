@@ -15,7 +15,7 @@ class cypherpunk.backend.network.userjs.location.table extends wiz.portal.userjs
 	stringDropButton: 'Drop locations'
 	stringDropSubmit: 'Drop locations'
 	stringDropRecordDialogTitle: 'Drop location'
-	stringSelectUserType: 'select location type...'
+	stringSelectType: 'select location type...'
 	stringTitle: 'User Management'
 	stringTableHeaders: [
 		'E-Mail Address'

@@ -7,18 +7,18 @@ require './_framework/http/db/mongo'
 
 require './schema'
 
-wiz.package 'cypherpunk.backend.db.transaction'
+wiz.package 'cypherpunk.backend.db.receipt'
 
-class cypherpunk.backend.db.transaction extends wiz.framework.http.database.mongo.baseArray
-	collectionName: 'transaction'
+class cypherpunk.backend.db.receipt extends wiz.framework.http.database.mongo.baseArray
+	collectionName: 'receipt'
 	debug: true
-	schema: cypherpunk.backend.db.transaction.schema
+	schema: cypherpunk.backend.db.receipt.schema
 	upsert: false
 	txidKey: 'txid'
 
 	# DataTable methods
-	list: (req, res, transactionType) => #{{{
-		return res.send 400, 'invalid type' if not schemaType = @schema.types[transactionType]
+	list: (req, res, receiptType) => #{{{
+		return res.send 400, 'invalid type' if not schemaType = @schema.types[receiptType]
 
 		criteria = @criteria(req)
 		criteria[@typeKey] = schemaType[@typeKey]
@@ -46,23 +46,20 @@ class cypherpunk.backend.db.transaction extends wiz.framework.http.database.mong
 
 				@listResponse(req, res, responseData, recordCount)
 	#}}}
-	insert: (req, res, recordToInsert = null, cb = null) => #{{{
+	drop: (req, res) => #{{{
+		return res.send 501
+	#}}}
+
+	# custom APIs
+	saveFromStripe: (req, res, recordToInsert = null, cb = null) => #{{{
 		if recordToInsert is null
-			return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
+			return unless recordToInsert = @schema.fromUser(req, res, 'stripe', req.body[@dataKey])
 
 		return super(req, res, recordToInsert, cb) if cb != null
 
 		super req, res, recordToInsert, (result) =>
 			res.send 200
 	#}}}
-	drop: (req, res) => #{{{
-		return res.send 501 # TODO: implement drop
-		# TODO: need extensible method (send event?) for other modules to delete related objects from their databases onUserDeleted
-		# return res.send 400 if not recordsToDelete = req.body.recordsToDelete or typeof recordsToDelete isnt 'object' # only proceed if object
-		# @dropMany req, res, req.session.account[@docKey], null, recordsToDelete
-	#}}}
-
-	# custom APIs
 	findOneByTXID: (req, res, txid, cb) => #{{{
 		@findOneByKey req, res, "#{@dataKey}.#{@txidKey}", txid, @projection(), cb
 	#}}}

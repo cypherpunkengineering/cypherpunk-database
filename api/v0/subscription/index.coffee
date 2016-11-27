@@ -36,7 +36,7 @@ class cypherpunk.backend.api.v0.subscription.status extends cypherpunk.backend.a
 			type: req.session.account?.data?.subscriptionPlan or 'free'
 			renewal: req.session.account?.data?.subscriptionRenewal or 'none'
 			confirmed: (if req.session.account?.data?.confirmed?.toString() == "true" then true else false)
-			expiration: req.session.account?.data?.subscriptionExpiration or 'none'
+			expiration: req.session.account?.data?.subscriptionExpiration or '0'
 
 		#console.log out
 		res.send 200, out
@@ -110,13 +110,10 @@ class cypherpunk.backend.api.v0.subscription.common
 			subscriptionRenewal: subscriptionRenewal
 			subscriptionExpiration: subscriptionExpiration
 
-		email = req.session?.account?.email
-		email ?= req.body.email
-
 		stripeArgs =
 			source: req.body.token
 			plan: req.body.plan
-			email: email
+			email: req.session?.account?.email or req.body.email
 
 		@purchaseStripe req, res, stripeArgs, (stripeCustomerData) =>
 
@@ -136,7 +133,7 @@ class cypherpunk.backend.api.v0.subscription.common
 				return
 
 			# if no account yet, create one
-			req.server.root.api.user.database.signup req, res, subscriptionData, (result) =>
+			req.server.root.api.user.database.signup req, res, subscriptionData, (req2, res2, result) =>
 
 				if result instanceof Array
 					user = result[0]
@@ -154,13 +151,13 @@ class cypherpunk.backend.api.v0.subscription.common
 	@purchaseStripe: (req, res, stripeArgs, cb) => #{{{
 
 		try
-			console.log req.server.root.Stripe
-			#return res.send 500
-			req.server.root.Stripe.users.create stripeArgs, (stripeError, stripeCustomerData) =>
+			req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
 				console.log stripeError if stripeError
 				return res.send 500, stripeError if stripeError
 				console.log 'user data from stripe'
 				console.log stripeCustomerData
+				# save transaction in db
+				req.server.root.api.subscription.database.stripePurchase req, res, stripeCustomerData
 				cb(stripeCustomerData)
 
 		catch e
