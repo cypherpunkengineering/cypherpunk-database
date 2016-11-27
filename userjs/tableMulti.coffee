@@ -18,7 +18,7 @@ class wiz.portal.userjs.table.multi extends wiz.portal.userjs.table.base
 		.append(
 			$('<option>')
 			.attr('value', -1)
-			.text(@stringSelectListingType)
+			.text(@stringSelectType)
 		)
 
 		# insert an option for each valid record type

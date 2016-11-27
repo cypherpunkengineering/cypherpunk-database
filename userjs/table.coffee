@@ -177,7 +177,7 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 				icon: @iconDrop
 				click: @dropDialogOpen
 				text: @stringDropButton
-		if @urlExport
+		if @stringExportButton
 			@toolbarAction
 				icon: @iconExport
 				href: @urlExport
