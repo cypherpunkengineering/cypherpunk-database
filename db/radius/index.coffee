@@ -60,10 +60,8 @@ class cypherpunk.backend.db.radius extends wiz.framework.http.database.mysql.dri
 	#}}}
 
 	_grantUserGroup: (req, res, account, group, cb5) => #{{{
-		@_queryInsertCheck req, res, account?.id, account?.privacy?.username, account?.privacy?.password, (err) =>
-			return cb5(err) if err?
-			@_queryInsertUsergroup req, res, account?.privacy?.username, group.name, group.priority, (err) =>
-				cb5(err)
+		@_queryInsertUsergroup req, res, account?.privacy?.username, group.name, group.priority, (err) =>
+			cb5(err)
 	#}}}
 	_revokeUserAll: (req, res, account, cb6) => #{{{
 		@_queryDeleteCheck req, res, account?.id, (err) =>
@@ -118,8 +116,10 @@ class cypherpunk.backend.db.radius extends wiz.framework.http.database.mysql.dri
 	updateUserAccess: (req, res, account, cb8) => #{{{
 		@_revokeUserAll req, res, account, (err) =>
 			return cb8(err) if err?
-			@_grantAccess req, res, account, @groups[account.type], (err) =>
-				cb8(err)
+			@_queryInsertCheck req, res, account?.id, account?.privacy?.username, account?.privacy?.password, (err) =>
+				return cb8(err) if err?
+				@_grantAccess req, res, account, @groups[account.type], (err) =>
+					cb8(err)
 	#}}}
 
 # vim: foldmethod=marker wrap
