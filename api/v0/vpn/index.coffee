@@ -125,7 +125,7 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			id: 'newjersey'
 
 			regionName: 'Newark, New Jersey'
-			regionEnabled: true
+			regionEnabled: false
 
 			ovHostname: 'newjersey.cypherpunk.privacy.network'
 			ovDefault: '172.98.78.98'
