@@ -125,19 +125,19 @@ class cypherpunk.backend.api.v0.vpn.serverList extends cypherpunk.backend.api.ba
 			id: 'newjersey'
 
 			regionName: 'Newark, New Jersey'
-			regionEnabled: false
+			regionEnabled: true
 
 			ovHostname: 'newjersey.cypherpunk.privacy.network'
-			ovDefault: '209.95.51.34'
-			ovNone: '209.95.51.35'
-			ovStrong: '209.95.51.36'
-			ovStealth: '209.95.51.37'
+			ovDefault: '172.98.78.98'
+			ovNone: '172.98.78.99'
+			ovStrong: '172.98.78.100'
+			ovStealth: '172.98.78.101'
 
-			ipsecHostname: 'newyork.cypherpunk.privacy.network'
-			ipsecDefault: '209.95.51.38'
+			ipsecHostname: 'newjersey.cypherpunk.privacy.network'
+			ipsecDefault: '172.98.78.102'
 
-			httpDefault: '209.95.51.40'
-			socksDefault: '209.95.51.42'
+			httpDefault: '172.98.78.103'
+			socksDefault: '172.98.78.104'
 
 		# }}}
 		regionList.NA.US.push # {{{
