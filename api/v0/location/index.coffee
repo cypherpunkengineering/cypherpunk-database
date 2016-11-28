@@ -495,7 +495,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'DEV'
 				country: 'JP'
 
-				name: 'Dev 1'
+				name: 'Tokyo Core Network'
 				level: 'developer'
 
 				ovHostname: 'freebsd1.tokyo.vpn.cypherpunk.network'
@@ -511,33 +511,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ ]
 
 			#}}}
-			devtokyo2: #{{{
-				id: 'devtokyo2'
-				region: 'DEV'
-				country: 'JP'
-
-				name: 'Dev 2'
-				level: 'developer'
-
-				ovHostname: 'freebsd2.tokyo.vpn.cypherpunk.network'
-				ovDefault: [ '208.111.52.2' ]
-				ovNone: [ '208.111.52.12' ]
-				ovStrong: [ '208.111.52.22' ]
-				ovStealth: [ '208.111.52.32' ]
-
-				ipsecHostname: 'freebsd2.tokyo.vpn.cypherpunk.network'
-				ipsecDefault: [ '208.111.52.42' ]
-
-				httpDefault: [ ]
-				socksDefault: [ ]
-
-			#}}}
 			devtokyo3: #{{{
 				id: 'devtokyo3'
 				region: 'DEV'
 				country: 'JP'
 
-				name: 'Tokyo Dev 3, Japan'
+				name: 'Tokyo Test VM 3'
 				level: 'developer'
 
 				ovHostname: 'tokyo.cypherpunk.privacy.network'
