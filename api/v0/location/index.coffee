@@ -426,7 +426,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 			#}}}
 
-		developer:
+		staff:
 			atlanta: #{{{
 				id: 'atlanta'
 				region: 'NA'
@@ -488,6 +488,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				httpDefault: [ '172.98.78.103' ]
 				socksDefault: [ '172.98.78.104' ]
 			#}}}
+
+		developer:
 			devtokyo1: #{{{
 				id: 'devtokyo1'
 				region: 'DEV'
@@ -586,10 +588,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 			when "developer"
 				out = @addLocationsOfType(out, "developer", true)
+				out = @addLocationsOfType(out, "staff", true)
 				out = @addLocationsOfType(out, "premium", true)
 				out = @addLocationsOfType(out, "free", true)
 
-			when "premium", "family", "enterprise", "staff"
+			when "staff"
+				out = @addLocationsOfType(out, "staff", true)
+				out = @addLocationsOfType(out, "premium", true)
+				out = @addLocationsOfType(out, "free", true)
+
+			when "premium", "family", "enterprise"
 				out = @addLocationsOfType(out, "premium", true)
 				out = @addLocationsOfType(out, "free", true)
 
