@@ -132,26 +132,6 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ '209.95.51.42' ]
 
 			#}}}
-			newjersey: #{{{
-				id: 'newjersey'
-				region: 'NA'
-				country: 'US'
-
-				name: 'Newark, New Jersey'
-				level: 'free'
-
-				ovHostname: 'newjersey.cypherpunk.privacy.network'
-				ovDefault: [ '209.95.51.34' ]
-				ovNone: [ '209.95.51.35' ]
-				ovStrong: [ '209.95.51.36' ]
-				ovStealth: [ '209.95.51.37' ]
-
-				ipsecHostname: 'newyork.cypherpunk.privacy.network'
-				ipsecDefault: [ '209.95.51.38' ]
-
-				httpDefault: [ '209.95.51.40' ]
-				socksDefault: [ '209.95.51.42' ]
-			#}}}
 			losangeles: #{{{
 				id: 'losangeles'
 				region: 'NA'
@@ -453,7 +433,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				country: 'US'
 
 				name: 'Atlanta, Georgia'
-				level: 'developer'
+				level: 'premium'
 
 				ovHostname: 'atlanta.cypherpunk.privacy.network'
 				ovDefault: [ '172.98.49.242' ]
@@ -474,7 +454,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				country: 'US'
 
 				name: 'Los Angeles 2, California'
-				level: 'developer'
+				level: 'premium'
 
 				ovHostname: 'losangeles.cypherpunk.privacy.network'
 				ovDefault: [ '162.216.46.242' ]
@@ -487,6 +467,26 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				httpDefault: [ '162.216.46.247' ]
 				socksDefault: [ '162.216.46.248' ]
+			#}}}
+			newjersey: #{{{
+				id: 'newjersey'
+				region: 'NA'
+				country: 'US'
+
+				name: 'Newark, New Jersey'
+				level: 'premium'
+
+				ovHostname: 'newjersey.cypherpunk.privacy.network'
+				ovDefault: [ '172.98.78.98' ]
+				ovNone: [ '172.98.78.99' ]
+				ovStrong: [ '172.98.78.100' ]
+				ovStealth: [ '172.98.78.101' ]
+
+				ipsecHostname: 'newjersey.cypherpunk.privacy.network'
+				ipsecDefault: [ '172.98.78.102' ]
+
+				httpDefault: [ '172.98.78.103' ]
+				socksDefault: [ '172.98.78.104' ]
 			#}}}
 			devtokyo1: #{{{
 				id: 'devtokyo1'
