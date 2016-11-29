@@ -196,6 +196,27 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			#}}}
 
 		premium:
+			atlanta: #{{{
+				id: 'atlanta'
+				region: 'NA'
+				country: 'US'
+
+				name: 'Atlanta, Georgia'
+				level: 'premium'
+
+				ovHostname: 'atlanta.cypherpunk.privacy.network'
+				ovDefault: [ '172.98.79.242' ]
+				ovNone: [ '172.98.79.243' ]
+				ovStrong: [ '172.98.79.244' ]
+				ovStealth: [ '172.98.79.245' ]
+
+				ipsecHostname: 'atlanta.cypherpunk.privacy.network'
+				ipsecDefault: [ '172.98.79.246' ]
+
+				httpDefault: [ '172.98.79.247' ]
+				socksDefault: [ '172.98.79.248' ]
+
+			#}}}
 			istanbul: #{{{
 				id: 'istanbul'
 				region: 'EU'
@@ -217,27 +238,6 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ ]
 
 			#}}}
-			paris: #{{{
-				id: 'paris'
-				region: 'EU'
-				country: 'FR'
-
-				name: 'Paris, France'
-				level: 'premium'
-
-				ovHostname: 'paris.cypherpunk.privacy.network'
-				ovDefault: [ '159.8.80.208' ]
-				ovNone: [ '159.8.80.209' ]
-				ovStrong: [ '159.8.80.210' ]
-				ovStealth: [ '159.8.80.211' ]
-
-				ipsecHostname: 'paris.cypherpunk.privacy.network'
-				ipsecDefault: [ '159.8.80.212' ]
-
-				httpDefault: [ '159.8.80.213' ]
-				socksDefault: [ '159.8.80.214' ]
-
-			#}}}
 			miami: #{{{
 				id: 'miami'
 				region: 'NA'
@@ -257,6 +257,27 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				httpDefault: [ '172.98.76.55' ]
 				socksDefault: [ '172.98.76.56' ]
+
+			#}}}
+			paris: #{{{
+				id: 'paris'
+				region: 'EU'
+				country: 'FR'
+
+				name: 'Paris, France'
+				level: 'premium'
+
+				ovHostname: 'paris.cypherpunk.privacy.network'
+				ovDefault: [ '159.8.80.208' ]
+				ovNone: [ '159.8.80.209' ]
+				ovStrong: [ '159.8.80.210' ]
+				ovStealth: [ '159.8.80.211' ]
+
+				ipsecHostname: 'paris.cypherpunk.privacy.network'
+				ipsecDefault: [ '159.8.80.212' ]
+
+				httpDefault: [ '159.8.80.213' ]
+				socksDefault: [ '159.8.80.214' ]
 
 			#}}}
 			phoenix: #{{{
@@ -427,27 +448,6 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			#}}}
 
 		staff:
-			atlanta: #{{{
-				id: 'atlanta'
-				region: 'NA'
-				country: 'US'
-
-				name: 'Atlanta, Georgia'
-				level: 'premium'
-
-				ovHostname: 'atlanta.cypherpunk.privacy.network'
-				ovDefault: [ '172.98.79.242' ]
-				ovNone: [ '172.98.79.243' ]
-				ovStrong: [ '172.98.79.244' ]
-				ovStealth: [ '172.98.79.245' ]
-
-				ipsecHostname: 'atlanta.cypherpunk.privacy.network'
-				ipsecDefault: [ '172.98.79.246' ]
-
-				httpDefault: [ '172.98.79.247' ]
-				socksDefault: [ '172.98.79.248' ]
-
-			#}}}
 			losangeles2: #{{{
 				id: 'losangeles2'
 				region: 'NA'
