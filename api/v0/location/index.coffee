@@ -436,16 +436,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				level: 'premium'
 
 				ovHostname: 'atlanta.cypherpunk.privacy.network'
-				ovDefault: [ '172.98.49.242' ]
-				ovNone: [ '172.98.49.243' ]
-				ovStrong: [ '172.98.49.244' ]
-				ovStealth: [ '172.98.49.245' ]
+				ovDefault: [ '172.98.79.242' ]
+				ovNone: [ '172.98.79.243' ]
+				ovStrong: [ '172.98.79.244' ]
+				ovStealth: [ '172.98.79.245' ]
 
 				ipsecHostname: 'atlanta.cypherpunk.privacy.network'
-				ipsecDefault: [ '172.98.49.246' ]
+				ipsecDefault: [ '172.98.79.246' ]
 
-				httpDefault: [ '172.98.49.247' ]
-				socksDefault: [ '172.98.49.248' ]
+				httpDefault: [ '172.98.79.247' ]
+				socksDefault: [ '172.98.79.248' ]
 
 			#}}}
 			losangeles2: #{{{
