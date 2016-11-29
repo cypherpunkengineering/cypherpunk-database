@@ -457,16 +457,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				level: 'premium'
 
 				ovHostname: 'losangeles.cypherpunk.privacy.network'
-				ovDefault: [ '162.216.46.242' ]
-				ovNone: [ '162.216.46.243' ]
-				ovStrong: [ '162.216.46.244' ]
-				ovStealth: [ '162.216.46.245' ]
+				ovDefault: [ '184.170.243.67' ]
+				ovNone: [ '184.170.243.68' ]
+				ovStrong: [ '184.170.243.69' ]
+				ovStealth: [ '184.170.243.70' ]
 
 				ipsecHostname: 'losangeles.cypherpunk.privacy.network'
-				ipsecDefault: [ '162.216.46.246' ]
+				ipsecDefault: [ '184.170.243.71' ]
 
-				httpDefault: [ '162.216.46.247' ]
-				socksDefault: [ '162.216.46.248' ]
+				httpDefault: [ '184.170.243.72' ]
+				socksDefault: [ '184.170.243.73' ]
 			#}}}
 			newjersey: #{{{
 				id: 'newjersey'
