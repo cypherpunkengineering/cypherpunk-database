@@ -294,7 +294,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ovStrong: [ '104.200.133.244' ]
 				ovStealth: [ '104.200.133.245' ]
 
-				ipsecHostname: 'saltlakecity.cypherpunk.privacy.network'
+				ipsecHostname: 'phoenix.cypherpunk.privacy.network'
 				ipsecDefault: [ '104.200.133.246' ]
 
 				httpDefault: [ '104.200.133.247' ]
