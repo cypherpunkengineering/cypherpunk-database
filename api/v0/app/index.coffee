@@ -21,68 +21,44 @@ class cypherpunk.backend.api.v0.app.versions extends cypherpunk.backend.api.base
 	handler: (req, res) =>
 		out =
 			windows: #{{{
-				required:
-					code: 50
-					display: '0.5.0'
-				latest:
-					code: 55
-					display: '0.5.5'
+				latest: '0.4.0'
+				required: '0.3.0'
+				description: 'A new version is available, please update your Cypherpunk Privacy app from https://cypherpunk.com/download'
 			#}}}
 			macos: #{{{
-				required:
-					code: 50
-					display: '0.5.0'
-				latest:
-					code: 55
-					display: '0.5.5'
+				latest: '0.4.0'
+				required: '0.3.0'
+				description: 'A new version is available, please update your Cypherpunk Privacy app from https://cypherpunk.com/download'
 			#}}}
 			debian: #{{{
-				required:
-					code: 50
-					display: '0.5.0'
-				latest:
-					code: 55
-					display: '0.5.5'
+				latest: '0.4.0'
+				required: '0.3.0'
+				description: 'A new version is available, please update your Cypherpunk Privacy app from https://cypherpunk.com/download'
 			#}}}
 			fedora: #{{{
-				required:
-					code: 50
-					display: '0.5.0'
-				latest:
-					code: 55
-					display: '0.5.5'
+				latest: '0.4.0'
+				required: '0.3.0'
+				description: 'A new version is available, please update your Cypherpunk Privacy app from https://cypherpunk.com/download'
 			#}}}
 			android: #{{{
-				required:
-					code: 50
-					display: '0.5.0'
-				latest:
-					code: 55
-					display: '0.5.5'
+				latest: 56
+				required: 55
+				description: 'A new version is available, please update your Cypherpunk Privacy app from Google Play.'
 			#}}}
 			ios: #{{{
-				required:
-					code: 50
-					display: '0.5.0'
-				latest:
-					code: 55
-					display: '0.5.5'
+				latest: 56
+				required: 55
+				description: 'A new version is available, please update your Cypherpunk Privacy app from the iTunes App store.'
 			#}}}
 			chrome: #{{{
-				required:
-					code: 50
-					display: '0.5.0'
-				latest:
-					code: 55
-					display: '0.5.5'
+				latest: 56
+				required: 55
+				description: 'A new version is available, please update your Cypherpunk Privacy app from the Chrome webstore.'
 			#}}}
 			firefox: #{{{
-				required:
-					code: 50
-					display: '0.5.0'
-				latest:
-					code: 55
-					display: '0.5.5'
+				latest: 56
+				required: 55
+				description: 'A new version is available, please update your Cypherpunk Privacy app from the Mozilla Add-ons.'
 			#}}}
 
 		#console.log out
