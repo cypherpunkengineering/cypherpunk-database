@@ -217,6 +217,48 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ '172.98.79.248' ]
 
 			#}}}
+			chennai: #{{{
+				id: 'chennai'
+				region: 'AS'
+				country: 'IN'
+
+				name: 'Chennai, India'
+				level: 'premium'
+
+				ovHostname: 'chennai.cypherpunk.privacy.network'
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
+
+				ipsecHostname: 'chennai.cypherpunk.privacy.network'
+				ipsecDefault: [ ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
+
+			#}}}
+			chicago: #{{{
+				id: 'chicago'
+				region: 'NA'
+				country: 'US'
+
+				name: 'Chicago, Illinois'
+				level: 'premium'
+
+				ovHostname: 'chicago.cypherpunk.privacy.network'
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
+
+				ipsecHostname: 'chicago.cypherpunk.privacy.network'
+				ipsecDefault: [ ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
+
+			#}}}
 			istanbul: #{{{
 				id: 'istanbul'
 				region: 'EU'
@@ -257,6 +299,131 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				httpDefault: [ '172.98.76.55' ]
 				socksDefault: [ '172.98.76.56' ]
+
+			#}}}
+			melbourne: #{{{
+				id: 'melbourne'
+				region: 'OP'
+				country: 'AU'
+
+				name: 'Melbourne, Australia'
+				level: 'premium'
+
+				ovHostname: 'melbourne.cypherpunk.privacy.network'
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
+
+				ipsecHostname: 'melbourne.cypherpunk.privacy.network'
+				ipsecDefault: [ ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
+
+			#}}}
+			milan: #{{{
+				id: 'milan'
+				region: 'EU'
+				country: 'IT'
+
+				name: 'Milan, Italy'
+				level: 'premium'
+
+				ovHostname: 'milan.cypherpunk.privacy.network'
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
+
+				ipsecHostname: 'milan.cypherpunk.privacy.network'
+				ipsecDefault: [ ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
+
+			#}}}
+			montreal: #{{{
+				id: 'montreal'
+				region: 'NA'
+				country: 'CA'
+
+				name: 'Montreal, Canada'
+				level: 'premium'
+
+				ovHostname: 'montreal.cypherpunk.privacy.network'
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
+
+				ipsecHostname: 'montreal.cypherpunk.privacy.network'
+				ipsecDefault: [ ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
+
+			#}}}
+			moscow: #{{{
+				id: 'moscow'
+				region: 'EU'
+				country: 'RU'
+
+				name: 'Moscow, Russia'
+				level: 'premium'
+
+				ovHostname: 'moscow.cypherpunk.privacy.network'
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
+
+				ipsecHostname: 'moscow.cypherpunk.privacy.network'
+				ipsecDefault: [ ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
+
+			#}}}
+			newjersey: #{{{
+				id: 'newjersey'
+				region: 'NA'
+				country: 'US'
+
+				name: 'Newark, New Jersey'
+				level: 'premium'
+
+				ovHostname: 'newjersey.cypherpunk.privacy.network'
+				ovDefault: [ '172.98.78.98' ]
+				ovNone: [ '172.98.78.99' ]
+				ovStrong: [ '172.98.78.100' ]
+				ovStealth: [ '172.98.78.101' ]
+
+				ipsecHostname: 'newjersey.cypherpunk.privacy.network'
+				ipsecDefault: [ '172.98.78.102' ]
+
+				httpDefault: [ '172.98.78.103' ]
+				socksDefault: [ '172.98.78.104' ]
+			#}}}
+			oslo: #{{{
+				id: 'oslo'
+				region: 'EU'
+				country: 'NO'
+
+				name: 'Oslo, Norway'
+				level: 'premium'
+
+				ovHostname: 'oslo.cypherpunk.privacy.network'
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
+
+				ipsecHostname: 'oslo.cypherpunk.privacy.network'
+				ipsecDefault: [ ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
 
 			#}}}
 			paris: #{{{
@@ -404,6 +571,48 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ ]
 
 			#}}}
+			stockholm: #{{{
+				id: 'stockholm'
+				region: 'EU'
+				country: 'SE'
+
+				name: 'Stockholm, Sweden'
+				level: 'premium'
+
+				ovHostname: 'stockholm.cypherpunk.privacy.network'
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
+
+				ipsecHostname: 'stockholm.cypherpunk.privacy.network'
+				ipsecDefault: [ ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
+
+			#}}}
+			sydney: #{{{
+				id: 'sydney'
+				region: 'OP'
+				country: 'AU'
+
+				name: 'Sydney, Australia'
+				level: 'premium'
+
+				ovHostname: 'sydney.cypherpunk.privacy.network'
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
+
+				ipsecHostname: 'sydney.cypherpunk.privacy.network'
+				ipsecDefault: [ ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
+
+			#}}}
 			toronto: #{{{
 				id: 'toronto'
 				region: 'NA'
@@ -423,6 +632,27 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				httpDefault: [ '172.98.66.199' ]
 				socksDefault: [ '172.98.66.200' ]
+
+			#}}}
+			washingtondc: #{{{
+				id: 'washingtondc'
+				region: 'NA'
+				country: 'US'
+
+				name: 'Washington D.C.'
+				level: 'premium'
+
+				ovHostname: 'washingtondc.cypherpunk.privacy.network'
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
+
+				ipsecHostname: 'washingtondc.cypherpunk.privacy.network'
+				ipsecDefault: [ ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
 
 			#}}}
 			zurich: #{{{
@@ -468,28 +698,6 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				httpDefault: [ '184.170.243.72' ]
 				socksDefault: [ '184.170.243.73' ]
 			#}}}
-			newjersey: #{{{
-				id: 'newjersey'
-				region: 'NA'
-				country: 'US'
-
-				name: 'Newark, New Jersey'
-				level: 'premium'
-
-				ovHostname: 'newjersey.cypherpunk.privacy.network'
-				ovDefault: [ '172.98.78.98' ]
-				ovNone: [ '172.98.78.99' ]
-				ovStrong: [ '172.98.78.100' ]
-				ovStealth: [ '172.98.78.101' ]
-
-				ipsecHostname: 'newjersey.cypherpunk.privacy.network'
-				ipsecDefault: [ '172.98.78.102' ]
-
-				httpDefault: [ '172.98.78.103' ]
-				socksDefault: [ '172.98.78.104' ]
-			#}}}
-
-		developer:
 			devtokyo1: #{{{
 				id: 'devtokyo1'
 				region: 'DEV'
@@ -511,6 +719,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ ]
 
 			#}}}
+
+		developer:
 			devtokyo3: #{{{
 				id: 'devtokyo3'
 				region: 'DEV'
@@ -534,10 +744,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			#}}}
 			devhonolulu: #{{{
 				id: 'devhonolulu'
-				region: 'NA'
-				country: 'US'
+				region: 'DEV'
+				country: 'JP'
 
-				name: 'Honolulu, Hawaii'
+				name: 'Honolulu Test VM'
 				level: 'developer'
 
 				ovHostname: 'honolulu.cypherpunk.privacy.network'
