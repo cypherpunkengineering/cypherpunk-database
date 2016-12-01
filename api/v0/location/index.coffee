@@ -217,6 +217,27 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ '172.98.79.248' ]
 
 			#}}}
+			chicago: #{{{
+				id: 'chicago'
+				region: 'NA'
+				country: 'US'
+
+				name: 'Chicago, Illinois'
+				level: 'premium'
+
+				ovHostname: 'chicago.cypherpunk.privacy.network'
+				ovDefault: [ '104.200.153.226' ]
+				ovNone: [ '104.200.153.227' ]
+				ovStrong: [ '104.200.153.228' ]
+				ovStealth: [ '104.200.153.229' ]
+
+				ipsecHostname: 'chicago.cypherpunk.privacy.network'
+				ipsecDefault: [ '104.200.153.230' ]
+
+				httpDefault: [ '104.200.153.231' ]
+				socksDefault: [ '104.200.153.232' ]
+
+			#}}}
 			istanbul: #{{{
 				id: 'istanbul'
 				region: 'EU'
