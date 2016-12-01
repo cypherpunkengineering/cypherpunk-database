@@ -247,7 +247,6 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				level: 'premium'
 
 				ovHostname: 'chicago.cypherpunk.privacy.network'
-<<<<<<< HEAD
 				ovDefault: [ '104.200.153.226' ]
 				ovNone: [ '104.200.153.227' ]
 				ovStrong: [ '104.200.153.228' ]
@@ -258,18 +257,6 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				httpDefault: [ '104.200.153.231' ]
 				socksDefault: [ '104.200.153.232' ]
-=======
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
-
-				ipsecHostname: 'chicago.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
-
-				httpDefault: [ ]
-				socksDefault: [ ]
->>>>>>> ffee586b4e8ca8ac2925a5f122a11ba937d9bdcf
 
 			#}}}
 			istanbul: #{{{
