@@ -17,8 +17,36 @@ class cypherpunk.backend.api.v0.location.module extends cypherpunk.backend.api.b
 		#@database = new cypherpunk.backend.db.location(@server, this, @parent.parent.cypherpunkDB)
 		# api methods
 		@routeAdd new cypherpunk.backend.api.v0.location.list(@server, this, 'list')
+		@routeAdd new cypherpunk.backend.api.v0.location.world(@server, this, 'world')
 		super()
 
+class cypherpunk.backend.api.v0.location.world extends cypherpunk.backend.api.base
+	level: cypherpunk.backend.server.power.level.stranger
+	mask: cypherpunk.backend.server.power.mask.public
+	handler: (req, res, routeWord) => #{{{
+		# prepare output structure
+		out =
+			region: {}
+			regionOrder: []
+			country: {}
+
+		# build region list
+		for region in Object.keys(wiz.framework.util.world.regions)
+			out.region[region] = wiz.framework.util.world.regions[region]
+		# add dev region
+		out.region.DEV = 'Development'
+
+		# build region order array, add DEV first
+		out.regionOrder = [ 'DEV' ].concat(wiz.framework.util.world.regionOrder)
+
+		# build country list
+		for region in Object.keys(wiz.framework.util.world.regions)
+			for country in Object.keys(wiz.framework.util.world.countries[region])
+				out.country[country] = wiz.framework.util.world.countries[region][country]
+
+		# done
+		res.send 200, out
+	#}}}
 
 class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.stranger
@@ -799,6 +827,13 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 			#}}}
 
+	catchall: (req, res, routeWord) =>
+		out = @getLocationsByType(routeWord)
+		if not out or typeof out isnt 'object' or Object.keys(out).length < 1
+			return @handler404(req, res)
+
+		res.send 200, out
+
 	addLocationsOfType: (out, type, enabled) => #{{{
 		for id of @locations[type]
 			out[id] = @locations[type][id]
@@ -830,15 +865,6 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				out = @addLocationsOfType(out, "free", true)
 
 		return out
-	#}}}
-	catchall: (req, res, routeWord) => #{{{
-		out = @getLocationsByType(routeWord)
-
-		if not out or typeof out isnt 'object' or Object.keys(out).length < 1
-			return @handler404(req, res)
-
-		#console.log out
-		res.send 200, out
 	#}}}
 
 # vim: foldmethod=marker wrap
