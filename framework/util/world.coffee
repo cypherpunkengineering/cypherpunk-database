@@ -14,6 +14,17 @@ class wiz.framework.util.world.regions
 	@AF: 'Africa'
 	@AS: 'Asia & India Subcontinent'
 
+wiz.framework.util.world.regionOrder = [
+	'NA'
+	'SA'
+	'CR'
+	'EU'
+	'ME'
+	'AF'
+	'AS'
+	'OP'
+]
+
 class wiz.framework.util.world.regionMap
 	@NA: [ #{{{
 		'US'
