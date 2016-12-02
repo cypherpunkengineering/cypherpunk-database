@@ -34,6 +34,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Amsterdam, Netherlands'
 				level: 'free'
+				servers: 1
 
 				ovHostname: 'amsterdam.cypherpunk.privacy.network'
 				ovDefault: [ '185.80.221.5' ]
@@ -55,6 +56,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Frankfurt, Germany'
 				level: 'free'
+				servers: 1
 
 				ovHostname: 'frankfurt.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -76,6 +78,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Dallas, Texas'
 				level: 'free'
+				servers: 1
 
 				ovHostname: 'dallas.cypherpunk.privacy.network'
 				ovDefault: [ '104.200.142.50' ]
@@ -97,6 +100,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Hong Kong'
 				level: 'free'
+				servers: 1
 
 				ovHostname: 'hongkong.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -118,6 +122,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'New York, New York'
 				level: 'free'
+				servers: 1
 
 				ovHostname: 'newyork.cypherpunk.privacy.network'
 				ovDefault: [ '209.95.51.34' ]
@@ -139,6 +144,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Los Angeles, California'
 				level: 'free'
+				servers: 1
 
 				ovHostname: 'losangeles.cypherpunk.privacy.network'
 				ovDefault: [ '174.136.108.243' ]
@@ -159,6 +165,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'London, UK'
 				level: 'free'
+				servers: 1
 
 				ovHostname: 'london.cypherpunk.privacy.network'
 				ovDefault: [ '88.202.186.223' ]
@@ -180,6 +187,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Vancouver, Canada'
 				level: 'free'
+				servers: 1
 
 				ovHostname: 'vancouver.cypherpunk.privacy.network'
 				ovDefault: [ '107.181.189.146' ]
@@ -203,6 +211,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Atlanta, Georgia'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'atlanta.cypherpunk.privacy.network'
 				ovDefault: [ '172.98.79.242' ]
@@ -224,6 +233,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Chennai, India'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'chennai.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -245,6 +255,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Chicago, Illinois'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'chicago.cypherpunk.privacy.network'
 				ovDefault: [ '104.200.153.226' ]
@@ -266,6 +277,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Istanbul, Turkey'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'istanbul.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -287,6 +299,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Miami, Florida'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'miami.cypherpunk.privacy.network'
 				ovDefault: [ '172.98.76.50' ]
@@ -308,6 +321,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Melbourne, Australia'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'melbourne.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -329,6 +343,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Milan, Italy'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'milan.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -350,6 +365,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Montreal, Canada'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'montreal.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -371,6 +387,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Moscow, Russia'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'moscow.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -392,6 +409,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Newark, New Jersey'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'newjersey.cypherpunk.privacy.network'
 				ovDefault: [ '172.98.78.98' ]
@@ -412,6 +430,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Oslo, Norway'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'oslo.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -433,6 +452,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Paris, France'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'paris.cypherpunk.privacy.network'
 				ovDefault: [ '159.8.80.208' ]
@@ -454,6 +474,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Phoenix, Arizona'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'phoenix.cypherpunk.privacy.network'
 				ovDefault: [ '104.200.133.242' ]
@@ -474,6 +495,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Salt Lake City, Utah'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'saltlakecity.cypherpunk.privacy.network'
 				ovDefault: [ '173.244.209.73' ]
@@ -494,6 +516,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Sao Paulo, Brazil'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'saopaulo.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -515,6 +538,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Seattle, Washington'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'seattle.cypherpunk.privacy.network'
 				ovDefault: [ '104.200.129.210' ]
@@ -536,6 +560,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Silicon Valley, California'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'siliconvalley.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -557,6 +582,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Singapore'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'singapore.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -578,6 +604,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Stockholm, Sweden'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'stockholm.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -599,6 +626,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Sydney, Australia'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'sydney.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -620,6 +648,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Toronto, Canada'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'toronto.cypherpunk.privacy.network'
 				ovDefault: [ '172.98.66.194' ]
@@ -641,6 +670,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Washington D.C.'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'washingtondc.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -662,6 +692,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Zurich, Switzerland'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'zurich.cypherpunk.privacy.network'
 				ovDefault: [ ]
@@ -685,6 +716,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Los Angeles 2, California'
 				level: 'premium'
+				servers: 1
 
 				ovHostname: 'losangeles.cypherpunk.privacy.network'
 				ovDefault: [ '184.170.243.67' ]
@@ -705,6 +737,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Tokyo Core Network'
 				level: 'developer'
+				servers: 1
 
 				ovHostname: 'freebsd1.tokyo.vpn.cypherpunk.network'
 				ovDefault: [ '208.111.52.1' ]
@@ -728,6 +761,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Tokyo Test VM 3'
 				level: 'developer'
+				servers: 1
 
 				ovHostname: 'tokyo.cypherpunk.privacy.network'
 				ovDefault: [ '185.176.52.34' ]
@@ -749,6 +783,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Honolulu Test VM'
 				level: 'developer'
+				servers: 1
 
 				ovHostname: 'honolulu.cypherpunk.privacy.network'
 				ovDefault: [ '208.111.48.146' ]
