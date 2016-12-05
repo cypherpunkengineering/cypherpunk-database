@@ -793,9 +793,9 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'tokyo.cypherpunk.privacy.network'
 				ovDefault: [ '185.176.52.34' ]
-				ovNone: [ '185.176.52.35' ]
-				ovStrong: [ '185.176.52.36' ]
-				ovStealth: [ '185.176.52.37' ]
+				ovNone: [ '185.176.52.34' ]
+				ovStrong: [ '185.176.52.34' ]
+				ovStealth: [ '185.176.52.34' ]
 
 				ipsecHostname: 'tokyo.cypherpunk.privacy.network'
 				ipsecDefault: [ '185.176.52.38' ]
