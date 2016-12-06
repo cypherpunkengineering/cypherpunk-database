@@ -14,6 +14,7 @@ wiz.sessions = redis.createClient()
 class wiz.framework.http.account.session
 	@cookieName: 'cypherpunk.session' # must be static for middleware
 	@lifetime = 60 * 24 * 365 # minutes
+	@debug: false
 
 	@getSessionKeyFromSecret: (req, res) => # middleware to load session from secret if provided {{{
 		return req.next() if req.sessionKey?
@@ -21,7 +22,7 @@ class wiz.framework.http.account.session
 			secret = req.params?.secret
 			secret ?= req.body?.secret
 			return req.next() unless secret
-			#wiz.log.debug "got secret #{secret}"
+			wiz.log.debug "got secret #{secret}" if @debug
 
 			wiz.sessions.get secret, (err, datum) =>
 				if err or not datum
@@ -48,11 +49,11 @@ class wiz.framework.http.account.session
 
 			# get session id from session cookie
 			id = decodeURIComponent(cookie)
-			#wiz.log.debug "got session id #{id}"
+			wiz.log.debug "got session id #{id}" if @debug
 
 			# get session key by hashing session id
 			key = wiz.framework.crypto.hash.salthash(id, 'base64')
-			#wiz.log.debug "got session key #{key}"
+			wiz.log.debug "got session key #{key}" if @debug
 
 			req.sessionKey = key
 			return req.next() # call next middleware
@@ -77,7 +78,7 @@ class wiz.framework.http.account.session
 				req.session = JSON.parse(datum)
 				req.session.last = new Date() # update session time
 				@cookie(req, res)
-				#console.log req.session
+				console.log req.session if @debug
 				return req.next() # call next middleware
 
 		catch e
@@ -136,8 +137,8 @@ class wiz.framework.http.account.session
 
 	# array must come after middleware methods after it is defined
 	@base: wiz.framework.http.resource.middleware.base.concat [ #{{{ base list of middleware required for session use
-		@getSessionKeyFromCookie
 		@getSessionKeyFromSecret
+		@getSessionKeyFromCookie
 		@loadSessionFromKey
 		wiz.framework.http.resource.middleware.checkAccess
 		@usernav
