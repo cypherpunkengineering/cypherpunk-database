@@ -147,6 +147,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'newyork'
 				region: 'NA'
 				country: 'US'
+				default: true
 
 				name: 'New York, New York'
 				level: 'free'
