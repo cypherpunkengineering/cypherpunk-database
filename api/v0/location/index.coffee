@@ -839,6 +839,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 		for id of @locations[type]
 			out[id] = @locations[type][id]
 			out[id].enabled = enabled
+			out[id].authorized = enabled
 		return out
 	#}}}
 	getLocationsByType: (type) => #{{{
