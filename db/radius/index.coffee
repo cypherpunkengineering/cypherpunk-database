@@ -72,7 +72,7 @@ class cypherpunk.backend.db.radius extends wiz.framework.http.database.mysql.dri
 
 	_grantAccess: (req, res, account, group, cb7) => #{{{ recursive method to grant user group and all lower groups
 		# don't grant any access if account not confirmed
-		return cb7() if account.data.confirmed.toString() == "false"
+		return cb7() if account.data.confirmed.toString() != "true"
 		return cb7() if not group?.name?
 
 		# update access based on group

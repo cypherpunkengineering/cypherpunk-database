@@ -83,17 +83,25 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			return res.send 404 if not result
 			return res.send 500 if not result[@dataKey]?
 			userData[@passwordKey] = result[@dataKey][@passwordKey]
-			console.log result
 			@updateDataByID req, res, userID, userData, (req2, res2, result2) =>
-				# update radius database
-				@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
-					if err
-						wiz.log.err(err)
-						return res.send 500, 'Unable to update database'
+				if result2?.result?.ok != 1
+					wiz.log.err 'DB Error while updating user data!'
+					console.log result2
+					return res.send 500
+				# get freshly updated user object from db
+				@findOneByKey req, res, @docKey, userID, @projection(), (req, res, result) =>
+					return cb(req, res, null) if not result and cb
+					return res.send 404 if not result
+					return res.send 500 if not result[@dataKey]?
+					# pass updated db object to radius database method
+					@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
+						if err
+							wiz.log.err(err)
+							return res.send 500, 'Unable to update database'
 
-					return cb(req2, res2, result2) if cb
-					return res.send 500 if not result2
-					return res.send 200
+						return cb(req2, res2, result2) if cb
+						return res.send 500 if not result2
+						return res.send 200
 	#}}}
 	updateCurrentUserData: (req, res, cb = null) => #{{{
 		@updateUserData(req, res, req.session.account.id, req.session.account.data, cb)
