@@ -105,59 +105,46 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 			wiz.log.err 'no user email!!'
 			return
 
-		mailData =
+		args =
 			from:
 				name: "Cypherpunk Privacy"
 				email: "welcome@cypherpunk.com"
-			personalizations: [
-				{
-					to: [
-						{
-							email: user.data.email
-						}
-					]
-					subject: 'Welcome to Cypherpunk Privacy'
-				}
-			]
-			headers:
-				'X-Accept-Language': 'en'
-				'X-Mailer': 'CypherpunkPrivacyMail'
-			content: [
-				{
-					type: 'text/plain'
-					value: 'Please confirm your account: '+@generateConfirmationURL(user)
-				}
-			]
+			to:
+				email: user.data.email
+			#subject: 'Welcome to Cypherpunk Privacy'
+			subject: 'Activate your account to get started with Cypherpunk Privacy'
+			template_id: '23c0356b-cf75-470e-bced-82294688c5f7'
+			substitutions:
+				'-confirmUrl-': @generateConfirmationURL(user)
 
-		@sendMail(mailData, cb)
+		@server.root.sendgrid.mailTemplate args, (error, response) =>
+			if @debug
+				console.log 'got callback from sendgrid:'
+				console.log response.statusCode
+				console.log response.headers
+				console.log response.body
+			if error
+				console.log error?.response?.body?.errors
+			cb()
 	#}}}
 	sendPurchaseMail: (user, cb) => #{{{
 		if not user?.data?.email?
 			wiz.log.err 'no user email!!'
 			return
+
 		mailData =
 			from:
 				name: "Cypherpunk Privacy"
-				email: "welcome@cypherpunk.com"
-			personalizations: [
-				{
-					to: [
-						{
-							email: user.data.email
-						}
-					]
-					subject: "You've got Premium access to Cypherpunk Privacy"
-				}
-			]
-			headers:
-				'X-Accept-Language': 'en'
-				'X-Mailer': 'CypherpunkPrivacyMail'
-			content: [
-				{
-					type: 'text/plain'
-					value: "You're premium! Thanks for purchasing"
-				}
-			]
+				email: "support@cypherpunk.com"
+			to:
+				email: user.data.email
+			subject: "You've got Premium Access to Cypherpunk Privacy"
+			template_id: '43785435-e9cc-4eaf-b985-e104dcd56cb0'
+			substitutions:
+				'-userEmail-': user.data.email
+				'-subscriptionPrice-': user.data.subscriptionPlan
+				'-subscriptionRenewal-': user.data.subscriptionRenewal
+				'-subscriptionExpiration-': user.data.subscriptionExpiration
 
 		@sendMail(mailData, cb)
 	#}}}
@@ -165,29 +152,20 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		if not user?.data?.email?
 			wiz.log.err 'no user email!!'
 			return
+
 		mailData =
 			from:
 				name: "Cypherpunk Privacy"
-				email: "welcome@cypherpunk.com"
-			personalizations: [
-				{
-					to: [
-						{
-							email: user.data.email
-						}
-					]
-					subject: 'Your account has been upgraded'
-				}
-			]
-			headers:
-				'X-Accept-Language': 'en'
-				'X-Mailer': 'CypherpunkPrivacyMail'
-			content: [
-				{
-					type: 'text/plain'
-					value: 'Please confirm your account'
-				}
-			]
+				email: "support@cypherpunk.com"
+			to:
+				email: user.data.email
+			subject: "You've got Premium Access to Cypherpunk Privacy"
+			template_id: '0971d5c3-5a69-40c0-b4db-54ce51acbfb4'
+			substitutions:
+				'-userEmail-': user.data.email
+				'-subscriptionPrice-': user.data.subscriptionPlan
+				'-subscriptionRenewal-': user.data.subscriptionRenewal
+				'-subscriptionExpiration-': user.data.subscriptionExpiration
 
 		@sendMail(mailData, cb)
 	#}}}
@@ -195,14 +173,14 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		if @debug
 			console.log 'send mail to sendgrid:'
 			console.log mailData
-		@server.root.sendgrid.mail mailData, (error, response) =>
+		@server.root.sendgrid.mailTemplate args, (error, response) =>
 			if @debug
 				console.log 'got callback from sendgrid:'
 				console.log response.statusCode
 				console.log response.headers
 				console.log response.body
 			if error
-				console.log error
+				console.log error?.response?.body?.errors
 			cb()
 	#}}}
 	generateConfirmationURL: (user) => #{{{
