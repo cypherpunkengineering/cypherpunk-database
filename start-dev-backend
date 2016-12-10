@@ -1,4 +1,6 @@
 #!/bin/bash
+cd "$( dirname "${BASH_SOURCE[0]}" )"
+
 until false;do
 	coffee index.coffee --development 2>&1 | tee -a $HOME/dev-backend-access.log
 	sleep 1
