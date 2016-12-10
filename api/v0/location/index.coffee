@@ -172,7 +172,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				country: 'US'
 
 				name: 'Los Angeles, California'
-				level: 'premium'
+				level: 'free'
 				servers: 8
 
 				ovHostname: 'losangeles.cypherpunk.privacy.network'
