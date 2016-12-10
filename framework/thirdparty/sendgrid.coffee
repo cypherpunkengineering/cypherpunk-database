@@ -41,6 +41,34 @@ class wiz.framework.thirdparty.sendgrid
 
 		@SendGrid.API(mailSend, cb)
 	#}}}
+	mailTemplate: (args, cb) => #{{{
+		mailData =
+			template_id: args?.template_id
+			from:
+				name: args?.from?.name
+				email: args?.from?.email
+			personalizations: [
+				{
+					to: [
+						{
+							email: args?.to?.email
+						}
+					]
+					subject: args?.subject
+					substitutions: args.substitutions
+				}
+			]
+			headers:
+				'X-Accept-Language': 'en'
+				'X-Mailer': 'CypherpunkPrivacyMail'
+
+		mailSend = @SendGrid.emptyRequest
+			method: 'POST'
+			path: '/v3/mail/send'
+			body: mailData
+
+		@SendGrid.API(mailSend, cb)
+	#}}}
 	mailFullExample: () => #{{{
 		body =
 			'asm': #{{{
