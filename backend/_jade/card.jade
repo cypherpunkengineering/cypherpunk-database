@@ -1,0 +1,58 @@
+extends wiz
+
+block wizBody
+	// Credit card form
+	.container
+		.row
+			.col-xs-12.col-md-4
+				.panel.panel-default
+					.panel-heading
+						h3.panel-title Billing Amount
+					.panel-body
+						form#invoice-form(role='form')
+							.row
+								.col-xs-12
+									.form-group
+										label(for='cardNumber') VPN Subscription
+										.input-group
+			.col-xs-12.col-md-4
+				.panel.panel-default
+					.panel-heading
+						h3.panel-title
+							img.pull-right(src='_img/accepted_cards.png')
+							| Payment Details
+					.panel-body
+						form#payment-form(role='form')
+							.row
+								.col-xs-12
+									.form-group
+										label(for='cardNumber') CARD NUMBER
+										.input-group
+											input.form-control(type='text', placeholder='Valid Card Number', required='', autofocus='', data-stripe='number')
+											span.input-group-addon
+												i.fa.fa-credit-card
+							.row
+								.col-xs-12
+									.form-group
+										label(for='cardName') CARDHOLDER NAME
+										input.form-control(type='text', data-stripe='name')
+							.row
+								.col-xs-7.col-md-7
+									.form-group
+										label(for='exp') EXPIRATION DATE
+										.col-xs-7.col-lg-7.pl-ziro
+											input.form-control(type='text', placeholder='MM/DD', required='', data-stripe='exp')
+								.col-xs-5.col-md-5.pull-right
+									.form-group
+										label(for='cvc') CVC
+										input.form-control(type='password', placeholder='CV', required='', data-stripe='cvc')
+							.row
+								.col-xs-12
+									button.btn.btn-success.btn-lg.btn-block(type='submit') Submit Payment
+							.row(style='display:none;')
+								.col-xs-12
+									p.payment-errors
+			.col-xs-12.col-md-4
+				.card-wrapper
+
+// vim: foldmethod=marker wrap
