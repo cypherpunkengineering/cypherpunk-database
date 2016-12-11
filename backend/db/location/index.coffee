@@ -25,8 +25,8 @@ class cypherpunk.backend.db.location extends wiz.framework.http.database.mongo.b
 
 		projection = @projection()
 		opts =
-			skip: if req.params.iDisplayStart then req.params.iDisplayStart else 0
-			limit: if req.params.iDisplayLength > 0 and req.params.iDisplayLength < 200 then req.params.iDisplayLength else 25
+			skip: parseInt(if req.params.iDisplayStart then req.params.iDisplayStart else 0)
+			limit: parseInt(if req.params.iDisplayLength > 0 and req.params.iDisplayLength < 200 then req.params.iDisplayLength else 25)
 			sort: 'data.fullname'
 
 		@count req, res, criteria, projection, (recordCount) =>
