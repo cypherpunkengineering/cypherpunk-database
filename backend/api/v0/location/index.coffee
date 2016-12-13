@@ -805,6 +805,28 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ ]
 
 			#}}}
+			devtokyo4: #{{{
+				id: 'devtokyo4'
+				region: 'DEV'
+				country: 'JP'
+
+				name: 'Tokyo Hatos VM'
+				level: 'developer'
+				servers: 1
+
+				ovHostname: 'tokyo.cypherpunk.privacy.network'
+				ovDefault: [ '185.176.52.7' ]
+				ovNone: [ '185.176.52.7' ]
+				ovStrong: [ '185.176.52.7' ]
+				ovStealth: [ '185.176.52.7' ]
+
+				ipsecHostname: 'tokyo.cypherpunk.privacy.network'
+				ipsecDefault: [ '185.176.52.38' ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
+
+			#}}}
 			devhonolulu: #{{{
 				id: 'devhonolulu'
 				region: 'DEV'
