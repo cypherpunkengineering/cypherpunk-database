@@ -66,12 +66,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'amsterdam.cypherpunk.privacy.network'
 				ovDefault: [ '185.80.221.5' ]
-				ovNone: [ '185.80.221.34' ]
-				ovStrong: [ '185.80.221.35' ]
+				ovNone: [ '185.80.221.5' ]
+				ovStrong: [ '185.80.221.5' ]
 				ovStealth: [ '185.80.221.55' ]
 
 				ipsecHostname: 'amsterdam.cypherpunk.privacy.network'
-				ipsecDefault: [ '185.80.221.90' ]
+				ipsecDefault: [ '185.80.221.5' ]
 
 				httpDefault: [ '185.80.221.121' ]
 				socksDefault: [ '185.80.221.144' ]
@@ -110,12 +110,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'dallas.cypherpunk.privacy.network'
 				ovDefault: [ '104.200.142.50' ]
-				ovNone: [ '104.200.142.51' ]
-				ovStrong: [ '104.200.142.52' ]
+				ovNone: [ '104.200.142.50' ]
+				ovStrong: [ '104.200.142.50' ]
 				ovStealth: [ '104.200.142.53' ]
 
 				ipsecHostname: 'dallas.cypherpunk.privacy.network'
-				ipsecDefault: [ '104.200.142.54' ]
+				ipsecDefault: [ '104.200.142.50' ]
 
 				httpDefault: [ '104.200.142.55' ]
 				socksDefault: [ '104.200.142.56' ]
@@ -155,12 +155,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'newyork.cypherpunk.privacy.network'
 				ovDefault: [ '209.95.51.34' ]
-				ovNone: [ '209.95.51.35' ]
-				ovStrong: [ '209.95.51.36' ]
+				ovNone: [ '209.95.51.34' ]
+				ovStrong: [ '209.95.51.34' ]
 				ovStealth: [ '209.95.51.37' ]
 
 				ipsecHostname: 'newyork.cypherpunk.privacy.network'
-				ipsecDefault: [ '209.95.51.38' ]
+				ipsecDefault: [ '209.95.51.34' ]
 
 				httpDefault: [ '209.95.51.40' ]
 				socksDefault: [ '209.95.51.42' ]
@@ -177,12 +177,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'losangeles.cypherpunk.privacy.network'
 				ovDefault: [ '184.170.243.67' ]
-				ovNone: [ '184.170.243.68' ]
-				ovStrong: [ '184.170.243.69' ]
+				ovNone: [ '184.170.243.67' ]
+				ovStrong: [ '184.170.243.67' ]
 				ovStealth: [ '184.170.243.70' ]
 
 				ipsecHostname: 'losangeles.cypherpunk.privacy.network'
-				ipsecDefault: [ '184.170.243.71' ]
+				ipsecDefault: [ '184.170.243.67' ]
 
 				httpDefault: [ '184.170.243.72' ]
 				socksDefault: [ '184.170.243.73' ]
@@ -198,12 +198,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'london.cypherpunk.privacy.network'
 				ovDefault: [ '88.202.186.223' ]
-				ovNone: [ '88.202.186.224' ]
-				ovStrong: [ '88.202.186.225' ]
+				ovNone: [ '88.202.186.223' ]
+				ovStrong: [ '88.202.186.223' ]
 				ovStealth: [ '88.202.186.226' ]
 
 				ipsecHostname: 'london.cypherpunk.privacy.network'
-				ipsecDefault: [ '88.202.186.227' ]
+				ipsecDefault: [ '88.202.186.223' ]
 
 				httpDefault: [ '88.202.186.228' ]
 				socksDefault: [ '88.202.186.229' ]
@@ -220,12 +220,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'vancouver.cypherpunk.privacy.network'
 				ovDefault: [ '107.181.189.146' ]
-				ovNone: [ '107.181.189.147' ]
-				ovStrong: [ '107.181.189.148' ]
+				ovNone: [ '107.181.189.146' ]
+				ovStrong: [ '107.181.189.146' ]
 				ovStealth: [ '107.181.189.149' ]
 
 				ipsecHostname: 'vancouver.cypherpunk.privacy.network'
-				ipsecDefault: [ '107.181.189.150' ]
+				ipsecDefault: [ '107.181.189.146' ]
 
 				httpDefault: [ '107.181.189.151' ]
 				socksDefault: [ '107.181.189.152' ]
@@ -244,12 +244,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'atlanta.cypherpunk.privacy.network'
 				ovDefault: [ '172.98.79.242' ]
-				ovNone: [ '172.98.79.243' ]
-				ovStrong: [ '172.98.79.244' ]
+				ovNone: [ '172.98.79.242' ]
+				ovStrong: [ '172.98.79.242' ]
 				ovStealth: [ '172.98.79.245' ]
 
 				ipsecHostname: 'atlanta.cypherpunk.privacy.network'
-				ipsecDefault: [ '172.98.79.246' ]
+				ipsecDefault: [ '172.98.79.242' ]
 
 				httpDefault: [ '172.98.79.247' ]
 				socksDefault: [ '172.98.79.248' ]
@@ -288,12 +288,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'chicago.cypherpunk.privacy.network'
 				ovDefault: [ '104.200.153.226' ]
-				ovNone: [ '104.200.153.227' ]
-				ovStrong: [ '104.200.153.228' ]
+				ovNone: [ '104.200.153.226' ]
+				ovStrong: [ '104.200.153.226' ]
 				ovStealth: [ '104.200.153.229' ]
 
 				ipsecHostname: 'chicago.cypherpunk.privacy.network'
-				ipsecDefault: [ '104.200.153.230' ]
+				ipsecDefault: [ '104.200.153.226' ]
 
 				httpDefault: [ '104.200.153.231' ]
 				socksDefault: [ '104.200.153.232' ]
@@ -332,12 +332,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'miami.cypherpunk.privacy.network'
 				ovDefault: [ '172.98.76.50' ]
-				ovNone: [ '172.98.76.51' ]
-				ovStrong: [ '172.98.76.52' ]
+				ovNone: [ '172.98.76.50' ]
+				ovStrong: [ '172.98.76.50' ]
 				ovStealth: [ '172.98.76.53' ]
 
 				ipsecHostname: 'miami.cypherpunk.privacy.network'
-				ipsecDefault: [ '172.98.76.54' ]
+				ipsecDefault: [ '172.98.76.50' ]
 
 				httpDefault: [ '172.98.76.55' ]
 				socksDefault: [ '172.98.76.56' ]
@@ -442,12 +442,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'newjersey.cypherpunk.privacy.network'
 				ovDefault: [ '172.98.78.98' ]
-				ovNone: [ '172.98.78.99' ]
-				ovStrong: [ '172.98.78.100' ]
+				ovNone: [ '172.98.78.98' ]
+				ovStrong: [ '172.98.78.98' ]
 				ovStealth: [ '172.98.78.101' ]
 
 				ipsecHostname: 'newjersey.cypherpunk.privacy.network'
-				ipsecDefault: [ '172.98.78.102' ]
+				ipsecDefault: [ '172.98.78.98' ]
 
 				httpDefault: [ '172.98.78.103' ]
 				socksDefault: [ '172.98.78.104' ]
@@ -485,12 +485,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'paris.cypherpunk.privacy.network'
 				ovDefault: [ '159.8.80.208' ]
-				ovNone: [ '159.8.80.209' ]
-				ovStrong: [ '159.8.80.210' ]
+				ovNone: [ '159.8.80.208' ]
+				ovStrong: [ '159.8.80.208' ]
 				ovStealth: [ '159.8.80.211' ]
 
 				ipsecHostname: 'paris.cypherpunk.privacy.network'
-				ipsecDefault: [ '159.8.80.212' ]
+				ipsecDefault: [ '159.8.80.208' ]
 
 				httpDefault: [ '159.8.80.213' ]
 				socksDefault: [ '159.8.80.214' ]
@@ -507,12 +507,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'phoenix.cypherpunk.privacy.network'
 				ovDefault: [ '104.200.133.242' ]
-				ovNone: [ '104.200.133.243' ]
-				ovStrong: [ '104.200.133.244' ]
+				ovNone: [ '104.200.133.242' ]
+				ovStrong: [ '104.200.133.242' ]
 				ovStealth: [ '104.200.133.245' ]
 
 				ipsecHostname: 'phoenix.cypherpunk.privacy.network'
-				ipsecDefault: [ '104.200.133.246' ]
+				ipsecDefault: [ '104.200.133.242' ]
 
 				httpDefault: [ '104.200.133.247' ]
 				socksDefault: [ '104.200.133.248' ]
@@ -528,12 +528,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'saltlakecity.cypherpunk.privacy.network'
 				ovDefault: [ '173.244.209.73' ]
-				ovNone: [ '209.95.56.15' ]
-				ovStrong: [ '209.95.56.16' ]
+				ovNone: [ '173.244.209.73' ]
+				ovStrong: [ '173.244.209.73' ]
 				ovStealth: [ '209.95.56.17' ]
 
 				ipsecHostname: 'saltlakecity.cypherpunk.privacy.network'
-				ipsecDefault: [ '209.95.56.18' ]
+				ipsecDefault: [ '173.244.209.73' ]
 
 				httpDefault: [ '209.95.56.19' ]
 				socksDefault: [ '209.95.56.20' ]
@@ -571,12 +571,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'seattle.cypherpunk.privacy.network'
 				ovDefault: [ '104.200.129.210' ]
-				ovNone: [ '104.200.129.211' ]
-				ovStrong: [ '104.200.129.212' ]
+				ovNone: [ '104.200.129.210' ]
+				ovStrong: [ '104.200.129.210' ]
 				ovStealth: [ '104.200.129.213' ]
 
 				ipsecHostname: 'seattle.cypherpunk.privacy.network'
-				ipsecDefault: [ '104.200.129.214' ]
+				ipsecDefault: [ '104.200.129.210' ]
 
 				httpDefault: [ '104.200.129.215' ]
 				socksDefault: [ '104.200.129.216' ]
@@ -681,12 +681,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'toronto.cypherpunk.privacy.network'
 				ovDefault: [ '172.98.66.194' ]
-				ovNone: [ '172.98.66.195' ]
-				ovStrong: [ '172.98.66.196' ]
+				ovNone: [ '172.98.66.194' ]
+				ovStrong: [ '172.98.66.194' ]
 				ovStealth: [ '172.98.66.197' ]
 
 				ipsecHostname: 'toronto.cypherpunk.privacy.network'
-				ipsecDefault: [ '172.98.66.198' ]
+				ipsecDefault: [ '172.98.66.194' ]
 
 				httpDefault: [ '172.98.66.199' ]
 				socksDefault: [ '172.98.66.200' ]
@@ -773,12 +773,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'losangeles.cypherpunk.privacy.network'
 				ovDefault: [ '174.136.108.243' ]
-				ovNone: [ '174.136.108.244' ]
-				ovStrong: [ '174.136.108.245' ]
+				ovNone: [ '174.136.108.243' ]
+				ovStrong: [ '174.136.108.243' ]
 				ovStealth: [ '174.136.108.246' ]
 
 				ipsecHostname: 'losangeles.cypherpunk.privacy.network'
-				ipsecDefault: [ '174.136.108.247' ]
+				ipsecDefault: [ '174.136.108.243' ]
 
 				httpDefault: [ '174.136.108.248' ]
 				socksDefault: [ '174.136.108.249' ]
@@ -799,7 +799,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ovStealth: [ '185.176.52.37' ]
 
 				ipsecHostname: 'tokyo.cypherpunk.privacy.network'
-				ipsecDefault: [ '185.176.52.38' ]
+				ipsecDefault: [ '185.176.52.34' ]
 
 				httpDefault: [ ]
 				socksDefault: [ ]
@@ -838,12 +838,12 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				ovHostname: 'honolulu.cypherpunk.privacy.network'
 				ovDefault: [ '208.111.48.146' ]
-				ovNone: [ '208.111.48.147' ]
-				ovStrong: [ '208.111.48.148' ]
+				ovNone: [ '208.111.48.146' ]
+				ovStrong: [ '208.111.48.146' ]
 				ovStealth: [ '208.111.48.149' ]
 
 				ipsecHostname: 'honolulu.cypherpunk.privacy.network'
-				ipsecDefault: [ '208.111.48.150' ]
+				ipsecDefault: [ '208.111.48.146' ]
 
 				httpDefault: [ '208.111.48.151' ]
 				socksDefault: [ '208.111.48.152' ]
