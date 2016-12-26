@@ -21,22 +21,17 @@ class cypherpunk.backend.api.v0.app.versions extends cypherpunk.backend.api.base
 	handler: (req, res) =>
 		out =
 			windows: #{{{
-				latest: '0.4.0'
+				latest: '0.4.0-beta'
 				required: '0.3.0'
 				description: 'A new version is available, please update your Cypherpunk Privacy app from https://cypherpunk.com/download'
 			#}}}
 			macos: #{{{
-				latest: '0.4.0'
+				latest: '0.4.0-beta'
 				required: '0.3.0'
 				description: 'A new version is available, please update your Cypherpunk Privacy app from https://cypherpunk.com/download'
 			#}}}
-			debian: #{{{
-				latest: '0.4.0'
-				required: '0.3.0'
-				description: 'A new version is available, please update your Cypherpunk Privacy app from https://cypherpunk.com/download'
-			#}}}
-			fedora: #{{{
-				latest: '0.4.0'
+			linux: #{{{
+				latest: '0.4.0-beta'
 				required: '0.3.0'
 				description: 'A new version is available, please update your Cypherpunk Privacy app from https://cypherpunk.com/download'
 			#}}}
