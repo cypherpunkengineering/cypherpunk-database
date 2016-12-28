@@ -381,11 +381,11 @@ class wiz.portal.userjs.table.base extends wiz.framework.app.base
 					false:
 						value: 'false'
 						text: @stringBooleanDisabled
-						selected: (record?.data?[id] == 'false')
+						selected: (record?.data?[id]?.toString() == 'false')
 					true:
 						value: 'true'
 						text: @stringBooleanEnabled
-						selected: (record?.data?[id] == 'true')
+						selected: (record?.data?[id]?.toString() == 'true')
 
 			when 'nugget'
 				nugget ?= schema.nugget
