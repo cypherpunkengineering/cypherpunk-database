@@ -73,8 +73,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'amsterdam.cypherpunk.privacy.network'
 				ipsecDefault: [ '185.80.221.5' ]
 
-				httpDefault: [ '185.80.221.121' ]
-				socksDefault: [ '185.80.221.144' ]
+				httpDefault: [ '185.80.221.5' ]
+				socksDefault: [ '185.80.221.5' ]
 
 			#}}}
 			frankfurt: #{{{
@@ -117,8 +117,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'dallas.cypherpunk.privacy.network'
 				ipsecDefault: [ '104.200.142.50' ]
 
-				httpDefault: [ '104.200.142.55' ]
-				socksDefault: [ '104.200.142.56' ]
+				httpDefault: [ '104.200.142.50' ]
+				socksDefault: [ '104.200.142.50' ]
 
 			#}}}
 			hongkong: #{{{
@@ -162,8 +162,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'newyork.cypherpunk.privacy.network'
 				ipsecDefault: [ '209.95.51.34' ]
 
-				httpDefault: [ '209.95.51.40' ]
-				socksDefault: [ '209.95.51.42' ]
+				httpDefault: [ '209.95.51.34' ]
+				socksDefault: [ '209.95.51.34' ]
 
 			#}}}
 			losangeles: #{{{
@@ -184,8 +184,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'losangeles.cypherpunk.privacy.network'
 				ipsecDefault: [ '184.170.243.67' ]
 
-				httpDefault: [ '184.170.243.72' ]
-				socksDefault: [ '184.170.243.73' ]
+				httpDefault: [ '184.170.243.67' ]
+				socksDefault: [ '184.170.243.67' ]
 			#}}}
 			london: #{{{
 				id: 'london'
@@ -205,8 +205,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'london.cypherpunk.privacy.network'
 				ipsecDefault: [ '88.202.186.223' ]
 
-				httpDefault: [ '88.202.186.228' ]
-				socksDefault: [ '88.202.186.229' ]
+				httpDefault: [ '88.202.186.223' ]
+				socksDefault: [ '88.202.186.223' ]
 
 			#}}}
 			vancouver: #{{{
@@ -227,8 +227,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'vancouver.cypherpunk.privacy.network'
 				ipsecDefault: [ '107.181.189.146' ]
 
-				httpDefault: [ '107.181.189.151' ]
-				socksDefault: [ '107.181.189.152' ]
+				httpDefault: [ '107.181.189.146' ]
+				socksDefault: [ '107.181.189.146' ]
 
 			#}}}
 
@@ -251,8 +251,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'atlanta.cypherpunk.privacy.network'
 				ipsecDefault: [ '172.98.79.242' ]
 
-				httpDefault: [ '172.98.79.247' ]
-				socksDefault: [ '172.98.79.248' ]
+				httpDefault: [ '172.98.79.242' ]
+				socksDefault: [ '172.98.79.242' ]
 
 			#}}}
 			chennai: #{{{
@@ -295,8 +295,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'chicago.cypherpunk.privacy.network'
 				ipsecDefault: [ '104.200.153.226' ]
 
-				httpDefault: [ '104.200.153.231' ]
-				socksDefault: [ '104.200.153.232' ]
+				httpDefault: [ '104.200.153.226' ]
+				socksDefault: [ '104.200.153.226' ]
 
 			#}}}
 			istanbul: #{{{
@@ -339,8 +339,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'miami.cypherpunk.privacy.network'
 				ipsecDefault: [ '172.98.76.50' ]
 
-				httpDefault: [ '172.98.76.55' ]
-				socksDefault: [ '172.98.76.56' ]
+				httpDefault: [ '172.98.76.50' ]
+				socksDefault: [ '172.98.76.50' ]
 
 			#}}}
 			melbourne: #{{{
@@ -449,8 +449,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'newjersey.cypherpunk.privacy.network'
 				ipsecDefault: [ '172.98.78.98' ]
 
-				httpDefault: [ '172.98.78.103' ]
-				socksDefault: [ '172.98.78.104' ]
+				httpDefault: [ '172.98.78.98' ]
+				socksDefault: [ '172.98.78.98' ]
 			#}}}
 			oslo: #{{{
 				id: 'oslo'
@@ -492,8 +492,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'paris.cypherpunk.privacy.network'
 				ipsecDefault: [ '159.8.80.208' ]
 
-				httpDefault: [ '159.8.80.213' ]
-				socksDefault: [ '159.8.80.214' ]
+				httpDefault: [ '159.8.80.208' ]
+				socksDefault: [ '159.8.80.208' ]
 
 			#}}}
 			phoenix: #{{{
@@ -514,8 +514,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'phoenix.cypherpunk.privacy.network'
 				ipsecDefault: [ '104.200.133.242' ]
 
-				httpDefault: [ '104.200.133.247' ]
-				socksDefault: [ '104.200.133.248' ]
+				httpDefault: [ '104.200.133.242' ]
+				socksDefault: [ '104.200.133.242' ]
 			#}}}
 			saltlakecity: #{{{
 				id: 'saltlakecity'
@@ -535,8 +535,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'saltlakecity.cypherpunk.privacy.network'
 				ipsecDefault: [ '173.244.209.73' ]
 
-				httpDefault: [ '209.95.56.19' ]
-				socksDefault: [ '209.95.56.20' ]
+				httpDefault: [ '173.244.209.73' ]
+				socksDefault: [ '173.244.209.73' ]
 			#}}}
 			saopaulo: #{{{
 				id: 'saopaulo'
@@ -578,8 +578,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'seattle.cypherpunk.privacy.network'
 				ipsecDefault: [ '104.200.129.210' ]
 
-				httpDefault: [ '104.200.129.215' ]
-				socksDefault: [ '104.200.129.216' ]
+				httpDefault: [ '104.200.129.210' ]
+				socksDefault: [ '104.200.129.210' ]
 
 			#}}}
 			siliconvalley: #{{{
@@ -688,8 +688,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'toronto.cypherpunk.privacy.network'
 				ipsecDefault: [ '172.98.66.194' ]
 
-				httpDefault: [ '172.98.66.199' ]
-				socksDefault: [ '172.98.66.200' ]
+				httpDefault: [ '172.98.66.194' ]
+				socksDefault: [ '172.98.66.194' ]
 
 			#}}}
 			washingtondc: #{{{
@@ -801,8 +801,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'tokyo.cypherpunk.privacy.network'
 				ipsecDefault: [ '185.176.52.34' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '185.176.52.34' ]
+				socksDefault: [ '185.176.52.34' ]
 
 			#}}}
 			devtokyo4: #{{{
@@ -845,8 +845,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ipsecHostname: 'honolulu.cypherpunk.privacy.network'
 				ipsecDefault: [ '208.111.48.146' ]
 
-				httpDefault: [ '208.111.48.151' ]
-				socksDefault: [ '208.111.48.152' ]
+				httpDefault: [ '208.111.48.146' ]
+				socksDefault: [ '208.111.48.146' ]
 
 			#}}}
 
