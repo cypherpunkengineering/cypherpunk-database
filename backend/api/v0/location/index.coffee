@@ -748,16 +748,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 1
 
 				ovHostname: 'freebsd1.tokyo.vpn.cypherpunk.network'
-				ovDefault: [ '208.111.52.1' ]
-				ovNone: [ '208.111.52.11' ]
-				ovStrong: [ '208.111.52.21' ]
-				ovStealth: [ '208.111.52.31' ]
+				ovDefault: [ '185.176.52.2' ]
+				ovNone: [ '185.176.52.2' ]
+				ovStrong: [ '185.176.52.2' ]
+				ovStealth: [ '185.176.52.3' ]
 
 				ipsecHostname: 'freebsd1.tokyo.vpn.cypherpunk.network'
-				ipsecDefault: [ '208.111.52.41' ]
+				ipsecDefault: [ '185.176.52.2' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '185.176.52.2' ]
+				socksDefault: [ '185.176.52.2' ]
 
 			#}}}
 
