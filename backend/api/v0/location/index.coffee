@@ -484,16 +484,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'paris.cypherpunk.privacy.network'
-				ovDefault: [ '159.8.80.208' ]
-				ovNone: [ '159.8.80.208' ]
-				ovStrong: [ '159.8.80.208' ]
-				ovStealth: [ '159.8.80.211' ]
+				ovDefault: [ '' ]
+				ovNone: [ '' ]
+				ovStrong: [ '' ]
+				ovStealth: [ '' ]
 
 				ipsecHostname: 'paris.cypherpunk.privacy.network'
-				ipsecDefault: [ '159.8.80.208' ]
+				ipsecDefault: [ '' ]
 
-				httpDefault: [ '159.8.80.208' ]
-				socksDefault: [ '159.8.80.208' ]
+				httpDefault: [ '' ]
+				socksDefault: [ '' ]
 
 			#}}}
 			phoenix: #{{{
@@ -762,27 +762,6 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			#}}}
 
 		developer:
-			losangeles1: #{{{
-				id: 'losangeles1'
-				region: 'NA'
-				country: 'US'
-
-				name: 'Los Angeles old, California'
-				level: 'free'
-				servers: 8
-
-				ovHostname: 'losangeles.cypherpunk.privacy.network'
-				ovDefault: [ '174.136.108.243' ]
-				ovNone: [ '174.136.108.243' ]
-				ovStrong: [ '174.136.108.243' ]
-				ovStealth: [ '174.136.108.246' ]
-
-				ipsecHostname: 'losangeles.cypherpunk.privacy.network'
-				ipsecDefault: [ '174.136.108.243' ]
-
-				httpDefault: [ '174.136.108.248' ]
-				socksDefault: [ '174.136.108.249' ]
-			#}}}
 			devtokyo3: #{{{
 				id: 'devtokyo3'
 				region: 'DEV'
