@@ -147,6 +147,7 @@ class wiz.framework.http.resource.base extends wiz.framework.list.tree
 		catch e
 			wiz.log.err err
 			res.send 500, 'server error'
+			console.log e.stack.split '\n'
 	#}}}
 	handlerOPTIONS: (req, res) => #{{{ default handler for OPTIONS method
 		return res.send 404 unless req.route?
