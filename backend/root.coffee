@@ -105,7 +105,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 			wiz.log.err 'no user email!!'
 			return
 
-		args =
+		mailData =
 			from:
 				name: "Cypherpunk Privacy"
 				email: "welcome@cypherpunk.com"
@@ -117,7 +117,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 			substitutions:
 				'-confirmUrl-': @generateConfirmationURL(user)
 
-		@server.root.sendgrid.mailTemplate args, (error, response) =>
+		@server.root.sendgrid.mailTemplate mailData, (error, response) =>
 			if @debug
 				console.log 'got callback from sendgrid:'
 				console.log response.statusCode
@@ -167,13 +167,14 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 				'-subscriptionRenewal-': user.data.subscriptionRenewal
 				'-subscriptionExpiration-': user.data.subscriptionExpiration
 
+		wiz.log.info "Sending upgrade email to #{user.data.email}"
 		@sendMail(mailData, cb)
 	#}}}
 	sendMail: (mailData, cb) => #{{{
 		if @debug
 			console.log 'send mail to sendgrid:'
 			console.log mailData
-		@server.root.sendgrid.mailTemplate args, (error, response) =>
+		@server.root.sendgrid.mailTemplate mailData, (error, response) =>
 			if @debug
 				console.log 'got callback from sendgrid:'
 				console.log response.statusCode

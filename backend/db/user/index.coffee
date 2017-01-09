@@ -168,5 +168,35 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			recordToInsert[@dataKey][@schema.subscriptionExpirationKey] = subscriptionData[@schema.subscriptionExpirationKey]
 		@insert req, res, recordToInsert, cb
 	#}}}
+	upgrade: (req, res, userID, cb = null) => #{{{ if user type is free, change to premium
+		@findOneByKey req, res, @docKey, userID, @projection(), (req, res, user) =>
+			return cb(req, res, null) if not user and cb
+			return res.send 404 if not user
+			return res.send 500 if not user[@dataKey]?
+			dataset = {}
+			dataset[@typeKey] = "premium" if user[@typeKey] == "free"
+			dataset[@dataKey] = user[@dataKey]
+			@updateCustomDatasetByID req, res, userID, dataset, (req2, res2, result2) =>
+				if result2?.result?.ok != 1
+					wiz.log.err 'DB Error while updating user data!'
+					console.log result2
+					return res.send 500
+				# get freshly updated user object from db
+				@findOneByKey req, res, @docKey, userID, @projection(), (req, res, result) =>
+					return cb(req, res, null) if not result and cb
+					return res.send 404 if not result
+					return res.send 500 if not result[@dataKey]?
+					wiz.log.info "Upgraded user account (free -> premium) for #{user[@dataKey][@emailKey]}"
+
+					# pass updated db object to radius database method
+					@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
+						if err
+							wiz.log.err(err)
+							return res.send 500, 'Unable to update database'
+
+						return cb(req, res, result) if cb
+						return res.send 500 if not result2
+						return res.send 200
+	#}}}
 
 # vim: foldmethod=marker wrap
