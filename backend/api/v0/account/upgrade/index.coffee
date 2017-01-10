@@ -25,7 +25,8 @@ class cypherpunk.backend.api.v0.account.upgrade.googlePlay extends cypherpunk.ba
 					console.log sendgridError
 					return
 
-			res.send 200
+				out = @parent.parent.accountinfo(req)
+				res.send 200, out
 	#}}}
 
 class cypherpunk.backend.api.v0.account.upgrade.resource extends cypherpunk.backend.base
