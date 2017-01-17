@@ -156,16 +156,14 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 	#}}}
 
 	# public stranger APIs
-	signup: (req, res, subscriptionData, cb) => #{{{
+	signup: (req, res, data, cb) => #{{{
 		return unless recordToInsert = @schema.fromStranger(req, res)
-		if subscriptionData?[@schema.confirmedKey]?
-			recordToInsert[@dataKey][@schema.confirmedKey] = subscriptionData[@schema.confirmedKey]
-		if subscriptionData?[@schema.subscriptionPlanKey]?
-			recordToInsert[@dataKey][@schema.subscriptionPlanKey] = subscriptionData[@schema.subscriptionPlanKey]
-		if subscriptionData?[@schema.subscriptionRenewalKey]?
-			recordToInsert[@dataKey][@schema.subscriptionRenewalKey] = subscriptionData[@schema.subscriptionRenewalKey]
-		if subscriptionData?[@schema.subscriptionExpirationKey]?
-			recordToInsert[@dataKey][@schema.subscriptionExpirationKey] = subscriptionData[@schema.subscriptionExpirationKey]
+		if data?[@schema.confirmedKey]?
+			recordToInsert[@dataKey][@schema.confirmedKey] = data[@schema.confirmedKey]
+		if data?[@schema.stripeCustomerIDKey]?
+			recordToInsert[@dataKey][@schema.stripeCustomerIDKey] = data[@schema.stripeCustomerIDKey];
+		if data?[@schema.subscriptionCurrentIDKey]?
+			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey];
 		@insert req, res, recordToInsert, cb
 	#}}}
 	upgrade: (req, res, userID, cb = null) => #{{{ if user type is free, change to premium

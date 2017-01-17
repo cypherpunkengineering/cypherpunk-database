@@ -19,9 +19,8 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 	@userKey: 'user'
 	@confirmedKey: 'confirmed'
 	@confirmationTokenKey: 'confirmationToken'
-	@subscriptionPlanKey: 'subscriptionPlan'
-	@subscriptionRenewalKey: 'subscriptionRenewal'
-	@subscriptionExpirationKey: 'subscriptionExpiration'
+	@stripeCustomerIDKey: 'stripeCustomerId'
+	@subscriptionCurrentIDKey: 'subscriptionCurrentID'
 	@privacyKey: 'privacy'
 	@privacyUserKey: 'username'
 	@privacyPassKey: 'password'
@@ -120,29 +119,18 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 
-			subscriptionPlan:
-				label: 'subscription plan'
-				type: 'asciiNoSpace'
+			stripeCustomerID:
+				label: 'Stripe Customer ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
 
-			subscriptionRenewal:
-				label: 'subscription renewal'
-				type: 'asciiNoSpace'
+			subscriptionCurrentID:
+				label: 'Current Subscription ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
 
-			subscriptionExpiration:
-				label: 'subscription expiration'
-				type: 'asciiNoSpace'
-				minlen: 1
-				maxlen: 50
-				placeholder: ''
-				required: true
 		) #}}}
 		premium: (new type 'premium', 'Premium Account', 'list', #{{{
 			email:
@@ -165,29 +153,17 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 
-			subscriptionPlan:
-				label: 'subscription plan'
-				type: 'asciiNoSpace'
+			stripeCustomerID:
+				label: 'Stripe Customer ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
 
-			subscriptionRenewal:
-				label: 'subscription renewal'
-				type: 'asciiNoSpace'
+			subscriptionCurrentID:
+				label: 'Current Subscription ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
-
-			subscriptionExpiration:
-				label: 'subscription expiration'
-				type: 'asciiNoSpace'
-				minlen: 1
-				maxlen: 50
-				placeholder: ''
-				required: true
 		) #}}}
 		family: (new type 'family', 'Family Account', 'list', #{{{
 			email:
@@ -210,29 +186,17 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 
-			subscriptionPlan:
-				label: 'subscription plan'
-				type: 'asciiNoSpace'
+			stripeCustomerID:
+				label: 'Stripe Customer ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
 
-			subscriptionRenewal:
-				label: 'subscription renewal'
-				type: 'asciiNoSpace'
+			subscriptionCurrentID:
+				label: 'Current Subscription ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
-
-			subscriptionExpiration:
-				label: 'subscription expiration'
-				type: 'asciiNoSpace'
-				minlen: 1
-				maxlen: 50
-				placeholder: ''
-				required: true
 		) #}}}
 		enterprise: (new type 'enterprise', 'Enterprise Account', 'list', #{{{
 			email:
@@ -255,29 +219,17 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 
-			subscriptionPlan:
-				label: 'subscription plan'
-				type: 'asciiNoSpace'
+			stripeCustomerID:
+				label: 'Stripe Customer ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
 
-			subscriptionRenewal:
-				label: 'subscription renewal'
-				type: 'asciiNoSpace'
+			subscriptionCurrentID:
+				label: 'Current Subscription ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
-
-			subscriptionExpiration:
-				label: 'subscription expiration'
-				type: 'asciiNoSpace'
-				minlen: 1
-				maxlen: 50
-				placeholder: ''
-				required: true
 		) #}}}
 
 	# staff accounts
@@ -302,29 +254,17 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 
-			subscriptionPlan:
-				label: 'subscription plan'
-				type: 'asciiNoSpace'
+			stripeCustomerID:
+				label: 'Stripe Customer ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
 
-			subscriptionRenewal:
-				label: 'subscription renewal'
-				type: 'asciiNoSpace'
+			subscriptionCurrentID:
+				label: 'Current Subscription ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
-
-			subscriptionExpiration:
-				label: 'subscription expiration'
-				type: 'asciiNoSpace'
-				minlen: 1
-				maxlen: 50
-				placeholder: ''
-				required: true
 		) #}}}
 		developer: (new type 'developer', 'Cypherpunk Developer', 'list', #{{{
 			email:
@@ -347,29 +287,17 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				placeholder: ''
 				required: true
 
-			subscriptionPlan:
-				label: 'subscription plan'
-				type: 'asciiNoSpace'
+			stripeCustomerID:
+				label: 'Stripe Customer ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
 
-			subscriptionRenewal:
-				label: 'subscription renewal'
-				type: 'asciiNoSpace'
+			subscriptionCurrentID:
+				label: 'Current Subscription ID'
+				type: 'asciiNoSpace',
 				minlen: 1
 				maxlen: 50
-				placeholder: ''
-				required: true
-
-			subscriptionExpiration:
-				label: 'subscription expiration'
-				type: 'asciiNoSpace'
-				minlen: 1
-				maxlen: 50
-				placeholder: ''
-				required: true
 		) #}}}
 
 # vim: foldmethod=marker wrap

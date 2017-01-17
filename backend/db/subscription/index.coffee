@@ -50,30 +50,31 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 		return res.send 501
 	#}}}
 
-	# custom APIs
-	# public stranger APIs
-	signup: (req, res, subscriptionData, cb) => #{{{
-		return unless recordToInsert = @schema.fromStranger(req, res)
-		if subscriptionData?[@schema.confirmedKey]?
-			recordToInsert[@dataKey][@schema.confirmedKey] = subscriptionData[@schema.confirmedKey]
-		if subscriptionData?[@schema.subscriptionPlanKey]?
-			recordToInsert[@dataKey][@schema.subscriptionPlanKey] = subscriptionData[@schema.subscriptionPlanKey]
-		if subscriptionData?[@schema.subscriptionRenewalKey]?
-			recordToInsert[@dataKey][@schema.subscriptionRenewalKey] = subscriptionData[@schema.subscriptionRenewalKey]
-		if subscriptionData?[@schema.subscriptionExpirationKey]?
-			recordToInsert[@dataKey][@schema.subscriptionExpirationKey] = subscriptionData[@schema.subscriptionExpirationKey]
-		@insert req, res, recordToInsert, cb
-	#}}}
+	@calculateType: (plan) =>
+		if plan[0...7] == "monthly"
+			type = 'monthly'
+		else if plan[0...12] == "semiannually"
+			type = 'semiannually'
+		else if plan[0...8] == "annually"
+			type = 'annually'
+		else
+			return null
 
-	fromStripePurchase: (req, res, recordToInsert = null, cb = null) => #{{{
-		if recordToInsert is null
-			return unless recordToInsert = @schema.fromUser(req, res, 'stripe', req.body[@dataKey])
+	@calculateRenewal: (plan) =>
+		subscriptionStart = new Date()
+		subscriptionRenewal = new Date(+subscriptionStart)
 
-		return super(req, res, recordToInsert, cb) if cb != null
+		if plan[0...7] == "monthly"
+			subscriptionRenewal.setDate(subscriptionStart.getDate() + 30)
+		else if plan[0...12] == "semiannually"
+			subscriptionRenewal.setDate(subscriptionStart.getDate() + 180)
+		else if plan[0...8] == "annually"
+			subscriptionRenewal.setDate(subscriptionStart.getDate() + 365)
+		else
+			return 0
 
-		super req, res, recordToInsert, (result) =>
-			res.send 200
-	#}}}
+		return subscriptionRenewal.toISOString()
+
 	findOneByTXID: (req, res, txid, cb) => #{{{
 		@findOneByKey req, res, "#{@dataKey}.#{@txidKey}", txid, @projection(), cb
 	#}}}
