@@ -51,7 +51,6 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 	#}}}
 
 	# custom APIs
-	# public stranger APIs
 	signup: (req, res, subscriptionData, cb) => #{{{
 		return unless recordToInsert = @schema.fromStranger(req, res)
 		if subscriptionData?[@schema.confirmedKey]?
@@ -65,14 +64,11 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 		@insert req, res, recordToInsert, cb
 	#}}}
 
-	fromStripePurchase: (req, res, recordToInsert = null, cb = null) => #{{{
-		if recordToInsert is null
-			return unless recordToInsert = @schema.fromUser(req, res, 'stripe', req.body[@dataKey])
-
-		return super(req, res, recordToInsert, cb) if cb != null
-
-		super req, res, recordToInsert, (result) =>
-			res.send 200
+	insertOneFromStripePurchase: (req, res, subscriptionType, stripeDataToInsert = [], cb = null) => #{{{
+		console.log 'fromStripePurchase'
+		console.log stripeDataToInsert
+		return unless recordToInsert = @schema.fromUser(req, res, subscriptionType, stripeDataToInsert[0])
+		@insert req, res, recordToInsert, cb
 	#}}}
 	findOneByTXID: (req, res, txid, cb) => #{{{
 		@findOneByKey req, res, "#{@dataKey}.#{@txidKey}", txid, @projection(), cb

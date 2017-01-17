@@ -14,15 +14,8 @@ class type
 class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.mongo.docMultiType
 
 	@fromUser: (req, res, subscriptionType, subscriptionData, updating = false) => #{{{
-
 		this.__super__.constructor.types = @types
 		doc = this.__super__.constructor.fromUser(req, res, subscriptionType, subscriptionData, updating)
-
-		return false unless doc
-
-		if doc?[@dataKey]?[@passwordKey]?  # hash password
-			doc[@dataKey][@passwordKey] = wiz.framework.http.account.authenticate.userpasswd.pwHash(doc[@dataKey][@passwordKey])
-
 		return doc
 	#}}}
 	@fromUserUpdate: (req, res, subscriptionType, origObj, subscriptionData) => #{{{
@@ -96,7 +89,6 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 				type: 'isodate'
 				maxlen: 50
 				placeholder: '$XX.XX'
-				required: true
 		) #}}}
 		semiannually: (new type 'semiannually', 'Semiannual Subscription', 'list', #{{{
 			plan:

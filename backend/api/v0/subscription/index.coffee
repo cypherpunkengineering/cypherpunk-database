@@ -115,7 +115,7 @@ class cypherpunk.backend.api.v0.subscription.common
 			plan: req.body.plan
 			email: req.session?.account?.email or req.body.email
 
-		@purchaseStripe req, res, stripeArgs, (stripeCustomerData) =>
+		@onSuccessfulStripeResult req, res, stripeArgs, (stripeCustomerData) =>
 
 			# XXX TODO: check for stripe errors, declines, etc.
 
@@ -148,7 +148,7 @@ class cypherpunk.backend.api.v0.subscription.common
 				out = req.server.root.account.doUserLogin(req, res, user)
 				res.send 200, out
 	#}}}
-	@purchaseStripe: (req, res, stripeArgs, cb) => #{{{
+	@onSuccessfulStripeResult: (req, res, stripeArgs, cb) => #{{{
 
 		try
 			req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
@@ -157,7 +157,7 @@ class cypherpunk.backend.api.v0.subscription.common
 				console.log 'user data from stripe'
 				console.log stripeCustomerData
 				# save transaction in db
-				req.server.root.api.subscription.database.stripePurchase req, res, stripeCustomerData
+				req.server.root.api.subscription.database.insertOneFromStripePurchase req, res, subscriptionRenewal, stripeCustomerData?.subscriptions?.data
 				cb(stripeCustomerData)
 
 		catch e
