@@ -13,21 +13,19 @@ class type
 
 class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.mongo.docMultiType
 
+	@providerKey: 'provider'
+	@providerSubscriptionIDKey: 'providerSubscriptionID'
+	@providerPlanIDKey: 'providerPlanID'
+	@purchaseTSKey: 'purchaseTS'
+	@renewalTSKey: 'renewalTS'
+	@activeKey: 'active'
+
 	@fromUser: (req, res, subscriptionType, subscriptionData, updating = false) => #{{{
 		this.__super__.constructor.types = @types
 		doc = this.__super__.constructor.fromUser(req, res, subscriptionType, subscriptionData, updating)
 		return doc
 	#}}}
 	@fromUserUpdate: (req, res, subscriptionType, origObj, subscriptionData) => #{{{
-
-		# if updating, we might have no password passed.
-		# if so, delete it, and restore the original pw hash
-		# to the resulting object.
-		if subscriptionData[@passwordKey]? and typeof subscriptionData[@passwordKey] is 'string'
-			# only update password if valid new password specified
-			if subscriptionData[@passwordKey] == ''
-				delete subscriptionData[@passwordKey]
-
 		# create old and new documents for merging
 		docOld = new this(subscriptionType, origObj[@dataKey])
 		return false unless docOld
@@ -38,12 +36,6 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 		this.__super__.constructor.types = @types
 		doc = this.__super__.constructor.fromUserMerge(req, res, subscriptionType, docOld, docNew)
 		return false unless doc
-
-		# restore original password hash
-		if not doc[@dataKey]?[@passwordKey]?
-			doc[@dataKey][@passwordKey] = origObj[@dataKey][@passwordKey]
-
-		return doc
 	#}}}
 
 	class type #{{{

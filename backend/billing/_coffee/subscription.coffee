@@ -18,8 +18,9 @@ class cypherpunk.backend.billing.userjs.billingSubscription.table extends wiz.po
 	stringSelectType: 'select subscription type...'
 	stringTitle: null # 'Subscription Management'
 	stringTableHeaders: [
-		'E-Mail Address'
-		'Last Logged In'
+		'Purchased Using'
+		'Payment PlanID'
+		'Purchased On'
 	]
 	#}}}
 	initTableHeadStrings: (t) => #{{{
@@ -51,7 +52,7 @@ class cypherpunk.backend.billing.userjs.billingSubscription.table extends wiz.po
 								text: @stringUpdateButton
 								click: @updateDialogOpen
 						)
-					when 2
+					when 3
 						if aData[i] == 0
 							ts = 'never'
 						else

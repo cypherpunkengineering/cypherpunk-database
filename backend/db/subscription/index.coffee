@@ -14,7 +14,6 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 	debug: true
 	schema: cypherpunk.backend.db.subscription.schema
 	upsert: false
-	txidKey: 'txid'
 
 	# DataTable methods
 	list: (req, res, subscriptionType) => #{{{
@@ -27,10 +26,10 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 		opts =
 			skip: parseInt(if req.params.iDisplayStart then req.params.iDisplayStart else 0)
 			limit: parseInt(if req.params.iDisplayLength > 0 and req.params.iDisplayLength < 200 then req.params.iDisplayLength else 25)
-			sort: 'data.fullname'
+			sort: "#{@dataKey}.#{@schema.purchaseTSKey}"
 
-		@count req, res, criteria, projection, (recordCount) =>
-			@find req, res, criteria, projection, opts, (results) =>
+		@count req, res, criteria, projection, (req, res, recordCount) =>
+			@find req, res, criteria, projection, opts, (req, res, results) =>
 				responseData = []
 				if not results or not results.length > 0
 					return @listResponse(req, res, responseData)
@@ -40,9 +39,9 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 						responseData.push
 							DT_RowId : result[@docKey]
 							0: result[@docKey] or 'unknown'
-							1: result[@dataKey].fullname or ''
-							2: result[@dataKey].email or ''
-							3: result.lastLoginTS or 0
+							1: result[@dataKey][@schema.providerKey] or ''
+							2: result[@dataKey][@schema.providerPlanIDKey] or ''
+							3: result[@dataKey][@schema.purchaseTSKey] or 0
 
 				@listResponse(req, res, responseData, recordCount)
 	#}}}
