@@ -77,47 +77,156 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 #     url: '/v1/customers/cus_9djahSvYrD1w4w/subscriptions'
 
 		monthly: (new type 'monthly', 'Monthly Subscription', 'list', #{{{
+			provider:
+				label: 'subscription provider'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+
+			providerSubscriptionID:
+				label: 'subscription provider subscription id'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+
 			plan:
 				label: 'subscription plan'
-				placeholder: 'monthly899'
 				type: 'asciiNoSpace'
-				maxlen: 30
+				maxlen: 25
 				required: true
 
 			purchaseTS:
-				label: 'subscription purchased on'
-				type: 'isodate'
-				maxlen: 50
-				placeholder: '$XX.XX'
-		) #}}}
-		semiannually: (new type 'semiannually', 'Semiannual Subscription', 'list', #{{{
-			plan:
-				label: 'subscription plan'
-				placeholder: 'semiannually4494'
+				label: 'subscription purchase timestamp'
 				type: 'asciiNoSpace'
-				maxlen: 30
 				required: true
 
-			renewal:
-				label: 'subscription renewal'
-				type: 'alphanumericdot'
+			renewalTS:
+				label: 'subscription renewal timestamp'
+				type: 'asciiNoSpace'
+
+			expirationTS:
+				label: 'subscription expiration timestamp'
+				type: 'asciiNoSpace'
+
+			cancellationTS:
+				label: 'subscription cancellation timestamp'
+				type: 'asciiNoSpace'
+
+			currentPeriodStartTS:
+				label: 'current period start timestamp'
+				type: 'asciiNoSpace'
+				required: true
+
+			currentPeriodEndTS:
+				label: 'curent period end timestamp'
+				type: 'asciiNoSpace'
+				required: true
+
+			active:
+				label: 'subscription active'
+				type: 'boolean'
+				required: true
+		) #}}}
+		semiannually: (new type 'semiannually', 'Semiannual Subscription', 'list', #{{{
+			provider:
+				label: 'subscription provider'
+				type: 'asciiNoSpace'
 				maxlen: 50
-				placeholder: '$XX.XX'
+				required: true
+
+			providerSubscriptionID:
+				label: 'subscription provider subscription id'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+
+			plan:
+				label: 'subscription plan'
+				type: 'asciiNoSpace'
+				maxlen: 25
+				required: true
+
+			purchaseTS:
+				label: 'subscription purchase timestamp'
+				type: 'asciiNoSpace'
+				required: true
+
+			renewalTS:
+				label: 'subscription renewal timestamp'
+				type: 'asciiNoSpace'
+
+			expirationTS:
+				label: 'subscription expiration timestamp'
+				type: 'asciiNoSpace'
+
+			cancellationTS:
+				label: 'subscription cancellation timestamp'
+				type: 'asciiNoSpace'
+
+			currentPeriodStartTS:
+				label: 'current period start timestamp'
+				type: 'asciiNoSpace'
+				required: true
+
+			currentPeriodEndTS:
+				label: 'curent period end timestamp'
+				type: 'asciiNoSpace'
+				required: true
+
+			active:
+				label: 'subscription active'
+				type: 'boolean'
 				required: true
 		) #}}}
 		annually: (new type 'annually', 'Annual Subscription', 'list', #{{{
-			plan:
-				label: 'subscription plan'
-				placeholder: 'annually5988'
+			provider:
+				label: 'subscription provider'
 				type: 'asciiNoSpace'
-				maxlen: 30
+				maxlen: 50
 				required: true
 
-			renewal:
-				label: 'subscription renewal'
-				type: 'alphanumericdot'
+			providerSubscriptionID:
+				label: 'subscription provider subscription id'
+				type: 'asciiNoSpace'
 				maxlen: 50
-				placeholder: '$XX.XX'
+				required: true
+
+			plan:
+				label: 'subscription plan'
+				type: 'asciiNoSpace'
+				maxlen: 25
+				required: true
+
+			purchaseTS:
+				label: 'subscription purchase timestamp'
+				type: 'asciiNoSpace'
+				required: true
+
+			renewalTS:
+				label: 'subscription renewal timestamp'
+				type: 'asciiNoSpace'
+
+			expirationTS:
+				label: 'subscription expiration timestamp'
+				type: 'asciiNoSpace'
+
+			cancellationTS:
+				label: 'subscription cancellation timestamp'
+				type: 'asciiNoSpace'
+
+			currentPeriodStartTS:
+				label: 'current period start timestamp'
+				type: 'asciiNoSpace'
+				required: true
+
+			currentPeriodEndTS:
+				label: 'curent period end timestamp'
+				type: 'asciiNoSpace'
+				required: true
+
+			active:
+				label: 'subscription active'
+				type: 'boolean'
 				required: true
 		) #}}}
 

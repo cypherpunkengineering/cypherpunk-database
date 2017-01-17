@@ -86,53 +86,41 @@ class cypherpunk.backend.api.v0.subscription.common
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
 
-		subscriptionStart = new Date()
-		subscriptionExpiration = new Date(+subscriptionStart)
+		subscriptionType = cypherpunk.backend.db.subscription.calculateType(req?.body?.plan)
+		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal(req?.body?.plan)
 
-		console.log req.body.plan[0...7]
-		console.log req.body.plan[0...11]
-
-		if req.body.plan[0...7] == "monthly"
-			subscriptionRenewal = "monthly"
-			subscriptionExpiration.setDate(subscriptionStart.getDate() + 30)
-		else if req.body.plan[0...12] == "semiannually"
-			subscriptionRenewal = "semiannually"
-			subscriptionExpiration.setDate(subscriptionStart.getDate() + 180)
-		else if req.body.plan[0...8] == "annually"
-			subscriptionRenewal = "annually"
-			subscriptionExpiration.setDate(subscriptionStart.getDate() + 365)
-		else
-			return res.send 400, "Invalid plan selected"
+		if !subscriptionRenewal || !subscriptionType
+			return res.send 500, 'Invalid Plan'
 
 		subscriptionData =
 			confirmed: true
-			subscriptionPlan: 'premium'
-			subscriptionRenewal: subscriptionRenewal
-			subscriptionExpiration: subscriptionExpiration
+			plan: req?.body?.plan
+			type: subscriptionType
+			renewal: subscriptionRenewal
+			currentPeriodStart: new Date().toISOString()
+			currentPeriodEnd: subscriptionRenewal
 
 		stripeArgs =
 			source: req.body.token
 			plan: req.body.plan
 			email: req.session?.account?.email or req.body.email
 
-		@onSuccessfulStripeResult req, res, stripeArgs, (stripeCustomerData) =>
+		@onSuccessfulStripeResult req, res, stripeArgs, subscriptionData, (stripeCustomerData, subscription) =>
 
 			# XXX TODO: check for stripe errors, declines, etc.
 
-			# if upgrading, just update session, will be auto-saved to db
 			if req.session?.account?.id?
-				req.session.account.data.subscriptionPlan = subscriptionData.subscriptionPlan
-				req.session.account.data.subscriptionRenewal = subscriptionData.subscriptionRenewal
-				req.session.account.data.subscriptionExpiration = subscriptionData.subscriptionExpiration
+				req.session.account.data.subscriptionCurrentID = subscription.id
 
 				req.server.root.api.user.database.updateCurrentUserData req, res, (req, res, result2) =>
-					# TODO: add transaction ID etc.
 					console.log result2
 					res.send 200
 
 				return
 
 			# if no account yet, create one
+			subscriptionData.stripeCustomerID = stripeCustomerData.id
+			subscriptionData.subscriptionCurrentID = subscription.id
 			req.server.root.api.user.database.signup req, res, subscriptionData, (req2, res2, result) =>
 
 				if result instanceof Array
@@ -148,17 +136,21 @@ class cypherpunk.backend.api.v0.subscription.common
 				out = req.server.root.account.doUserLogin(req, res, user)
 				res.send 200, out
 	#}}}
-	@onSuccessfulStripeResult: (req, res, stripeArgs, cb) => #{{{
+	@onSuccessfulStripeResult: (req, res, stripeArgs, subscriptionData, cb) => #{{{
 
 		try
 			req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
 				console.log stripeError if stripeError
 				return res.send 500, stripeError if stripeError
+
 				console.log 'user data from stripe'
 				console.log stripeCustomerData
+				console.log 'subscription data'
+				console.log subscriptionData
+
 				# save transaction in db
-				req.server.root.api.subscription.database.insertOneFromStripePurchase req, res, subscriptionRenewal, stripeCustomerData?.subscriptions?.data
-				cb(stripeCustomerData)
+				req.server.root.api.subscription.database.insertOneFromStripePurchase req, res, subscriptionData, stripeCustomerData?.subscriptions?.data, (req, res, subscription) =>
+					cb(stripeCustomerData, subscription)
 
 		catch e
 			console.log e
