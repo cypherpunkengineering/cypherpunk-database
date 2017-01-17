@@ -158,9 +158,9 @@ class cypherpunk.backend.api.v0.subscription.common
 			@upgradeStripeNewCustomer req, res, subscriptionType, subscriptionRenewal, () =>
 
 	#}}}
-	@doStripeTransactionCompletion: (req, res, subscription) => #{{{
+	@doStripeTransactionCompletion: (req, res, subscription, stripeCustomerID) => #{{{
 		# pass updated db object to radius database method
-		req.server.root.api.user.database.upgrade req, res, req.session.account.id, subscription.id, (req, res, user) =>
+		req.server.root.api.user.database.upgrade req, res, req.session.account.id, subscription.id, stripeCustomerID, (req, res, user) =>
 			# send purchase mail
 			req.server.root.sendPurchaseMail user, (sendgridError) =>
 				if sendgridError
@@ -244,7 +244,7 @@ class cypherpunk.backend.api.v0.subscription.common
 			# save transaction in db
 			req.server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
 				# set user's active subscription to this one
-				@doStripeTransactionCompletion(req, res, subscription)
+				@doStripeTransactionCompletion(req, res, subscription, stripeCustomerData?.id)
 	#}}}
 
 # vim: foldmethod=marker wrap
