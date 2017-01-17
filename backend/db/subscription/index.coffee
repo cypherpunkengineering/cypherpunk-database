@@ -50,7 +50,7 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 		return res.send 501
 	#}}}
 
-	@calculateType: (plan) =>
+	@calculateType: (plan) => #{{{
 		if plan[0...7] == "monthly"
 			type = 'monthly'
 		else if plan[0...12] == "semiannually"
@@ -59,8 +59,8 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 			type = 'annually'
 		else
 			return null
-
-	@calculateRenewal: (plan) =>
+	#}}}
+	@calculateRenewal: (plan) => #{{{
 		subscriptionStart = new Date()
 		subscriptionRenewal = new Date(+subscriptionStart)
 
@@ -72,9 +72,16 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 			subscriptionRenewal.setDate(subscriptionStart.getDate() + 365)
 		else
 			return 0
-
 		return subscriptionRenewal.toISOString()
+	#}}}
 
+	insert: (req, res, subscriptionType, subscriptionData = null, cb = null) => #{{{
+		return unless recordToInsert = @schema.fromUser(req, res, subscriptionType, subscriptionData)
+		super req, res, recordToInsert, (req2, res2, result) =>
+			result = result[0] if result instanceof Array
+			return cb(req2, res2, result) if cb
+			res.send 200
+	#}}}
 	findOneByTXID: (req, res, txid, cb) => #{{{
 		@findOneByKey req, res, "#{@dataKey}.#{@txidKey}", txid, @projection(), cb
 	#}}}

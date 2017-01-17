@@ -119,6 +119,9 @@ class cypherpunk.backend.api.v0.subscription.common
 				# get 0th result
 				if result instanceof Array then user = result[0] else user = result
 
+				# create session
+				req.server.root.account.doUserLogin(req, res, user)
+
 				# gather subscription data for insert() into db
 				subscriptionData =
 					provider: 'stripe'
@@ -136,9 +139,7 @@ class cypherpunk.backend.api.v0.subscription.common
 				# save transaction in db
 				req.server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
 					# set user's active subscription to this one
-					user.data.subscriptionCurrentID = subscription.id
-					# update user database object, pass to final method
-					req.server.root.api.user.database.updateCurrentUserData req, res, @doStripeTransactionCompletion
+					@doStripeTransactionCompletion(req, res, subscription)
 	#}}}
 	@doStripeUpgrade: (req, res) => #{{{
 		return res.send 400, 'missing parameters' unless (req.body?.token? and req.body?.plan?)
@@ -213,22 +214,18 @@ class cypherpunk.backend.api.v0.subscription.common
 					out = req.server.root.account.doUserLogin(req, res, user)
 					res.send 200, out
 	#}}}
-	doStripeTransactionCompletion: (req, res) => #{{{
+	@doStripeTransactionCompletion: (req, res, subscription) => #{{{
 		# pass updated db object to radius database method
-		@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
-			if err
-				wiz.log.err(err)
-				return res.send 500, 'Unable to update database'
+		req.server.root.api.user.database.upgrade req, res, req.session.account.id, subscription.id, (req, res, user) =>
+			# send purchase mail
+			req.server.root.sendPurchaseMail user, (sendgridError) =>
+				if sendgridError
+					wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
+					console.log sendgridError
 
-				# send purchase mail
-				req.server.root.sendPurchaseMail user, (sendgridError) =>
-					if sendgridError
-						wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
-						console.log sendgridError
-
-				# create session for new account
-				out = req.server.root.account.doUserLogin(req, res, user)
-				res.send 200, out
+			# create session for new account
+			out = req.server.root.account.doUserLogin(req, res, user)
+			res.send 200, out
 	#}}}
 
 # vim: foldmethod=marker wrap
