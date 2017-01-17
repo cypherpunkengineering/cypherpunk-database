@@ -19,7 +19,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 	@userKey: 'user'
 	@confirmedKey: 'confirmed'
 	@confirmationTokenKey: 'confirmationToken'
-	@stripeCustomerIDKey: 'stripeCustomerId'
+	@stripeCustomerIDKey: 'stripeCustomerID'
 	@subscriptionCurrentIDKey: 'subscriptionCurrentID'
 	@privacyKey: 'privacy'
 	@privacyUserKey: 'username'
@@ -79,9 +79,9 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			payload: doc
 
 		doc[@dataKey][@confirmedKey] ?= false
-		doc[@dataKey][@subscriptionPlanKey] ?= 'free'
-		doc[@dataKey][@subscriptionRenewalKey] ?= 'none'
-		doc[@dataKey][@subscriptionExpirationKey] ?= '0'
+		doc[@dataKey][@subscriptionCurrentIDKey] ?= '0'
+		doc[@dataKey][@stripeCustomerIDKey] ?= null
+		doc[@dataKey][@subscriptionCurrentIDKey] ?= null
 
 		doc[@privacyKey] ?= {}
 		user = new BigInteger(crypto.randomBytes(16))

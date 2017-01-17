@@ -161,9 +161,9 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 		if data?[@schema.confirmedKey]?
 			recordToInsert[@dataKey][@schema.confirmedKey] = data[@schema.confirmedKey]
 		if data?[@schema.stripeCustomerIDKey]?
-			recordToInsert[@dataKey][@schema.stripeCustomerIDKey] = data[@schema.stripeCustomerIDKey];
+			recordToInsert[@dataKey][@schema.stripeCustomerIDKey] = data[@schema.stripeCustomerIDKey]
 		if data?[@schema.subscriptionCurrentIDKey]?
-			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey];
+			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey]
 		@insert req, res, recordToInsert, cb
 	#}}}
 	upgrade: (req, res, userID, subscriptionID, cb = null) => #{{{ if user type is free, change to premium
