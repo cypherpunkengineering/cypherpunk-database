@@ -177,6 +177,8 @@ class cypherpunk.backend.api.v0.subscription.common
 			customer: req.session.account?.data?.stripeCustomerID
 			plan: req.body.plan
 
+		stripeArgs.source = req.body.token if req.body?.token?
+
 		console.log 'stripeArgs'
 		console.log stripeArgs
 
