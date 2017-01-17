@@ -122,13 +122,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 
 		) #}}}
@@ -156,13 +154,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 		) #}}}
 		family: (new type 'family', 'Family Account', 'list', #{{{
@@ -189,13 +185,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 		) #}}}
 		enterprise: (new type 'enterprise', 'Enterprise Account', 'list', #{{{
@@ -222,13 +216,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 		) #}}}
 
@@ -257,13 +249,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 		) #}}}
 		developer: (new type 'developer', 'Cypherpunk Developer', 'list', #{{{
@@ -290,13 +280,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				minlen: 1
 				maxlen: 50
 		) #}}}
 
