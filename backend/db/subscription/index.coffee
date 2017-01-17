@@ -75,27 +75,6 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 
 		return subscriptionRenewal.toISOString()
 
-	insertOneFromStripePurchase: (req, res, subscriptionData, stripeDataToInsert = [], cb = null) => #{{{
-		console.log 'fromStripePurchase'
-		console.log stripeDataToInsert
-
-		data =
-			provider: 'stripe'
-			providerSubscriptionID: stripeDataToInsert[0]?.id
-			plan: subscriptionData.plan
-			purchaseTS: new Date().toISOString()
-			renewalTS: subscriptionData.renewal
-			currentPeriodStartTS: subscriptionData.currentPeriodStart
-			currentPeriodEndTS: subscriptionData.currentPeriodEnd
-			active: 'true'
-
-		console.log data
-
-		return unless recordToInsert = @schema.fromUser(req, res, subscriptionData.type, data)
-
-		@insert req, res, recordToInsert, (req, res, ops) =>
-			return cb(req, res, recordToInsert) if ops == 1
-	#}}}
 	findOneByTXID: (req, res, txid, cb) => #{{{
 		@findOneByKey req, res, "#{@dataKey}.#{@txidKey}", txid, @projection(), cb
 	#}}}

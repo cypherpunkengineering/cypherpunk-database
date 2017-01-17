@@ -61,7 +61,7 @@ class cypherpunk.backend.api.v0.subscription.purchase extends cypherpunk.backend
 
 			return res.send 409, 'Email already registered' if user isnt null
 
-			cypherpunk.backend.api.v0.subscription.common.purchase(req, res)
+			cypherpunk.backend.api.v0.subscription.common.doStripeTransaction(req, res)
 	#}}}
 
 class cypherpunk.backend.api.v0.subscription.upgrade extends cypherpunk.backend.api.base
@@ -77,84 +77,155 @@ class cypherpunk.backend.api.v0.subscription.upgrade extends cypherpunk.backend.
 		super(req, res)
 	#}}}
 	handler: (req, res) => #{{{
-		cypherpunk.backend.api.v0.subscription.common.purchase(req, res)
+		cypherpunk.backend.api.v0.subscription.common.doStripeTransaction(req, res)
 	#}}}
 
 class cypherpunk.backend.api.v0.subscription.common
-	@purchase: (req, res) => #{{{
+	@doStripePurchase: (req, res) => #{{{
 		return res.send 400, 'missing parameters' unless (req.body?.token? and req.body?.plan?)
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
 
-		subscriptionType = cypherpunk.backend.db.subscription.calculateType(req?.body?.plan)
-		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal(req?.body?.plan)
+		subscriptionType = cypherpunk.backend.db.subscription.calculateType req?.body?.plan
+		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal req?.body?.plan
 
-		if !subscriptionRenewal || !subscriptionType
-			return res.send 500, 'Invalid Plan'
-
-		subscriptionData =
-			confirmed: true
-			plan: req?.body?.plan
-			type: subscriptionType
-			renewal: subscriptionRenewal
-			currentPeriodStart: new Date().toISOString()
-			currentPeriodEnd: subscriptionRenewal
+		return res.send 400, 'invalid plan' if not subscriptionRenewal or subscriptionType
 
 		stripeArgs =
 			source: req.body.token
 			plan: req.body.plan
 			email: req.session?.account?.email or req.body.email
 
-		@onSuccessfulStripeResult req, res, stripeArgs, subscriptionData, (stripeCustomerData, subscription) =>
+		req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
+			console.log 'customer data from stripe'
+			console.log stripeCustomerData
 
 			# XXX TODO: check for stripe errors, declines, etc.
 
-			if req.session?.account?.id?
-				req.session.account.data.subscriptionCurrentID = subscription.id
+			console.log stripeError if stripeError
+			return res.send 500, stripeError if stripeError
 
-				req.server.root.api.user.database.updateCurrentUserData req, res, (req, res, result2) =>
-					console.log result2
-					res.send 200
+			userData =
+				confirmed: true
+				stripeCustomerID: stripeCustomerData?.id
 
-				return
+			console.log 'user data'
+			console.log userData
 
-			# if no account yet, create one
-			subscriptionData.stripeCustomerID = stripeCustomerData.id
-			subscriptionData.subscriptionCurrentID = subscription.id
-			req.server.root.api.user.database.signup req, res, subscriptionData, (req2, res2, result) =>
+			req.server.root.api.user.database.signup req, res, userData, (req2, res2, result) =>
+				# get 0th result
+				if result instanceof Array then user = result[0] else user = result
 
-				if result instanceof Array
-					user = result[0]
-				else
-					user = result
+				# gather subscription data for insert() into db
+				subscriptionData =
+					provider: 'stripe'
+					providerPlanID: stripeCustomerData?.subscriptions?.data?[0]?.plan?.id
+					providerSubscriptionID: stripeCustomerData?.subscriptions?.data?[0].id
+					currentPeriodStartTS: new Date().toISOString()
+					currentPeriodEndTS: subscriptionRenewal
+					purchaseTS: new Date().toISOString()
+					renewalTS: subscriptionRenewal
+					active: 'true'
 
+				console.log 'subscription data'
+				console.log subscriptionData
+
+				# save transaction in db
+				req.server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
+					# set user's active subscription to this one
+					user.data.subscriptionCurrentID = subscription.id
+					# update user database object, pass to final method
+					req.server.root.api.user.database.updateCurrentUserData req, res, @doStripeTransactionCompletion
+	#}}}
+	@doStripeUpgrade: (req, res) => #{{{
+		return res.send 400, 'missing parameters' unless (req.body?.token? and req.body?.plan?)
+		return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
+		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
+
+		subscriptionType = cypherpunk.backend.db.subscription.calculateType req?.body?.plan
+		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal req?.body?.plan
+
+		return res.send 400, 'invalid plan' if not subscriptionRenewal or subscriptionType
+
+		stripeArgs =
+			source: req.body.token
+			plan: req.body.plan
+			email: req.session?.account?.email or req.body.email
+
+				# if upgrading an existing account
+				if req.session?.account?.id?
+					# set new current subscription
+					req.session.account.data.subscriptionCurrentID = subscription.id
+
+					# get existing stripe customer ID from user object
+					data.stripeCustomerID = req.session.account.data.stripeCustomerID
+
+					# save updated user data in db
+					req.server.root.api.user.database.updateCurrentUserData req, res, (req, res, result2) =>
+						console.log result2
+						res.send 200
+
+					# go no further
+					return
+
+		req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
+			console.log 'customer data from stripe'
+			console.log stripeCustomerData
+
+			# XXX TODO: check for stripe errors, declines, etc.
+
+			console.log stripeError if stripeError
+			return res.send 500, stripeError if stripeError
+
+			data =
+				confirmed: true
+				plan: req?.body?.plan
+				type: subscriptionType
+				renewal: subscriptionRenewal
+				currentPeriodStart: new Date().toISOString()
+				currentPeriodEnd: subscriptionRenewal
+				stripeSubscriptionID: stripeCustomerData?.subscriptions?.data?[0]
+
+			console.log 'our data'
+			console.log data
+
+			# save transaction in db
+			req.server.root.api.subscription.database.insertOneFromStripePurchase req, res, data, (req, res, subscription) =>
+
+				# if no account yet, create one
+				data.stripeCustomerID = stripeCustomerData.id
+				data.subscriptionCurrentID = subscription.id
+				req.server.root.api.user.database.signup req, res, data, (req2, res2, result) =>
+
+					# get 0th result
+					if result instanceof Array then user = result[0] else user = result
+
+					# send purchase mail
+					req.server.root.sendPurchaseMail user, (sendgridError) =>
+						if sendgridError
+							wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
+							console.log sendgridError
+
+					# create session for new account
+					out = req.server.root.account.doUserLogin(req, res, user)
+					res.send 200, out
+	#}}}
+	doStripeTransactionCompletion: (req, res) => #{{{
+		# pass updated db object to radius database method
+		@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
+			if err
+				wiz.log.err(err)
+				return res.send 500, 'Unable to update database'
+
+				# send purchase mail
 				req.server.root.sendPurchaseMail user, (sendgridError) =>
 					if sendgridError
 						wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
 						console.log sendgridError
 
+				# create session for new account
 				out = req.server.root.account.doUserLogin(req, res, user)
 				res.send 200, out
-	#}}}
-	@onSuccessfulStripeResult: (req, res, stripeArgs, subscriptionData, cb) => #{{{
-
-		try
-			req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
-				console.log stripeError if stripeError
-				return res.send 500, stripeError if stripeError
-
-				console.log 'user data from stripe'
-				console.log stripeCustomerData
-				console.log 'subscription data'
-				console.log subscriptionData
-
-				# save transaction in db
-				req.server.root.api.subscription.database.insertOneFromStripePurchase req, res, subscriptionData, stripeCustomerData?.subscriptions?.data, (req, res, subscription) =>
-					cb(stripeCustomerData, subscription)
-
-		catch e
-			console.log e
-			res.send 500
 	#}}}
 
 # vim: foldmethod=marker wrap

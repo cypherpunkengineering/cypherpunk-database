@@ -89,7 +89,7 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 				maxlen: 50
 				required: true
 
-			plan:
+			providerPlanID:
 				label: 'subscription plan'
 				type: 'asciiNoSpace'
 				maxlen: 25
@@ -140,7 +140,7 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 				maxlen: 50
 				required: true
 
-			plan:
+			providerPlanID:
 				label: 'subscription plan'
 				type: 'asciiNoSpace'
 				maxlen: 25
@@ -191,7 +191,7 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 				maxlen: 50
 				required: true
 
-			plan:
+			providerPlanID:
 				label: 'subscription plan'
 				type: 'asciiNoSpace'
 				maxlen: 25
