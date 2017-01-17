@@ -61,7 +61,7 @@ class cypherpunk.backend.api.v0.subscription.purchase extends cypherpunk.backend
 
 			return res.send 409, 'Email already registered' if user isnt null
 
-			cypherpunk.backend.api.v0.subscription.common.doStripeTransaction(req, res)
+			cypherpunk.backend.api.v0.subscription.common.doStripePurchase(req, res)
 	#}}}
 
 class cypherpunk.backend.api.v0.subscription.upgrade extends cypherpunk.backend.api.base
@@ -77,7 +77,7 @@ class cypherpunk.backend.api.v0.subscription.upgrade extends cypherpunk.backend.
 		super(req, res)
 	#}}}
 	handler: (req, res) => #{{{
-		cypherpunk.backend.api.v0.subscription.common.doStripeTransaction(req, res)
+		cypherpunk.backend.api.v0.subscription.common.doStripeUpgrade(req, res)
 	#}}}
 
 class cypherpunk.backend.api.v0.subscription.common
@@ -89,7 +89,7 @@ class cypherpunk.backend.api.v0.subscription.common
 		subscriptionType = cypherpunk.backend.db.subscription.calculateType req?.body?.plan
 		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal req?.body?.plan
 
-		return res.send 400, 'invalid plan' if not subscriptionRenewal or subscriptionType
+		return res.send 400, 'invalid plan' if not subscriptionRenewal or not subscriptionType
 
 		stripeArgs =
 			source: req.body.token
@@ -152,21 +152,21 @@ class cypherpunk.backend.api.v0.subscription.common
 			plan: req.body.plan
 			email: req.session?.account?.email or req.body.email
 
-				# if upgrading an existing account
-				if req.session?.account?.id?
-					# set new current subscription
-					req.session.account.data.subscriptionCurrentID = subscription.id
+		# if upgrading an existing account
+		if req.session?.account?.id?
+			# set new current subscription
+			req.session.account.data.subscriptionCurrentID = subscription.id
 
-					# get existing stripe customer ID from user object
-					data.stripeCustomerID = req.session.account.data.stripeCustomerID
+			# get existing stripe customer ID from user object
+			data.stripeCustomerID = req.session.account.data.stripeCustomerID
 
-					# save updated user data in db
-					req.server.root.api.user.database.updateCurrentUserData req, res, (req, res, result2) =>
-						console.log result2
-						res.send 200
+			# save updated user data in db
+			req.server.root.api.user.database.updateCurrentUserData req, res, (req, res, result2) =>
+				console.log result2
+				res.send 200
 
-					# go no further
-					return
+			# go no further
+			return
 
 		req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
 			console.log 'customer data from stripe'
