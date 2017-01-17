@@ -57,6 +57,9 @@ class cypherpunk.backend.api.v0.subscription.purchase extends cypherpunk.backend
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.email is 'string'
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
 
+		# nuke existing session if any
+		wiz.framework.http.account.session.logout(req, res)
+
 		@server.root.api.user.database.findOneByEmail req, res, req.body.email, (req, res, user) =>
 
 			return res.send 409, 'Email already registered' if user isnt null
