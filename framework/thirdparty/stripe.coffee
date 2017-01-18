@@ -59,7 +59,7 @@ class wiz.framework.thirdparty.stripe
 		stripeArgs =
 			email: req.session?.account?.data?.email
 		req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
-			console.log stripeError if stripeError
+			return @onError(req, res, stripeError) if stripeError
 			return res.send 500, "Unable to call stripe API" if stripeError
 			req.session.account.data.stripeCustomerID = stripeCustomerData?.id
 			req.server.root.api.user.database.updateCurrentUserData req, res, cb
@@ -75,11 +75,8 @@ class wiz.framework.thirdparty.stripe
 
 		# add source using stripe API
 		req.server.root.Stripe.customers.createSource stripeCustomerID, stripeArgs, (stripeError, stripeCustomerData) =>
-			if stripeError or not stripeCustomerData?.id?
-				wiz.log.err "Unable to add source for customer"
-				console.log stripeError
-				res.send 500, "Unable to add source"
-				return
+			# handle error
+			return @onError(req, res, stripeError) if stripeError or not stripeCustomerData?.id?
 
 			# get id of newly added card
 			defaultSource = stripeCustomerData?.id
@@ -98,12 +95,8 @@ class wiz.framework.thirdparty.stripe
 
 		# update customer object's default source using stripe API
 		req.server.root.Stripe.customers.update stripeCustomerID, stripeArgs, (stripeError, stripeCustomerData) =>
-
-			if stripeError
-				wiz.log.err "Unable to update default source for customer"
-				console.log stripeError
-				res.send 500, "Unable to update default source"
-				return
+			# check for error
+			return @onError(req, res, stripeError) if stripeError or not stripeCustomerData?.id?
 
 			# respond with freshly updated list of sources
 			@sourceList(req, res)
@@ -115,12 +108,8 @@ class wiz.framework.thirdparty.stripe
 
 		# retrieve customer object from stripe API
 		req.server.root.Stripe.customers.retrieve stripeCustomerID, (stripeError, stripeCustomerData) =>
-
-			if stripeError?
-				wiz.log.err "Unable to update default source for customer"
-				console.log stripeError
-				res.send 500, "Unable to update default source"
-				return
+			# check for error
+			return @onError(req, res, stripeError) if stripeError or not stripeCustomerData?.id?
 
 			# construct output object
 			out =
@@ -138,6 +127,26 @@ class wiz.framework.thirdparty.stripe
 						exp_year: datum?.exp_year
 
 			res.send 200, out
+	#}}}
+	onError: (req, res, stripeError) => #{{{
+		console.log stripeError
+		switch stripeError?.type
+			when 'StripeCardError' # A declined card error
+				res.send 402, stripeError.message # => e.g. "Your card's expiration year is invalid."
+			when 'RateLimitError' # Too many requests made to the API too quickly
+				res.send 500
+			when 'StripeInvalidRequestError' # Invalid parameters were supplied to Stripe's API
+				res.send 500
+			when 'StripeAPIError' # An error occurred internally with Stripe's API
+				res.send 500
+			when 'StripeConnectionError' # Some kind of error occurred during the HTTPS communication
+				res.send 500
+			when 'StripeAuthenticationError' # You probably used an incorrect API key
+				res.send 500
+			else # Handle any other types of unexpected errors
+				res.send 500
+				break
+
 	#}}}
 
 # vim: foldmethod=marker wrap

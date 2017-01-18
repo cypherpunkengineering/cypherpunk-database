@@ -20,13 +20,11 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 			email: req.body.email
 
 		@Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
+			# handle error
+			return @onError(req, res, stripeError) if stripeError or not stripeCustomerData?.id?
+
 			console.log 'customer data from stripe'
 			console.log stripeCustomerData
-
-			# XXX TODO: check for stripe errors, declines, etc.
-
-			console.log stripeError if stripeError
-			return res.send 500, stripeError if stripeError
 
 			userData =
 				confirmed: true
@@ -91,13 +89,11 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 		console.log stripeArgs
 
 		@Stripe.subscriptions.create stripeArgs, (stripeError, stripeSubData) =>
+			# handle error
+			return @onError(req, res, stripeError) if stripeError
+
 			console.log 'customer data from stripe'
 			console.log stripeSubData
-
-			# XXX TODO: check for stripe errors, declines, etc.
-
-			console.log stripeError if stripeError
-			return res.send 500, stripeError if stripeError
 
 			# gather subscription data for insert() into db
 			subscriptionData =
@@ -129,13 +125,11 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 		console.log stripeArgs
 
 		@Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
+			# handle error
+			return @onError(req, res, stripeError) if stripeError or not stripeCustomerData?.id?
+
 			console.log 'customer data from stripe'
 			console.log stripeCustomerData
-
-			# XXX TODO: check for stripe errors, declines, etc.
-
-			console.log stripeError if stripeError
-			return res.send 500, stripeError if stripeError
 
 			# gather subscription data for insert() into db
 			subscriptionData =
