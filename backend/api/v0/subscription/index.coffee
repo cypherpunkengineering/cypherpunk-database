@@ -142,20 +142,20 @@ class cypherpunk.backend.api.v0.subscription.common
 					@doStripeTransactionCompletion(req, res, subscription)
 	#}}}
 	@doStripeUpgrade: (req, res) => #{{{
-		return res.send 400, 'missing parameters' unless (req.body?.token? and req.body?.plan?)
-		return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
+		# validate plan
+		return res.send 400, 'missing parameters' unless req.body?.plan?
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
-
 		subscriptionType = cypherpunk.backend.db.subscription.calculateType req?.body?.plan
 		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal req?.body?.plan
 		return res.send 400, 'invalid plan' if not subscriptionRenewal or not subscriptionType
 
 		# check to see if the user has a stripe account already
 		if req.session.account?.data?.stripeCustomerID
-			@upgradeStripeExistingCustomer req, res, subscriptionType, subscriptionRenewal, () =>
-
-		else
-			@upgradeStripeNewCustomer req, res, subscriptionType, subscriptionRenewal, () =>
+			@upgradeStripeExistingCustomer req, res, subscriptionType, subscriptionRenewal
+		else # if not yet a stripe customer, token is necessary
+			return res.send 400, 'missing parameters' unless req.body?.token?
+			return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
+			@upgradeStripeNewCustomer req, res, subscriptionType, subscriptionRenewal
 
 	#}}}
 	@doStripeTransactionCompletion: (req, res, subscription, stripeCustomerID) => #{{{
