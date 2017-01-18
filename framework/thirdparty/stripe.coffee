@@ -129,10 +129,14 @@ class wiz.framework.thirdparty.stripe
 			res.send 200, out
 	#}}}
 	onError: (req, res, stripeError) => #{{{
-		console.log stripeError
 		switch stripeError?.type
 			when 'StripeCardError' # A declined card error
-				res.send 402, stripeError.message # => e.g. "Your card's expiration year is invalid."
+				out =
+					code: stripeError?.code
+					statusCode: stripeError?.statusCode
+					message: stripeError?.message
+				console.log out
+				res.send 402, out # => e.g. "Your card's expiration year is invalid."
 			when 'RateLimitError' # Too many requests made to the API too quickly
 				res.send 500
 			when 'StripeInvalidRequestError' # Invalid parameters were supplied to Stripe's API
