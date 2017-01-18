@@ -16,6 +16,7 @@ require './_framework/thirdparty/sendgrid'
 wiz.package 'cypherpunk.backend'
 
 require './template'
+require './stripe'
 
 class cypherpunk.backend.login extends cypherpunk.backend.template
 	level: cypherpunk.backend.server.power.level.stranger
@@ -80,7 +81,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		@manage = @routeAdd new cypherpunk.backend.manage.module(@server, this, 'manage')
 
 		# init stripe SDK
-		@stripe = new wiz.framework.thirdparty.stripe
+		@stripe = new cypherpunk.backend.stripe
 			apiKey: 'sk_test_UxTTPDN0LGZaD9NBtVUxuksJ'
 		@Stripe = @stripe.Stripe
 

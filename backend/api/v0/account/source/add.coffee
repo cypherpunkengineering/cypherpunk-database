@@ -20,11 +20,11 @@ class cypherpunk.backend.api.v0.account.source.add extends cypherpunk.backend.ba
 		source = req.body.token
 
 		# if stripe customer id exists, proceed to update
-		return @parent.stripeSourceAdd(req, res, source) if req.session?.account?.data?.stripeCustomerID?
+		return req.server.root.stripe.sourceAdd(req, res, source) if req.session?.account?.data?.stripeCustomerID?
 
 		# otherwise create one first
-		return @parent.stripeCustomerCreate req, res, (req, res) =>
-			@stripeSourceAdd(req, res, source)
+		return req.server.root.stripe.customerCreate req, res, (req, res) =>
+			req.server.root.stripe.sourceAdd(req, res, source)
 	#}}}
 
 # vim: foldmethod=marker wrap

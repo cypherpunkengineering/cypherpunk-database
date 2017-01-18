@@ -20,10 +20,10 @@ class cypherpunk.backend.api.v0.account.source.default extends cypherpunk.backen
 		defaultSource = req.body.default_source
 
 		# if stripe customer id exists, proceed to update
-		return @parent.stripeSourceUpdateDefault(req, res, defaultSource) if req.session?.account?.data?.stripeCustomerID?
+		return req.server.root.stripe.sourceUpdateDefault(req, res, defaultSource) if req.session?.account?.data?.stripeCustomerID?
 
 		# otherwise create one first
-		return @parent.stripeCustomerCreate req, res, (req, res) =>
-			@stripeSourceUpdateDefault(req, res, defaultSource)
+		return req.server.root.stripe.customerCreate req, res, (req, res) =>
+			req.server.root.stripe.sourceUpdateDefault(req, res, defaultSource)
 
 # vim: foldmethod=marker wrap

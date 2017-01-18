@@ -10,6 +10,7 @@ require '../../../db/user'
 require './source'
 require './register'
 require './confirm'
+require './purchase'
 require './upgrade'
 
 wiz.package 'cypherpunk.backend.api.v0.account'
@@ -55,6 +56,8 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 		@routeAdd new cypherpunk.backend.api.v0.account.register.resource(@server, this, 'register')
 		# public account confirmation api
 		@routeAdd new cypherpunk.backend.api.v0.account.confirm.resource(@server, this, 'confirm')
+		# public account purchase api
+		@routeAdd new cypherpunk.backend.api.v0.account.purchase.resource(@server, this, 'purchase')
 		# public account upgrade api
 		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.resource(@server, this, 'upgrade')
 

@@ -3,6 +3,7 @@ require './_framework/http/account'
 require './_framework/http/resource/base'
 
 require './googlePlay'
+require './stripe'
 
 wiz.package 'cypherpunk.backend.api.v0.account.upgrade'
 
@@ -17,6 +18,6 @@ class cypherpunk.backend.api.v0.account.upgrade.resource extends cypherpunk.back
 
 		# public account creation api
 		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.googlePlay(@server, this, 'GooglePlay', 'POST')
-		# @routeAdd new cypherpunk.backend.api.v0.account.upgrade.stripe(@server, this, 'stripe', 'POST')
+		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.stripe(@server, this, 'stripe', 'POST')
 
 # vim: foldmethod=marker wrap

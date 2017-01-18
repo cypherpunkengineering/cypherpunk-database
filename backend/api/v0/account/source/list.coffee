@@ -13,11 +13,11 @@ class cypherpunk.backend.api.v0.account.source.list extends cypherpunk.backend.b
 
 	handler: (req, res) => #{{{
 		# if stripe customer id exists, proceed to update
-		return @parent.stripeSourceList(req, res) if req.session?.account?.data?.stripeCustomerID?
+		return req.server.root.stripe.sourceList(req, res) if req.session?.account?.data?.stripeCustomerID?
 
 		# otherwise create one first
-		return @parent.stripeCustomerCreate req, res, (req, res) =>
-			@stripeSourceList(req, res)
+		return req.server.root.stripe.customerCreate req, res, (req, res) =>
+			req.server.root.stripe.sourceList(req, res)
 	#}}}
 
 
