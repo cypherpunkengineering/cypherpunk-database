@@ -16,6 +16,7 @@ class cypherpunk.backend.api.v0.account.source.resource extends cypherpunk.backe
 	nav: false
 
 	stripeCustomerCreate: (req, res, cb) => #{{{
+		console.log 'stripeCustomerCreate'
 		stripeArgs =
 			email: req.session?.account?.data?.email
 		req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
@@ -25,6 +26,7 @@ class cypherpunk.backend.api.v0.account.source.resource extends cypherpunk.backe
 			req.server.root.api.user.database.updateCurrentUserData req, res, cb
 	#}}}
 	stripeSourceAdd: (req, res, source) => #{{{
+		console.log 'stripeSourceAdd'
 		# get stripe customer ID from session
 		stripeCustomerID = req.session?.account?.data?.stripeCustomerID
 
@@ -47,6 +49,7 @@ class cypherpunk.backend.api.v0.account.source.resource extends cypherpunk.backe
 			@stripeSourceUpdateDefault(req, res, defaultSource)
 	#}}}
 	stripeSourceUpdateDefault: (req, res, defaultSource) => #{{{
+		console.log 'stripeSourceUpdateDefault'
 		# get stripe customer ID from session
 		stripeCustomerID = req.session?.account?.data?.stripeCustomerID
 
@@ -67,6 +70,7 @@ class cypherpunk.backend.api.v0.account.source.resource extends cypherpunk.backe
 			@stripeSourceList(req, res)
 	#}}}
 	stripeSourceList: (req, res) => #{{{
+		console.log 'stripeSourceList'
 		# get stripe customer ID from session
 		stripeCustomerID = req.session?.account?.data?.stripeCustomerID
 
