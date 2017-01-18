@@ -18,7 +18,7 @@ wiz.package 'wiz.framework.http.account.authenticate.password'
 class wiz.framework.http.account.authenticate.password extends wiz.framework.http.account.authenticate.base
 	level: wiz.framework.http.resource.power.level.stranger
 	mask: wiz.framework.http.resource.power.mask.always
-	middleware: wiz.framework.http.account.session.base
+	middleware: wiz.framework.http.account.session.norefresh
 	dataKey: 'data'
 	passwordKey: 'password'
 

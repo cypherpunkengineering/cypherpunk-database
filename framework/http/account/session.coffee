@@ -140,6 +140,14 @@ class wiz.framework.http.account.session
 		@getSessionKeyFromSecret
 		@getSessionKeyFromCookie
 		@loadSessionFromKey
+		@refreshSessionFromDB
+		wiz.framework.http.resource.middleware.checkAccess
+		@usernav
+	] #}}}
+	@norefresh: wiz.framework.http.resource.middleware.base.concat [ #{{{ special norefresh list
+		@getSessionKeyFromSecret
+		@getSessionKeyFromCookie
+		@loadSessionFromKey
 		wiz.framework.http.resource.middleware.checkAccess
 		@usernav
 	] #}}}
@@ -147,7 +155,6 @@ class wiz.framework.http.account.session
 		@checkSecret
 	] #}}}
 	@refresh: @base.concat [ #{{{ above list and check CSRF secret token
-		@refreshSessionFromDB
 	] #}}}
 
 	@save: (req) => # save session to db after sending response {{{
