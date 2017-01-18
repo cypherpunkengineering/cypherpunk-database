@@ -484,16 +484,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'paris.cypherpunk.privacy.network'
-				ovDefault: [ '' ]
-				ovNone: [ '' ]
-				ovStrong: [ '' ]
-				ovStealth: [ '' ]
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
 
 				ipsecHostname: 'paris.cypherpunk.privacy.network'
-				ipsecDefault: [ '' ]
+				ipsecDefault: [ ]
 
-				httpDefault: [ '' ]
-				socksDefault: [ '' ]
+				httpDefault: [ ]
+				socksDefault: [ ]
 
 			#}}}
 			phoenix: #{{{
