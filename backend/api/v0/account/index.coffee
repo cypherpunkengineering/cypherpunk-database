@@ -7,7 +7,7 @@ require './_framework/http/db/mongo'
 
 require '../../../db/user'
 
-require './card'
+require './source'
 require './register'
 require './confirm'
 require './upgrade'
@@ -58,8 +58,8 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 		# public account upgrade api
 		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.resource(@server, this, 'upgrade')
 
-		# customer card api (proxy to stripe)
-		@routeAdd new cypherpunk.backend.api.v0.account.card.resource(@server, this, 'card')
+		# customer source api (proxy to stripe)
+		@routeAdd new cypherpunk.backend.api.v0.account.source.resource(@server, this, 'source')
 	#}}}
 	init: () => #{{{
 		@database = new cypherpunk.backend.db.user(@server, this, @parent.parent.cypherpunkDB)
