@@ -14,12 +14,6 @@ class cypherpunk.backend.api.v0.account.purchase.stripe extends cypherpunk.backe
 	mask: cypherpunk.backend.server.power.mask.public
 	nav: false
 
-	handlerOPTIONS: (req, res) => #{{{
-		res.setHeader 'Access-Control-Allow-Origin', '*'
-		res.setHeader 'Access-Control-Allow-Methods', 'POST,OPTIONS'
-		res.setHeader 'Access-Control-Allow-Headers', 'Content-type, Cookie'
-		super(req, res)
-	#}}}
 	handler: (req, res) => #{{{
 		# validate params
 		return res.send 400, 'missing parameters' unless (req.body?.email?)

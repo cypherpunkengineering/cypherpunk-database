@@ -15,12 +15,6 @@ class cypherpunk.backend.api.v0.account.upgrade.stripe extends cypherpunk.backen
 	middleware: wiz.framework.http.account.session.base
 	nav: false
 
-	handlerOPTIONS: (req, res) =>
-		res.setHeader 'Access-Control-Allow-Origin', '*'
-		res.setHeader 'Access-Control-Allow-Methods', 'POST,OPTIONS'
-		res.setHeader 'Access-Control-Allow-Headers', 'Content-type, Cookie'
-		super(req, res)
-
 	handler: (req, res) =>
 		req.server.root.stripe.upgrade(req, res)
 
