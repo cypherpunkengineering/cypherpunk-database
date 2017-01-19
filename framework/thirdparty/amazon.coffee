@@ -36,6 +36,7 @@ class wiz.framework.thirdparty.amazon
 			i++
 		return str
 	#}}}
+
 	setBillingAgreementDetails: (req, res, args, cb) => #{{{
 		endpoint = @baseRequestOptions.host
 		apiPath = "/OffAmazonPayments_Sandbox/2013-01-01"
@@ -168,11 +169,83 @@ class wiz.framework.thirdparty.amazon
 		q = new httpreq(reqopts)
 		q.query reqBody, (res2) =>
 			# validate response
-			if not res2?.body?
-				return cb(null) if cb
+			if not res2?.body?.ConfirmBillingAgreementResponse?.ConfirmBillingAgreementResult
 				return res.send 500, 'invalid response from amazon api'
 
-			return cb(res2) if cb
+			return cb(res2.body) if cb
+			return res.send 200
+	#}}}
+	authorizeOnBillingAgreement: (req, res, args, cb) => #{{{
+		endpoint = @baseRequestOptions.host
+		apiPath = "/OffAmazonPayments_Sandbox/2013-01-01"
+		timestamp = new Date().toISOString()
+
+		amazonHeaders =
+			AWSAccessKeyId: @AWSAccessKeyId
+			Action: "AuthorizeOnBillingAgreement"
+			SellerId: @SellerId
+			#MWSAuthToken: "amzn.mws.4ea38b7b-f563-7709-4bae-87aeaEXAMPLE"
+			SignatureMethod: "HmacSHA256"
+			SignatureVersion: "2"
+			Timestamp: encodeURIComponent(timestamp) # 2013-12-11T10%3A57%3A18.000Z
+			Version: "2013-01-01"
+
+		amazonBody =
+			AmazonBillingAgreementId: args.AmazonBillingAgreementId # C01-8824045-7416542
+			"AuthorizationAmount.Amount": args.price # 59.99
+			"AuthorizationAmount.CurrencyCode": args.currency # USD
+			"AuthorizationReferenceId": args.authorizationReference
+			"SellerOrderAttributes.CustomInformation": args.userId
+			"CaptureNow": true
+			"TransactionTimeout": 0
+
+		combinedObject = {}
+		Object.assign(combinedObject, amazonHeaders)
+		Object.assign(combinedObject, amazonBody)
+
+		stringToSign = "POST\n"
+		stringToSign += endpoint + "\n"
+		stringToSign += apiPath + "\n"
+		stringToSign += @createStringToSign(combinedObject)
+
+		hmac = crypto.createHmac('sha256', @ClientSecret)
+		hmac.update(stringToSign)
+		signature = hmac.digest('base64') # Z0ZVgWu0ICF4FLxt1mTjyK%2BjdYG6Kmm8JxLTfsQtKRY%3D
+
+		#console.log "stringToSign is"
+		#console.log stringToSign
+
+		#console.log "signature is"
+		#console.log signature
+
+		reqBody = ""
+		for key of amazonHeaders
+			reqBody += key + "=" + amazonHeaders[key] + "&"
+		for key of amazonBody
+			reqBody += key + "=" + amazonBody[key] + "&"
+		reqBody += 'Signature=' + encodeURIComponent(signature)
+
+		console.log "reqBody is"
+		console.log reqBody
+
+		# build query options
+		reqopts = @baseRequestOptions
+		reqopts.method = "POST"
+		reqopts.path = apiPath
+		reqopts.headers =
+			"Accept" : "*/*"
+			"Content-Type" : "application/x-www-form-urlencoded; charset=UTF-8"
+
+		# send query
+		q = new httpreq(reqopts)
+		q.query reqBody, (res2) =>
+			state = res2?.body?.AuthorizeOnBillingAgreementResponse?.AuthorizeOnBillingAgreementResult?[0]?.AuthorizationDetails?[0]?.AuthorizationStatus?[0]?.State?[0]
+			# validate response
+			if not state?
+				return res.send 500, "Invalid response from Amazon API request"
+
+			return cb(state) if cb
+			# hmm
 			return res.send 200
 	#}}}
 
