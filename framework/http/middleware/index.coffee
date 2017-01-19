@@ -5,6 +5,7 @@ require '../../util/csv'
 
 qs = require 'qs'
 formidable = require 'formidable'
+xml2js = require 'xml2js'
 
 wiz.package 'wiz.framework.http.middleware'
 
@@ -13,7 +14,7 @@ class wiz.framework.http.middleware.base
 	debug: true
 	constructor: () ->
 
-	error: (e, cb) => #{{{ error handler
+	@error: (e, cb) => #{{{ error handler
 		wiz.log.err e
 		return cb null if cb
 		return null
@@ -129,9 +130,8 @@ class wiz.framework.http.middleware.base
 				@parseTextPlain(req, res, cb)
 			when 'text/csv'
 				@parseTextCSV(req, res, cb)
-			when 'text/xml' # FIXME add support for xml body parsing
-				console.log 'FIXME'
-				@parseTextPlain(req, res, cb)
+			when 'text/xml'
+				@parseTextXML(req, res, cb)
 			when undefined # no ct supplied
 				return cb()
 			when null # no ct supplied
@@ -212,10 +212,8 @@ class wiz.framework.http.middleware.base
 		req.setEncoding 'utf8'
 		buf = ''
 		req.on 'data', (chunk) ->
-			console.log chunk
 			buf += chunk
 		req.on 'end', () ->
-			console.log buf
 			req.body = buf
 			return cb()
 	#}}}
@@ -232,6 +230,28 @@ class wiz.framework.http.middleware.base
 		req.on 'end', () ->
 			req.body = wiz.framework.util.csv.parse(buf)
 			return cb()
+	#}}}
+	@parseTextXML: (req, res, cb) => #{{{
+		req.setEncoding 'utf8'
+		buf = ''
+		req.on 'data', (chunk) ->
+			buf += chunk
+		req.on 'end', () ->
+			try
+				parser = new xml2js.Parser()
+				parser.parseString buf, (err, out) =>
+					if err
+						return @error "xml parse error: #{err}", cb
+					if not out
+						return @error "xml response null?", cb
+					if out.Error
+						return @error "xml error response! #{JSON.stringify(out.Error)}", cb
+					req.body = out
+					return cb(req, res)
+			catch e
+				return @error "xml parse error: #{e}", cb
+			req.body = null
+			return cb(req, res)
 	#}}}
 
 # vim: foldmethod=marker wrap

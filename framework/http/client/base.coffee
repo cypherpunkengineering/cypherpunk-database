@@ -11,7 +11,7 @@ http = require 'http'
 wiz.package 'wiz.framework.http.client'
 
 class wiz.framework.http.client.base extends wiz.framework.http.base
-	debug: false
+	debug: true
 	middleware: wiz.framework.http.middleware.base
 
 	constructor: (args = {}) -> #{{{ parse request args
@@ -21,6 +21,7 @@ class wiz.framework.http.client.base extends wiz.framework.http.base
 		wiz.assert (@port = args.port || 443), 'http query port'
 		wiz.assert (@method = args.method || 'GET'), 'http query method'
 		wiz.assert (@path = args.path || '/'), 'http query path'
+		@headers = args.headers if args?.headers?
 
 	#}}}
 
@@ -43,9 +44,10 @@ class wiz.framework.http.client.base extends wiz.framework.http.base
 		@reqOpts(body, cb)
 
 		# debug print
-		wiz.log.debug "#{@opts.method} #{@opts.path} HTTP/1.1" if @debug
-		wiz.log.debug ("#{x}: #{y}" for x, y of @opts.headers).join('\n') if @debug
-		wiz.log.debug '' if @debug
+		console.log "#{@opts.method} #{@opts.path} HTTP/1.1" if @debug
+		console.log ("#{x}: #{y}" for x, y of @opts.headers).join('\n') if @debug
+		console.log '' if @debug
+		console.log body if @debug
 
 		# create request
 		@req = @client().request @opts, (res) =>
@@ -71,11 +73,11 @@ class wiz.framework.http.client.base extends wiz.framework.http.base
 			path: @path
 
 		# set request headers
-		@opts.headers = {}
-		@opts.headers['Host'] = @host
-		@opts.headers['Accept'] = 'application/json'
-		@opts.headers['Content-Type'] = 'application/json' if @method is 'POST'
-		@opts.headers['Content-Length'] = if body then body.length else 0
+		@opts.headers ?= @headers or {}
+		@opts.headers['Host'] ?= @host
+		@opts.headers['Accept'] ?= 'application/json'
+		@opts.headers['Content-Type'] ?= 'application/json' if @method is 'POST'
+		@opts.headers['Content-Length'] ?= if body then body.length else 0
 	#}}}
 	reqSend: (reqBody, cb) => #{{{ send request body
 		if not reqBody
@@ -99,10 +101,14 @@ class wiz.framework.http.client.base extends wiz.framework.http.base
 	onResponse: (@res, cb) => #{{{ parse response
 		return @error 'no response!', cb unless @res
 
+		console.log @res.statusCode if @debug
+		console.log @res.headers if @debug
+
 		switch @res.statusCode
 			when 400, 403, 404, 405, 500, 502, 503
+				@middleware.parseBodyByCT(@res, @fakeres, cb)
 				@error "HTTP #{@res.statusCode}", cb
-
+				console.log @res.body if @debug
 			else
 				@middleware.parseBodyByCT(@res, @fakeres, cb)
 	#}}}
