@@ -57,7 +57,7 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 				# save transaction in db
 				req.server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
 					# set user's active subscription to this one
-					@onSuccessfulTransaction(req, res, subscription)
+					@onSuccessfulTransaction(req, res, subscription, req.session.account?.data?.stripeCustomerID)
 	#}}}
 
 	upgrade: (req, res) => #{{{
@@ -112,7 +112,7 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 			# save transaction in db
 			req.server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
 				# set user's active subscription to this one
-				@onSuccessfulTransaction(req, res, subscription)
+				@onSuccessfulTransaction(req, res, subscription, req.session.account?.data?.stripeCustomerID)
 	#}}}
 	upgradeNewCustomer: (req, res, subscriptionType, subscriptionRenewal) => #{{{
 		# check to see if the user has a stripe account already
@@ -152,8 +152,13 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 	#}}}
 
 	onSuccessfulTransaction: (req, res, subscription, stripeCustomerID) => #{{{
+		# prepare args
+		upgradeArgs =
+			stripeCustomerID: stripeCustomerID
+
 		# pass updated db object to radius database method
-		req.server.root.api.user.database.upgrade req, res, req.session.account.id, subscription.id, stripeCustomerID, (req, res, user) =>
+		req.server.root.api.user.database.upgrade req, res, req.session.account.id, subscription.id, upgradeArgs, (req, res, user) =>
+
 			# send purchase mail
 			req.server.root.sendPurchaseMail user, (sendgridError) =>
 				if sendgridError

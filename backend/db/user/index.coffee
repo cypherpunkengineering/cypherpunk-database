@@ -168,7 +168,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey]
 		@insert req, res, recordToInsert, cb
 	#}}}
-	upgrade: (req, res, userID, subscriptionID, stripeCustomerID = null, cb = null) => #{{{ if user type is free, change to premium
+	upgrade: (req, res, userID, subscriptionID, args = {}, cb = null) => #{{{ if user type is free, change to premium
 		@findOneByKey req, res, @docKey, userID, @projection(), (req, res, user) =>
 			return cb(req, res, null) if not user and cb
 			return res.send 404 if not user
@@ -177,7 +177,8 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			dataset[@typeKey] = "premium" if user[@typeKey] == "free"
 			dataset[@dataKey] = user[@dataKey]
 			dataset[@dataKey][@schema.subscriptionCurrentIDKey] = subscriptionID
-			dataset[@dataKey][@schema.stripeCustomerIDKey] = stripeCustomerID if stripeCustomerID
+			dataset[@dataKey][@schema.stripeCustomerIDKey] = args?.stripeCustomerID if args?.stripeCustomerID
+			dataset[@dataKey][@schema.amazonBillingAgreementIDKey] = args?.amazonBillingAgreementID if args?.amazonBillingAgreementID
 			@updateCustomDatasetByID req, res, userID, dataset, (req2, res2, result2) =>
 				if result2?.result?.ok != 1
 					wiz.log.err 'DB Error while updating user data!'
