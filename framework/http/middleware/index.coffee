@@ -241,17 +241,15 @@ class wiz.framework.http.middleware.base
 				parser = new xml2js.Parser()
 				parser.parseString buf, (err, out) =>
 					if err
-						return @error "xml parse error: #{err}", cb
+						return wiz.framework.http.middleware.base.error "xml parse error: #{err}", cb
 					if not out
-						return @error "xml response null?", cb
+						return wiz.framework.http.middleware.base.error "xml response null?", cb
 					if out.Error
-						return @error "xml error response! #{JSON.stringify(out.Error)}", cb
+						return wiz.framework.http.middleware.base.error "xml error response! #{JSON.stringify(out.Error)}", cb
 					req.body = out
 					return cb(req, res)
 			catch e
-				return @error "xml parse error: #{e}", cb
-			req.body = null
-			return cb(req, res)
+				return wiz.framework.http.middleware.base.error "xml parse error: #{e}", cb
 	#}}}
 
 # vim: foldmethod=marker wrap
