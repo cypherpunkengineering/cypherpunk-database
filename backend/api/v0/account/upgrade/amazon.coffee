@@ -9,21 +9,12 @@ require './_framework/thirdparty/amazon'
 wiz.package 'cypherpunk.backend.api.v0.account.upgrade.amazon'
 
 class cypherpunk.backend.api.v0.account.upgrade.amazon extends cypherpunk.backend.api.base
-	level: cypherpunk.backend.server.power.level.friend
+	level: cypherpunk.backend.server.power.level.free
 	mask: cypherpunk.backend.server.power.mask.auth
 	middleware: wiz.framework.http.account.session.base
 	nav: false
 
 	handler: (req, res) =>
-		# validate params
-		return res.send 400, 'missing parameters' unless (req.body?.amazonBillingAgreementId?)
-		return res.send 400, 'missing or invalid parameters' unless typeof req.body.amazonBillingAgreementId is 'string'
-
-		# prepare args for amazon API call
-		amazonArgs =
-			AmazonBillingAgreementId: req.body.amazonBillingAgreementId
-
-		# get billing agreement details
-		req.server.root.amazon.getBillingAgreementDetails(req, res, args)
+		req.server.root.amazon.upgrade(req, res)
 
 # vim: foldmethod=marker wrap
