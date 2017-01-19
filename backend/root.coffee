@@ -11,6 +11,7 @@ require './_framework/http/account'
 require './_framework/http/account/session'
 
 require './_framework/thirdparty/stripe'
+require './_framework/thirdparty/amazon'
 require './_framework/thirdparty/sendgrid'
 
 wiz.package 'cypherpunk.backend'
@@ -80,14 +81,20 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		require './manage'
 		@manage = @routeAdd new cypherpunk.backend.manage.module(@server, this, 'manage')
 
+		# init amazon SDK
+		@amazon = new wiz.framework.thirdparty.amazon
+			AWSAccessKeyId: @server.config.amazon.AWSAccessKeyId
+			SellerId: @server.config.amazon.SellerId
+			ClientSecret: @server.config.amazon.ClientSecret
+
 		# init stripe SDK
 		@stripe = new cypherpunk.backend.stripe
-			apiKey: 'sk_test_UxTTPDN0LGZaD9NBtVUxuksJ'
+			apiKey: @server.config.stripe.apiKey
 		@Stripe = @stripe.Stripe
 
 		# init sendgrid SDK
 		@sendgrid = new wiz.framework.thirdparty.sendgrid
-			apiKey: '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'
+			apiKey: @server.config.sendgrid.apiKey
 		@sendgrid.init()
 		@SendGrid = @sendgrid.SendGrid
 

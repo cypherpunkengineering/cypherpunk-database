@@ -10,6 +10,17 @@ class cypherpunk.backend.server.config extends wiz.framework.http.server.configB
 
 	constructor: () ->
 
+		@amazon =
+			AWSAccessKeyId: "AKIAJ425AMXYLUGOJKDA"
+			SellerId: "A2FF2JPNM9GYDJ"
+			ClientSecret: "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"
+
+		@stripe =
+			apiKey: 'sk_test_UxTTPDN0LGZaD9NBtVUxuksJ'
+
+		@sendgrid =
+			apiKey: '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'
+
 		@mongoURI = 'mongodb://localhost:27017/cypherpunk'
 
 		if wiz.hostname is 'cypherpunk-backend-dev'

@@ -129,6 +129,9 @@ class wiz.framework.http.middleware.base
 				@parseTextPlain(req, res, cb)
 			when 'text/csv'
 				@parseTextCSV(req, res, cb)
+			when 'text/xml' # FIXME add support for xml body parsing
+				console.log 'FIXME'
+				@parseTextPlain(req, res, cb)
 			when undefined # no ct supplied
 				return cb()
 			when null # no ct supplied
@@ -209,8 +212,10 @@ class wiz.framework.http.middleware.base
 		req.setEncoding 'utf8'
 		buf = ''
 		req.on 'data', (chunk) ->
+			console.log chunk
 			buf += chunk
 		req.on 'end', () ->
+			console.log buf
 			req.body = buf
 			return cb()
 	#}}}

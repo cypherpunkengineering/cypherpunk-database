@@ -2,6 +2,7 @@ require './_framework'
 require './_framework/http/account'
 require './_framework/http/resource/base'
 
+require './amazon'
 require './stripe'
 
 wiz.package 'cypherpunk.backend.api.v0.account.purchase'
@@ -17,5 +18,6 @@ class cypherpunk.backend.api.v0.account.purchase.resource extends cypherpunk.bac
 
 		# public account creation api
 		@routeAdd new cypherpunk.backend.api.v0.account.purchase.stripe(@server, this, 'stripe', 'POST')
+		@routeAdd new cypherpunk.backend.api.v0.account.purchase.amazon(@server, this, 'amazon', 'POST')
 
 # vim: foldmethod=marker wrap
