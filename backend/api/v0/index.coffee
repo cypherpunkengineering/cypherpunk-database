@@ -9,6 +9,7 @@ require './_framework/util/world'
 require './account'
 require './app'
 require './location'
+require './monitoring'
 require './network'
 require './subscription'
 require './vpn'
@@ -23,6 +24,7 @@ class cypherpunk.backend.api.v0.module extends cypherpunk.backend.api.base
 		@routeAdd new cypherpunk.backend.api.v0.account.module(@server, this, 'account')
 		@routeAdd new cypherpunk.backend.api.v0.app.module(@server, this, 'app')
 		@routeAdd new cypherpunk.backend.api.v0.location.module(@server, this, 'location')
+		@routeAdd new cypherpunk.backend.api.v0.monitoring.module(@server, this, 'monitoring')
 		@routeAdd new cypherpunk.backend.api.v0.network.module(@server, this, 'network')
 		@routeAdd new cypherpunk.backend.api.v0.subscription.module(@server, this, 'subscription')
 		@routeAdd new cypherpunk.backend.api.v0.vpn.module(@server, this, 'vpn')
