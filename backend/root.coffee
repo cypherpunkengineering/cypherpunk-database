@@ -16,8 +16,9 @@ require './_framework/thirdparty/sendgrid'
 
 wiz.package 'cypherpunk.backend'
 
-require './template'
+require './amazon'
 require './stripe'
+require './template'
 
 class cypherpunk.backend.login extends cypherpunk.backend.template
 	level: cypherpunk.backend.server.power.level.stranger
@@ -82,7 +83,7 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		@manage = @routeAdd new cypherpunk.backend.manage.module(@server, this, 'manage')
 
 		# init amazon SDK
-		@amazon = new wiz.framework.thirdparty.amazon
+		@amazon = new cypherpunk.backend.amazon
 			AWSAccessKeyId: @server.config.amazon.AWSAccessKeyId
 			SellerId: @server.config.amazon.SellerId
 			ClientSecret: @server.config.amazon.ClientSecret
