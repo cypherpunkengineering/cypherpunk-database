@@ -162,6 +162,8 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			recordToInsert[@dataKey][@schema.confirmedKey] = data[@schema.confirmedKey]
 		if data?[@schema.stripeCustomerIDKey]?
 			recordToInsert[@dataKey][@schema.stripeCustomerIDKey] = data[@schema.stripeCustomerIDKey]
+		if data?[@schema.amazonBillingAgreementIDKey]?
+			recordToInsert[@dataKey][@schema.amazonBillingAgreementIDKey] = data[@schema.amazonBillingAgreementIDKey]
 		if data?[@schema.subscriptionCurrentIDKey]?
 			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey]
 		@insert req, res, recordToInsert, cb

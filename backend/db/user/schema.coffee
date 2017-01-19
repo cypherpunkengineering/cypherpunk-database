@@ -19,6 +19,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 	@userKey: 'user'
 	@confirmedKey: 'confirmed'
 	@confirmationTokenKey: 'confirmationToken'
+	@amazonBillingAgreementIDKey: 'amazonBillingAgreementID'
 	@stripeCustomerIDKey: 'stripeCustomerID'
 	@subscriptionCurrentIDKey: 'subscriptionCurrentID'
 	@privacyKey: 'privacy'
@@ -80,6 +81,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 		doc[@dataKey][@confirmedKey] ?= false
 		doc[@dataKey][@subscriptionCurrentIDKey] ?= '0'
+		doc[@dataKey][@amazonBillingAgreementIDKey] ?= null
 		doc[@dataKey][@stripeCustomerIDKey] ?= null
 		doc[@dataKey][@subscriptionCurrentIDKey] ?= null
 
@@ -124,6 +126,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				type: 'asciiNoSpace',
 				maxlen: 50
 
+			amazonBillingAgreementID:
+				label: 'Amazon Billing Agreement ID'
+				type: 'asciiNoSpace',
+				maxlen: 50
+
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
@@ -153,6 +160,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
+				type: 'asciiNoSpace',
+				maxlen: 50
+
+			amazonBillingAgreementID:
+				label: 'Amazon Billing Agreement ID'
 				type: 'asciiNoSpace',
 				maxlen: 50
 
@@ -187,6 +199,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				type: 'asciiNoSpace',
 				maxlen: 50
 
+			amazonBillingAgreementID:
+				label: 'Amazon Billing Agreement ID'
+				type: 'asciiNoSpace',
+				maxlen: 50
+
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
@@ -215,6 +232,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
+				type: 'asciiNoSpace',
+				maxlen: 50
+
+			amazonBillingAgreementID:
+				label: 'Amazon Billing Agreement ID'
 				type: 'asciiNoSpace',
 				maxlen: 50
 
@@ -251,6 +273,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				type: 'asciiNoSpace',
 				maxlen: 50
 
+			amazonBillingAgreementID:
+				label: 'Amazon Billing Agreement ID'
+				type: 'asciiNoSpace',
+				maxlen: 50
+
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
@@ -279,6 +306,11 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
+				type: 'asciiNoSpace',
+				maxlen: 50
+
+			amazonBillingAgreementID:
+				label: 'Amazon Billing Agreement ID'
 				type: 'asciiNoSpace',
 				maxlen: 50
 
