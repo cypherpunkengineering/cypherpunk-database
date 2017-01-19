@@ -7,6 +7,7 @@ require '../middleware'
 stream = require 'stream'
 https = require 'https'
 http = require 'http'
+util = require 'util'
 
 wiz.package 'wiz.framework.http.client'
 
@@ -104,11 +105,12 @@ class wiz.framework.http.client.base extends wiz.framework.http.base
 		console.log @res.statusCode if @debug
 		console.log @res.headers if @debug
 
+		console.log @res.body if @debug
+		console.log(util.inspect(@req.body, false, null)) if @debug
 		switch @res.statusCode
 			when 400, 403, 404, 405, 500, 502, 503
 				@middleware.parseBodyByCT(@res, @fakeres, cb)
 				@error "HTTP #{@res.statusCode}", cb
-				console.log @res.body if @debug
 			else
 				@middleware.parseBodyByCT(@res, @fakeres, cb)
 	#}}}
