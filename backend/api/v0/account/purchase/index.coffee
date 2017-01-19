@@ -8,8 +8,8 @@ require './stripe'
 wiz.package 'cypherpunk.backend.api.v0.account.purchase'
 
 class cypherpunk.backend.api.v0.account.purchase.resource extends cypherpunk.backend.base
-	level: cypherpunk.backend.server.power.level.free
-	mask: cypherpunk.backend.server.power.mask.auth
+	level: cypherpunk.backend.server.power.level.stranger
+	mask: cypherpunk.backend.server.power.mask.public
 	nav: false
 
 	load: () =>
