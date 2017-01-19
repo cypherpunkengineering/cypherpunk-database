@@ -6,18 +6,23 @@ require './_framework/util/world'
 
 require './_framework/thirdparty/amazon'
 
+util = require 'util'
+
 wiz.package 'cypherpunk.backend.api.v0.account.purchase.amazon'
 
 class cypherpunk.backend.api.v0.account.purchase.amazon extends cypherpunk.backend.api.base
-	level: cypherpunk.backend.server.power.level.friend
 	level: cypherpunk.backend.server.power.level.stranger
 	mask: cypherpunk.backend.server.power.mask.public
 	nav: false
 
 	handler: (req, res) =>
 		console.log req.body
+
 		# validate params
-		return res.send 400, 'missing parameters' unless (req.body?.AmazonBillingAgreementId?)
+		return res.send 400, 'missing parameters' unless req.body?.email?
+		return res.send 400, 'missing or invalid parameters' unless typeof req.body.email is 'string'
+
+		return res.send 400, 'missing parameters' unless req.body?.AmazonBillingAgreementId?
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.AmazonBillingAgreementId is 'string'
 
 		# nuke existing session if any
@@ -32,8 +37,13 @@ class cypherpunk.backend.api.v0.account.purchase.amazon extends cypherpunk.backe
 			# prepare args for amazon API call
 			amazonArgs =
 				AmazonBillingAgreementId: req.body.AmazonBillingAgreementId
+				plan: req.body.plan
 
 			# get billing agreement details
-			req.server.root.amazon.getBillingAgreementDetails(req, res, amazonArgs)
+			req.server.root.amazon.confirmBillingAgreement req, res, amazonArgs, (res2) =>
+				amazonResponse = res2.body
+				console.log 'print response'
+				console.log(util.inspect(amazonResponse, false, null))
+				res.send 200
 
 # vim: foldmethod=marker wrap

@@ -2,6 +2,7 @@ require '..'
 require '../http/client/base'
 
 crypto = require 'crypto'
+util = require 'util'
 
 wiz.package 'wiz.framework.thirdparty.amazon'
 
@@ -35,14 +36,14 @@ class wiz.framework.thirdparty.amazon
 			i++
 		return str
 	#}}}
-	getBillingAgreementDetails: (req, res, args, cb) => #{{{
+	setBillingAgreementDetails: (req, res, args, cb) => #{{{
 		endpoint = @baseRequestOptions.host
 		apiPath = "/OffAmazonPayments_Sandbox/2013-01-01"
 		timestamp = new Date().toISOString()
 
 		amazonHeaders =
 			AWSAccessKeyId: @AWSAccessKeyId
-			Action: "GetBillingAgreementDetails"
+			Action: "SetBillingAgreementDetails"
 			SellerId: @SellerId
 			#MWSAuthToken: "amzn.mws.4ea38b7b-f563-7709-4bae-87aeaEXAMPLE"
 			SignatureMethod: "HmacSHA256"
@@ -52,6 +53,8 @@ class wiz.framework.thirdparty.amazon
 
 		amazonBody =
 			AmazonBillingAgreementId: args.AmazonBillingAgreementId # C01-8824045-7416542
+			"BillingAgreementAttributes.SellerNote": args.AmazonBillingAgreementId # C01-8824045-7416542
+			"BillingAgreementAttributes.SellerBillingAgreementAttributes.CustomInformation": args.email
 
 		combinedObject = {}
 		Object.assign(combinedObject, amazonHeaders)
@@ -75,9 +78,7 @@ class wiz.framework.thirdparty.amazon
 		reqBody = ""
 		for key of amazonHeaders
 			reqBody += key + "=" + amazonHeaders[key] + "&"
-			console.log "adding #{key} => #{amazonHeaders[key]} to reqBody"
 		for key of amazonBody
-			console.log "adding #{key} => #{amazonBody[key]} to reqBody"
 			reqBody += key + "=" + amazonBody[key] + "&"
 		reqBody += 'Signature=' + encodeURIComponent(signature)
 
@@ -94,19 +95,84 @@ class wiz.framework.thirdparty.amazon
 
 		# send query
 		q = new httpreq(reqopts)
-		q.query reqBody, () =>
-			res = {}
-			res.data = q.res?.body or {}
+		q.query reqBody, (res2) =>
+			data = res2.body or {}
 
-			console.log res.data
+			console.log(util.inspect(data, false, null))
 
 			# validate response
-			if not res
-				res.err = 'invalid response'
+			if not res2
+				res.err = 'invalid response from amazon api'
 				return cb(res) if cb
 				return res.send 500
 
 			return cb(res) if cb
+			return res.send 200
+	#}}}
+	confirmBillingAgreement: (req, res, args, cb) => #{{{
+		endpoint = @baseRequestOptions.host
+		apiPath = "/OffAmazonPayments_Sandbox/2013-01-01"
+		timestamp = new Date().toISOString()
+
+		amazonHeaders =
+			AWSAccessKeyId: @AWSAccessKeyId
+			Action: "ConfirmBillingAgreement"
+			SellerId: @SellerId
+			#MWSAuthToken: "amzn.mws.4ea38b7b-f563-7709-4bae-87aeaEXAMPLE"
+			SignatureMethod: "HmacSHA256"
+			SignatureVersion: "2"
+			Timestamp: encodeURIComponent(timestamp) # 2013-12-11T10%3A57%3A18.000Z
+			Version: "2013-01-01"
+
+		amazonBody =
+			AmazonBillingAgreementId: args.AmazonBillingAgreementId # C01-8824045-7416542
+
+		combinedObject = {}
+		Object.assign(combinedObject, amazonHeaders)
+		Object.assign(combinedObject, amazonBody)
+
+		stringToSign = "POST\n"
+		stringToSign += endpoint + "\n"
+		stringToSign += apiPath + "\n"
+		stringToSign += @createStringToSign(combinedObject)
+
+		hmac = crypto.createHmac('sha256', @ClientSecret)
+		hmac.update(stringToSign)
+		signature = hmac.digest('base64') # Z0ZVgWu0ICF4FLxt1mTjyK%2BjdYG6Kmm8JxLTfsQtKRY%3D
+
+		#console.log "stringToSign is"
+		#console.log stringToSign
+
+		#console.log "signature is"
+		#console.log signature
+
+		reqBody = ""
+		for key of amazonHeaders
+			reqBody += key + "=" + amazonHeaders[key] + "&"
+		for key of amazonBody
+			reqBody += key + "=" + amazonBody[key] + "&"
+		reqBody += 'Signature=' + encodeURIComponent(signature)
+
+		console.log "reqBody is"
+		console.log reqBody
+
+		# build query options
+		reqopts = @baseRequestOptions
+		reqopts.method = "POST"
+		reqopts.path = apiPath
+		reqopts.headers =
+			"Accept" : "*/*"
+			"Content-Type" : "application/x-www-form-urlencoded; charset=UTF-8"
+
+		# send query
+		q = new httpreq(reqopts)
+		q.query reqBody, (res2) =>
+			# validate response
+			if not res2?.body?
+				return cb(null) if cb
+				return res.send 500, 'invalid response from amazon api'
+
+			return cb(res2) if cb
 			return res.send 200
 	#}}}
 
