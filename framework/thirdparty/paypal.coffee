@@ -19,7 +19,9 @@ class wiz.framework.thirdparty.paypal
 	#}}}
 
 	verify: (req, res, args, cb) => #{{{
+		console.log req.headers
 		console.log req.body
+		return res.send 200
 
 		# build query options
 		reqopts = @baseRequestOptions
