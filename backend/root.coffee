@@ -12,11 +12,13 @@ require './_framework/http/account/session'
 
 require './_framework/thirdparty/stripe'
 require './_framework/thirdparty/amazon'
+require './_framework/thirdparty/paypal'
 require './_framework/thirdparty/sendgrid'
 
 wiz.package 'cypherpunk.backend'
 
 require './amazon'
+#require './paypal'
 require './stripe'
 require './template'
 
@@ -87,6 +89,9 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 			AWSAccessKeyId: @server.config.amazon.AWSAccessKeyId
 			SellerId: @server.config.amazon.SellerId
 			ClientSecret: @server.config.amazon.ClientSecret
+
+		# init paypal SDK
+		@paypal = new wiz.framework.thirdparty.paypal()
 
 		# init stripe SDK
 		@stripe = new cypherpunk.backend.stripe
