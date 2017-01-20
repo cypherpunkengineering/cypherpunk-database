@@ -51,11 +51,11 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 
 	@calculatePrice: (plan) => #{{{
 		if plan[0...7] == "monthly"
-			return "8.99"
+			return "12.95"
 		else if plan[0...12] == "semiannually"
-			return "44.99"
+			return "59.95"
 		else if plan[0...8] == "annually"
-			return "59.99"
+			return "99.95"
 		else
 			return null
 	#}}}
