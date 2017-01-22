@@ -13,15 +13,21 @@ class wiz.framework.database.mongo.driver
 	mongoURI: null
 	mongoOptions:
 		promiseLibrary: require('bluebird')
+		socketOptions:
+			keepAlive: 1
+			connectTimeoutMS: 30000
+		reconnectTries: 10
+		reconnectInterval: 500
 	db: null
 
 	init: (cb) => #{{{ init driver instance
+		@disconnect()
 		@connect (err) =>
 			# err = "mongo driver init failed: #{err}" if err
 			cb(err) if cb
 	#}}}
 	connect: (cb) => #{{{ connect and auth to mongo database
-		mongoClient.connect @mongoURI, (err, @db) =>
+		mongoClient.connect @mongoURI, @mongoOptions, (err, @db) =>
 			if err or not @db
 				return cb "mongoClient.connect(#{@mongoURI}) failed: #{err}"
 
@@ -30,20 +36,29 @@ class wiz.framework.database.mongo.driver
 	#}}}
 	collection: (collectionName, cb) => #{{{ retreive a mongo collection
 		# check if non-null db
-		return cb 'no database connection!' unless @db
+		return cb 'No database connection!' unless @db
 
 		# retreive the collection
 		@db.collection collectionName, (err, collection) =>
-			return cb "db.collection(#{collectionName}) returned null: #{err}" if err
+			if err
+				# try re-initializing and hope it reconnects
+				@onError(err)
+				return cb("db.collection(#{collectionName}) returned null: #{err}")
 
 			# no error, return the collection
 			cb null, collection
 	#}}}
 	disconnect: () => #{{{ no need to call if auto_connect is enabled
-		@db.close()
+		@db.close() if @db
 	#}}}
 	code: (func) => #{{{
 		return new mongoDB.Code(func)
+	#}}}
+
+	onError: (err) => #{{{ critical error
+		# try reset stuff
+		wiz.log.crit "Re-initializing mongo due to critical error: #{err}"
+		@init()
 	#}}}
 
 	saveSystemJS: (saveSystemJSmapping, cb = null) => #{{{ for storing javascript methods in database

@@ -19,13 +19,16 @@ class wiz.framework.http.database.mongo.driver extends wiz.framework.database.mo
 				return null
 			wiz.log.debug "connected to database #{@mongoURI}"
 	#}}}
+	onError: (req, res, err) => #{{{
+		res.send 503, "Service temporarily unavailable. Please try again in a few minutes."
+		super(err)
+	#}}}
 	collection: (req, res, collectionName, cb) => #{{{
 		super collectionName, (err, collection) =>
 			# only call cb if we have collection
 			if err or not collection
-				wiz.log.err "unable to retrieve collection #{@mongoURI}.#{collectionName} #{err}"
-				res.send 500, 'database failure'
-				return null
+				wiz.log.err "Unable to access collection #{@mongoURI}.#{collectionName} #{err}"
+				return @onError(req, res, err)
 			cb collection
 	#}}}
 
@@ -56,6 +59,10 @@ class wiz.framework.http.database.mongo.base
 		return baseProjection
 	#}}}
 
+	onError: (req, res, err) => #{{{
+		return @mongo.onError(req, res, err) if @mongo
+		return res.send 503, "Service temporarily unavailable. Please try again in a few minutes."
+	#}}}
 	getUpdateOptions: () => #{{{
 		options =
 			upsert: @upsert
@@ -96,9 +103,8 @@ class wiz.framework.http.database.mongo.base
 		@mongo.collection req, res, @collectionName, (collection) =>
 			collection.findOne criteria, projection, (err, result) =>
 				if err
-					wiz.log.err "FINDONE FAILED: #{debugstr} -> #{err}"
-					return cb(req, res, null) if cb
-					return res.send 500
+					wiz.log.crit "FINDONE FAILED: #{debugstr} -> #{err}"
+					return @onError(req, res, err)
 
 				wiz.log.debug "FINDONE OK: #{debugstr}" if @debug
 				wiz.log.debug "FINDONE RESULT: #{JSON.stringify(result)}" if @debug
@@ -133,8 +139,7 @@ class wiz.framework.http.database.mongo.base
 			collection.update criteria, update, options, (err, result) =>
 				if err
 					wiz.log.err "UPDATE FAILED: #{debugstr} -> #{err}"
-					return cb(req, res, null) if cb
-					return res.send 500
+					return @onError(req, res, err)
 
 				wiz.log.debug "UPDATE OK: #{debugstr}" if @debug
 				return cb(req, res, result) if cb
@@ -170,9 +175,7 @@ class wiz.framework.http.database.mongo.base
 			collection.remove dropQuery, (err, count) =>
 				if err
 					wiz.log.err "DROP FAILED FOR #{recordsToDelete}: #{err}"
-					res.send 500 if res
-					cb(req, res, false) if cb
-					return
+					return @onError(req, res, err)
 
 				wiz.log.debug "DROP OK: #{debugstr}" if @debug
 				res.send 200 if res
@@ -187,8 +190,7 @@ class wiz.framework.http.database.mongo.base
 			collection.find(criteria, projection).count (err, count) =>
 				if err
 					wiz.log.err "COUNT FAILED: #{debugstr} -> #{err}"
-					return cb(req, res, null) if cb
-					return res.send 500
+					return @onError(req, res, err)
 
 				wiz.log.debug "COUNT OK: #{debugstr}" if @debug
 				return cb(req, res, count) if cb
@@ -205,8 +207,7 @@ class wiz.framework.http.database.mongo.base
 			found.toArray (err, results) =>
 				if err
 					wiz.log.err "FIND FAILED: #{debugstr} -> #{err}"
-					return cb(req, res, null) if cb
-					return res.send 500
+					return @onError(req, res, err)
 
 				wiz.log.debug "FIND OK: #{debugstr}" if @debug
 				return cb(req, res, results) if cb
@@ -244,8 +245,7 @@ class wiz.framework.http.database.mongo.base
 
 				if err or records?.result < 0 or records?.ops not instanceof Array
 					wiz.log.err "INSERT FAILED: #{debugstr} -> #{err}"
-					return cb(req, res, null) if cb
-					return res.send 500
+					return @onError(req, res, err)
 
 				wiz.log.debug "INSERT OK: #{debugstr}" if @debug
 				return cb(req, res, records.ops) if cb
