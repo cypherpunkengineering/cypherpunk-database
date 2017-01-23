@@ -19,24 +19,24 @@ class wiz.framework.http.account.session
 	@getSessionKeyFromSecret: (req, res) => # middleware to load session from secret if provided {{{
 		return req.next() if req.sessionKey?
 		try
-			secret = req.params?.secret
-			secret ?= req.body?.secret
-			return req.next() unless secret
-			wiz.log.debug "got secret #{secret}" if @debug
+			req.secret = req.params?.secret
+			req.secret ?= req.body?.secret
+			return req.next() unless req.secret
+			wiz.log.debug "got secret #{req.secret}" if @debug
 
-			wiz.sessions.get secret, (err, datum) =>
+			wiz.sessions.get req.secret, (err, datum) =>
 				if err or not datum
 					err ?= "secret not in database"
 					wiz.log.err "error loading secret: #{err}"
 					req.sessionKey = undefined
 					return req.next() # call next middleware
 
-				wiz.log.debug "got session key from secret #{datum}"
+				wiz.log.debug "got session key from secret #{datum}" #if @debug
 				req.sessionKey = datum
 				return req.next() # call next middleware
 
 		catch e
-			wiz.log.debug "unable to load secret: #{e}"
+			wiz.log.info "unable to load secret: #{e}"
 			req.sessionKey = undefined
 			req.next() # call next middleware
 	#}}}
@@ -77,6 +77,10 @@ class wiz.framework.http.account.session
 
 				req.session = JSON.parse(datum)
 				req.session.last = new Date() # update session time
+
+				if req.secret? # generate new session key/cookie
+					@generate(req, res)
+
 				@cookie(req, res)
 				console.log req.session if @debug
 				return req.next() # call next middleware
@@ -180,6 +184,11 @@ class wiz.framework.http.account.session
 		req.session.expires = @lifetime
 		req.session.realm = 'cypherpunk'
 
+		# generate session cookie
+		@generate(req, res)
+		@cookie(req, res)
+	#}}}
+	@generate: (req, res) => #{{{
 		# generate secure session id and secret
 		req.session.id = crypto.randomBytes(64).toString('base64')
 		s = new BigInteger(crypto.randomBytes(64))
@@ -187,9 +196,6 @@ class wiz.framework.http.account.session
 
 		# generate session key from salthash(id)
 		req.session.key = wiz.framework.crypto.hash.salthash(req.session.id, 'base64')
-
-		# generate session cookie
-		@cookie(req, res)
 	#}}}
 	@logout: (req, res) => #{{{ destroy session
 		wiz.sessions.del(req.session.key) if req?.session?.key?
