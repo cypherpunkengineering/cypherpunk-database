@@ -9,10 +9,9 @@ wiz.package 'cypherpunk.backend.api.v0.monitoring'
 class cypherpunk.backend.api.v0.monitoring.module extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.stranger
 	mask: cypherpunk.backend.server.power.mask.public
-	load: () => #{{{
+	load: () =>
 		super()
 
-		# public account creation api
 		@routeAdd new cypherpunk.backend.api.v0.monitoring.hello(@server, this, 'hello')
 
 class cypherpunk.backend.api.v0.monitoring.hello extends cypherpunk.backend.api.base
@@ -21,6 +20,8 @@ class cypherpunk.backend.api.v0.monitoring.hello extends cypherpunk.backend.api.
 	nav: false
 
 	handler: (req, res) =>
-		res.send 200, "hi mike"
+		req.server.root.api.user.database.count req, res, {}, {}, (req, res, count) =>
+			wiz.log.info "Current DB user count: #{count}"
+			res.send 200, "hi mike"
 
 # vim: foldmethod=marker wrap
