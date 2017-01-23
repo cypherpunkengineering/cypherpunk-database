@@ -13,22 +13,22 @@ class cypherpunk.backend.db.radius extends wiz.framework.http.database.mysql.dri
 	groups: #{{{
 		free:
 			name: 'free'
-			priority: '1'
+			priority: '9000'
 		premium:
 			name: 'premium'
-			priority: '2'
+			priority: '8000'
 		family:
 			name: 'family'
-			priority: '3'
+			priority: '7000'
 		enterprise:
 			name: 'enterprise'
-			priority: '10'
+			priority: '5000'
 		staff:
 			name: 'staff'
-			priority: '30'
+			priority: '3000'
 		developer:
 			name: 'developer'
-			priority: '42'
+			priority: '1000'
 	#}}}
 
 	_queryInsertCheck: (req, res, id, username, password, cb1) => #{{{ insert into radcheck (username, attribute, op, value) values ('<username>', 'NT-Password', ':=', '<NTPASSWORDHASH>')
