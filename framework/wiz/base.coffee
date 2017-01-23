@@ -15,7 +15,7 @@ class wiz.base # base app object
 	master: () => #{{{ main process of master supervisor process
 		wiz.log.notice "*** MASTER #{process.pid} START"
 		# run app in master process if dev mode
-		if wiz.style == 'DEV' then return @main()
+		#if wiz.style == 'DEV' then return @main()
 
 		# restart worker processes if they die
 		cluster.on 'exit', (worker, code, signal) ->
@@ -24,6 +24,7 @@ class wiz.base # base app object
 
 		# spawn X workers
 		for i in [1..@config.workers]
+			wiz.log.notice "*** MASTER #{process.pid} FORKING"
 			cluster.fork()
 	#}}}
 	worker: () => #{{{ main process of forked worker processes

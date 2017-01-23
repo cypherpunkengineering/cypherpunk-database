@@ -2,13 +2,19 @@
 # copyright J. Maurice <j@wiz.biz>
 
 require './_framework'
+require './_framework/wiz/base'
 require './server'
 require './serverConfig'
 
-wiz.app 'wizportal'
+wiz.app 'cypherpunk-web-backend'
 
-server = new cypherpunk.backend.server.main()
-server.config = new cypherpunk.backend.server.config()
-server.main()
+class backend extends wiz.base
+	main: () =>
+		server = new cypherpunk.backend.server.main()
+		server.config = new cypherpunk.backend.server.config()
+		server.main()
+
+app = new backend()
+app.start()
 
 # vim: foldmethod=marker wrap
