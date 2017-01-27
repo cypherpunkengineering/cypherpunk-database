@@ -3,6 +3,7 @@ require './_framework/http/account'
 require './_framework/http/resource/base'
 
 require './amazon'
+require './iTunes'
 require './googlePlay'
 require './stripe'
 
@@ -19,6 +20,7 @@ class cypherpunk.backend.api.v0.account.upgrade.resource extends cypherpunk.back
 
 		# public account creation api
 		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.amazon(@server, this, 'amazon', 'POST')
+		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.iTunes(@server, this, 'iTunes', 'POST')
 		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.googlePlay(@server, this, 'GooglePlay', 'POST')
 		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.stripe(@server, this, 'stripe', 'POST')
 
