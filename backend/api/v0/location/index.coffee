@@ -109,16 +109,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'dallas.cypherpunk.privacy.network'
-				ovDefault: [ '104.200.142.50' ]
-				ovNone: [ '104.200.142.50' ]
-				ovStrong: [ '104.200.142.50' ]
-				ovStealth: [ '104.200.142.53' ]
+				ovDefault: [] #[ '104.200.142.50' ]
+				ovNone: [] #[ '104.200.142.50' ]
+				ovStrong: [] #[ '104.200.142.50' ]
+				ovStealth: [] #[ '104.200.142.53' ]
 
 				ipsecHostname: 'dallas.cypherpunk.privacy.network'
-				ipsecDefault: [ '104.200.142.50' ]
+				ipsecDefault: [] #[ '104.200.142.50' ]
 
-				httpDefault: [ '104.200.142.50' ]
-				socksDefault: [ '104.200.142.50' ]
+				httpDefault: [] #[ '104.200.142.50' ]
+				socksDefault: [] #[ '104.200.142.50' ]
 
 			#}}}
 			hongkong: #{{{
@@ -570,16 +570,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'seattle.cypherpunk.privacy.network'
-				ovDefault: [ '104.200.129.210' ]
-				ovNone: [ '104.200.129.210' ]
-				ovStrong: [ '104.200.129.210' ]
-				ovStealth: [ '104.200.129.213' ]
+				ovDefault: [] #[ '104.200.129.210' ]
+				ovNone: [] #[ '104.200.129.210' ]
+				ovStrong: [] #[ '104.200.129.210' ]
+				ovStealth: [] #[ '104.200.129.213' ]
 
 				ipsecHostname: 'seattle.cypherpunk.privacy.network'
-				ipsecDefault: [ '104.200.129.210' ]
+				ipsecDefault: [] #[ '104.200.129.210' ]
 
-				httpDefault: [ '104.200.129.210' ]
-				socksDefault: [ '104.200.129.210' ]
+				httpDefault: [] #[ '104.200.129.210' ]
+				socksDefault: [] #[ '104.200.129.210' ]
 
 			#}}}
 			siliconvalley: #{{{
@@ -680,16 +680,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'toronto.cypherpunk.privacy.network'
-				ovDefault: [ '172.98.66.194' ]
-				ovNone: [ '172.98.66.194' ]
-				ovStrong: [ '172.98.66.194' ]
-				ovStealth: [ '172.98.66.197' ]
+				ovDefault: [] #[ '172.98.66.194' ]
+				ovNone: [] #[ '172.98.66.194' ]
+				ovStrong: [] #[ '172.98.66.194' ]
+				ovStealth: [] #[ '172.98.66.197' ]
 
 				ipsecHostname: 'toronto.cypherpunk.privacy.network'
-				ipsecDefault: [ '172.98.66.194' ]
+				ipsecDefault: [] #[ '172.98.66.194' ]
 
-				httpDefault: [ '172.98.66.194' ]
-				socksDefault: [ '172.98.66.194' ]
+				httpDefault: [] #[ '172.98.66.194' ]
+				socksDefault: [] #[ '172.98.66.194' ]
 
 			#}}}
 			washingtondc: #{{{
