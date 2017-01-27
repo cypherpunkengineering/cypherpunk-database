@@ -154,16 +154,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 10
 
 				ovHostname: 'newyork.cypherpunk.privacy.network'
-				ovDefault: []# [ '209.95.51.34' ]
-				ovNone: []# [ '209.95.51.34' ]
-				ovStrong: []# [ '209.95.51.34' ]
-				ovStealth: []# [ '209.95.51.37' ]
+				ovDefault: [ '209.95.51.34' ]
+				ovNone: [ '209.95.51.34' ]
+				ovStrong: [ '209.95.51.34' ]
+				ovStealth: [ '209.95.51.37' ]
 
 				ipsecHostname: 'newyork.cypherpunk.privacy.network'
-				ipsecDefault: []# [ '209.95.51.34' ]
+				ipsecDefault: [ '209.95.51.34' ]
 
-				httpDefault: []# [ '209.95.51.34' ]
-				socksDefault: []# [ '209.95.51.34' ]
+				httpDefault: [ '209.95.51.34' ]
+				socksDefault: [ '209.95.51.34' ]
 
 			#}}}
 			losangeles: #{{{
