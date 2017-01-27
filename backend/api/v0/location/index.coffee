@@ -197,16 +197,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 6
 
 				ovHostname: 'london.cypherpunk.privacy.network'
-				ovDefault: []# [ '88.202.186.223' ]
-				ovNone: []# [ '88.202.186.223' ]
-				ovStrong: []# [ '88.202.186.223' ]
-				ovStealth: []# [ '88.202.186.226' ]
+				ovDefault: [ '88.202.186.223' ]
+				ovNone: [ '88.202.186.223' ]
+				ovStrong: [ '88.202.186.223' ]
+				ovStealth: [ '88.202.186.226' ]
 
 				ipsecHostname: 'london.cypherpunk.privacy.network'
-				ipsecDefault: []# [ '88.202.186.223' ]
+				ipsecDefault: [ '88.202.186.223' ]
 
-				httpDefault: []# [ '88.202.186.223' ]
-				socksDefault: []# [ '88.202.186.223' ]
+				httpDefault: [ '88.202.186.223' ]
+				socksDefault: [ '88.202.186.223' ]
 
 			#}}}
 			vancouver: #{{{
