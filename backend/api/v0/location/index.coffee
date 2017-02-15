@@ -65,16 +65,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 6
 
 				ovHostname: 'amsterdam.cypherpunk.privacy.network'
-				ovDefault: [ '185.80.221.5' ]
-				ovNone: [ '185.80.221.5' ]
-				ovStrong: [ '185.80.221.5' ]
-				ovStealth: [ '185.80.221.55' ]
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [  ]
 
 				ipsecHostname: 'amsterdam.cypherpunk.privacy.network'
-				ipsecDefault: [ '185.80.221.5' ]
+				ipsecDefault: [ ]
 
-				httpDefault: [ '185.80.221.5' ]
-				socksDefault: [ '185.80.221.5' ]
+				httpDefault: [ ]
+				socksDefault: [ ]
 
 			#}}}
 			frankfurt: #{{{
@@ -527,16 +527,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'saltlakecity.cypherpunk.privacy.network'
-				ovDefault: [ '173.244.209.73' ]
-				ovNone: [ '173.244.209.73' ]
-				ovStrong: [ '173.244.209.73' ]
-				ovStealth: [ '209.95.56.17' ]
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ 
 
 				ipsecHostname: 'saltlakecity.cypherpunk.privacy.network'
-				ipsecDefault: [ '173.244.209.73' ]
+				ipsecDefault: [ ]
 
-				httpDefault: [ '173.244.209.73' ]
-				socksDefault: [ '173.244.209.73' ]
+				httpDefault: [ ]
+				socksDefault: [ ]
 			#}}}
 			saopaulo: #{{{
 				id: 'saopaulo'
