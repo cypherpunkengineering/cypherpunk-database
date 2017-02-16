@@ -530,7 +530,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ovDefault: [ ]
 				ovNone: [ ]
 				ovStrong: [ ]
-				ovStealth: [ 
+				ovStealth: [ ]
 
 				ipsecHostname: 'saltlakecity.cypherpunk.privacy.network'
 				ipsecDefault: [ ]
