@@ -219,16 +219,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'vancouver.cypherpunk.privacy.network'
-				ovDefault: [ '107.181.189.146' ]
-				ovNone: [ '107.181.189.146' ]
-				ovStrong: [ '107.181.189.146' ]
-				ovStealth: [ '107.181.189.149' ]
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
 
 				ipsecHostname: 'vancouver.cypherpunk.privacy.network'
-				ipsecDefault: [ '107.181.189.146' ]
+				ipsecDefault: [ ]
 
-				httpDefault: [ '107.181.189.146' ]
-				socksDefault: [ '107.181.189.146' ]
+				httpDefault: [ ]
+				socksDefault: [ ]
 
 			#}}}
 
@@ -506,16 +506,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'phoenix.cypherpunk.privacy.network'
-				ovDefault: [ '104.200.133.242' ]
-				ovNone: [ '104.200.133.242' ]
-				ovStrong: [ '104.200.133.242' ]
-				ovStealth: [ '104.200.133.245' ]
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
 
 				ipsecHostname: 'phoenix.cypherpunk.privacy.network'
-				ipsecDefault: [ '104.200.133.242' ]
+				ipsecDefault: [ ]
 
-				httpDefault: [ '104.200.133.242' ]
-				socksDefault: [ '104.200.133.242' ]
+				httpDefault: [ ]
+				socksDefault: [ ]
 			#}}}
 			saltlakecity: #{{{
 				id: 'saltlakecity'
