@@ -679,13 +679,13 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				level: 'premium'
 				servers: 1
 
-				ovHostname: 'freebsd2.tokyo.cypherpunk.privacy.network'
+				ovHostname: 'tokyo.cypherpunk.privacy.network'
 				ovDefault: [ '173.244.192.232' ]
 				ovNone: [ '173.244.192.232' ]
 				ovStrong: [ '173.244.192.232' ]
 				ovStealth: [ '173.244.192.233' ]
 
-				ipsecHostname: 'freebsd2.tokyo.cypherpunk.privacy.network'
+				ipsecHostname: 'tokyo.cypherpunk.privacy.network'
 				ipsecDefault: [ '173.244.192.232' ]
 
 				httpDefault: [ '173.244.192.232' ]
