@@ -243,16 +243,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'atlanta.cypherpunk.privacy.network'
-				ovDefault: [ '172.98.79.242' ]
-				ovNone: [ '172.98.79.242' ]
-				ovStrong: [ '172.98.79.242' ]
-				ovStealth: [ '172.98.79.245' ]
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
 
 				ipsecHostname: 'atlanta.cypherpunk.privacy.network'
-				ipsecDefault: [ '172.98.79.242' ]
+				ipsecDefault: [ ]
 
-				httpDefault: [ '172.98.79.242' ]
-				socksDefault: [ '172.98.79.242' ]
+				httpDefault: [ ]
+				socksDefault: [ ]
 
 			#}}}
 			chennai: #{{{
@@ -331,16 +331,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'miami.cypherpunk.privacy.network'
-				ovDefault: [ '172.98.76.50' ]
-				ovNone: [ '172.98.76.50' ]
-				ovStrong: [ '172.98.76.50' ]
-				ovStealth: [ '172.98.76.53' ]
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
 
 				ipsecHostname: 'miami.cypherpunk.privacy.network'
-				ipsecDefault: [ '172.98.76.50' ]
+				ipsecDefault: [ ]
 
-				httpDefault: [ '172.98.76.50' ]
-				socksDefault: [ '172.98.76.50' ]
+				httpDefault: [ ]
+				socksDefault: [ ]
 
 			#}}}
 			melbourne: #{{{
@@ -441,16 +441,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'newjersey.cypherpunk.privacy.network'
-				ovDefault: [ '172.98.78.98' ]
-				ovNone: [ '172.98.78.98' ]
-				ovStrong: [ '172.98.78.98' ]
-				ovStealth: [ '172.98.78.101' ]
+				ovDefault: [ ]
+				ovNone: [ ]
+				ovStrong: [ ]
+				ovStealth: [ ]
 
 				ipsecHostname: 'newjersey.cypherpunk.privacy.network'
-				ipsecDefault: [ '172.98.78.98' ]
+				ipsecDefault: [ ]
 
-				httpDefault: [ '172.98.78.98' ]
-				socksDefault: [ '172.98.78.98' ]
+				httpDefault: [ ]
+				socksDefault: [ ]
 			#}}}
 			oslo: #{{{
 				id: 'oslo'
