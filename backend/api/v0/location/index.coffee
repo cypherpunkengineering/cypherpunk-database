@@ -828,6 +828,28 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ ]
 
 			#}}}
+			devkim: #{{{
+				id: 'devkim'
+				region: 'DEV'
+				country: 'JP'
+
+				name: 'Connection failure test'
+				level: 'developer'
+				servers: 1
+
+				ovHostname: 'fail.tokyo.cypherpunk.privacy.network'
+				ovDefault: [ '185.176.52.7' ]
+				ovNone: [ '185.176.52.7' ]
+				ovStrong: [ '185.176.52.7' ]
+				ovStealth: [ '185.176.52.7' ]
+
+				ipsecHostname: 'fail.tokyo.cypherpunk.privacy.network'
+				ipsecDefault: [ '185.176.52.38' ]
+
+				httpDefault: [ ]
+				socksDefault: [ ]
+
+			#}}}
 			devhonolulu: #{{{
 				id: 'devhonolulu'
 				region: 'DEV'
