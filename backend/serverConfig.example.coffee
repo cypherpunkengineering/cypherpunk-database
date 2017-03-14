@@ -23,6 +23,20 @@ class cypherpunk.backend.server.config extends wiz.framework.http.server.configB
 
 		@mongoURI = 'mongodb://localhost:27017/cypherpunk'
 
+		@radiusDB =
+			hostname: ''
+			username: ''
+			password: ''
+			database: ''
+
+		@smartdnsDB =
+			hostname: ''
+			username: ''
+			password: ''
+			database: ''
+
+		@behindReverseProxy = true
+
 		if wiz.hostname is 'cypherpunk-backend-dev'
 			@behindReverseProxy = true
 			@listeners[0].host = '10.111.52.113'

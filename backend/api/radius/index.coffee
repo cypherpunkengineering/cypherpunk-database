@@ -12,10 +12,10 @@ wiz.package 'cypherpunk.backend.api.radius'
 class cypherpunk.backend.api.radius.resource extends cypherpunk.backend.api.base
 	database: null
 	config:
-		hostname: '10.111.52.9'
-		username: 'web-backend'
-		password: 'WSfr4ve3v7Cz4xdQ5Ro3MYhLDQN'
-		database: 'radius'
+		hostname: ''
+		username: ''
+		password: ''
+		database: ''
 
 	init: () => #{{{
 		@database = new cypherpunk.backend.db.radius(@server, this, @config)

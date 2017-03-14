@@ -23,14 +23,14 @@ require './refund'
 require './network'
 
 require './radius'
+require './smartdns'
 
 require './v0'
 
 class cypherpunk.backend.api.module extends cypherpunk.backend.api.base
 	load: () =>
 		# create cypherpunkDB driver
-		@mongoURI = 'mongodb://localhost:27017/cypherpunk'
-		@cypherpunkDB = new wiz.framework.http.database.mongo.driver(@server, this, @mongoURI)
+		@cypherpunkDB = new wiz.framework.http.database.mongo.driver(@server, this, @server.config.mongoURI)
 
 		@admin = @routeAdd new cypherpunk.backend.api.admin.resource(@server, this, 'admin')
 		@user = @routeAdd new cypherpunk.backend.api.user.resource(@server, this, 'user')
@@ -45,6 +45,10 @@ class cypherpunk.backend.api.module extends cypherpunk.backend.api.base
 		@network = @routeAdd new cypherpunk.backend.api.network.module(@server, this, 'network')
 
 		@radius = @routeAdd new cypherpunk.backend.api.radius.resource(@server, this, 'radius')
+		@radius.config = @server.config.radiusDB
+
+		@smartdns = @routeAdd new cypherpunk.backend.api.smartdns.resource(@server, this, 'smartdns')
+		@smartdns.config = @server.config.smartdnsDB
 
 		@v0 = @routeAdd new cypherpunk.backend.api.v0.module(@server, this, 'v0')
 
