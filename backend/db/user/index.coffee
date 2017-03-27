@@ -54,19 +54,23 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 
 				@listResponse(req, res, responseData, recordCount)
 	#}}}
-	insert: (req, res, recordToInsert = null, cb = null) => #{{{
+	insertUniqueEmail: (req, res, recordToInsert = null, cb = null) => #{{{
 		if recordToInsert is null
 			return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
 
-		super req, res, recordToInsert, (req2, res2, result) =>
-			result = result[0] if result instanceof Array
-			@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
-				if err
-					wiz.log.err(err)
-					return res.send 500, 'Unable to update database'
+		@findOneByEmail req, res, recordToInsert?[@dataKey]?[@emailKey], (req, res, user) =>
+			wiz.log.err "Email already registered for #{recordToInsert?[@dataKey]?[@emailKey]}"
+			return res.send 409, 'Email already registered' if user isnt null
 
-				return cb(req2, res2, result) if cb
-				res.send 200
+			@insert req, res, recordToInsert, (req2, res2, result) =>
+				result = result[0] if result instanceof Array
+				@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
+					if err
+						wiz.log.err(err)
+						return res.send 500, 'Unable to update database'
+
+					return cb(req2, res2, result) if cb
+					res.send 200
 	#}}}
 	update: (req, res, userID) => #{{{
 		# TODO: return res.send 400, 'invalid type' if not schemaPlan = @schema.types[userPlan]
@@ -166,7 +170,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			recordToInsert[@dataKey][@schema.amazonBillingAgreementIDKey] = data[@schema.amazonBillingAgreementIDKey]
 		if data?[@schema.subscriptionCurrentIDKey]?
 			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey]
-		@insert req, res, recordToInsert, cb
+		@insertUniqueEmail req, res, recordToInsert, cb
 	#}}}
 	upgrade: (req, res, userID, subscriptionID, args = {}, cb = null) => #{{{ if user type is free, change to premium
 		@findOneByKey req, res, @docKey, userID, @projection(), (req, res, user) =>

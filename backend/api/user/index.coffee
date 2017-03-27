@@ -20,7 +20,7 @@ class cypherpunk.backend.api.user.resource extends cypherpunk.backend.api.base
 		@routeAdd new cypherpunk.backend.api.user.findAll(@server, this, 'findAll')
 		@routeAdd new cypherpunk.backend.api.user.findByType(@server, this, 'findByType')
 		@routeAdd new cypherpunk.backend.api.user.findOneByID(@server, this, 'findOneByID')
-		@routeAdd new cypherpunk.backend.api.user.insert(@server, this, 'insert', 'POST')
+		@routeAdd new cypherpunk.backend.api.user.insertUniqueEmail(@server, this, 'insert', 'POST')
 		@routeAdd new cypherpunk.backend.api.user.update(@server, this, 'update', 'POST')
 		@routeAdd new cypherpunk.backend.api.user.myAccountPassword(@server, this, 'myAccountPassword', 'POST')
 		@routeAdd new cypherpunk.backend.api.user.myAccountDetails(@server, this, 'myAccountDetails', 'POST')
@@ -49,10 +49,10 @@ class cypherpunk.backend.api.user.findOneByID extends cypherpunk.backend.api.bas
 	catchall: (req, res, routeWord) => #{{{
 		@parent.database.findOneByID(req, res, routeWord)
 	#}}}
-class cypherpunk.backend.api.user.insert extends cypherpunk.backend.api.base
+class cypherpunk.backend.api.user.insertUniqueEmail extends cypherpunk.backend.api.base
 	# XXX: add permissions
 	handler: (req, res) => #{{{
-		@parent.database.insert(req, res)
+		@parent.database.insertUniqueEmail(req, res)
 	#}}}
 class cypherpunk.backend.api.user.update extends cypherpunk.backend.api.base
 	catchall: (req, res, routeWord) => #{{{
