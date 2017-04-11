@@ -108,6 +108,15 @@ class wiz.framework.http.server.base extends wiz.framework.http.base
 			#wiz.log.debug "sending cookie: #{cookie}"
 			res.setHeader 'Set-Cookie', cookie
 		#}}}
+		res.sendError = (code = 500, status = "", message = "", data = {}) => #{{{ send error response
+			wiz.log.err "HTTP #{code} #{message}"
+			out =
+				code: code
+				status: status
+				message: message
+				data: data
+			res.send(out)
+		#}}}
 		res.send = (numeric = 200, content = '', err = null) => #{{{ for sending response
 			if res.alreadySent
 				wiz.log.crit '******* response already sent!'
@@ -118,12 +127,12 @@ class wiz.framework.http.server.base extends wiz.framework.http.base
 
 			# error responses
 			if numeric >= 400
-				if err
-					# log error if present
-					wiz.log.err "#{numeric} - #{err}"
+				err = content if not err?
+				# log error if present
+				wiz.log.err "#{numeric} - #{err}"
 
-					# include stacktrace or error msg if development mode
-					content += err.toString() if wiz.style is 'DEV'
+				# include stacktrace or error msg if development mode
+				#content += err.toString() if wiz.style is 'DEV'
 
 			# if our content is more than just ''
 			if !!content
