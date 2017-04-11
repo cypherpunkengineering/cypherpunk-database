@@ -30,7 +30,7 @@ class cypherpunk.backend.api.v0.account.register.signup extends cypherpunk.backe
 
 				wiz.log.info "Registered new user account for #{user.data.email}"
 
-				@server.root.sendWelcomeMail user, (sendgridError) =>
+				@server.root.sendgrid.sendWelcomeMail user, (sendgridError) =>
 					if sendgridError
 						wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error"
 						console.log sendgridError

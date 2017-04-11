@@ -160,7 +160,7 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 		req.server.root.api.user.database.upgrade req, res, req.session.account.id, subscription.id, upgradeArgs, (req, res, user) =>
 
 			# send purchase mail
-			req.server.root.sendPurchaseMail user, (sendgridError) =>
+			req.server.root.sendgrid.sendPurchaseMail user, (sendgridError) =>
 				if sendgridError
 					wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
 					console.log sendgridError

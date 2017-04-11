@@ -14,7 +14,7 @@ class cypherpunk.backend.api.v0.account.upgrade.googlePlay extends cypherpunk.ba
 		#return res.send 400, 'invalid transactionObjectData' unless typeof req.body.transactionDataObject is 'object'
 
 		@server.root.api.user.database.upgrade req, res, req.session.account.id, null, (req2, res2, result) =>
-			@server.root.sendUpgradeMail result, (sendgridError) =>
+			@server.root.sendgrid.sendUpgradeMail result, (sendgridError) =>
 				if sendgridError
 					wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error"
 					console.log sendgridError
