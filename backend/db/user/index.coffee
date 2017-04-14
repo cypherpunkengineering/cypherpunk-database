@@ -172,6 +172,18 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey]
 		@insertUniqueEmail req, res, recordToInsert, cb
 	#}}}
+	teaser: (req, res, data, cb) => #{{{
+		return unless recordToInsert = @schema.fromStranger(req, res)
+		if data?[@schema.confirmedKey]?
+			recordToInsert[@dataKey][@schema.confirmedKey] = data[@schema.confirmedKey]
+		if data?[@schema.stripeCustomerIDKey]?
+			recordToInsert[@dataKey][@schema.stripeCustomerIDKey] = data[@schema.stripeCustomerIDKey]
+		if data?[@schema.amazonBillingAgreementIDKey]?
+			recordToInsert[@dataKey][@schema.amazonBillingAgreementIDKey] = data[@schema.amazonBillingAgreementIDKey]
+		if data?[@schema.subscriptionCurrentIDKey]?
+			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey]
+		@insertUniqueEmail req, res, recordToInsert, cb
+	#}}}
 	upgrade: (req, res, userID, subscriptionID, args = {}, cb = null) => #{{{ if user type is free, change to premium
 		@findOneByKey req, res, @docKey, userID, @projection(), (req, res, user) =>
 			return cb(req, res, null) if not user and cb
