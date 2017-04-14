@@ -26,10 +26,15 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 	@privacyUserKey: 'username'
 	@privacyPassKey: 'password'
 
-	@fromStranger: (req, res) => #{{{
+	@fromSignup: (req, res) => #{{{
 		# FIXME: sanitize all user inputs instead of blindly accepting all given req.body params
 		return @fromUser(req, res, 'free', req.body)
 	#}}}
+	@fromTeaser: (req, res) => #{{{
+		# FIXME: sanitize all user inputs instead of blindly accepting all given req.body params
+		return @fromUser(req, res, 'invitation', req.body)
+	#}}}
+
 	@fromUser: (req, res, userType, userData, updating = false) => #{{{
 		# make new doc
 		this.__super__.constructor.types = @types
@@ -100,6 +105,43 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 	#}}}
 
 	# customer accounts
+		invitation: (new type 'invitation', 'Pending Invitation', 'list', #{{{
+			email:
+				label: 'email address'
+				placeholder: 'satoshin@gmx.com'
+				type: 'email'
+				maxlen: 50
+				required: true
+
+			confirmed:
+				label: 'email confirmed'
+				type: 'boolean'
+				required: true
+
+			password:
+				label: 'set password'
+				type: 'asciiNoSpace'
+				minlen: 6
+				maxlen: 50
+				placeholder: ''
+				required: true
+
+			stripeCustomerID:
+				label: 'Stripe Customer ID'
+				type: 'asciiNoSpace',
+				maxlen: 50
+
+			amazonBillingAgreementID:
+				label: 'Amazon Billing Agreement ID'
+				type: 'asciiNoSpace',
+				maxlen: 50
+
+			subscriptionCurrentID:
+				label: 'Current Subscription ID'
+				type: 'asciiNoSpace',
+				maxlen: 50
+
+		) #}}}
 		free: (new type 'free', 'Free Account', 'list', #{{{
 			email:
 				label: 'email address'

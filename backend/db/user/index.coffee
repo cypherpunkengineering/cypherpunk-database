@@ -161,7 +161,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 
 	# public stranger APIs
 	signup: (req, res, data, cb) => #{{{
-		return unless recordToInsert = @schema.fromStranger(req, res)
+		return unless recordToInsert = @schema.fromSignup(req, res)
 		if data?[@schema.confirmedKey]?
 			recordToInsert[@dataKey][@schema.confirmedKey] = data[@schema.confirmedKey]
 		if data?[@schema.stripeCustomerIDKey]?
@@ -173,7 +173,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 		@insertUniqueEmail req, res, recordToInsert, cb
 	#}}}
 	teaser: (req, res, data, cb) => #{{{
-		return unless recordToInsert = @schema.fromStranger(req, res)
+		return unless recordToInsert = @schema.fromTeaser(req, res)
 		if data?[@schema.confirmedKey]?
 			recordToInsert[@dataKey][@schema.confirmedKey] = data[@schema.confirmedKey]
 		if data?[@schema.stripeCustomerIDKey]?
