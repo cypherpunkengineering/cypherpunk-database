@@ -60,6 +60,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'NL'
 
+				lat: -52.3702
+				lon: 4.8952
+				scale: 1.5
+
 				name: 'Amsterdam, Netherlands'
 				level: 'free'
 				servers: 6
@@ -81,6 +85,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'frankfurt'
 				region: 'EU'
 				country: 'DE'
+
+				lat: -50.1109
+				lon: 8.6821
+				scale: 1.5
 
 				name: 'Frankfurt, Germany'
 				level: 'free'
@@ -104,6 +112,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
+				lat: -32.7767
+				lon: -96.7970
+				scale: 1
+
 				name: 'Dallas, Texas'
 				level: 'free'
 				servers: 3
@@ -125,6 +137,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'hongkong'
 				region: 'AS'
 				country: 'HK'
+
+				lat: -22.3964
+				lon: 114.1095
+				scale: 1.5
 
 				name: 'Hong Kong'
 				level: 'free'
@@ -149,6 +165,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				country: 'US'
 				default: true
 
+				lat: -40.7128
+				lon: -74.0059
+				scale: 1
+
 				name: 'New York, New York'
 				level: 'free'
 				servers: 10
@@ -171,6 +191,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
+				lat: -34.0522
+				lon: -118.2437
+				scale: 1
+
 				name: 'Los Angeles, California'
 				level: 'free'
 				servers: 8
@@ -191,6 +215,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'london'
 				region: 'EU'
 				country: 'GB'
+
+				lat: -51.5074
+				lon: 0.1278
+				scale: 1.5
 
 				name: 'London, UK'
 				level: 'free'
@@ -213,6 +241,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'vancouver'
 				region: 'NA'
 				country: 'CA'
+
+				lat: -49.2827
+				lon: -123.1207
+				scale: 1
 
 				name: 'Vancouver, Canada'
 				level: 'free'
@@ -238,6 +270,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
+				lat: -33.7490
+				lon: -84.3880
+				scale: 1
+
 				name: 'Atlanta, Georgia'
 				level: 'premium'
 				servers: 3
@@ -259,6 +295,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'chennai'
 				region: 'AS'
 				country: 'IN'
+
+				lat: -13.0827
+				lon: 80.2707
+				scale: 1
 
 				name: 'Chennai, India'
 				level: 'premium'
@@ -282,6 +322,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
+				lat: -41.8781
+				lon: -87.6298
+				scale: 1
+
 				name: 'Chicago, Illinois'
 				level: 'premium'
 				servers: 3
@@ -303,6 +347,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'istanbul'
 				region: 'EU'
 				country: 'TR'
+
+				lat: -41.0082
+				lon: 28.9784
+				scale: 1.5
 
 				name: 'Istanbul, Turkey'
 				level: 'premium'
@@ -326,6 +374,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
+				lat: -25.6717
+				lon: -80.1918
+				scale: 1
+
 				name: 'Miami, Florida'
 				level: 'premium'
 				servers: 2
@@ -347,6 +399,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'melbourne'
 				region: 'OP'
 				country: 'AU'
+
+				lat: 37.8136
+				lon: 144.9631
+				scale: 1
 
 				name: 'Melbourne, Australia'
 				level: 'premium'
@@ -370,6 +426,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'IT'
 
+				lat: -45.4654
+				lon: 9.1859
+				scale: 1.5
+
 				name: 'Milan, Italy'
 				level: 'premium'
 				servers: 2
@@ -391,6 +451,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'montreal'
 				region: 'NA'
 				country: 'CA'
+
+				lat: -45.5017
+				lon: -73.5673
+				scale: 1
 
 				name: 'Montreal, Canada'
 				level: 'premium'
@@ -414,6 +478,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'RU'
 
+				lat: -55.7558
+				lon: 37.6173
+				scale: 1
+
 				name: 'Moscow, Russia'
 				level: 'premium'
 				servers: 2
@@ -436,6 +504,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
+				lat: -40.0583
+				lon: -74.4057
+				scale: 1
+
 				name: 'Newark, New Jersey'
 				level: 'premium'
 				servers: 2
@@ -456,6 +528,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'oslo'
 				region: 'EU'
 				country: 'NO'
+
+				lat: -59.9139
+				lon: 10.7522
+				scale: 1.5
 
 				name: 'Oslo, Norway'
 				level: 'premium'
@@ -479,6 +555,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'FR'
 
+				lat: -48.8566
+				lon: 2.3522
+				scale: 1.5
+
 				name: 'Paris, France'
 				level: 'premium'
 				servers: 3
@@ -501,6 +581,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
+				lat: -33.4484
+				lon: -112.0740
+				scale: 1
+
 				name: 'Phoenix, Arizona'
 				level: 'premium'
 				servers: 2
@@ -522,6 +606,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
+				lat: -40.7608
+				lon: -111.8910
+				scale: 1
+
 				name: 'Salt Lake City, Utah'
 				level: 'premium'
 				servers: 2
@@ -542,6 +630,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'saopaulo'
 				region: 'SA'
 				country: 'BR'
+
+				lat: 23.5505
+				lon: -46.6333
+				scale: 1
 
 				name: 'Sao Paulo, Brazil'
 				level: 'premium'
@@ -565,6 +657,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
+				lat: -47.6062
+				lon: -122.3321
+				scale: 1
+
 				name: 'Seattle, Washington'
 				level: 'premium'
 				servers: 3
@@ -586,6 +682,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'siliconvalley'
 				region: 'NA'
 				country: 'US'
+
+				lat: -37.3875
+				lon: -122.0575
+				scale: 1
 
 				name: 'Silicon Valley, California'
 				level: 'premium'
@@ -609,6 +709,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'AS'
 				country: 'SG'
 
+				lat: -1.3521
+				lon: 103.8198
+				scale: 1.5
+
 				name: 'Singapore'
 				level: 'premium'
 				servers: 3
@@ -630,6 +734,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'stockholm'
 				region: 'EU'
 				country: 'SE'
+
+				lat: -59.3293
+				lon: 18.0686
+				scale: 1.5
 
 				name: 'Stockholm, Sweden'
 				level: 'premium'
@@ -653,6 +761,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'OP'
 				country: 'AU'
 
+				lat: 33.8688
+				lon: 151.2093
+				scale: 1
+
 				name: 'Sydney, Australia'
 				level: 'premium'
 				servers: 2
@@ -674,6 +786,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'tokyo'
 				region: 'AS'
 				country: 'JP'
+
+				lat: -35.6895
+				lon: 139.6917
+				scale: 1.5
 
 				name: 'Tokyo, Japan'
 				level: 'premium'
@@ -697,6 +813,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'CA'
 
+				lat: -43.6532
+				lon: -79.3832
+				scale: 1
+
 				name: 'Toronto, Canada'
 				level: 'premium'
 				servers: 2
@@ -719,6 +839,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
+				lat: -38.9072
+				lon: -77.0369
+				scale: 1
+
 				name: 'Washington D.C.'
 				level: 'premium'
 				servers: 2
@@ -740,6 +864,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'zurich'
 				region: 'EU'
 				country: 'CH'
+
+				lat: -47.3769
+				lon: 8.5417
+				scale: 1.5
 
 				name: 'Zurich, Switzerland'
 				level: 'premium'
@@ -765,6 +893,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'DEV'
 				country: 'JP'
 
+				lat: -35.6895
+				lon: 139.6917
+				scale: 1.5
+
 				name: 'Tokyo Core Network'
 				level: 'developer'
 				servers: 1
@@ -789,6 +921,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'DEV'
 				country: 'JP'
 
+				lat: -35.6895
+				lon: 139.6917
+				scale: 1.5
+
 				name: 'Tokyo Test VM 3'
 				level: 'developer'
 				servers: 1
@@ -810,6 +946,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'devtokyo4'
 				region: 'DEV'
 				country: 'JP'
+
+				lat: -35.6895
+				lon: 139.6917
+				scale: 1.5
 
 				name: 'Tokyo Hatos VM'
 				level: 'developer'
@@ -833,6 +973,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'DEV'
 				country: 'JP'
 
+				lat: -35.6895
+				lon: 139.6917
+				scale: 1.5
+
 				name: 'Connection failure test'
 				level: 'developer'
 				servers: 1
@@ -854,6 +998,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				id: 'devhonolulu'
 				region: 'DEV'
 				country: 'JP'
+
+				lat: -21.3069
+				lon: -157.8533
+				scale: 4
 
 				name: 'Honolulu Test VM'
 				level: 'developer'
