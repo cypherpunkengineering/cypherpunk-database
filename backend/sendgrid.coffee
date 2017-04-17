@@ -15,7 +15,7 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 			to:
 				email: user?.data?.email
 			#subject: 'Welcome to Cypherpunk Privacy'
-			subject: 'Confirm your early access invitation'
+			subject: 'Confirm your early access invitation to Cypherpunk Privacy'
 			template_id: '99f16955-a429-492b-8c45-5558d6c5b9a0'
 			substitutions:
 				'-confirmUrl-': @generateTeaserConfirmationURL(user)
@@ -45,6 +45,7 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 			subject: referrerName + ' invited you to an early access preview of Cypherpunk Privacy'
 			template_id: '18a34a5d-7770-4a22-ae23-9e1c14837552'
 			substitutions:
+				'-titleText-': "Click the button below to accept your early access invitation from #{referrerName}"
 				'-confirmUrl-': @generateTeaserConfirmationURL(user)
 
 		@mailTemplate mailData, (error, response) =>
@@ -70,8 +71,9 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 				email: user?.data?.email
 			#subject: 'Welcome to Cypherpunk Privacy'
 			subject: "You've been invited to an early access preview of Cypherpunk Privacy"
-			template_id: '0c3df3ce-4601-4d97-9647-e4b3bfbc01bd'
+			template_id: '18a34a5d-7770-4a22-ae23-9e1c14837552'
 			substitutions:
+				'-titleText-': "Click the button below to accept your early access invitation"
 				'-confirmUrl-': @generateTeaserConfirmationURL(user)
 
 		@mailTemplate mailData, (error, response) =>

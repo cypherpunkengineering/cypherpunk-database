@@ -98,7 +98,7 @@ class cypherpunk.backend.api.v0.account.register.teaserShare extends cypherpunk.
 
 				wiz.log.info "Registered new user account for #{user.data.email}"
 
-				if req.body?.name?
+				if req.body?.name?.length > 0
 
 					@server.root.sendgrid.sendTeaserShareWithFriendMail user, req.body.name, (sendgridError) =>
 						if sendgridError
