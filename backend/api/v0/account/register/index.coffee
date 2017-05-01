@@ -98,23 +98,12 @@ class cypherpunk.backend.api.v0.account.register.teaserShare extends cypherpunk.
 
 				wiz.log.info "Registered new user account for #{user.data.email}"
 
-				if req.body?.name?.length > 0
-
-					@server.root.sendgrid.sendTeaserShareWithFriendMail user, req.body.name, (sendgridError) =>
-						if sendgridError
-							wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error"
-							console.log sendgridError
-							return
-						wiz.log.info "Sent welcome email to #{user.data.email}"
-
-				else
-
-					@server.root.sendgrid.sendTeaserShareWithFriendNoNameMail user, (sendgridError) =>
-						if sendgridError
-							wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error"
-							console.log sendgridError
-							return
-						wiz.log.info "Sent welcome email to #{user.data.email}"
+				@server.root.sendgrid.sendTeaserShareWithFriendMail user, req.body?.name, (sendgridError) =>
+					if sendgridError
+						wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error"
+						console.log sendgridError
+						return
+					wiz.log.info "Sent welcome email to #{user.data.email}"
 
 				out = @parent.parent.doUserLogin(req, res, user)
 				res.send 202, out
