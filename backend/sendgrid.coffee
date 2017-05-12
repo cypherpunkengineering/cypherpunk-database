@@ -21,7 +21,7 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 				'-titleText-': "You're only one step away"
 				'-regularText-': "Click the button below to confirm your early access invitation"
 				'-buttonText-': "CONFIRM MY INVITATION"
-				'-buttonUrl-': @generateTeaserConfirmationURL(user)
+				'-buttonURL-': @generateTeaserConfirmationURL(user)
 
 		@mailTemplate mailData, (error, response) =>
 			if @debug
@@ -51,7 +51,7 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 				'-titleText-': ""
 				'-regularText-': "Click the button below to accept your early access invitation"
 				'-buttonText-': "ACCEPT MY INVITATION"
-				'-buttonUrl-': @generateTeaserConfirmationURL(user)
+				'-buttonURL-': @generateTeaserConfirmationURL(user)
 
 		if referrerName? and referrerName.length > 0
 			mailData.subject = "#{referrerName} invited you to an early access preview of Cypherpunk Privacy"
@@ -86,7 +86,7 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 				'-titleText-': "You're only one step away"
 				'-regularText-': "Click the button below to confirm your free trial to Cypherpunk Privacy"
 				'-buttonText-': "ACTIVATE MY ACCOUNT"
-				'-buttonUrl-': @generateConfirmationURL(user)
+				'-buttonURL-': @generateConfirmationURL(user)
 
 		@mailTemplate mailData, (error, response) =>
 			if @debug
