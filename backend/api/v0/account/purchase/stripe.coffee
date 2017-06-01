@@ -20,6 +20,9 @@ class cypherpunk.backend.api.v0.account.purchase.stripe extends cypherpunk.backe
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.email is 'string'
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
 
+		return res.send 400, 'missing parameters' unless req.body?.password?
+		return res.send 400, 'missing or invalid parameters' unless typeof req.body.password is 'string'
+
 		# nuke existing session if any
 		wiz.framework.http.account.session.logout(req, res)
 
