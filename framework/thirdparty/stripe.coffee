@@ -81,8 +81,25 @@ class wiz.framework.thirdparty.stripe
 			# get id of newly added card
 			defaultSource = stripeCustomerData?.id
 
-			# update customer object to use new source id as default_source
-			@sourceUpdateDefault(req, res, defaultSource)
+			# get updated list of sources
+			req.server.root.Stripe.customers.retrieve stripeCustomerID, (stripeError, stripeCustomerData) =>
+
+				# check for error
+				return @onError(req, res, stripeError) if stripeError
+
+				# construct list of old source IDs to delete
+				sourcesToDelete = []
+				if stripeCustomerData?.sources?.data?
+					for datum in stripeCustomerData?.sources?.data
+						sourcesToDelete.push(datum?.id)
+
+				# delete old cards
+				for cardID in sourcesToDelete when cardID != defaultSource
+					console.log "Deleting old #{cardID}"
+					req.server.root.Stripe.customers.deleteCard stripeCustomerID, cardID, (stripeError, stripeCustomerData) =>
+
+				# update customer object to use new source id as default_source
+				@sourceUpdateDefault(req, res, defaultSource)
 	#}}}
 	sourceUpdateDefault: (req, res, defaultSource) => #{{{
 		console.log 'sourceUpdateDefault'
