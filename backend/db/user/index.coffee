@@ -192,6 +192,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			dataset = {}
 			dataset[@typeKey] = "premium" if user[@typeKey] == "free"
 			dataset[@dataKey] = user[@dataKey]
+			dataset[@dataKey][@schema.confirmedKey] = true
 			dataset[@dataKey][@schema.subscriptionCurrentIDKey] = subscriptionID
 			dataset[@dataKey][@schema.stripeCustomerIDKey] = args?.stripeCustomerID if args?.stripeCustomerID
 			dataset[@dataKey][@schema.amazonBillingAgreementIDKey] = args?.amazonBillingAgreementID if args?.amazonBillingAgreementID
