@@ -221,7 +221,7 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 			# for data key, merge individually, use new values
 			if k == @dataKey
 				for key of schemaType[@dataKey]
-					if docNew[@dataKey][key]?
+					if docNew[@dataKey][key]? and not schemaType[@dataKey][key].immutable
 						doc[@dataKey][key] = docNew[@dataKey][key]
 					else
 						doc[@dataKey][key] = docOld[@dataKey][key]

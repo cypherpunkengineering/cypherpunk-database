@@ -130,16 +130,18 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
 				maxlen: 50
+				immutable: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
 				type: 'asciiNoSpace',
 				maxlen: 50
+				immutable: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 		) #}}}
 		free: (new type 'free', 'Free Account', 'list', #{{{
@@ -166,17 +168,17 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 		) #}}}
 		premium: (new type 'premium', 'Premium Account', 'list', #{{{
@@ -203,17 +205,17 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 		) #}}}
 		family: (new type 'family', 'Family Account', 'list', #{{{
 			email:
@@ -239,17 +241,17 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 		) #}}}
 		enterprise: (new type 'enterprise', 'Enterprise Account', 'list', #{{{
 			email:
@@ -275,17 +277,17 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 		) #}}}
 
 	# staff accounts
@@ -313,17 +315,17 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 		) #}}}
 		developer: (new type 'developer', 'Cypherpunk Developer', 'list', #{{{
 			email:
@@ -349,17 +351,17 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
 				type: 'asciiNoSpace',
-				maxlen: 50
+				immutable: true
 		) #}}}
 
 # vim: foldmethod=marker wrap
