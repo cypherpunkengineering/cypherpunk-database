@@ -12,7 +12,7 @@ class cypherpunk.backend.api.v0.pricing.module extends cypherpunk.backend.api.ba
 	debug: true
 
 	init: () =>
-		@routeAdd new cypherpunk.backend.api.v0.pricing.plans(@server, this, 'plans')
+		@routeAdd new cypherpunk.backend.api.v0.pricing.plans(@server, this, 'plans', 'POST')
 		super()
 
 class cypherpunk.backend.api.v0.pricing.plans extends cypherpunk.backend.api.base
