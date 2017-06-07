@@ -8,6 +8,7 @@ require './_framework/util/world'
 
 require './account'
 require './app'
+require './pricing'
 require './ipn'
 require './location'
 require './monitoring'
@@ -24,6 +25,7 @@ class cypherpunk.backend.api.v0.module extends cypherpunk.backend.api.base
 		super()
 		@routeAdd new cypherpunk.backend.api.v0.account.module(@server, this, 'account')
 		@routeAdd new cypherpunk.backend.api.v0.app.module(@server, this, 'app')
+		@routeAdd new cypherpunk.backend.api.v0.pricing.module(@server, this, 'pricing')
 		@routeAdd new cypherpunk.backend.api.v0.location.module(@server, this, 'location')
 		@routeAdd new cypherpunk.backend.api.v0.ipn.module(@server, this, 'ipn')
 		@routeAdd new cypherpunk.backend.api.v0.monitoring.module(@server, this, 'monitoring')
