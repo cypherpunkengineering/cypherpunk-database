@@ -23,7 +23,7 @@ nvm install ${NODE_VERSION}
 nvm use ${NODE_VERSION}
 
 until false;do
-	coffee index.coffee --production 2>&1 | tee -a $HOME/backend.log
+	coffee index.coffee --production 2>&1 | tee -a $HOME/backend-production.log
 	echo
 	echo RESTARTING...
 	echo
