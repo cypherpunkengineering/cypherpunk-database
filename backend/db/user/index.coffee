@@ -49,8 +49,9 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 						responseData.push
 							DT_RowId : result[@docKey]
 							0: result[@docKey] or 'unknown'
-							1: result[@dataKey][@emailKey] or ''
-							2: result.lastLoginTS or 0
+							1: result[@typeKey] or ''
+							2: result[@dataKey][@emailKey] or ''
+							3: result.lastLoginTS or 0
 
 				@listResponse(req, res, responseData, recordCount)
 	#}}}

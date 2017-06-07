@@ -1,23 +1,27 @@
 # copyright 2012 J. Maurice <j@wiz.biz>
 
-wiz.package 'cypherpunk.backend.admin.userjs.manageUser'
+wiz.package 'cypherpunk.backend.admin.userjs.manageAccount'
 
-class cypherpunk.backend.admin.userjs.manageUser.table extends wiz.portal.userjs.table.multiMulti
+class cypherpunk.backend.admin.userjs.manageAccount.table extends wiz.portal.userjs.table.multiMulti
 
 	urlBase: wiz.getParentURL(2) + '/api/user'
 	#{{{ strings
-	stringNuggets: 'users'
-	stringInsertButton: 'Add user'
-	stringInsertSubmit: 'Add user'
-	stringInsertRecordDialogTitle: 'Add user'
-	stringInsertRecordSelectLabel: 'user type'
-	stringUpdateButton: 'Manage User'
-	stringDropButton: 'Drop users'
-	stringDropSubmit: 'Drop users'
-	stringDropRecordDialogTitle: 'Drop user'
-	stringSelectType: 'select user type...'
-	stringTitle: 'User Management'
+	stringNuggets: 'accounts'
+	stringInsertButton: 'Create account'
+	stringInsertSubmit: 'Create account'
+	stringInsertRecordDialogTitle: 'Create account'
+	stringInsertRecordSelectLabel: 'Account type'
+	stringUpdateButton: 'Manage Account'
+	stringUpdateSubmit: 'Modify Account'
+	stringDangerZone: 'Danger Zone'
+	stringRecoverSubmit: 'Send Recovery Email'
+	stringRefundSubmit: 'Refund and Suspend Account'
+	stringDropSubmit: 'Suspend Account'
+	stringDropRecordDialogTitle: 'Drop account'
+	stringSelectType: 'Select account type...'
+	stringTitle: 'Manage Accounts'
 	stringTableHeaders: [
+		'Account Type'
 		'E-Mail Address'
 		'Last Logged In'
 	]
@@ -51,7 +55,7 @@ class cypherpunk.backend.admin.userjs.manageUser.table extends wiz.portal.userjs
 								text: @stringUpdateButton
 								click: @updateDialogOpen
 						)
-					when 2
+					when 3
 						if aData[i] == 0
 							ts = 'never'
 						else
@@ -70,11 +74,89 @@ class cypherpunk.backend.admin.userjs.manageUser.table extends wiz.portal.userjs
 		super(data)
 		@insertDialogFormSelect.attr('disabled', true) if data?
 	#}}}
+	insertDialogModal: (e, data) => #{{{
+		@insertDialogForm = @form
+			submit: @insertDialogFormSubmit
+			nugget:
+				@controlGroup
+					inputLabel: @stringInsertRecordSelectLabel
+					controls: @controls
+						nugget: @insertDialogFormSelect
 
-manageUserTable = null
+		if @insertDialogFormFields
+			@insertDialogForm.append @insertDialogFormFields
+
+		if data
+			@insertDialog = @modal
+				id: @idInsertDialog
+				classes: [ 'fade' ]
+				label: @stringInsertRecordDialogTitle
+				body: @insertDialogForm
+				footer: $('<div>').append(
+					$('<div>').append(
+						@button
+							classes: [ 'btn-primary' ]
+							text: (if data then @stringUpdateSubmit else @stringInsertSubmit)
+							click: @insertDialogFormSubmit
+					)
+					$('<hr>')
+					$('<div>').append(
+						@span
+							text: @stringDangerZone
+						@button
+							classes: [ 'btn-danger' ]
+							text: @stringDropSubmit
+							click: @dropDialogFormSubmit
+						@button
+							classes: [ 'btn-danger' ]
+							text: @stringRefundSubmit
+							click: @dropDialogFormRefund
+						@button
+							classes: [ 'btn' ]
+							text: @stringRecoverSubmit
+							click: @insertDialogFormRecover
+					)
+				)
+		else
+			@insertDialog = @modal
+				id: @idInsertDialog
+				classes: [ 'fade' ]
+				label: @stringInsertRecordDialogTitle
+				body: @insertDialogForm
+				footer: @button
+					classes: [ 'btn-primary' ]
+					text: (if data then @stringUpdateSubmit else @stringInsertSubmit)
+					click: @insertDialogFormSubmit
+
+		@setUpdateRecordID(data)
+
+		@insertDialog.on 'hidden.bs.modal', () =>
+			@insertDialog.remove()
+			@insertDialog = null
+
+		@insertDialog.modal()
+	#}}}
+
+	insertDialogFormRecover: (e) => #{{{
+
+		e.preventDefault()
+		return false if not @insertDialogForm
+
+		recordToInsert = @insertDialogFormSerialize()
+		return false if not recordToInsert or recordToInsert.length < 1
+
+		if @insertDialog.attr('updateRecordID')
+			@ajax 'POST', @urlUpdate + '/' + @insertDialog.attr('updateRecordID'), recordToInsert, @onDialogSubmitCompleted
+		else
+			@ajax 'POST', @urlInsert, recordToInsert, @onDialogSubmitCompleted
+
+		return false
+	#}}}
+
+manageAccountTable = null
 $(document).ready =>
-	manageUserTable = new cypherpunk.backend.admin.userjs.manageUser.table()
-	manageUserTable.ajax 'GET', manageUserTable.urlBase + '/types', null, (types) =>
-		manageUserTable.init(types)
+	manageAccountTable = new cypherpunk.backend.admin.userjs.manageAccount.table()
+	manageAccountTable.ajax 'GET', manageAccountTable.urlBase + '/types', null, (types) =>
+		manageAccountTable.init(types)
 
 # vim: foldmethod=marker wrap
