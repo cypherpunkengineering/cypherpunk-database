@@ -25,4 +25,16 @@ class cypherpunk.backend.server.main extends wiz.framework.http.server.base
 		@root = new cypherpunk.backend.module(this, null, '')
 		super()
 
+		if wiz.style is 'DEV'
+			wiz.sessions.select 0, (err) ->
+				wiz.log.info err
+		else if wiz.style is 'STAGING'
+			wiz.sessions.select 1, (err) ->
+				wiz.log.info err
+		else if wiz.style is 'PRODUCTION'
+			wiz.sessions.select 2, (err) ->
+				wiz.log.info err
+		else
+			throw Error 'no valid redis database'
+
 # vim: foldmethod=marker wrap

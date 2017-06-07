@@ -15,6 +15,10 @@ class wiz.framework.thirdparty.amazon
 		@AWSAccessKeyId = args.AWSAccessKeyId # AKIAJKYFSJU7PEXAMPLE
 		@SellerId = args.SellerId
 		@ClientSecret = args.ClientSecret
+		if wiz.style is 'DEV'
+			@ApiPath = "/OffAmazonPayments_Sandbox/2013-01-01"
+		else
+			@ApiPath = "/OffAmazonPayments/2013-01-01"
 	#}}}
 	baseRequestOptions: #{{{
 		host: 'mws.amazonservices.com'
@@ -39,7 +43,7 @@ class wiz.framework.thirdparty.amazon
 
 	setBillingAgreementDetails: (req, res, args, cb) => #{{{
 		endpoint = @baseRequestOptions.host
-		apiPath = "/OffAmazonPayments_Sandbox/2013-01-01"
+		apiPath = @ApiPath
 		timestamp = new Date().toISOString()
 
 		amazonHeaders =
@@ -112,7 +116,7 @@ class wiz.framework.thirdparty.amazon
 	#}}}
 	confirmBillingAgreement: (req, res, args, cb) => #{{{
 		endpoint = @baseRequestOptions.host
-		apiPath = "/OffAmazonPayments_Sandbox/2013-01-01"
+		apiPath = @ApiPath
 		timestamp = new Date().toISOString()
 
 		amazonHeaders =

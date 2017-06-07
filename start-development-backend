@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+cd "$( dirname "${BASH_SOURCE[0]}" )"
+cd backend/
+
+# fix path
+export PATH=$PATH:/usr/local/bin
+
+# build vars
+NODE_VERSION=v7.2.1
+
+# load nvm depending on OS
+case `uname -s` in
+    Darwin)
+        source "$(brew --prefix nvm)/nvm.sh" ${NODE_VERSION}
+        ;;
+    FreeBSD|Linux)
+        source $HOME/.nvm/nvm.sh ${NODE_VERSION}
+        ;;
+esac
+
+# prepare node/npm
+nvm install ${NODE_VERSION}
+nvm use ${NODE_VERSION}
+
+until false;do
+	coffee index.coffee --development 2>&1 | tee -a $HOME/backend.log
+	echo
+	echo RESTARTING...
+	echo
+	sleep 1
+done

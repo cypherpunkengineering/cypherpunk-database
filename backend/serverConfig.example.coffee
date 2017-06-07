@@ -10,51 +10,75 @@ class cypherpunk.backend.server.config extends wiz.framework.http.server.configB
 
 	constructor: () ->
 
-		@amazon =
-			AWSAccessKeyId: ""
-			SellerId: ""
-			ClientSecret: ""
-
-		@stripe =
-			apiKey: ''
-
 		@sendgrid =
 			apiKey: ''
-
-		@mongoURI = 'mongodb://localhost:27017/cypherpunk'
 
 		@radiusDB =
 			hostname: ''
 			username: ''
 			password: ''
-			database: ''
+			database: 'radius'
 
 		@smartdnsDB =
 			hostname: ''
 			username: ''
 			password: ''
-			database: ''
+			database: 'smartdns'
 
 		@behindReverseProxy = true
 
-		if wiz.hostname is 'cypherpunk-backend-dev'
-			@behindReverseProxy = true
-			@listeners[0].host = '10.111.52.113'
-			@listeners[0].port = 11080
-
-		else if wiz.hostname is 'wizbook3-ubuntu'
-			@listeners[0].host = '192.168.32.128'
-			@listeners[0].port = 11080
-
+#		if wiz.hostname is 'cypherpunk-backend-dev'
+#			@behindReverseProxy = true
+#			@listeners[0].host = '10.111.52.113'
+#			@listeners[0].port = 11080
+#		else if wiz.hostname is 'wizbook3-ubuntu'
+#			@listeners[0].host = '192.168.32.128'
+#			@listeners[0].port = 11080
+#
 		if process.argv[2] == '--production'
 
 			wiz.log.notice 'PRODUCTION STYLE'
 			wiz.style = 'PRODUCTION'
+			@listeners[0].port = 11080
+			@mongoURI = 'mongodb://localhost:27017/cypherpunk-production'
+
+			@amazon =
+				AWSAccessKeyId: ""
+				SellerId: ""
+				ClientSecret: ""
+
+			@stripe =
+				apiKey: 'sk_live_'
+
+		else if process.argv[2] == '--staging'
+
+			wiz.log.warn 'STAGING STYLE'
+			wiz.style = 'STAGING'
+			@listeners[0].port = 11081
+			@mongoURI = 'mongodb://localhost:27017/cypherpunk-staging'
+
+			@amazon =
+				AWSAccessKeyId: ""
+				SellerId: ""
+				ClientSecret: ""
+
+			@stripe =
+				apiKey: 'sk_live_'
 
 		else if process.argv[2] == '--development'
 
-			wiz.log.warn 'OPPA IS DEV STYLE' # 江南スタイル
+			wiz.log.warn 'DEVELOPMENT STYLE' # 江南スタイル
 			wiz.style = 'DEV'
+			@listeners[0].port = 11082
+			@mongoURI = 'mongodb://localhost:27017/cypherpunk-development'
+
+			@amazon =
+				AWSAccessKeyId: ""
+				SellerId: ""
+				ClientSecret: ""
+
+			@stripe =
+				apiKey: 'sk_test_'
 
 		else
 
