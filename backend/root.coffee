@@ -21,6 +21,7 @@ require './amazon'
 #require './paypal'
 require './sendgrid'
 require './stripe'
+require './pricing'
 require './template'
 
 class cypherpunk.backend.login extends cypherpunk.backend.template

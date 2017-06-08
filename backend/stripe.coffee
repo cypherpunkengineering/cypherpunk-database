@@ -5,18 +5,27 @@ wiz.package 'cypherpunk.backend.stripe'
 class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 
 	purchase: (req, res) => #{{{
+		console.log req.body
+
 		return res.send 400, 'missing parameters' unless (req.body?.token? and req.body?.plan?)
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
 
-		subscriptionType = cypherpunk.backend.db.subscription.calculateType req?.body?.plan
-		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal req?.body?.plan
+		subscriptionPlanFreq = cypherpunk.backend.pricing.getPlanFreqForPlan req?.body?.plan
+		return res.send 400, 'invalid plan' if not subscriptionPlanFreq
+		console.log subscriptionPlanFreq
 
-		return res.send 400, 'invalid plan' if not subscriptionRenewal or not subscriptionType
+		stripePlanId = cypherpunk.backend.pricing.getStripePlanIdForReferralCode req?.body?.plan
+		return res.send 400, 'invalid plan' if not stripePlanId
+		console.log stripePlanId
+
+		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal stripePlanId
+		return res.send 500, 'unable to calculate subscription period' if not subscriptionRenewal
+		console.log subscriptionRenewal
 
 		stripeArgs =
 			source: req.body.token
-			plan: req.body.plan
+			plan: stripePlanId
 			email: req.body.email
 
 		@Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
@@ -55,7 +64,7 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 				console.log subscriptionData
 
 				# save transaction in db
-				req.server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
+				req.server.root.api.subscription.database.insert req, res, subscriptionPlanFreq, subscriptionData, (req, res, subscription) =>
 					# set user's active subscription to this one
 					@onSuccessfulTransaction(req, res, subscription, req.session.account?.data?.stripeCustomerID)
 	#}}}
@@ -64,20 +73,29 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 		# validate plan
 		return res.send 400, 'missing parameters' unless req.body?.plan?
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
-		subscriptionType = cypherpunk.backend.db.subscription.calculateType req?.body?.plan
-		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal req?.body?.plan
-		return res.send 400, 'invalid plan' if not subscriptionRenewal or not subscriptionType
+
+		subscriptionPlanFreq = cypherpunk.backend.pricing.getPlanFreqForPlan req?.body?.plan
+		return res.send 400, 'invalid plan' if not subscriptionPlanFreq
+		console.log subscriptionPlanFreq
+
+		stripePlanId = cypherpunk.backend.pricing.getStripePlanIdForReferralCode req?.body?.plan
+		return res.send 400, 'invalid plan' if not stripePlanId
+		console.log stripePlanId
+
+		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal stripePlanId
+		return res.send 500, 'unable to calculate subscription period' if not subscriptionRenewal
+		console.log subscriptionRenewal
 
 		# check to see if the user has a stripe account already
 		if req.session.account?.data?.stripeCustomerID
-			@upgradeExistingCustomer req, res, subscriptionType, subscriptionRenewal
+			@upgradeExistingCustomer req, res, subscriptionPlanFreq, subscriptionRenewal
 		else # if not yet a stripe customer, token is necessary
 			return res.send 400, 'missing parameters' unless req.body?.token?
 			return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
-			@upgradeNewCustomer req, res, subscriptionType, subscriptionRenewal
+			@upgradeNewCustomer req, res, subscriptionPlanFreq, subscriptionRenewal
 
 	#}}}
-	upgradeExistingCustomer: (req, res, subscriptionType, subscriptionRenewal) => #{{{
+	upgradeExistingCustomer: (req, res, subscriptionPlanFreq, subscriptionRenewal) => #{{{
 		# check to see if the user has a stripe account already
 		stripeArgs =
 			customer: req.session.account?.data?.stripeCustomerID
@@ -110,11 +128,11 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 			console.log subscriptionData
 
 			# save transaction in db
-			req.server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
+			req.server.root.api.subscription.database.insert req, res, subscriptionPlanFreq, subscriptionData, (req, res, subscription) =>
 				# set user's active subscription to this one
 				@onSuccessfulTransaction(req, res, subscription, req.session.account?.data?.stripeCustomerID)
 	#}}}
-	upgradeNewCustomer: (req, res, subscriptionType, subscriptionRenewal) => #{{{
+	upgradeNewCustomer: (req, res, subscriptionPlanFreq, subscriptionRenewal) => #{{{
 		# check to see if the user has a stripe account already
 		stripeArgs =
 			source: req.body.token
@@ -146,7 +164,7 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 			console.log subscriptionData
 
 			# save transaction in db
-			req.server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
+			req.server.root.api.subscription.database.insert req, res, subscriptionPlanFreq, subscriptionData, (req, res, subscription) =>
 				# set user's active subscription to this one
 				@onSuccessfulTransaction(req, res, subscription, stripeCustomerData?.id)
 	#}}}

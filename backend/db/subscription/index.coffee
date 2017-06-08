@@ -49,26 +49,6 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 		return res.send 501
 	#}}}
 
-	@calculatePrice: (plan) => #{{{
-		if plan[0...7] == "monthly"
-			return "12.95"
-		else if plan[0...12] == "semiannually"
-			return "59.95"
-		else if plan[0...8] == "annually"
-			return "99.95"
-		else
-			return null
-	#}}}
-	@calculateType: (plan) => #{{{
-		if plan[0...7] == "monthly"
-			return 'monthly'
-		else if plan[0...12] == "semiannually"
-			return 'semiannually'
-		else if plan[0...8] == "annually"
-			return 'annually'
-		else
-			return null
-	#}}}
 	@calculateRenewal: (plan) => #{{{
 		subscriptionStart = new Date()
 		subscriptionRenewal = new Date(+subscriptionStart)
