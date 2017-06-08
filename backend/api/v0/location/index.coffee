@@ -60,7 +60,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'NL'
 
-				lat: -52.3702
+				lat: 52.3702
 				lon: 4.8952
 				scale: 1.5
 
@@ -86,7 +86,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'DE'
 
-				lat: -50.1109
+				lat: 50.1109
 				lon: 8.6821
 				scale: 1.5
 
@@ -112,7 +112,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
-				lat: -32.7767
+				lat: 32.7767
 				lon: -96.7970
 				scale: 1
 
@@ -138,7 +138,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'AS'
 				country: 'HK'
 
-				lat: -22.3964
+				lat: 22.3964
 				lon: 114.1095
 				scale: 1.5
 
@@ -165,7 +165,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				country: 'US'
 				default: true
 
-				lat: -40.7128
+				lat: 40.7128
 				lon: -74.0059
 				scale: 1
 
@@ -191,7 +191,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
-				lat: -34.0522
+				lat: 34.0522
 				lon: -118.2437
 				scale: 1
 
@@ -216,7 +216,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'GB'
 
-				lat: -51.5074
+				lat: 51.5074
 				lon: 0.1278
 				scale: 1.5
 
@@ -242,7 +242,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'CA'
 
-				lat: -49.2827
+				lat: 49.2827
 				lon: -123.1207
 				scale: 1
 
@@ -270,7 +270,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
-				lat: -33.7490
+				lat: 33.7490
 				lon: -84.3880
 				scale: 1
 
@@ -296,7 +296,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'AS'
 				country: 'IN'
 
-				lat: -13.0827
+				lat: 13.0827
 				lon: 80.2707
 				scale: 1
 
@@ -322,7 +322,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
-				lat: -41.8781
+				lat: 41.8781
 				lon: -87.6298
 				scale: 1
 
@@ -348,7 +348,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'TR'
 
-				lat: -41.0082
+				lat: 41.0082
 				lon: 28.9784
 				scale: 1.5
 
@@ -374,7 +374,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
-				lat: -25.6717
+				lat: 25.6717
 				lon: -80.1918
 				scale: 1
 
@@ -400,7 +400,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'OP'
 				country: 'AU'
 
-				lat: 37.8136
+				lat: -37.8136
 				lon: 144.9631
 				scale: 1
 
@@ -426,7 +426,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'IT'
 
-				lat: -45.4654
+				lat: 45.4654
 				lon: 9.1859
 				scale: 1.5
 
@@ -452,7 +452,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'CA'
 
-				lat: -45.5017
+				lat: 45.5017
 				lon: -73.5673
 				scale: 1
 
@@ -478,7 +478,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'RU'
 
-				lat: -55.7558
+				lat: 55.7558
 				lon: 37.6173
 				scale: 1
 
@@ -504,7 +504,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
-				lat: -40.0583
+				lat: 40.0583
 				lon: -74.4057
 				scale: 1
 
@@ -529,7 +529,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'NO'
 
-				lat: -59.9139
+				lat: 59.9139
 				lon: 10.7522
 				scale: 1.5
 
@@ -555,7 +555,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'FR'
 
-				lat: -48.8566
+				lat: 48.8566
 				lon: 2.3522
 				scale: 1.5
 
@@ -581,7 +581,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
-				lat: -33.4484
+				lat: 33.4484
 				lon: -112.0740
 				scale: 1
 
@@ -606,7 +606,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
-				lat: -40.7608
+				lat: 40.7608
 				lon: -111.8910
 				scale: 1
 
@@ -631,7 +631,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'SA'
 				country: 'BR'
 
-				lat: 23.5505
+				lat: -23.5505
 				lon: -46.6333
 				scale: 1
 
@@ -657,7 +657,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
-				lat: -47.6062
+				lat: 47.6062
 				lon: -122.3321
 				scale: 1
 
@@ -683,7 +683,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
-				lat: -37.3875
+				lat: 37.3875
 				lon: -122.0575
 				scale: 1
 
@@ -709,7 +709,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'AS'
 				country: 'SG'
 
-				lat: -1.3521
+				lat: 1.3521
 				lon: 103.8198
 				scale: 1.5
 
@@ -735,7 +735,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'SE'
 
-				lat: -59.3293
+				lat: 59.3293
 				lon: 18.0686
 				scale: 1.5
 
@@ -761,7 +761,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'OP'
 				country: 'AU'
 
-				lat: 33.8688
+				lat: -33.8688
 				lon: 151.2093
 				scale: 1
 
@@ -787,7 +787,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'AS'
 				country: 'JP'
 
-				lat: -35.6895
+				lat: 35.6895
 				lon: 139.6917
 				scale: 1.5
 
@@ -813,7 +813,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'CA'
 
-				lat: -43.6532
+				lat: 43.6532
 				lon: -79.3832
 				scale: 1
 
@@ -839,7 +839,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'NA'
 				country: 'US'
 
-				lat: -38.9072
+				lat: 38.9072
 				lon: -77.0369
 				scale: 1
 
@@ -865,7 +865,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'EU'
 				country: 'CH'
 
-				lat: -47.3769
+				lat: 47.3769
 				lon: 8.5417
 				scale: 1.5
 
@@ -893,7 +893,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'DEV'
 				country: 'JP'
 
-				lat: -35.6895
+				lat: 35.6895
 				lon: 139.6917
 				scale: 1.5
 
@@ -921,7 +921,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'DEV'
 				country: 'JP'
 
-				lat: -35.6895
+				lat: 35.6895
 				lon: 139.6917
 				scale: 1.5
 
@@ -947,7 +947,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'DEV'
 				country: 'JP'
 
-				lat: -35.6895
+				lat: 35.6895
 				lon: 139.6917
 				scale: 1.5
 
@@ -973,7 +973,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'DEV'
 				country: 'JP'
 
-				lat: -35.6895
+				lat: 35.6895
 				lon: 139.6917
 				scale: 1.5
 
@@ -999,7 +999,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'DEV'
 				country: 'JP'
 
-				lat: -21.3069
+				lat: 21.3069
 				lon: -157.8533
 				scale: 4
 
