@@ -146,26 +146,24 @@ class wiz.framework.thirdparty.stripe
 			res.send 200, out
 	#}}}
 	onError: (req, res, stripeError) => #{{{
+		defaultErrorMessage = "Hmm, something is wrong. Please try again later."
+		defaultDeclinedMessage = "Please try another card."
+		wiz.log.err "#{stripeError?.statusCode} #{stripeError?.type} #{stripeError?.code} #{stripeError?.decline_code} #{stripeError?.message}"
 		switch stripeError?.type
 			when 'StripeCardError' # A declined card error
-				out =
-					code: stripeError?.code
-					statusCode: stripeError?.statusCode
-					message: stripeError?.message
-				console.log out
-				res.send 402, out # => e.g. "Your card's expiration year is invalid."
+				res.send 402, defaultDeclinedMessage # => e.g. "Your card's expiration year is invalid."
 			when 'RateLimitError' # Too many requests made to the API too quickly
-				res.send 500
+				res.send 500, defaultErrorMessage
 			when 'StripeInvalidRequestError' # Invalid parameters were supplied to Stripe's API
-				res.send 500
+				res.send 500, defaultErrorMessage
 			when 'StripeAPIError' # An error occurred internally with Stripe's API
-				res.send 500
+				res.send 500, defaultErrorMessage
 			when 'StripeConnectionError' # Some kind of error occurred during the HTTPS communication
-				res.send 500
+				res.send 500, defaultErrorMessage
 			when 'StripeAuthenticationError' # You probably used an incorrect API key
-				res.send 500
+				res.send 500, defaultErrorMessage
 			else # Handle any other types of unexpected errors
-				res.send 500
+				res.send 500, defaultErrorMessage
 				break
 
 	#}}}
