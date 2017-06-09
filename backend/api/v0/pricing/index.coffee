@@ -20,11 +20,7 @@ class cypherpunk.backend.api.v0.pricing.plans extends cypherpunk.backend.api.bas
 	mask: cypherpunk.backend.server.power.mask.public
 	handler: (req, res) =>
 
-		out =
-			monthly: cypherpunk.backend.pricing.defaultPlan.monthly
-			semiannually: cypherpunk.backend.pricing.defaultPlan.semiannually
-			annually: cypherpunk.backend.pricing.defaultPlan.annually
-
+		out = cypherpunk.backend.pricing.getDefaultPlans()
 		console.log out
 		res.send 200, out
 

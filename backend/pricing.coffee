@@ -241,15 +241,44 @@ class cypherpunk.backend.pricing
 				"bitpayPlanId": "rDNH1y1QGetIGfRuWqjAKXLfg/M+yFmdEmL6jDfljpyiMifqDnitepwtuBM1XWsMjPjdWULKmlk0BXobcfpM9RBG2Byp1YXm0iZnzepYwsK9bHfltA8K2NL6zllPKIbULqDxp3V5QNqf/RjFzpPrM0mkCE24s7FvJACp3M9PlCCD4gxply9osc9cjd3MnK+7yoF439gga4ymUApLpblTLPOAn4Xxc0l1RNKvoEm18FgQyLbYyc8vCTjzyfgJoGLaticu631otYgJJskMNt78Eu+QV6qI7g2zosZmioZRAT01Gq0YSddPTmaPa4skn/HKqm/3HlFgFnDouFrGOJI2yUlHihKa9wZn42Yh0NRD6m2hvTJCoFZGZO1gHqAu4LV08vmIojaNHGc8PPAOtMDEbA=="
 		#}}}
 
+	@plansTest:
+		monthly: #{{{
+			monthly1195:
+				"price": "11.95"
+				"paypalPlanId": "UKHCGA2VESR5A"
+				"bitpayPlanId": ""
+		#}}}
+		semiannually: #{{{
+			semiannually4200:
+				"price": "42.00"
+				"paypalPlanId": "VW88YD42G7P2L"
+				"bitpayPlanId": ""
+		#}}}
+		annually: #{{{
+			annually6900:
+				"price": "69.00"
+				"paypalPlanId": "KY8G9YVQJQYHS"
+				"bitpayPlanId": ""
+		#}}}
+
 	@defaultPlanId:
 		monthly: "monthly1195"
 		semiannually: "semiannually4200"
 		annually: "annually6900"
 
-	@defaultPlan:
+	@defaultPlans:
 		monthly: @plans.monthly[@defaultPlanId.monthly]
 		semiannually: @plans.semiannually[@defaultPlanId.semiannually]
 		annually: @plans.annually[@defaultPlanId.annually]
+
+	@defaultPlansTest:
+		monthly: @plansTest.monthly[@defaultPlanId.monthly]
+		semiannually: @plansTest.semiannually[@defaultPlanId.semiannually]
+		annually: @plansTest.annually[@defaultPlanId.annually]
+
+	@getDefaultPlans: () =>
+		return @defaultPlansTest if wiz.style is 'DEV'
+		return @defaultPlans
 
 	@getStripePlanIdForReferralCode: (plan, referralCode) => #{{{
 		switch plan
