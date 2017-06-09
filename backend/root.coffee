@@ -13,6 +13,7 @@ require './_framework/http/account/session'
 require './_framework/thirdparty/stripe'
 require './_framework/thirdparty/amazon'
 require './_framework/thirdparty/paypal'
+require './_framework/thirdparty/bitpay'
 require './_framework/thirdparty/sendgrid'
 
 wiz.package 'cypherpunk.backend'
@@ -94,6 +95,9 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 
 		# init paypal SDK
 		@paypal = new wiz.framework.thirdparty.paypal()
+
+		# init bitpay SDK
+		@bitpay = new wiz.framework.thirdparty.bitpay()
 
 		# init stripe SDK
 		@stripe = new cypherpunk.backend.stripe

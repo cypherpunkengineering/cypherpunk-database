@@ -5,6 +5,7 @@ require './_framework/http/db/mongo'
 
 require '../../../db/user'
 
+require './bitpay'
 require './paypal'
 
 wiz.package 'cypherpunk.backend.api.v0.ipn'
@@ -16,6 +17,7 @@ class cypherpunk.backend.api.v0.ipn.module extends cypherpunk.backend.base
 
 	load: () =>
 		super()
+		@routeAdd new cypherpunk.backend.api.v0.ipn.bitpay(@server, this, 'bitpay', 'POST')
 		@routeAdd new cypherpunk.backend.api.v0.ipn.paypal(@server, this, 'paypal', 'POST')
 
 # vim: foldmethod=marker wrap
