@@ -12,13 +12,19 @@ class cypherpunk.backend.api.v0.pricing.module extends cypherpunk.backend.api.ba
 	debug: true
 
 	init: () =>
-		@routeAdd new cypherpunk.backend.api.v0.pricing.plans(@server, this, 'plans', 'POST')
+		@routeAdd new cypherpunk.backend.api.v0.pricing.plans(@server, this, 'plans')
 		super()
 
 class cypherpunk.backend.api.v0.pricing.plans extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.stranger
 	mask: cypherpunk.backend.server.power.mask.public
 	handler: (req, res) =>
+
+		out = cypherpunk.backend.pricing.getDefaultPlans()
+		console.log out
+		res.send 200, out
+
+	catchall: (req, res) =>
 
 		out = cypherpunk.backend.pricing.getDefaultPlans()
 		console.log out
