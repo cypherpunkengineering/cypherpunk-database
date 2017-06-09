@@ -244,21 +244,21 @@ class cypherpunk.backend.pricing
 	@plansTest:
 		monthly: #{{{
 			monthly1195:
-				"price": "11.95"
+				"price": "13.37"
 				"paypalPlanId": "UKHCGA2VESR5A"
-				"bitpayPlanId": ""
+				"bitpayPlanId": "m11KRs736FeBMFoMeoSllMbhydqlxA3KrtlO8usqz+WGoLd0HymdBiKlc0x4/1QienTfpxnDWUJLo2RbLWXWYuVb2fIPUK1HC2gn83bhLGRqE2aWA08OdoVxsASvSGDY981jOkDDUjghm2TUKp9MM/PCOVSxt+IfSnj8MYN6a1BFnxB+kZBC6GDdbbDxzWaziCU0kPf02/To88EpEQzx94Fbnqk/pa71Q6O5MdQFOEl3jKIrUS9Ov8qKbWe/BVkmUdWdlWSjXKWEV8GWaCx/uMcdC4xwnYul/WjNHI42g3iwUVmSR6yPZFY/eMzSCMab"
 		#}}}
 		semiannually: #{{{
 			semiannually4200:
 				"price": "42.00"
 				"paypalPlanId": "VW88YD42G7P2L"
-				"bitpayPlanId": ""
+				"bitpayPlanId": "m11KRs736FeBMFoMeoSllMbhydqlxA3KrtlO8usqz+WGoLd0HymdBiKlc0x4/1QienTfpxnDWUJLo2RbLWXWYuVb2fIPUK1HC2gn83bhLGRqE2aWA08OdoVxsASvSGDY981jOkDDUjghm2TUKp9MM/PCOVSxt+IfSnj8MYN6a1BFnxB+kZBC6GDdbbDxzWaziCU0kPf02/To88EpEQzx94Fbnqk/pa71Q6O5MdQFOEl3jKIrUS9Ov8qKbWe/BVkmUdWdlWSjXKWEV8GWaCx/uMcdC4xwnYul/WjNHI42g3iwUVmSR6yPZFY/eMzSCMab"
 		#}}}
 		annually: #{{{
 			annually6900:
 				"price": "69.00"
 				"paypalPlanId": "KY8G9YVQJQYHS"
-				"bitpayPlanId": ""
+				"bitpayPlanId": "m11KRs736FeBMFoMeoSllMbhydqlxA3KrtlO8usqz+WGoLd0HymdBiKlc0x4/1QienTfpxnDWUJLo2RbLWXWYuVb2fIPUK1HC2gn83bhLGRqE2aWA08OdoVxsASvSGDY981jOkDDUjghm2TUKp9MM/PCOVSxt+IfSnj8MYN6a1BFnxB+kZBC6GDdbbDxzWaziCU0kPf02/To88EpEQzx94Fbnqk/pa71Q6O5MdQFOEl3jKIrUS9Ov8qKbWe/BVkmUdWdlWSjXKWEV8GWaCx/uMcdC4xwnYul/WjNHI42g3iwUVmSR6yPZFY/eMzSCMab"
 		#}}}
 
 	@defaultPlanId:
