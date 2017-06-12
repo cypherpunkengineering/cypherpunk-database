@@ -1,4 +1,5 @@
 require './_framework'
+require './_framework/thirdparty/sendgrid'
 
 wiz.package 'cypherpunk.backend.sendgrid'
 

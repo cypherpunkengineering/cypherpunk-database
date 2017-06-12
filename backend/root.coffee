@@ -10,19 +10,17 @@ require './_framework/http/resource/coffee-script'
 require './_framework/http/account'
 require './_framework/http/account/session'
 
-require './_framework/thirdparty/stripe'
-require './_framework/thirdparty/amazon'
-require './_framework/thirdparty/paypal'
-require './_framework/thirdparty/bitpay'
-require './_framework/thirdparty/sendgrid'
-
 wiz.package 'cypherpunk.backend'
 
 require './amazon'
-#require './paypal'
-require './sendgrid'
+require './bitpay'
+require './paypal'
 require './stripe'
+
 require './pricing'
+
+require './sendgrid'
+
 require './template'
 
 class cypherpunk.backend.login extends cypherpunk.backend.template
@@ -94,10 +92,10 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 			ClientSecret: @server.config.amazon.ClientSecret
 
 		# init paypal SDK
-		@paypal = new wiz.framework.thirdparty.paypal()
+		@paypal = new cypherpunk.backend.paypal()
 
 		# init bitpay SDK
-		@bitpay = new wiz.framework.thirdparty.bitpay()
+		@bitpay = new cypherpunk.backend.bitpay()
 
 		# init stripe SDK
 		@stripe = new cypherpunk.backend.stripe

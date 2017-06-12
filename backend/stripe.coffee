@@ -1,4 +1,5 @@
 require './_framework'
+require './_framework/thirdparty/stripe'
 
 wiz.package 'cypherpunk.backend.stripe'
 

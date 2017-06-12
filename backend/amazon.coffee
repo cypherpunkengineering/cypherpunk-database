@@ -1,4 +1,5 @@
 require './_framework'
+require './_framework/thirdparty/amazon'
 
 util = require 'util'
 
