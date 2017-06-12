@@ -21,6 +21,8 @@ require './pricing'
 
 require './sendgrid'
 
+require './slack'
+
 require './template'
 
 class cypherpunk.backend.login extends cypherpunk.backend.template
@@ -92,10 +94,13 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 			ClientSecret: @server.config.amazon.ClientSecret
 
 		# init paypal SDK
-		@paypal = new cypherpunk.backend.paypal()
+		@paypal = new cypherpunk.backend.paypal(@server, this)
 
 		# init bitpay SDK
-		@bitpay = new cypherpunk.backend.bitpay()
+		@bitpay = new cypherpunk.backend.bitpay(@server, this)
+
+		# init slack SDK
+		@slack = new cypherpunk.backend.slack(@server, this)
 
 		# init stripe SDK
 		@stripe = new cypherpunk.backend.stripe

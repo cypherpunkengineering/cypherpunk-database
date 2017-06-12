@@ -11,7 +11,7 @@ class wiz.framework.thirdparty.paypal
 
 	debug: true
 
-	constructor: (args = {}) -> #{{{
+	constructor: (@server, @parent) -> #{{{
 	#}}}
 	baseRequestOptions: #{{{
 		#host: "ipnpb.paypal.com"
@@ -21,6 +21,9 @@ class wiz.framework.thirdparty.paypal
 	verify: (req, res, args, cb) => #{{{
 		console.log req.headers
 		console.log req.body
+		data = req.body
+		if data
+			@onVerify(data) if @onVerify
 		return res.send 200
 
 		# build query options

@@ -41,6 +41,9 @@ class wiz.framework.http.client.base extends wiz.framework.http.base
 	#}}}
 
 	query: (body = null, cb) => #{{{ create and send request
+		if body? and typeof body is 'object'
+			body = JSON.stringify(body)
+
 		# create options object
 		@reqOpts(body, cb)
 
