@@ -172,6 +172,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 		if data?[@schema.subscriptionCurrentIDKey]?
 			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey]
 		@insertUniqueEmail req, res, recordToInsert, cb
+		@server.root.slack.notify("[SIGNUP] #{recordToInsert[@dataKey][@emailKey]} has signed up for an account :highfive:")
 	#}}}
 	teaser: (req, res, data, cb) => #{{{
 		return unless recordToInsert = @schema.fromTeaser(req, res)
@@ -184,6 +185,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 		if data?[@schema.subscriptionCurrentIDKey]?
 			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey]
 		@insertUniqueEmail req, res, recordToInsert, cb
+		@server.root.slack.notify("[TEASER] #{recordToInsert[@dataKey][@emailKey]} has signed up for an invitation :love_letter:")
 	#}}}
 	upgrade: (req, res, userID, subscriptionID, args = {}, cb = null) => #{{{ if user type is free, change to premium
 		@findOneByKey req, res, @docKey, userID, @projection(), (req, res, user) =>
@@ -207,7 +209,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					return cb(req, res, null) if not result and cb
 					return res.send 404 if not result
 					return res.send 500 if not result[@dataKey]?
-					@server.root.slack.notify "Upgraded user account (free -> premium) for #{user[@dataKey][@emailKey]}"
+					@server.root.slack.notify("[UPGRADE] #{result[@dataKey][@emailKey]} has been upgraded to PREMIUM :sunglasses:")
 
 					# pass updated db object to radius database method
 					@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>

@@ -12,7 +12,7 @@ util = require 'util'
 wiz.package 'wiz.framework.http.client'
 
 class wiz.framework.http.client.base extends wiz.framework.http.base
-	debug: true
+	debug: false
 	middleware: wiz.framework.http.middleware.base
 
 	constructor: (args = {}) -> #{{{ parse request args
@@ -35,7 +35,7 @@ class wiz.framework.http.client.base extends wiz.framework.http.base
 	#}}}
 
 	error: (e, cb) => #{{{ error handler
-		wiz.log.err e
+		wiz.log.err "#{@method} #{@host}/#{@path} got #{e}"
 		return cb null if cb
 		return null
 	#}}}

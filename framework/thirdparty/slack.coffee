@@ -9,7 +9,7 @@ wiz.package 'wiz.framework.thirdparty.slack'
 class wiz.framework.thirdparty.slack
 	class httpreq extends wiz.framework.http.client.base
 
-	debug: false
+	debug: true
 
 	constructor: (@server, @parent) -> #{{{
 	#}}}
@@ -34,8 +34,8 @@ class wiz.framework.thirdparty.slack
 		# send query
 		q = new httpreq(reqopts)
 		q.query reqBody, (res) =>
-			# validate response
-			console.log res
+			#TODO: validate response
+			#console.log res
 			return
 			state = res.body?
 			if not state?

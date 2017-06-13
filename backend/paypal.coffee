@@ -17,9 +17,6 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 		catch e
 			data.custom = {}
 
-		# send to billing channel on slack
-		@sendSlackNotification(data)
-
 		switch data.txn_type
 			when 'subscr_signup'
 				@onSubscriptionSignup(req, res, data)
@@ -28,20 +25,50 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 			when 'subscr_payment'
 				@onSubscriptionPayment(req, res, data)
 			else
+				# send to billing channel on slack
+				@sendSlackNotification(data)
 				res.send 500, 'Unknown Paypal IPN type!'
 		#}}}
 
 	sendSlackNotification: (data) => #{{{
-		msg = ""
-		msg += "[TEST]" if wiz.style is 'DEV'
-		msg += " PayPal IPN: "
-		msg += " *#{data.txn_type}*\n" if data?.txn_type?
-		msg += ">>>\n"
-		msg += "paypal customer: `#{data.payer_email}` (#{data.payer_status})\n" if data?.txn_type?
-		msg += "subscription id: `#{data.subscr_id}`\n" if data?.subscr_id?
-		msg += "plan: `#{data.item_number}`\n" if data?.item_number?
-		msg += "period: `#{data.period3}`\n" if data?.period3?
-		msg += "amount: `#{data.mc_amount3} #{data.mc_currency}`\n" if data?.mc_amount3?
+		console.log data
+		msg = "[*PayPal*] "
+
+		switch data.txn_type
+			when 'subscr_signup'
+				msg += "[*SUBSCRIPTION*] :grinning:"
+			when 'subscr_payment'
+				msg += "[*PAYMENT*] :moneybag:"
+			when 'subscr_cancel'
+				msg += "[*CANCEL*] :cry:"
+			else
+				msg += "[*#{data.txn_type}*]"
+
+		msg += "\r>>>\r"
+
+		# append paypal payer email
+		msg += "\rPayPal account: `#{data.payer_email}` :#{data.residence_country}: (#{data.payer_status})"
+
+		# if present, append cypherpunk account email
+		if data.user?.data?.email?
+			msg += "\rCypherpunk account: `#{data.user.data.email}` (#{data.user.type})"
+
+		switch data.txn_type
+			when 'subscr_signup'
+				msg += "\rPayPal subscription `#{data.subscr_id}` to plan `#{data.item_number}`"
+				msg += "\rAutomatically renews every `#{data.period3}` for `#{data.mc_amount3} #{data.mc_currency}` starting on #{data.subscr_date}"
+			when 'subscr_payment'
+				msg += "\rPayPal Payment received for subscription `#{data.subscr_id}` to plan `#{data.item_number}`!"
+			when 'subscr_cancel'
+				msg += "\rCancelled their PayPal subscription `#{data.subscr_id}` to plan `#{data.item_number}`"
+
+			else
+				msg += "\rfrom paypal account `#{data.payer_email}` (#{data.payer_status})" if data?.txn_type?
+				msg += "\rfor subscription `#{data.subscr_id}`" if data?.subscr_id?
+				msg += "\rfor cypherpunk plan `#{data.item_number}`" if data?.item_number?
+				msg += "\rperiod `#{data.period3}`" if data?.period3?
+				msg += "\ramount `#{data.mc_amount3} #{data.mc_currency}`" if data?.mc_amount3?
+
 		@server.root.slack.notify(msg)
 	#}}}
 
@@ -101,8 +128,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 
 			# calculate renewal date
 			subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal planID
-			return res.send 500, 'unable to calculate subscription period' if not subscriptionRenewal
-			console.log subscriptionRenewal
+			return res.send 500, 'unable to calculate subscription period' if not subscriptionRenewal?
 
 			# gather subscription data for insert() into db
 			subscriptionData =
@@ -133,6 +159,10 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 						if sendgridError
 							wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
 							console.log sendgridError
+
+					# send slack notification
+					data.user = user
+					@sendSlackNotification(data)
 
 					# finally return OK
 					res.send 200
@@ -171,9 +201,21 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 #   txn_type: 'subscr_payment',
 #   verify_sign: 'AE.pCRu8dAgEChKtiAO8IAX666.2A0L3dEvMwyN3KOTNOlAAKFzs6iin' }
 #}}}
-		@server.root.api.charge.database.saveFromPayPalIPN req, res, data, (req, res, chargeObject) =>
-			console.log chargeObject
-			res.send 200
+		# lookup account object by given account id
+		@server.root.api.user.database.findOneByID req, res, data.cypherpunk_account_id, (req, res, user) =>
+
+			# if not found, return error
+			return res.send 404, 'Cypherpunk ID not found!' if not user?
+
+			@server.root.api.charge.database.saveFromPayPalIPN req, res, data, (req, res, chargeObject) =>
+				chargeObject = chargeObject[0] if chargeObject instanceof Array
+				#console.log chargeObject
+
+				# send slack notification
+				data.user = user
+				@sendSlackNotification(data)
+
+				res.send 200
 	#}}}
 	onSubscriptionCancel: (req, res, data) => #{{{
 # {{{ sample data
@@ -208,7 +250,17 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 #   txn_type: 'subscr_cancel',
 #   verify_sign: 'AiPC9BjkCyDFQXbSkoZcgqH3hpacA1Z3qP3.5UcNUy.BwUI1YJPeGDyD' }
 #}}}
-		res.send 200
+		# lookup account object by given account id
+		@server.root.api.user.database.findOneByID req, res, data.cypherpunk_account_id, (req, res, user) =>
+
+			# if not found, return error
+			return res.send 404, 'Cypherpunk ID not found!' if not user?
+
+			# send slack notification
+			data.user = user
+			@sendSlackNotification(data)
+
+			res.send 200
 	#}}}
 
 # vim: foldmethod=marker wrap
