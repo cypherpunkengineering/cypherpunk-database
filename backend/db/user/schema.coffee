@@ -128,19 +128,25 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
+				maxlen: 50
+				disabled: true
+
+			paypalSubscriptionID:
+				label: 'Paypal Subscription ID'
+				type: 'asciiNoSpace'
 				maxlen: 50
 				disabled: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				maxlen: 50
 				disabled: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 
 		) #}}}
@@ -167,17 +173,23 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
+				disabled: true
+
+			paypalSubscriptionID:
+				label: 'Paypal Subscription ID'
+				type: 'asciiNoSpace'
+				maxlen: 50
 				disabled: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 
 		) #}}}
@@ -204,17 +216,23 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
+				disabled: true
+
+			paypalSubscriptionID:
+				label: 'Paypal Subscription ID'
+				type: 'asciiNoSpace'
+				maxlen: 50
 				disabled: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 		) #}}}
 		family: (new type 'family', 'Family Account', 'list', #{{{
@@ -240,17 +258,23 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
+				disabled: true
+
+			paypalSubscriptionID:
+				label: 'Paypal Subscription ID'
+				type: 'asciiNoSpace'
+				maxlen: 50
 				disabled: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 		) #}}}
 		enterprise: (new type 'enterprise', 'Enterprise Account', 'list', #{{{
@@ -276,17 +300,23 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
+				disabled: true
+
+			paypalSubscriptionID:
+				label: 'Paypal Subscription ID'
+				type: 'asciiNoSpace'
+				maxlen: 50
 				disabled: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 		) #}}}
 
@@ -314,17 +344,23 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
+				disabled: true
+
+			paypalSubscriptionID:
+				label: 'Paypal Subscription ID'
+				type: 'asciiNoSpace'
+				maxlen: 50
 				disabled: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 		) #}}}
 		developer: (new type 'developer', 'Cypherpunk Developer', 'list', #{{{
@@ -350,17 +386,23 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 			stripeCustomerID:
 				label: 'Stripe Customer ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
+				disabled: true
+
+			paypalSubscriptionID:
+				label: 'Paypal Subscription ID'
+				type: 'asciiNoSpace'
+				maxlen: 50
 				disabled: true
 
 			amazonBillingAgreementID:
 				label: 'Amazon Billing Agreement ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 
 			subscriptionCurrentID:
 				label: 'Current Subscription ID'
-				type: 'asciiNoSpace',
+				type: 'asciiNoSpace'
 				disabled: true
 		) #}}}
 

@@ -13,7 +13,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 		try
 			data.custom = JSON.parse(req.body.custom)
 			data.cypherpunk_account_id = data.custom.id
-			data.cypherpunk_plan_type = data.custom.plan
+			data.cypherpunk_plan_type = cypherpunk.backend.pricing.getPlanFreqForPlan(data.custom.plan)
 		catch e
 			data.custom = {}
 
@@ -28,7 +28,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 			when 'subscr_payment'
 				@onSubscriptionPayment(req, res, data)
 			else
-				wiz.log.err 'Unknown Paypal IPN type!'
+				res.send 500, 'Unknown Paypal IPN type!'
 		#}}}
 
 	sendSlackNotification: (data) => #{{{
@@ -79,32 +79,63 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 #   verify_sign: 'AWYxjS6LEFCeGqJDu35ZiF0NsD2FAHtXH7K7Pn6SOYFMwCDrrBLioo9K' }
 #}}}
 
-		return res.send 200
+		# validate required arguments exist
+		return res.send 400, 'missing or invalid cypherpunk account id' unless typeof data.cypherpunk_account_id is 'string'
+		return res.send 400, 'missing or invalid cypherpunk plan type' unless typeof data.cypherpunk_plan_type is 'string'
 
-		# validate plan
-		return res.send 400, 'missing parameters' unless req.body?.plan?
-		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
+		# validate plan type is valid
+		planType = cypherpunk.backend.pricing.getPlanFreqForPlan(data.cypherpunk_plan_type)
+		return res.send 400, 'invalid cypherpunk plan type' unless typeof planType is 'string'
 
-		subscriptionPlanFreq = cypherpunk.backend.pricing.getPlanFreqForPlan req?.body?.plan
-		return res.send 400, 'invalid plan' if not subscriptionPlanFreq
-		console.log subscriptionPlanFreq
+		# get plan data and confirm price matches
+		planID = data.item_number
+		plan = cypherpunk.backend.pricing.getPlanByTypeAndID(planType, planID)
+		return res.send 400, 'unknown paypal item number' unless plan?
+		return res.send 400, 'price doesnt match paypal item number' unless plan.price == data.mc_amount3
 
-		stripePlanId = cypherpunk.backend.pricing.getStripePlanIdForReferralCode req?.body?.plan
-		return res.send 400, 'invalid plan' if not stripePlanId
-		console.log stripePlanId
+		# lookup account object by given account id
+		@server.root.api.user.database.findOneByID req, res, data.cypherpunk_account_id, (req, res, user) =>
 
-		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal stripePlanId
-		return res.send 500, 'unable to calculate subscription period' if not subscriptionRenewal
-		console.log subscriptionRenewal
+			# if not found, return error
+			return res.send 404, 'Cypherpunk ID not found!' if not user?
 
-		# check to see if the user has a stripe account already
-		if req.session.account?.data?.stripeCustomerID
-			@upgradeExistingCustomer req, res, subscriptionPlanFreq, subscriptionRenewal
-		else # if not yet a stripe customer, token is necessary
-			return res.send 400, 'missing parameters' unless req.body?.token?
-			return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
-			@upgradeNewCustomer req, res, subscriptionPlanFreq, subscriptionRenewal
+			# calculate renewal date
+			subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal planID
+			return res.send 500, 'unable to calculate subscription period' if not subscriptionRenewal
+			console.log subscriptionRenewal
 
+			# gather subscription data for insert() into db
+			subscriptionData =
+				provider: 'paypal'
+				providerPlanID: planID
+				providerSubscriptionID: data.subscr_id
+				currentPeriodStartTS: new Date().toISOString()
+				currentPeriodEndTS: subscriptionRenewal
+				purchaseTS: new Date().toISOString()
+				renewalTS: subscriptionRenewal
+				active: 'true'
+
+			console.log 'subscription data'
+			console.log subscriptionData
+
+			# create subscription object in db
+			@server.root.api.subscription.database.insert req, res, planType, subscriptionData, (req, res, subscription) =>
+
+				# prepare args
+				upgradeArgs =
+					paypalSubscriptionID: data.subscr_id
+
+				# set user's active subscription to this new one, pass updated db object to radius database method
+				req.server.root.api.user.database.upgrade req, res, user.id, subscription.id, upgradeArgs, (req, res, user) =>
+
+					# send purchase mail
+					req.server.root.sendgrid.sendPurchaseMail user, (sendgridError) =>
+						if sendgridError
+							wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
+							console.log sendgridError
+
+					# finally return OK
+					res.send 200
 	#}}}
 	onSubscriptionPayment: (req, res, data) => #{{{
 # {{{ sample data

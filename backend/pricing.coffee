@@ -280,6 +280,11 @@ class cypherpunk.backend.pricing
 		return @defaultPlansTest if wiz.style is 'DEV'
 		return @defaultPlans
 
+	@getPlanByTypeAndID: (planType, planID) =>
+		plans = @plans
+		plans = @plansTest if wiz.style is 'DEV'
+		return plans?[planType]?[planID]
+
 	@getStripePlanIdForReferralCode: (plan, referralCode) => #{{{
 		switch plan
 			when "monthly"
