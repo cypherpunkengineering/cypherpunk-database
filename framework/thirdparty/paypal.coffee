@@ -9,7 +9,7 @@ wiz.package 'wiz.framework.thirdparty.paypal'
 class wiz.framework.thirdparty.paypal
 	class httpreq extends wiz.framework.http.client.base
 
-	debug: true
+	debug: false
 
 	constructor: (@server, @parent) -> #{{{
 	#}}}
