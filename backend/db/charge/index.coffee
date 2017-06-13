@@ -27,10 +27,10 @@ class cypherpunk.backend.db.charge extends wiz.framework.http.database.mongo.bas
 		opts =
 			skip: parseInt(if req.params.iDisplayStart then req.params.iDisplayStart else 0)
 			limit: parseInt(if req.params.iDisplayLength > 0 and req.params.iDisplayLength < 200 then req.params.iDisplayLength else 25)
-			sort: 'data.fullname'
+			#sort: 'fullname'
 
-		@count req, res, criteria, projection, (recordCount) =>
-			@find req, res, criteria, projection, opts, (results) =>
+		@count req, res, criteria, projection, (req, res, recordCount) =>
+			@find req, res, criteria, projection, opts, (req, res, results) =>
 				responseData = []
 				if not results or not results.length > 0
 					return @listResponse(req, res, responseData)
@@ -40,9 +40,9 @@ class cypherpunk.backend.db.charge extends wiz.framework.http.database.mongo.bas
 						responseData.push
 							DT_RowId : result[@docKey]
 							0: result[@docKey] or 'unknown'
-							1: result[@dataKey].fullname or ''
-							2: result[@dataKey].email or ''
-							3: result.lastLoginTS or 0
+							1: result[@dataKey].payer_email or ''
+							2: result[@dataKey].mc_gross or ''
+							3: result[@dataKey].payment_date or 0
 
 				@listResponse(req, res, responseData, recordCount)
 	#}}}
@@ -55,10 +55,14 @@ class cypherpunk.backend.db.charge extends wiz.framework.http.database.mongo.bas
 		if recordToInsert is null
 			return unless recordToInsert = @schema.fromUser(req, res, 'stripe', req.body[@dataKey])
 
-		return super(req, res, recordToInsert, cb) if cb != null
+		return @insert(req, res, recordToInsert, cb) if cb != null
 
-		super req, res, recordToInsert, (result) =>
+		@insert req, res, recordToInsert, (result) =>
 			res.send 200
+	#}}}
+	saveFromPayPalIPN: (req, res, data, cb = null) => #{{{
+		return unless recordToInsert = @schema.fromUser(req, res, 'paypal', data)
+		return @insert(req, res, recordToInsert, cb)
 	#}}}
 	findOneByTXID: (req, res, txid, cb) => #{{{
 		@findOneByKey req, res, "#{@dataKey}.#{@txidKey}", txid, @projection(), cb

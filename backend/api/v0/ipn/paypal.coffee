@@ -12,6 +12,6 @@ class cypherpunk.backend.api.v0.ipn.paypal extends cypherpunk.backend.base
 	nav: false
 
 	handler: (req, res) =>
-		@server.root.paypal.verify(req, res)
+		@server.root.paypal.ipn(req, res)
 
 # vim: foldmethod=marker wrap

@@ -1,3 +1,4 @@
+
 # copyright 2012 J. Maurice <j@wiz.biz>
 
 require './_framework'
@@ -57,31 +58,6 @@ class cypherpunk.backend.db.charge.schema extends wiz.framework.database.mongo.d
 		constructor: (@type, @description, @verb, @data, @creatable = true) ->
 	@types:
 	#}}}
-#  id: 'cus_9djahSvYrD1w4w'
-#  object: 'customer'
-#  account_balance: 0
-#  created: 1480251078
-#  currency: 'usd'
-#  default_source: 'card_19KS7kCymPOZwO5rVFqdx2NF'
-#  delinquent: false
-#  description: null
-#  discount: null
-#  email: 'jmaurice+stripe2@cypherpunk.com'
-#  livemode: false
-#  metadata: {}
-#  shipping: null
-#  sources:
-#     object: 'list'
-#     data: [ [ Object ] ]
-#     has_more: false
-#     total_count: 1
-#     url: '/v1/customers/cus_9djahSvYrD1w4w/sources'
-#  subscriptions:
-#     object: 'list'
-#     data: [ [ Object ] ]
-#     has_more: false
-#     total_count: 1
-#     url: '/v1/customers/cus_9djahSvYrD1w4w/subscriptions'
 
 		stripe: (new type 'stripe', 'Stripe Charge', 'list', #{{{
 			id:
@@ -98,20 +74,135 @@ class cypherpunk.backend.db.charge.schema extends wiz.framework.database.mongo.d
 				placeholder: '$XX.XX'
 				required: true
 		) #}}}
-		paypal: (new type 'paypal', 'PayPal Charge', 'list', #{{{
-			txid:
-				label: 'charge id'
-				placeholder: 'XXXXXXXXX'
+		paypal: (new type 'paypal', 'PayPal Payment', 'list', #{{{
+			txn_id:
+				label: 'paypal transaction id'
+				placeholder: '8G714942TJ100635R'
 				type: 'asciiNoSpace'
 				maxlen: 30
 				required: true
+				disabled: true
 
-			amount:
-				label: 'charge amount'
+			txn_type:
+				label: 'paypal transaction type'
+				placeholder: '8G714942TJ100635R'
+				type: 'asciiNoSpace'
+				maxlen: 30
+				required: true
+				disabled: true
+
+			cypherpunk_account_id:
+				label: 'cypherpunk customer id'
+				placeholder: '4XUYJWGG4LHKMHCLKL7OTIWP7O4UVBJCGO2PIPMXQVV2NZNO2UF'
+				type: 'asciiNoSpace'
+				maxlen: 90
+				required: true
+				disabled: true
+
+			cypherpunk_plan_type:
+				label: 'cypherpunk plan type'
+				placeholder: 'daily, monthly, semiannually, or annually'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+				disabled: true
+
+			payer_id:
+				label: 'paypal payer id'
+				placeholder: 'KXB398KPF7VMW'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+				disabled: true
+
+			payer_email:
+				label: 'paypal payer email'
+				placeholder: 'satoshi@paypal.com'
+				type: 'email'
+				maxlen: 50
+				required: true
+				disabled: true
+
+			payer_status:
+				label: 'paypal payer status'
+				placeholder: 'verified'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+				disabled: true
+
+			payment_date:
+				label: 'paypal payment date'
+				placeholder: '03:15:18 Jun 12, 2017 PDT'
+				type: 'ascii'
+				maxlen: 70
+				required: true
+				disabled: true
+
+			payment_type:
+				label: 'paypal payment type'
+				placeholder: 'instant'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+				disabled: true
+
+			payment_status:
+				label: 'paypal payment status'
+				placeholder: 'Completed'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+				disabled: true
+
+			mc_gross:
+				label: 'payment amount'
 				type: 'alphanumericdot'
 				maxlen: 50
 				placeholder: '$XX.XX'
 				required: true
+				disabled: true
+
+			mc_fee:
+				label: 'payment fee'
+				type: 'alphanumericdot'
+				maxlen: 50
+				placeholder: '$XX.XX'
+				required: true
+				disabled: true
+
+			mc_currency:
+				label: 'payment currency'
+				type: 'asciiNoSpace'
+				maxlen: 10
+				placeholder: 'USD'
+				required: true
+				disabled: true
+
+			first_name:
+				label: 'paypal payer first name'
+				placeholder: 'John'
+				type: 'ascii'
+				maxlen: 80
+				required: true
+				disabled: true
+
+			last_name:
+				label: 'paypal payer last name'
+				placeholder: 'Smith'
+				type: 'ascii'
+				maxlen: 80
+				required: true
+				disabled: true
+
+			verify_sign:
+				label: 'paypal verification signature'
+				placeholder: 'AE.pCRu8dAgEChKtiAO8IAX666.2A0L3dEvMwyN3KOTNOlAAKFzs6iin'
+				type: 'asciiNoSpace'
+				maxlen: 120
+				required: true
+				disabled: true
+
 		) #}}}
 		amazon: (new type 'amazon', 'Amazon Charge', 'list', #{{{
 			txid:

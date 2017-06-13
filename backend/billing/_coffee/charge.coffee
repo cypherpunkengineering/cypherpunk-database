@@ -8,8 +8,8 @@ class cypherpunk.backend.billing.userjs.charge.table extends wiz.portal.userjs.t
 	#{{{ strings
 	stringNuggets: 'charges'
 	stringInsertButton: null
-	stringInsertSubmit: 'Add charge'
-	stringInsertRecordDialogTitle: 'Add charge'
+	stringInsertSubmit: 'View charge'
+	stringInsertRecordDialogTitle: 'View charge'
 	stringInsertRecordSelectLabel: 'charge type'
 	stringUpdateButton: 'Manage Charge'
 	stringDropButton: null
@@ -19,7 +19,8 @@ class cypherpunk.backend.billing.userjs.charge.table extends wiz.portal.userjs.t
 	stringTitle: null
 	stringTableHeaders: [
 		'E-Mail Address'
-		'Last Logged In'
+		'Payment Amount'
+		'Payment Date'
 	]
 	#}}}
 	initTableHeadStrings: (t) => #{{{
@@ -51,7 +52,7 @@ class cypherpunk.backend.billing.userjs.charge.table extends wiz.portal.userjs.t
 								text: @stringUpdateButton
 								click: @updateDialogOpen
 						)
-					when 2
+					when 4
 						if aData[i] == 0
 							ts = 'never'
 						else

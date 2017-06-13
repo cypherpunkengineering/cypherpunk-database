@@ -13,26 +13,22 @@ class wiz.framework.thirdparty.paypal
 
 	constructor: (@server, @parent) -> #{{{
 	#}}}
-	baseRequestOptions: #{{{
-		#host: "ipnpb.paypal.com"
-		host: "ipnpb.sandbox.paypal.com"
+
+	ipn: (req, res) => #{{{
+		#console.log req.headers if @debug
+		console.log req.body if @debug
+		# must send 200 back or paypal will re-deliver IPN data
+		# TODO: either use verify_sign or the below verification POST thing
 	#}}}
-
-	verify: (req, res, args, cb) => #{{{
-		console.log req.headers
-		console.log req.body
-		data = req.body
-		if data
-			@onVerify(data) if @onVerify
-		return res.send 200
-
+	verifyIPN: (req, res, args, cb) => #{{{
 		# build query options
-		reqopts = @baseRequestOptions
-		reqopts.method = "POST"
-		reqopts.path = "#{paypal}/cgi-bin/webscr"
-		reqopts.headers =
-			"User-Agent" : "CypherpunkBackend/1.0"
-			"Content-Type" : "application/x-www-form-urlencoded; charset=UTF-8"
+		reqopts =
+			method: "POST"
+			host: (if wiz.style is 'DEV' then 'ipnpb.paypal.com' else 'ipnpb.sandbox.paypal.com')
+			path: "/cgi-bin/webscr"
+			headers:
+				"User-Agent" : "CypherpunkBackend/1.0"
+				"Content-Type" : "application/x-www-form-urlencoded; charset=UTF-8"
 
 		# send query
 		q = new httpreq(reqopts)
