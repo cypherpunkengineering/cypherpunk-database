@@ -29,8 +29,8 @@ class cypherpunk.backend.db.location extends wiz.framework.http.database.mongo.b
 			limit: parseInt(if req.params.iDisplayLength > 0 and req.params.iDisplayLength < 200 then req.params.iDisplayLength else 25)
 			sort: 'data.fullname'
 
-		@count req, res, criteria, projection, (recordCount) =>
-			@find req, res, criteria, projection, opts, (results) =>
+		@count req, res, criteria, projection, (req, res, recordCount) =>
+			@find req, res, criteria, projection, opts, (req, res, results) =>
 				responseData = []
 				if not results or not results.length > 0
 					return @listResponse(req, res, responseData)
