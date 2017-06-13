@@ -207,7 +207,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					return cb(req, res, null) if not result and cb
 					return res.send 404 if not result
 					return res.send 500 if not result[@dataKey]?
-					wiz.log.info "Upgraded user account (free -> premium) for #{user[@dataKey][@emailKey]}"
+					@server.root.slack.notify "Upgraded user account (free -> premium) for #{user[@dataKey][@emailKey]}"
 
 					# pass updated db object to radius database method
 					@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>

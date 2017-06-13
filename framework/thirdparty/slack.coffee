@@ -9,7 +9,7 @@ wiz.package 'wiz.framework.thirdparty.slack'
 class wiz.framework.thirdparty.slack
 	class httpreq extends wiz.framework.http.client.base
 
-	debug: true
+	debug: false
 
 	constructor: (@server, @parent) -> #{{{
 	#}}}
@@ -19,6 +19,8 @@ class wiz.framework.thirdparty.slack
 	#}}}
 
 	notify: (text, cb) => #{{{
+		wiz.log.info text
+
 		reqBody =
 			text: text
 
