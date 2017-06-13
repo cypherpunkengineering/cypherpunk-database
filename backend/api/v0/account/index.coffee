@@ -46,7 +46,9 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 		else
 			wiz.log.err "accountinfo contains missing required data!"
 
-		console.log out
+		wiz.log.info "Got accountinfo for #{data?.email}"
+		console.log data.account
+		console.log data.subscription
 		return out
 	#}}}
 	load: () => #{{{

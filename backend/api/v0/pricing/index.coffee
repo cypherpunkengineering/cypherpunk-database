@@ -21,13 +21,11 @@ class cypherpunk.backend.api.v0.pricing.plans extends cypherpunk.backend.api.bas
 	handler: (req, res) =>
 
 		out = cypherpunk.backend.pricing.getDefaultPlans()
-		console.log out
 		res.send 200, out
 
 	catchall: (req, res) =>
 
 		out = cypherpunk.backend.pricing.getDefaultPlans()
-		console.log out
 		res.send 200, out
 
 # vim: foldmethod=marker wrap
