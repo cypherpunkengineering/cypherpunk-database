@@ -48,10 +48,11 @@ class wiz.framework.http.client.base extends wiz.framework.http.base
 		@reqOpts(body, cb)
 
 		# debug print
-		console.log "#{@opts.method} #{@opts.path} HTTP/1.1" if @debug
-		console.log ("#{x}: #{y}" for x, y of @opts.headers).join('\n') if @debug
-		console.log '' if @debug
-		console.log body if @debug
+		if @debug
+			console.log "#{@opts.method} #{@opts.path} HTTP/1.1"
+			console.log ("#{x}: #{y}" for x, y of @opts.headers).join('\n')
+			console.log ''
+			console.log body
 
 		# create request
 		@req = @client().request @opts, (res) =>
@@ -105,11 +106,11 @@ class wiz.framework.http.client.base extends wiz.framework.http.base
 	onResponse: (@res, cb) => #{{{ parse response
 		return @error 'no response!', cb unless @res
 
-		console.log @res.statusCode if @debug
-		console.log @res.headers if @debug
-
-		console.log @res.body if @debug
-		console.log(util.inspect(@req.body, false, null)) if @debug
+		if @debug
+			console.log @res.statusCode
+			console.log @res.headers
+			console.log @res.body
+			console.log(util.inspect(@req.body, false, null))
 		switch @res.statusCode
 			when 400, 403, 404, 405, 500, 502, 503
 				@middleware.parseBodyByCT(@res, @fakeres, cb)

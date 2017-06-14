@@ -8,8 +8,7 @@ wiz.package 'wiz.framework.thirdparty.slack'
 
 class wiz.framework.thirdparty.slack
 	class httpreq extends wiz.framework.http.client.base
-
-	debug: true
+		debug: false
 
 	constructor: (@server, @parent) -> #{{{
 	#}}}

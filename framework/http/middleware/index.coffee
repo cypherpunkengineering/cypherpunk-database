@@ -220,7 +220,7 @@ class wiz.framework.http.middleware.base
 	#}}}
 	@parseTextHTML: (req, res, cb) => #{{{
 		@parseTextPlain req, res, () => # TODO: implement html parsing
-			console.log req.body
+			#console.log req.body
 			cb()
 	#}}}
 	@parseTextCSV: (req, res, cb) => #{{{
