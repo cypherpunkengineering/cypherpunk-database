@@ -27,11 +27,10 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 			else
 				# send to billing channel on slack
 				@sendSlackNotification(data)
-				res.send 500, 'Unknown Paypal IPN type!'
+				res.send 500, 'Unknown PayPal IPN type!'
 		#}}}
 
 	sendSlackNotification: (data) => #{{{
-		console.log data
 		msg = "[*PayPal*] "
 
 		switch data.txn_type
@@ -44,6 +43,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 			else
 				msg += "[*#{data.txn_type}*]"
 
+		# indent slack style
 		msg += "\r>>>\r"
 
 		# append paypal payer email
@@ -69,6 +69,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 				msg += "\rperiod `#{data.period3}`" if data?.period3?
 				msg += "\ramount `#{data.mc_amount3} #{data.mc_currency}`" if data?.mc_amount3?
 
+		# send to slack
 		@server.root.slack.notify(msg)
 	#}}}
 
@@ -118,7 +119,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 		planID = data.item_number
 		plan = cypherpunk.backend.pricing.getPlanByTypeAndID(planType, planID)
 		return res.send 400, 'unknown paypal item number' unless plan?
-		return res.send 400, 'price doesnt match paypal item number' unless plan.price == data.mc_amount3
+		return res.send 400, "plan price #{plan.price} doesnt match paypal invoice amount #{data.mc_amount3}" unless +plan.price == +data.mc_amount3
 
 		# lookup account object by given account id
 		@server.root.api.user.database.findOneByID req, res, data.cypherpunk_account_id, (req, res, user) =>
