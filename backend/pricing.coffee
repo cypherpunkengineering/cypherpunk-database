@@ -246,19 +246,19 @@ class cypherpunk.backend.pricing
 			monthly1195:
 				"price": "13.37"
 				"paypalPlanId": "2Z9YV6M55688N"
-				"bitpayPlanId": "m11KRs736FeBMFoMeoSllMbhydqlxA3KrtlO8usqz+WGoLd0HymdBiKlc0x4/1QienTfpxnDWUJLo2RbLWXWYuVb2fIPUK1HC2gn83bhLGRqE2aWA08OdoVxsASvSGDY981jOkDDUjghm2TUKp9MM/PCOVSxt+IfSnj8MYN6a1BFnxB+kZBC6GDdbbDxzWaziCU0kPf02/To88EpEQzx94Fbnqk/pa71Q6O5MdQFOEl3jKIrUS9Ov8qKbWe/BVkmUdWdlWSjXKWEV8GWaCx/uMcdC4xwnYul/WjNHI42g3iwUVmSR6yPZFY/eMzSCMab"
+				"bitpayPlanId": "m11KRs736FeBMFoMeoSllMbhydqlxA3KrtlO8usqz+WGoLd0HymdBiKlc0x4/1QienTfpxnDWUJLo2RbLWXWYuVb2fIPUK1HC2gn83bhLGRqE2aWA08OdoVxsASvSGDY981jOkDDUjghm2TUKp9MM/PCOVSxt+IfSnj8MYN6a1BFnxB+kZBC6GDdbbDxzWaziCU0kPf02/To88EpEQzx94Fbnqk/pa71Q6O5MdQFOEl3jKIrUS9Ov8qKbWe/BVkmUdWdlWSjXKWEV8GWaCx/uMcdC4xwnYul/WjNHI42g3goqrwbInLAOqJPbDalzDY5uRp2AAvngOwP0+x/07EnsA=="
 		#}}}
 		semiannually: #{{{
 			semiannually4200:
 				"price": "42.00"
 				"paypalPlanId": "G7ZF7Y99PQPML"
-				"bitpayPlanId": "m11KRs736FeBMFoMeoSllMbhydqlxA3KrtlO8usqz+WGoLd0HymdBiKlc0x4/1QienTfpxnDWUJLo2RbLWXWYuVb2fIPUK1HC2gn83bhLGRqE2aWA08OdoVxsASvSGDY981jOkDDUjghm2TUKp9MM/PCOVSxt+IfSnj8MYN6a1BFnxB+kZBC6GDdbbDxzWaziCU0kPf02/To88EpEQzx94Fbnqk/pa71Q6O5MdQFOEl3jKIrUS9Ov8qKbWe/BVkmUdWdlWSjXKWEV8GWaCx/uMcdC4xwnYul/WjNHI42g3iwUVmSR6yPZFY/eMzSCMab"
+				"bitpayPlanId": "m11KRs736FeBMFoMeoSllMbhydqlxA3KrtlO8usqz+WGoLd0HymdBiKlc0x4/1QiCSdoP9NUTcX3Q+kPsB43Na1VYJ/Bb+VL3c0dkglQUUn/dEBNG+hcmActW+edqE2XoF/0p3kv5NA0riDFtwyyWw/k0RTjWN14WJy9gdONXxpdlia2Vk80y6PyAqhQB30ycCv3iz8gpwrvUUpo1CdPiDUlIPU5I20F/itOmYYd7P+6rSlAPCo/M88UEVM0WYxuR1MWVDUZtXzmdB7ZopZikESCRCzo5FVtWtDp4bZJY2seT3elij2LYGbSegtXpYFMYwm8OxXQRYhrxXVQWFrcxQ=="
 		#}}}
 		annually: #{{{
 			annually6900:
 				"price": "69.00"
 				"paypalPlanId": "EH8JJTZLEXAWS"
-				"bitpayPlanId": "m11KRs736FeBMFoMeoSllMbhydqlxA3KrtlO8usqz+WGoLd0HymdBiKlc0x4/1QienTfpxnDWUJLo2RbLWXWYuVb2fIPUK1HC2gn83bhLGRqE2aWA08OdoVxsASvSGDY981jOkDDUjghm2TUKp9MM/PCOVSxt+IfSnj8MYN6a1BFnxB+kZBC6GDdbbDxzWaziCU0kPf02/To88EpEQzx94Fbnqk/pa71Q6O5MdQFOEl3jKIrUS9Ov8qKbWe/BVkmUdWdlWSjXKWEV8GWaCx/uMcdC4xwnYul/WjNHI42g3iwUVmSR6yPZFY/eMzSCMab"
+				"bitpayPlanId": "m11KRs736FeBMFoMeoSllMbhydqlxA3KrtlO8usqz+WGoLd0HymdBiKlc0x4/1QiyO/0ITRZgRbsNe5mvEeDsng+MWd6NzyPtJCGP88yvqXIke/rJvfbJRwLUI8iOrvq0aIr805ByWFcpx5yQ9yufXcPjmsGy/UzHOstS3YM0x4K0XwBQBhI1EjbWwVmNxW4/ESjikBgSfJQuI1yFxB0iTebwC32mVzXYkfS1CPL3oMfCjA7d+nk2/3piufuTFEdFxMDBDliVrDg5Bx/77HC0ZD+ugKqSQ61IAzw8I6aHrUjdR6zJz/jKNr6xiEG2qHU+Yx1VWmM1eLY8OTlykBldA=="
 		#}}}
 
 	@defaultPlanId:
