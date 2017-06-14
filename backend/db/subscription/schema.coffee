@@ -42,31 +42,6 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 		constructor: (@type, @description, @verb, @data, @creatable = true) ->
 	@types:
 	#}}}
-#  id: 'cus_9djahSvYrD1w4w'
-#  object: 'customer'
-#  account_balance: 0
-#  created: 1480251078
-#  currency: 'usd'
-#  default_source: 'card_19KS7kCymPOZwO5rVFqdx2NF'
-#  delinquent: false
-#  description: null
-#  discount: null
-#  email: 'jmaurice+stripe2@cypherpunk.com'
-#  livemode: false
-#  metadata: {}
-#  shipping: null
-#  sources:
-#     object: 'list'
-#     data: [ [ Object ] ]
-#     has_more: false
-#     total_count: 1
-#     url: '/v1/customers/cus_9djahSvYrD1w4w/sources'
-#  subscriptions:
-#     object: 'list'
-#     data: [ [ Object ] ]
-#     has_more: false
-#     total_count: 1
-#     url: '/v1/customers/cus_9djahSvYrD1w4w/subscriptions'
 
 		monthly: (new type 'monthly', 'Monthly Subscription', 'list', #{{{
 			provider:
@@ -74,45 +49,54 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 				type: 'asciiNoSpace'
 				maxlen: 50
 				required: true
+				disabled: true
 
 			providerSubscriptionID:
 				label: 'subscription provider subscription id'
 				type: 'asciiNoSpace'
 				maxlen: 50
 				required: true
+				disabled: true
 
 			providerPlanID:
 				label: 'subscription plan'
 				type: 'asciiNoSpace'
 				maxlen: 25
 				required: true
+				disabled: true
 
 			purchaseTS:
-				label: 'subscription purchase timestamp'
+				label: 'subscription purchase'
 				type: 'asciiNoSpace'
 				required: true
+				disabled: true
 
 			renewalTS:
-				label: 'subscription renewal timestamp'
+				label: 'subscription renewal'
 				type: 'asciiNoSpace'
+				disabled: true
 
 			expirationTS:
-				label: 'subscription expiration timestamp'
+				label: 'subscription expiration'
 				type: 'asciiNoSpace'
+				disabled: true
 
 			cancellationTS:
-				label: 'subscription cancellation timestamp'
+				label: 'subscription cancellation'
 				type: 'asciiNoSpace'
+				disabled: true
 
 			currentPeriodStartTS:
-				label: 'current period start timestamp'
+				label: 'current period start'
 				type: 'asciiNoSpace'
 				required: true
+				disabled: true
 
 			currentPeriodEndTS:
-				label: 'curent period end timestamp'
+				label: 'curent period end'
 				type: 'asciiNoSpace'
 				required: true
+				disabled: true
 
 			active:
 				label: 'subscription active'
@@ -125,45 +109,54 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 				type: 'asciiNoSpace'
 				maxlen: 50
 				required: true
+				disabled: true
 
 			providerSubscriptionID:
 				label: 'subscription provider subscription id'
 				type: 'asciiNoSpace'
 				maxlen: 50
 				required: true
+				disabled: true
 
 			providerPlanID:
 				label: 'subscription plan'
 				type: 'asciiNoSpace'
 				maxlen: 25
 				required: true
+				disabled: true
 
 			purchaseTS:
-				label: 'subscription purchase timestamp'
+				label: 'subscription purchase'
 				type: 'asciiNoSpace'
 				required: true
+				disabled: true
 
 			renewalTS:
-				label: 'subscription renewal timestamp'
+				label: 'subscription renewal'
 				type: 'asciiNoSpace'
+				disabled: true
 
 			expirationTS:
-				label: 'subscription expiration timestamp'
+				label: 'subscription expiration'
 				type: 'asciiNoSpace'
+				disabled: true
 
 			cancellationTS:
-				label: 'subscription cancellation timestamp'
+				label: 'subscription cancellation'
 				type: 'asciiNoSpace'
+				disabled: true
 
 			currentPeriodStartTS:
-				label: 'current period start timestamp'
+				label: 'current period start'
 				type: 'asciiNoSpace'
 				required: true
+				disabled: true
 
 			currentPeriodEndTS:
-				label: 'curent period end timestamp'
+				label: 'curent period end'
 				type: 'asciiNoSpace'
 				required: true
+				disabled: true
 
 			active:
 				label: 'subscription active'
@@ -176,45 +169,54 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 				type: 'asciiNoSpace'
 				maxlen: 50
 				required: true
+				disabled: true
 
 			providerSubscriptionID:
 				label: 'subscription provider subscription id'
 				type: 'asciiNoSpace'
 				maxlen: 50
 				required: true
+				disabled: true
 
 			providerPlanID:
 				label: 'subscription plan'
 				type: 'asciiNoSpace'
 				maxlen: 25
 				required: true
+				disabled: true
 
 			purchaseTS:
-				label: 'subscription purchase timestamp'
+				label: 'subscription purchase'
 				type: 'asciiNoSpace'
 				required: true
+				disabled: true
 
 			renewalTS:
-				label: 'subscription renewal timestamp'
+				label: 'subscription renewal'
 				type: 'asciiNoSpace'
+				disabled: true
 
 			expirationTS:
-				label: 'subscription expiration timestamp'
+				label: 'subscription expiration'
 				type: 'asciiNoSpace'
+				disabled: true
 
 			cancellationTS:
-				label: 'subscription cancellation timestamp'
+				label: 'subscription cancellation'
 				type: 'asciiNoSpace'
+				disabled: true
 
 			currentPeriodStartTS:
-				label: 'current period start timestamp'
+				label: 'current period start'
 				type: 'asciiNoSpace'
 				required: true
+				disabled: true
 
 			currentPeriodEndTS:
-				label: 'curent period end timestamp'
+				label: 'curent period end'
 				type: 'asciiNoSpace'
 				required: true
+				disabled: true
 
 			active:
 				label: 'subscription active'
