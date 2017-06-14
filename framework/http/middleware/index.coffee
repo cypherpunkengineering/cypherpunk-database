@@ -148,6 +148,7 @@ class wiz.framework.http.middleware.base
 		req.on 'end', () ->
 			try
 				if buf.length
+					req.rawBody = buf
 					req.body = JSON.parse(buf)
 			catch err
 				res.send 400, "error parsing(2) request body", err
