@@ -9,23 +9,16 @@ wiz.package 'wiz.framework.thirdparty.bitpay'
 class wiz.framework.thirdparty.bitpay
 	class httpreq extends wiz.framework.http.client.base
 
-	debug: true
+	debug: false
 
 	constructor: (@server, @parent) -> #{{{
 	#}}}
-	baseRequestOptions: #{{{
-		#host: "ipnpb.bitpay.com"
-		host: "ipnpb.sandbox.bitpay.com"
-	#}}}
 
-	verify: (req, res, args, cb) => #{{{
-		console.log req.headers
+	ipn: (req, res) => #{{{
 		console.log req.body
-		data = req.body
-		if data
-			@onVerify(data) if @onVerify
 		return res.send 200
-
+	#}}}
+	verify: (req, res, data) => #{{{
 		# build query options
 		reqopts = @baseRequestOptions
 		reqopts.method = "POST"

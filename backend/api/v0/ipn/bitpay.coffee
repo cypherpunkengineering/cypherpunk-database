@@ -12,6 +12,6 @@ class cypherpunk.backend.api.v0.ipn.bitpay extends cypherpunk.backend.base
 	nav: false
 
 	handler: (req, res) =>
-		@server.root.bitpay.verify(req, res)
+		@server.root.bitpay.ipn(req, res)
 
 # vim: foldmethod=marker wrap

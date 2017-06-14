@@ -220,19 +220,61 @@ class cypherpunk.backend.db.charge.schema extends wiz.framework.database.mongo.d
 				required: true
 		) #}}}
 		bitpay: (new type 'bitpay', 'BitPay Charge', 'list', #{{{
-			txid:
-				label: 'charge id'
-				placeholder: 'XXXXXXXXX'
+			invoice_id:
+				label: 'bitpay invoice id'
+				placeholder: 'Ao5BLYJEZfhQTdqiXVC2Ps'
 				type: 'asciiNoSpace'
-				maxlen: 30
+				maxlen: 50
 				required: true
+				disabled: true
+
+			btcPaid:
+				label: 'bitpay BTC amount'
+				type: 'alphanumericdot'
+				maxlen: 50
+				placeholder: '0.0XXXXXXX'
+				required: true
+				disabled: true
 
 			amount:
-				label: 'charge amount'
+				label: 'bitpay invoice amount'
 				type: 'alphanumericdot'
 				maxlen: 50
 				placeholder: '$XX.XX'
 				required: true
+				disabled: true
+
+			currency:
+				label: 'bitpay invoice currency'
+				type: 'alphanumericdot'
+				maxlen: 50
+				placeholder: '$XX.XX'
+				required: true
+				disabled: true
+
+			rate:
+				label: 'bitpay btc rate'
+				type: 'alphanumericdot'
+				maxlen: 50
+				placeholder: '$XXXX.XX'
+				required: true
+				disabled: true
+
+			cypherpunk_account_id:
+				label: 'cypherpunk customer id'
+				placeholder: '4XUYJWGG4LHKMHCLKL7OTIWP7O4UVBJCGO2PIPMXQVV2NZNO2UF'
+				type: 'asciiNoSpace'
+				maxlen: 90
+				required: true
+				disabled: true
+
+			cypherpunk_plan_type:
+				label: 'cypherpunk plan type'
+				placeholder: 'daily, monthly, semiannually, or annually'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+				disabled: true
 		) #}}}
 		googleplay: (new type 'googleplay', 'Google Play Charge', 'list', #{{{
 			txid:

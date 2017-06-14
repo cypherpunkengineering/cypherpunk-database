@@ -64,6 +64,10 @@ class cypherpunk.backend.db.charge extends wiz.framework.http.database.mongo.bas
 		return unless recordToInsert = @schema.fromUser(req, res, 'paypal', data)
 		return @insert(req, res, recordToInsert, cb)
 	#}}}
+	saveFromBitPayIPN: (req, res, data, cb = null) => #{{{
+		return unless recordToInsert = @schema.fromUser(req, res, 'bitpay', data)
+		return @insert(req, res, recordToInsert, cb)
+	#}}}
 	findOneByTXID: (req, res, txid, cb) => #{{{
 		@findOneByKey req, res, "#{@dataKey}.#{@txidKey}", txid, @projection(), cb
 	#}}}
