@@ -183,9 +183,9 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
 
-		subscriptionPlanFreq = cypherpunk.backend.pricing.getPlanFreqForPlan req?.body?.plan
-		return res.send 400, 'invalid plan' if not subscriptionPlanFreq
-		console.log subscriptionPlanFreq
+		planType = cypherpunk.backend.pricing.getPricingPlanType req?.body?.plan
+		return res.send 400, 'invalid plan' if not planType
+		console.log planType
 
 		stripePlanId = cypherpunk.backend.pricing.getStripePlanIdForReferralCode req?.body?.plan
 		return res.send 400, 'invalid plan' if not stripePlanId
@@ -236,7 +236,7 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 				console.log subscriptionData
 
 				# save transaction in db
-				req.server.root.api.subscription.database.insert req, res, subscriptionPlanFreq, subscriptionData, (req, res, subscription) =>
+				req.server.root.api.subscription.database.insert req, res, planType, subscriptionData, (req, res, subscription) =>
 					# set user's active subscription to this one
 					@onSuccessfulTransaction(req, res, subscription, req.session.account?.data?.stripeCustomerID)
 	#}}}
@@ -246,9 +246,9 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 		return res.send 400, 'missing parameters' unless req.body?.plan?
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
 
-		subscriptionPlanFreq = cypherpunk.backend.pricing.getPlanFreqForPlan req?.body?.plan
-		return res.send 400, 'invalid plan' if not subscriptionPlanFreq
-		console.log subscriptionPlanFreq
+		planType = cypherpunk.backend.pricing.getPricingPlanType req?.body?.plan
+		return res.send 400, 'invalid plan' if not planType
+		console.log planType
 
 		stripePlanId = cypherpunk.backend.pricing.getStripePlanIdForReferralCode req?.body?.plan
 		return res.send 400, 'invalid plan' if not stripePlanId
@@ -260,14 +260,14 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 
 		# check to see if the user has a stripe account already
 		if req.session.account?.data?.stripeCustomerID
-			@upgradeExistingCustomer req, res, stripePlanId, subscriptionPlanFreq, subscriptionRenewal
+			@upgradeExistingCustomer req, res, stripePlanId, planType, subscriptionRenewal
 		else # if not yet a stripe customer, token is necessary
 			return res.send 400, 'missing parameters' unless req.body?.token?
 			return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
-			@upgradeNewCustomer req, res, stripePlanId, subscriptionPlanFreq, subscriptionRenewal
+			@upgradeNewCustomer req, res, stripePlanId, planType, subscriptionRenewal
 
 	#}}}
-	upgradeExistingCustomer: (req, res, stripePlanId, subscriptionPlanFreq, subscriptionRenewal) => #{{{
+	upgradeExistingCustomer: (req, res, stripePlanId, planType, subscriptionRenewal) => #{{{
 		# check to see if the user has a stripe account already
 		stripeArgs =
 			customer: req.session.account?.data?.stripeCustomerID
@@ -300,11 +300,11 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 			console.log subscriptionData
 
 			# save transaction in db
-			req.server.root.api.subscription.database.insert req, res, subscriptionPlanFreq, subscriptionData, (req, res, subscription) =>
+			req.server.root.api.subscription.database.insert req, res, planType, subscriptionData, (req, res, subscription) =>
 				# set user's active subscription to this one
 				@onSuccessfulTransaction(req, res, subscription, req.session.account?.data?.stripeCustomerID)
 	#}}}
-	upgradeNewCustomer: (req, res, stripePlanId, subscriptionPlanFreq, subscriptionRenewal) => #{{{
+	upgradeNewCustomer: (req, res, stripePlanId, planType, subscriptionRenewal) => #{{{
 		# check to see if the user has a stripe account already
 		stripeArgs =
 			source: req.body.token
@@ -338,7 +338,7 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 			console.log subscriptionData
 
 			# save transaction in db
-			req.server.root.api.subscription.database.insert req, res, subscriptionPlanFreq, subscriptionData, (req, res, subscription) =>
+			req.server.root.api.subscription.database.insert req, res, planType, subscriptionData, (req, res, subscription) =>
 				# set user's active subscription to this one
 				@onSuccessfulTransaction(req, res, subscription, stripeCustomerData?.id)
 	#}}}

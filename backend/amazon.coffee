@@ -14,11 +14,18 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 		return res.send 400, 'missing parameters' unless req.body?.AmazonBillingAgreementId?
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.AmazonBillingAgreementId is 'string'
 
-		subscriptionType = cypherpunk.backend.db.subscription.calculateType req?.body?.plan
-		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal req?.body?.plan
-		subscriptionPrice = cypherpunk.backend.db.subscription.calculatePrice req?.body?.plan
+		# get plan data TODO: lookup referral code here instead of using default
+		planType = cypherpunk.backend.pricing.getPricingPlanType req?.body?.plan
+		planID = cypherpunk.backend.pricing.defaultPlanId[req?.body?.plan]
+		return res.send 400, 'invalid plan' if not planType
+		plan = cypherpunk.backend.pricing.getPlanByTypeAndID(planType, planID)
 
-		return res.send 400, 'invalid plan' unless (subscriptionRenewal and subscriptionType and subscriptionPrice)
+		# calculate renewal date
+		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal planID
+		return res.send 500, 'unable to calculate subscription period' if not subscriptionRenewal
+		console.log subscriptionRenewal
+
+		return res.send 400, 'invalid plan' unless (subscriptionRenewal and planType and plan.price)
 
 		# prepare args for amazon API call
 		confirmArgs =
@@ -46,7 +53,7 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 				authorizeArgs =
 					AmazonBillingAgreementId: user?.data?.amazonBillingAgreementID
 					currency: "USD"
-					price: subscriptionPrice
+					price: plan.price
 					authorizationReference: wiz.framework.crypto.convert.biToBase32(randomBytes)
 					userId: user?.id
 
@@ -64,11 +71,18 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 		return res.send 400, 'missing parameters' unless req.body?.AmazonBillingAgreementId?
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.AmazonBillingAgreementId is 'string'
 
-		subscriptionType = cypherpunk.backend.db.subscription.calculateType req?.body?.plan
-		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal req?.body?.plan
-		subscriptionPrice = cypherpunk.backend.db.subscription.calculatePrice req?.body?.plan
+		# get plan data TODO: lookup referral code here instead of using default
+		planType = cypherpunk.backend.pricing.getPricingPlanType req?.body?.plan
+		return res.send 400, 'invalid plan' if not planType
+		planID = cypherpunk.backend.pricing.defaultPlanId[req?.body?.plan]
+		plan = cypherpunk.backend.pricing.getPlanByTypeAndID(planType, planID)
 
-		return res.send 400, 'invalid plan' unless (subscriptionRenewal and subscriptionType and subscriptionPrice)
+		# calculate renewal date
+		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal planID
+		return res.send 500, 'unable to calculate subscription period' if not subscriptionRenewal
+		console.log subscriptionRenewal
+
+		return res.send 400, 'invalid plan' unless (subscriptionRenewal and planType and plan.price)
 
 		# prepare args for amazon API call
 		confirmArgs =
@@ -87,7 +101,7 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 			authorizeArgs =
 				AmazonBillingAgreementId: req.body.AmazonBillingAgreementId
 				currency: "USD"
-				price: subscriptionPrice
+				price: plan.price
 				authorizationReference: wiz.framework.crypto.convert.biToBase32(randomBytes)
 				userId: user?.id
 
@@ -111,7 +125,7 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 				console.log subscriptionData
 
 				# save transaction in db
-				req.server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
+				req.server.root.api.subscription.database.insert req, res, planType, subscriptionData, (req, res, subscription) =>
 
 					# set user's active subscription to this one
 					@onSuccessfulTransaction(req, res, subscription, user?.data?.amazonBillingAgreementID)

@@ -13,7 +13,7 @@ class cypherpunk.backend.bitpay extends wiz.framework.thirdparty.bitpay
 		try
 			data.posData = JSON.parse(req.body.posData)
 			data.cypherpunk_account_id = data.posData.id
-			data.cypherpunk_plan_type = cypherpunk.backend.pricing.getPlanFreqForPlan(data.posData.plan)
+			data.cypherpunk_plan_type = cypherpunk.backend.pricing.getPricingPlanType(data.posData.plan)
 		catch e
 			data.custom = {}
 
@@ -74,7 +74,7 @@ class cypherpunk.backend.bitpay extends wiz.framework.thirdparty.bitpay
 		return res.send 400, 'missing or invalid cypherpunk plan type' unless typeof data.cypherpunk_plan_type is 'string'
 
 		# validate plan type is valid
-		planType = cypherpunk.backend.pricing.getPlanFreqForPlan(data.cypherpunk_plan_type)
+		planType = cypherpunk.backend.pricing.getPricingPlanType(data.cypherpunk_plan_type)
 		return res.send 400, 'invalid cypherpunk plan type' unless typeof planType is 'string'
 
 		# get plan data and confirm price matches TODO: lookup referral code here instead of using default

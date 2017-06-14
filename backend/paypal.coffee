@@ -13,7 +13,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 		try
 			data.custom = JSON.parse(req.body.custom)
 			data.cypherpunk_account_id = data.custom.id
-			data.cypherpunk_plan_type = cypherpunk.backend.pricing.getPlanFreqForPlan(data.custom.plan)
+			data.cypherpunk_plan_type = cypherpunk.backend.pricing.getPricingPlanType(data.custom.plan)
 		catch e
 			data.custom = {}
 
@@ -112,7 +112,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 		return res.send 400, 'missing or invalid cypherpunk plan type' unless typeof data.cypherpunk_plan_type is 'string'
 
 		# validate plan type is valid
-		planType = cypherpunk.backend.pricing.getPlanFreqForPlan(data.cypherpunk_plan_type)
+		planType = cypherpunk.backend.pricing.getPricingPlanType(data.cypherpunk_plan_type)
 		return res.send 400, 'invalid cypherpunk plan type' unless typeof planType is 'string'
 
 		# get plan data and confirm price matches

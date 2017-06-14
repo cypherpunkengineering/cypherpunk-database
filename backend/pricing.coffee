@@ -297,7 +297,7 @@ class cypherpunk.backend.pricing
 				return null
 	#}}}
 
-	@getPlanFreqForPlan: (plan) => #{{{
+	@getPricingPlanType: (plan) => #{{{
 		switch plan
 			when "monthly"
 				return "monthly"
