@@ -62,17 +62,75 @@ class cypherpunk.backend.db.charge.schema extends wiz.framework.database.mongo.d
 		stripe: (new type 'stripe', 'Stripe Charge', 'list', #{{{
 			id:
 				label: 'charge id'
+				placeholder: 'ch_1AUZvOCymPOZwO5r0eZRKSsx'
+				type: 'asciiNoSpace'
+				maxlen: 40
+				required: true
+				disabled: true
+
+			customer:
+				label: 'stripe customer id'
 				placeholder: 'cus_9djahSvYrD1w4w'
 				type: 'asciiNoSpace'
-				maxlen: 30
+				maxlen: 40
 				required: true
+				disabled: true
+
+			cypherpunk_account_id:
+				label: 'cypherpunk customer id'
+				placeholder: '4XUYJWGG4LHKMHCLKL7OTIWP7O4UVBJCGO2PIPMXQVV2NZNO2UF'
+				type: 'asciiNoSpace'
+				maxlen: 90
+				required: true
+				disabled: true
+
+			invoice:
+				label: 'stripe invoice id'
+				placeholder: 'in_1AUZvOCymPOZwO5rEro2RfRO'
+				type: 'asciiNoSpace'
+				maxlen: 40
+				required: true
+				disabled: true
 
 			amount:
 				label: 'charge amount'
-				type: 'alphanumericdot'
+				type: 'int'
 				maxlen: 50
 				placeholder: '$XX.XX'
 				required: true
+				disabled: true
+
+			amount_refunded:
+				label: 'charge amount refunded'
+				type: 'int'
+				maxlen: 50
+				placeholder: '$XX.XX'
+				required: true
+				disabled: true
+
+			currency:
+				label: 'charge currency'
+				placeholder: 'succeeded'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+				disabled: true
+
+			balance_transaction:
+				label: 'charge balance transaction id'
+				placeholder: 'txn_1AUZvOCymPOZwO5ro8AiQxeW'
+				type: 'asciiNoSpace'
+				maxlen: 90
+				required: true
+				disabled: true
+
+			status:
+				label: 'charge status'
+				placeholder: 'succeeded'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+				disabled: true
 		) #}}}
 		paypal: (new type 'paypal', 'PayPal Payment', 'list', #{{{
 			txn_id:

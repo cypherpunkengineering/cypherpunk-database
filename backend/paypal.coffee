@@ -208,7 +208,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 			# if not found, return error
 			return res.send 404, 'Cypherpunk ID not found!' if not user?
 
-			@server.root.api.charge.database.saveFromPayPalIPN req, res, data, (req, res, chargeObject) =>
+			@server.root.api.charge.database.saveFromIPN req, res, 'paypal', data, (req, res, chargeObject) =>
 				chargeObject = chargeObject[0] if chargeObject instanceof Array
 				#console.log chargeObject
 

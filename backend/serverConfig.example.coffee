@@ -49,6 +49,7 @@ class cypherpunk.backend.server.config extends wiz.framework.http.server.configB
 
 			@stripe =
 				apiKey: 'sk_live_'
+				endpointSecret: 'whsec_'
 
 		else if process.argv[2] == '--staging'
 
@@ -64,6 +65,7 @@ class cypherpunk.backend.server.config extends wiz.framework.http.server.configB
 
 			@stripe =
 				apiKey: 'sk_live_'
+				endpointSecret: 'whsec_'
 
 		else if process.argv[2] == '--development'
 
@@ -79,6 +81,7 @@ class cypherpunk.backend.server.config extends wiz.framework.http.server.configB
 
 			@stripe =
 				apiKey: 'sk_test_'
+				endpointSecret: 'whsec_'
 
 		else
 

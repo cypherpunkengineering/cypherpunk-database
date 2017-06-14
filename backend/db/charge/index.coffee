@@ -51,21 +51,8 @@ class cypherpunk.backend.db.charge extends wiz.framework.http.database.mongo.bas
 	#}}}
 
 	# custom APIs
-	saveFromStripe: (req, res, recordToInsert = null, cb = null) => #{{{
-		if recordToInsert is null
-			return unless recordToInsert = @schema.fromUser(req, res, 'stripe', req.body[@dataKey])
-
-		return @insert(req, res, recordToInsert, cb) if cb != null
-
-		@insert req, res, recordToInsert, (result) =>
-			res.send 200
-	#}}}
-	saveFromPayPalIPN: (req, res, data, cb = null) => #{{{
-		return unless recordToInsert = @schema.fromUser(req, res, 'paypal', data)
-		return @insert(req, res, recordToInsert, cb)
-	#}}}
-	saveFromBitPayIPN: (req, res, data, cb = null) => #{{{
-		return unless recordToInsert = @schema.fromUser(req, res, 'bitpay', data)
+	saveFromIPN: (req, res, type, data = null, cb = null) => #{{{
+		return unless recordToInsert = @schema.fromUser(req, res, type, data)
 		return @insert(req, res, recordToInsert, cb)
 	#}}}
 	findOneByTXID: (req, res, txid, cb) => #{{{

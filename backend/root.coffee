@@ -103,8 +103,10 @@ class cypherpunk.backend.module extends wiz.framework.http.resource.root
 		@slack = new cypherpunk.backend.slack(@server, this)
 
 		# init stripe SDK
-		@stripe = new cypherpunk.backend.stripe
+		stripeArgs =
 			apiKey: @server.config.stripe.apiKey
+			endpointSecret: @server.config.stripe.endpointSecret
+		@stripe = new cypherpunk.backend.stripe(@server, this, stripeArgs)
 		@Stripe = @stripe.Stripe
 
 		# init sendgrid SDK

@@ -7,6 +7,7 @@ require '../../../db/user'
 
 require './bitpay'
 require './paypal'
+require './stripe'
 
 wiz.package 'cypherpunk.backend.api.v0.ipn'
 
@@ -19,5 +20,6 @@ class cypherpunk.backend.api.v0.ipn.module extends cypherpunk.backend.base
 		super()
 		@routeAdd new cypherpunk.backend.api.v0.ipn.bitpay(@server, this, 'bitpay', 'POST')
 		@routeAdd new cypherpunk.backend.api.v0.ipn.paypal(@server, this, 'paypal', 'POST')
+		@routeAdd new cypherpunk.backend.api.v0.ipn.stripe(@server, this, 'stripe', 'POST')
 
 # vim: foldmethod=marker wrap

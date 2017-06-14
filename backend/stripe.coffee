@@ -5,6 +5,177 @@ wiz.package 'cypherpunk.backend.stripe'
 
 class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 
+	ipn: (req, res) => #{{{
+#{{{ sample data
+# {
+#   "created": 1326853478,
+#   "livemode": false,
+#   "id": "evt_00000000000000",
+#   "type": "charge.succeeded",
+#   "object": "data",
+#   "request": null,
+#   "pending_webhooks": 1,
+#   "api_version": "2017-06-05",
+#   "data": {
+#     "object": {
+#       "id": "ch_00000000000000",
+#       "object": "charge",
+#       "amount": 6900,
+#       "amount_refunded": 0,
+#       "application": null,
+#       "application_fee": null,
+#       "balance_transaction": "txn_00000000000000",
+#       "captured": true,
+#       "created": 1497427916,
+#       "currency": "usd",
+#       "customer": "cus_00000000000000",
+#       "description": null,
+#       "destination": null,
+#       "dispute": null,
+#       "failure_code": null,
+#       "failure_message": null,
+#       "fraud_details": {
+#       },
+#       "invoice": "in_00000000000000",
+#       "livemode": false,
+#       "metadata": {
+#       },
+#       "on_behalf_of": null,
+#       "order": null,
+#       "outcome": {
+#         "network_status": "approved_by_network",
+#         "reason": null,
+#         "risk_level": "normal",
+#         "seller_message": "Payment complete.",
+#         "type": "authorized"
+#       },
+#       "paid": true,
+#       "receipt_email": null,
+#       "receipt_number": null,
+#       "refunded": false,
+#       "refunds": {
+#         "object": "list",
+#         "data": [
+#         ],
+#         "has_more": false,
+#         "total_count": 0,
+#         "url": "/v1/charges/ch_1AUWbYCymPOZwO5rrKVFKdaD/refunds"
+#       },
+#       "review": null,
+#       "shipping": null,
+#       "source": {
+#         "id": "card_00000000000000",
+#         "object": "card",
+#         "address_city": null,
+#         "address_country": "United States",
+#         "address_line1": null,
+#         "address_line1_check": null,
+#         "address_line2": null,
+#         "address_state": null,
+#         "address_zip": "96818",
+#         "address_zip_check": "pass",
+#         "brand": "Visa",
+#         "country": "US",
+#         "customer": "cus_00000000000000",
+#         "cvc_check": "pass",
+#         "dynamic_last4": null,
+#         "exp_month": 10,
+#         "exp_year": 2018,
+#         "fingerprint": "fTt4qcLklUAnbpoP",
+#         "funding": "credit",
+#         "last4": "4242",
+#         "metadata": {
+#         },
+#         "name": "ed",
+#         "tokenization_method": null
+#       },
+#       "source_transfer": null,
+#       "statement_descriptor": null,
+#       "status": "succeeded",
+#       "transfer_group": null
+#     }
+#   }
+# }
+#}}}
+
+		payload = req.rawBody
+		sigHeader = req.headers['stripe-signature']
+
+		try
+			data = @Stripe.webhooks.constructEvent(payload, sigHeader, @options.endpointSecret)
+		catch e
+			# Invalid payload or signature
+			console.log e
+			return res.send 400
+
+		console.log "got valid stripe data"
+		console.log data
+
+		# get stripe customer ID
+		stripeCustomerID = null
+		stripeCustomerID ?= data.data?.object?.customer
+		stripeCustomerID ?= data.data?.object?.id
+
+		# if not found, return error
+		return res.send 400, 'Stripe customer ID not found?' unless stripeCustomerID?
+
+		# lookup cypherpunk account object by stripe customer id
+		@server.root.api.user.database.findOneByStripeCustomerID req, res, stripeCustomerID, (req, res, user) =>
+
+			# if not found, return error
+			return res.send 404, 'Cypherpunk account not found!' unless user?.id?
+
+			# otherwise save it for later
+			data.user = user
+
+			# proceed based on event type
+			switch data.type
+				when 'charge.succeeded'
+					@onChargeSucceeded(req, res, data)
+				else
+					# send to billing channel on slack
+					#@sendSlackNotification(data)
+					res.send 200, "Unknown Stripe IPN type: #{data?.type}"
+	#}}}
+
+	onChargeSucceeded: (req, res, data) => #{{{
+		return res.send 400, 'missing stripe IPN data object' unless data?.data?.object?
+		charge = data.data.object
+		charge.cypherpunk_account_id = data.user.id
+		@server.root.api.charge.database.saveFromIPN req, res, 'stripe', charge, (req, res, chargeObject) =>
+			chargeObject = chargeObject[0] if chargeObject instanceof Array
+			console.log chargeObject
+
+			# send slack notification
+			@sendSlackNotification(data)
+
+			res.send 200
+	#}}}
+
+	sendSlackNotification: (data) => #{{{
+		msg = "[*Stripe*] "
+
+		switch data.type
+			when 'charge.succeeded'
+				msg += "[*PAYMENT*] :moneybag:"
+			else
+				msg += "[*#{data.type.toUpperCase()}*]"
+
+		# indent slack style
+		msg += "\r>>>\r"
+
+		# if present, append cypherpunk account email
+		if data.user?.data?.email?
+			msg += "\rCypherpunk account: `#{data.user.data.email}` (#{data.user.type})"
+
+		# add invoice info
+		msg += "\r"
+		msg += "\r"
+
+		# send to slack
+		@server.root.slack.notify(msg)
+	#}}}
+
 	purchase: (req, res) => #{{{
 		console.log req.body
 
@@ -89,18 +260,18 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 
 		# check to see if the user has a stripe account already
 		if req.session.account?.data?.stripeCustomerID
-			@upgradeExistingCustomer req, res, subscriptionPlanFreq, subscriptionRenewal
+			@upgradeExistingCustomer req, res, stripePlanId, subscriptionPlanFreq, subscriptionRenewal
 		else # if not yet a stripe customer, token is necessary
 			return res.send 400, 'missing parameters' unless req.body?.token?
 			return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
-			@upgradeNewCustomer req, res, subscriptionPlanFreq, subscriptionRenewal
+			@upgradeNewCustomer req, res, stripePlanId, subscriptionPlanFreq, subscriptionRenewal
 
 	#}}}
-	upgradeExistingCustomer: (req, res, subscriptionPlanFreq, subscriptionRenewal) => #{{{
+	upgradeExistingCustomer: (req, res, stripePlanId, subscriptionPlanFreq, subscriptionRenewal) => #{{{
 		# check to see if the user has a stripe account already
 		stripeArgs =
 			customer: req.session.account?.data?.stripeCustomerID
-			plan: req.body.plan
+			plan: stripePlanId
 
 		stripeArgs.source = req.body.token if req.body?.token?
 
@@ -133,12 +304,14 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 				# set user's active subscription to this one
 				@onSuccessfulTransaction(req, res, subscription, req.session.account?.data?.stripeCustomerID)
 	#}}}
-	upgradeNewCustomer: (req, res, subscriptionPlanFreq, subscriptionRenewal) => #{{{
+	upgradeNewCustomer: (req, res, stripePlanId, subscriptionPlanFreq, subscriptionRenewal) => #{{{
 		# check to see if the user has a stripe account already
 		stripeArgs =
 			source: req.body.token
-			plan: req.body.plan
+			plan: stripePlanId
 			email: req.session?.account?.data?.email
+#			metadata:
+#				id: req.session?.account?.id
 
 		console.log 'stripeArgs'
 		console.log stripeArgs

@@ -82,7 +82,7 @@ class cypherpunk.backend.bitpay extends wiz.framework.thirdparty.bitpay
 		plan = cypherpunk.backend.pricing.getPlanByTypeAndID(planType, planID)
 		return res.send 400, "plan price #{plan.price} doesnt match bitpay invoice amount #{data.amount}" unless +plan.price == +data.amount
 
-		@server.root.api.charge.database.saveFromBitPayIPN req, res, data, (req, res, chargeObject) =>
+		@server.root.api.charge.database.saveFromIPN req, res, 'bitpay', data, (req, res, chargeObject) =>
 			#console.log chargeObject
 
 			# lookup account object by given account id

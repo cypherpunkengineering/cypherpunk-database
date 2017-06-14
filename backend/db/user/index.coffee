@@ -120,7 +120,12 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 
 	# custom APIs
 	findOneByEmail: (req, res, email, cb) => #{{{
+		return cb(req, res, null) unless email?
 		@findOneByKey req, res, "#{@dataKey}.#{@emailKey}", email, @projection(), cb
+	#}}}
+	findOneByStripeCustomerID: (req, res, stripeCustomerID, cb) => #{{{
+		return cb(req, res, null) unless stripeCustomerID?
+		@findOneByKey req, res, "#{@dataKey}.#{@schema.stripeCustomerIDKey}", stripeCustomerID, @projection(), cb
 	#}}}
 
 	myAccountPassword: (req, res) => #{{{

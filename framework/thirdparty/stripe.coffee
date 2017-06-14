@@ -45,7 +45,7 @@ class wiz.framework.thirdparty.stripe
 		'VND'
 	] # }}}
 
-	constructor: (@options) ->
+	constructor: (@server, @parent, @options) ->
 		@Stripe = Stripe @options.apiKey
 
 	init: () =>
@@ -58,6 +58,8 @@ class wiz.framework.thirdparty.stripe
 		console.log 'customerCreate'
 		stripeArgs =
 			email: req.session?.account?.data?.email
+#			metadata:
+#				id: req.session?.account?.id
 		req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
 			return @onError(req, res, stripeError) if stripeError
 			return res.send 500, "Unable to call stripe API" if stripeError
