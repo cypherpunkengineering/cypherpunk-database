@@ -21,7 +21,7 @@ class cypherpunk.backend.api.v0.account.upgrade.apple extends cypherpunk.backend
 					console.log sendgridError
 					return
 
-				out = @parent.parent.accountinfo(req)
+				out = @parent.parent.accountStatus(req)
 				res.send 200, out
 
 # vim: foldmethod=marker wrap

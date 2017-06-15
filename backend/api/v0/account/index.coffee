@@ -22,7 +22,7 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 
 	database: null
 
-	accountinfo: (req) => #{{{ returns a (safe to send) object containing account info from a account object
+	accountStatus: (req) => #{{{ returns a (safe to send) object containing account info from a account object
 		session = req?.session
 		account = session?.account
 		data = account?.data
@@ -36,17 +36,18 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 					username: privacy?.username
 					password: privacy?.password
 				account:
+					type: account?.type
 					id: account?.id
 					email: data?.email
 					confirmed: (if data?.confirmed?.toString() == "true" then true else false)
-					type: account?.type
 				subscription:
-					renewal: data?.subscriptionRenewal or "forever"
-					expiration: data?.subscriptionExpiration or "0"
+					active: (if data?.subscriptionActive?.toString() == "false" then false else true)
+					renewal: (if data?.subscriptionRenewal? then data?.subscriptionRenewal else "forever")
+					expiration: (if data?.subscriptionExpiration? then data?.subscriptionExpiration else "0")
 		else
-			wiz.log.err "accountinfo contains missing required data!"
+			wiz.log.err "accountStatus contains missing required data!"
 
-		wiz.log.info "Got account status for #{data?.email}"
+		wiz.log.info "Queried account status for #{data?.email}"
 		console.log out.account
 		console.log out.subscription
 		return out

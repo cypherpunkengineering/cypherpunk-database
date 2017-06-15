@@ -56,7 +56,7 @@ wiz.package 'wiz.framework.http.account.module'
 class wiz.framework.http.account.module extends wiz.framework.http.resource.base
 	database: null # instantiate db from child class
 
-	accountinfo: (req) => #{{{ returns a (safe to send) object containing account info from a account object
+	accountStatus: (req) => #{{{ returns a (safe to send) object containing account info from a account object
 		return null unless req?.session?.id?
 		return null unless req?.session?.account?
 
@@ -97,7 +97,7 @@ class wiz.framework.http.account.module extends wiz.framework.http.resource.base
 		req.session.auth = 1337 # XXX: temp hack
 
 		# send session secret and account info
-		out = @accountinfo(req)
+		out = @accountStatus(req)
 		return out
 	#}}}
 
