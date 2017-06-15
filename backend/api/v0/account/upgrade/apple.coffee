@@ -4,8 +4,8 @@ require './_framework/http/resource/base'
 
 wiz.package 'cypherpunk.backend.api.v0.account.upgrade'
 
-class cypherpunk.backend.api.v0.account.upgrade.iTunes extends cypherpunk.backend.base
-	handler: (req, res) => #{{{
+class cypherpunk.backend.api.v0.account.upgrade.apple extends cypherpunk.backend.base
+	handler: (req, res) =>
 
 		console.log req.body
 		return res.send 200
@@ -23,6 +23,5 @@ class cypherpunk.backend.api.v0.account.upgrade.iTunes extends cypherpunk.backen
 
 				out = @parent.parent.accountinfo(req)
 				res.send 200, out
-	#}}}
 
 # vim: foldmethod=marker wrap

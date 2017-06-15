@@ -3,8 +3,8 @@ require './_framework/http/account'
 require './_framework/http/resource/base'
 
 require './amazon'
-require './iTunes'
-require './googlePlay'
+require './apple'
+require './google'
 require './stripe'
 
 wiz.package 'cypherpunk.backend.api.v0.account.upgrade'
@@ -18,10 +18,12 @@ class cypherpunk.backend.api.v0.account.upgrade.resource extends cypherpunk.back
 		# inherit
 		super()
 
-		# public account creation api
+		# for web frontend
 		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.amazon(@server, this, 'amazon', 'POST')
-		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.iTunes(@server, this, 'iTunes', 'POST')
-		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.googlePlay(@server, this, 'GooglePlay', 'POST')
 		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.stripe(@server, this, 'stripe', 'POST')
+
+		# for mobile apps
+		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.apple(@server, this, 'apple', 'POST')
+		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.google(@server, this, 'google', 'POST')
 
 # vim: foldmethod=marker wrap

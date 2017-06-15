@@ -4,8 +4,8 @@ require './_framework/http/resource/base'
 
 wiz.package 'cypherpunk.backend.api.v0.account.upgrade'
 
-class cypherpunk.backend.api.v0.account.upgrade.googlePlay extends cypherpunk.backend.base
-	handler: (req, res) => #{{{
+class cypherpunk.backend.api.v0.account.upgrade.google extends cypherpunk.backend.base
+	handler: (req, res) =>
 
 		console.log req.body
 
@@ -22,6 +22,5 @@ class cypherpunk.backend.api.v0.account.upgrade.googlePlay extends cypherpunk.ba
 
 				out = @parent.parent.accountinfo(req)
 				res.send 200, out
-	#}}}
 
 # vim: foldmethod=marker wrap
