@@ -244,7 +244,7 @@ class cypherpunk.backend.pricing
 	@plansTest:
 		monthly: #{{{
 			monthly1195:
-				"price": "13.37"
+				"price": "11.95"
 				"paypalPlanId": "2Z9YV6M55688N"
 				"bitpayPlanId": "m11KRs736FeBMFoMeoSllMbhydqlxA3KrtlO8usqz+WGoLd0HymdBiKlc0x4/1QienTfpxnDWUJLo2RbLWXWYuVb2fIPUK1HC2gn83bhLGRqE2aWA08OdoVxsASvSGDY981jOkDDUjghm2TUKp9MM/PCOVSxt+IfSnj8MYN6a1BFnxB+kZBC6GDdbbDxzWaziCU0kPf02/To88EpEQzx94Fbnqk/pa71Q6O5MdQFOEl3jKIrUS9Ov8qKbWe/BVkmUdWdlWSjXKWEV8GWaCx/uMcdC4xwnYul/WjNHI42g3goqrwbInLAOqJPbDalzDY5uRp2AAvngOwP0+x/07EnsA=="
 		#}}}
