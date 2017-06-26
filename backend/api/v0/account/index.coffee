@@ -42,8 +42,11 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 					confirmed: (if data?.confirmed?.toString() == "true" then true else false)
 				subscription:
 					active: (if data?.subscriptionActive?.toString() == "false" then false else true)
-					renewal: (if data?.subscriptionRenewal? then data?.subscriptionRenewal else "forever")
+					renews: (if data?.subscriptionRenews?.toString() == "true" then true else false)
+					type: (if data?.subscriptionType? then data?.subscriptionType else "forever")
 					expiration: (if data?.subscriptionExpiration? then data?.subscriptionExpiration else "0")
+					# deprecated
+					renewal: (if data?.subscriptionRenewal? then data?.subscriptionRenewal else "forever")
 		else
 			wiz.log.err "accountStatus contains missing required data!"
 
