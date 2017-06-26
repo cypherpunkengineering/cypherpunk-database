@@ -150,6 +150,49 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				disabled: true
 
 		) #}}}
+		expired: (new type 'expired', 'Expired Account', 'list', #{{{
+			email:
+				label: 'email address'
+				placeholder: 'satoshin@gmx.com'
+				type: 'email'
+				maxlen: 50
+				required: true
+
+			confirmed:
+				label: 'email confirmed'
+				type: 'boolean'
+				required: true
+
+			password:
+				label: 'set password'
+				type: 'asciiNoSpace'
+				minlen: 6
+				maxlen: 50
+				placeholder: ''
+				required: true
+
+			stripeCustomerID:
+				label: 'Stripe Customer ID'
+				type: 'asciiNoSpace'
+				disabled: true
+
+			paypalSubscriptionID:
+				label: 'Paypal Subscription ID'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				disabled: true
+
+			amazonBillingAgreementID:
+				label: 'Amazon Billing Agreement ID'
+				type: 'asciiNoSpace'
+				disabled: true
+
+			subscriptionCurrentID:
+				label: 'Current Subscription ID'
+				type: 'asciiNoSpace'
+				disabled: true
+
+		) #}}}
 		free: (new type 'free', 'Free Account', 'list', #{{{
 			email:
 				label: 'email address'
