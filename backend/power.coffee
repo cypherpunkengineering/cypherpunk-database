@@ -14,8 +14,12 @@ class cypherpunk.backend.server.power.level extends wiz.framework.http.resource.
 
 	#################### CUSTOMERS
 
+	# pending
+	@pending: 700
+	@invitation: 800
+	@expired: 900
+
 	# customer
-	@invitation: 1100
 	@free: 2100
 	@premium: 2200
 	@family: 2300
