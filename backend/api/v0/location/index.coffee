@@ -1059,6 +1059,10 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				out = @addLocationsOfType(out, "premium", false)
 				out = @addLocationsOfType(out, "free", true)
 
+			when "pending", "invitation", "expired"
+				out = @addLocationsOfType(out, "premium", false)
+				out = @addLocationsOfType(out, "free", false)
+
 		return out
 	#}}}
 
