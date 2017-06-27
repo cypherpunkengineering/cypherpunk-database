@@ -6,7 +6,7 @@ require './_framework/http/db/mongo'
 wiz.package 'cypherpunk.backend.api.v0.account.source.list'
 
 class cypherpunk.backend.api.v0.account.source.list extends cypherpunk.backend.base
-	level: cypherpunk.backend.server.power.level.free
+	level: cypherpunk.backend.server.power.level.expired
 	mask: cypherpunk.backend.server.power.mask.auth
 	middleware: wiz.framework.http.account.session.refresh
 	nav: false

@@ -10,7 +10,7 @@ require './stripe'
 wiz.package 'cypherpunk.backend.api.v0.account.upgrade'
 
 class cypherpunk.backend.api.v0.account.upgrade.resource extends cypherpunk.backend.base
-	level: cypherpunk.backend.server.power.level.free
+	level: cypherpunk.backend.server.power.level.expired
 	mask: cypherpunk.backend.server.power.mask.auth
 	nav: false
 

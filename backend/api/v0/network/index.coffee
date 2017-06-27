@@ -18,7 +18,7 @@ class cypherpunk.backend.api.v0.network.module extends cypherpunk.backend.api.ba
 		super()
 
 class cypherpunk.backend.api.v0.network.status extends cypherpunk.backend.api.base
-	level: cypherpunk.backend.server.power.level.free
+	level: cypherpunk.backend.server.power.level.expired
 	mask: cypherpunk.backend.server.power.mask.auth
 	#middleware: wiz.framework.http.account.session.refresh
 	handler: (req, res) =>

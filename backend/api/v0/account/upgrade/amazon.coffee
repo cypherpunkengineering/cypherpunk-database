@@ -9,7 +9,7 @@ require './_framework/thirdparty/amazon'
 wiz.package 'cypherpunk.backend.api.v0.account.upgrade.amazon'
 
 class cypherpunk.backend.api.v0.account.upgrade.amazon extends cypherpunk.backend.api.base
-	level: cypherpunk.backend.server.power.level.free
+	level: cypherpunk.backend.server.power.level.expired
 	mask: cypherpunk.backend.server.power.mask.auth
 	middleware: wiz.framework.http.account.session.base
 	nav: false
