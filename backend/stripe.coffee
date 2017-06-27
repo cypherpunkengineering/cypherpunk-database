@@ -116,14 +116,14 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 		stripeCustomerID ?= data.data?.object?.customer
 		stripeCustomerID ?= data.data?.object?.id
 
-		# if not found, return error
-		return res.send 400, 'Stripe customer ID not found?' unless stripeCustomerID?
+		# if not found, ignore
+		return res.send 200, 'Stripe customer ID not found?' unless stripeCustomerID?
 
 		# lookup cypherpunk account object by stripe customer id
 		@server.root.api.user.database.findOneByStripeCustomerID req, res, stripeCustomerID, (req, res, user) =>
 
-			# if not found, return error
-			return res.send 404, 'Cypherpunk account not found!' unless user?.id?
+			# if not found, ignore
+			return res.send 200, 'Cypherpunk account not found!' unless user?.id?
 
 			# otherwise save it for later
 			data.user = user
