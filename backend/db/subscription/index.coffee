@@ -53,7 +53,9 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 		subscriptionStart = new Date()
 		subscriptionRenewal = new Date(+subscriptionStart)
 
-		if plan[0...7] == "monthly"
+		if plan == "trial"
+			subscriptionRenewal.setDate(subscriptionStart.getDate() + 1)
+		else if plan[0...7] == "monthly"
 			subscriptionRenewal.setDate(subscriptionStart.getDate() + 30)
 		else if plan[0...12] == "semiannually"
 			subscriptionRenewal.setDate(subscriptionStart.getDate() + 180)
@@ -61,7 +63,8 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 			subscriptionRenewal.setDate(subscriptionStart.getDate() + 365)
 		else
 			return 0
-		return subscriptionRenewal.toISOString()
+
+		return subscriptionRenewal
 	#}}}
 
 	insert: (req, res, subscriptionType, subscriptionData = null, cb = null) => #{{{

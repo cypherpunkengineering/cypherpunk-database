@@ -34,7 +34,7 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 				console.log error?.response?.body?.errors
 			cb()
 	#}}}
-	sendTeaserShareWithFriendMail: (user, referrerName = null, cb) => #{{{
+	sendTeaserShareWithFriendMail: (user) => #{{{
 		if not user?.data?.email?
 			wiz.log.err 'no user email!!'
 			return
@@ -54,9 +54,9 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 				'-buttonText-': "ACCEPT MY INVITATION"
 				'-buttonURL-': @generateTeaserConfirmationURL(user)
 
-		if referrerName? and referrerName.length > 0
-			mailData.subject = "#{referrerName} invited you to an early access preview of Cypherpunk Privacy"
-			mailData.substitutions['-regularText-'] = "Click the button below to accept your early access invitation from #{referrerName}"
+		if user.referralName? and user.referralName.length > 0
+			mailData.subject = "#{user.referralName} invited you to an early access preview of Cypherpunk Privacy"
+			mailData.substitutions['-regularText-'] = "Click the button below to accept your early access invitation from #{user.referralName}"
 
 		@mailTemplate mailData, (error, response) =>
 			if @debug
@@ -65,11 +65,13 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 				console.log response.headers
 				console.log response.body
 			if error
+				wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error" if sendgridError?
 				console.log error?.response?.body?.errors
-			cb()
+
+			wiz.log.info "Sent invitation share with friends email to #{user.data.email}"
 	#}}}
 
-	sendWelcomeMail: (user, cb) => #{{{
+	sendWelcomeMail: (user) => #{{{
 		if not user?.data?.email?
 			wiz.log.err 'no user email!!'
 			return
@@ -96,8 +98,10 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 				console.log response.headers
 				console.log response.body
 			if error
+				wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error" if sendgridError?
 				console.log error?.response?.body?.errors
-			cb()
+
+			wiz.log.info "Sent welcome email to #{user.data.email}"
 	#}}}
 	sendPurchaseMail: (user, cb) => #{{{
 		if not user?.data?.email?

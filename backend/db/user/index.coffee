@@ -55,23 +55,31 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 
 				@listResponse(req, res, responseData, recordCount)
 	#}}}
-	insertUniqueEmail: (req, res, recordToInsert = null, cb = null) => #{{{
-		if recordToInsert is null
-			return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
-
-		@findOneByEmail req, res, recordToInsert?[@dataKey]?[@emailKey], (req, res, user) =>
+	createAccount: (req, res, recordToInsert = null, cb = null) => #{{{
+		@findOneByEmail req, res, recordToInsert?[@dataKey]?[@emailKey], (req, res, result) =>
 			wiz.log.err "Email already registered for #{recordToInsert?[@dataKey]?[@emailKey]}"
-			return res.send 409, 'Email already registered' if user isnt null
+			return res.send 409, 'Email already registered' if result isnt null
 
-			@insert req, res, recordToInsert, (req2, res2, result) =>
-				result = result[0] if result instanceof Array
-				@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
-					if err
-						wiz.log.err(err)
-						return res.send 500, 'Unable to update database'
+			@insert req, res, recordToInsert, (req2, res2, user) =>
+				# dereference array
+				user = user[0] if user instanceof Array
 
-					return cb(req2, res2, result) if cb
-					res.send 200
+				# sanity check
+				return res.send 500, 'Unable to create account' unless user?.data?.email?
+
+				# debug print
+				wiz.log.info "Created new user account for #{user.data.email}"
+
+				# create radius database entries
+				@server.root.api.radius.database.updateUserAccess req, res, user, (err) =>
+					wiz.log.err 'Unable to update radius database: ', err if err?
+
+				# create stripe customer object
+				@server.root.stripe.customerCreateForAccount req, res, user, () =>
+					# TODO: handle error
+
+				return cb(req2, res2, user) if cb
+				return res.send 200
 	#}}}
 	update: (req, res, userID) => #{{{
 		# TODO: return res.send 400, 'invalid type' if not schemaPlan = @schema.types[userPlan]
@@ -84,15 +92,15 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 	#}}}
 	updateUserData: (req, res, userID, userData, cb = null) => #{{{ restores password hash
 		@findOneByKey req, res, @docKey, userID, @projection(), (req, res, result) =>
+			# check result
 			return cb(req, res, null) if not result and cb
 			return res.send 404 if not result
 			return res.send 500 if not result[@dataKey]?
+			# preserve password
 			userData[@passwordKey] = result[@dataKey][@passwordKey]
 			@updateDataByID req, res, userID, userData, (req2, res2, result2) =>
-				if result2?.result?.ok != 1
-					wiz.log.err 'DB Error while updating user data!'
-					console.log result2
-					return res.send 500
+				# check result
+				return res.send 500, 'DB Error while updating user data!', result2 if result2?.result?.ok != 1
 				# get freshly updated user object from db
 				@findOneByKey req, res, @docKey, userID, @projection(), (req, res, result) =>
 					return cb(req, res, null) if not result and cb
@@ -100,11 +108,8 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					return res.send 500 if not result[@dataKey]?
 					# pass updated db object to radius database method
 					@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
-						if err
-							wiz.log.err(err)
-							return res.send 500, 'Unable to update database'
-
-						return cb(req2, res2, result2) if cb
+						return res.send 500, 'Unable to update database', err if err?
+						return cb(req2, res2, result2) if cb?
 						return res.send 500 if not result2
 						return res.send 200
 	#}}}
@@ -126,6 +131,151 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 	findOneByStripeCustomerID: (req, res, stripeCustomerID, cb) => #{{{
 		return cb(req, res, null) unless stripeCustomerID?
 		@findOneByKey req, res, "#{@dataKey}.#{@schema.stripeCustomerIDKey}", stripeCustomerID, @projection(), cb
+	#}}}
+	signup: (req, res, recordToInsert, data, cb) => #{{{ creates a new account without validation
+		# set optional parameters if given, used by payment gateway signup methods
+		if data?[@schema.confirmedKey]?
+			recordToInsert[@dataKey][@schema.confirmedKey] = data[@schema.confirmedKey]
+		if data?[@schema.stripeCustomerIDKey]?
+			recordToInsert[@dataKey][@schema.stripeCustomerIDKey] = data[@schema.stripeCustomerIDKey]
+		if data?[@schema.amazonBillingAgreementIDKey]?
+			recordToInsert[@dataKey][@schema.amazonBillingAgreementIDKey] = data[@schema.amazonBillingAgreementIDKey]
+		if data?[@schema.subscriptionCurrentIDKey]?
+			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey]
+		if data?[@schema.referralIDKey]?
+			recordToInsert[@dataKey][@schema.referralIDKey] = data[@schema.referralIDKey]
+		if data?[@schema.referralNameKey]?
+			recordToInsert[@dataKey][@schema.referralNameKey] = data[@schema.referralNameKey]
+
+		# insert the account into db
+		@createAccount req, res, recordToInsert, (req, res, user) =>
+
+			# send different email template depending on how user signed up
+			switch user.type
+
+				# teaser campaign
+				when 'invitation'
+
+					# send different email depending if referred or not
+
+					if user?.referralID? # signed up by a friend
+						@server.root.sendgrid.sendTeaserShareWithFriendMail(user)
+
+					else # signed up by themself
+						@server.root.sendgrid.sendTeaserMail(user)
+
+					# send slack notification
+					@server.root.slack.notify("[TEASER] #{user[@dataKey][@emailKey]} has signed up for an invitation :love_letter:")
+
+					# send response
+					return cb(req, res, user) if cb?
+					return res.send 202
+
+				# trial account
+				when 'free'
+
+					# prepare data for subscription object creation
+					subscriptionType = 'trial'
+					subscriptionData =
+						accountID: user?.id
+						startTS: new Date()
+						expirationTS: cypherpunk.backend.db.subscription.calculateRenewal(subscriptionType)
+						active: 'true'
+					console.log subscriptionData
+
+					# insert free trial subscription object into db
+					req.server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
+
+						# send welcome email
+						@server.root.sendgrid.sendWelcomeMail(user)
+
+						# send slack notification
+						@server.root.slack.notify("[SIGNUP] #{user[@dataKey][@emailKey]} has signed up for an account :highfive:")
+
+						# send response
+						return cb(req, res, user) if cb?
+						return res.send 202
+
+				else
+					# send welcome email
+					@server.root.sendgrid.sendWelcomeMail(user)
+
+					# send slack notification
+					@server.root.slack.notify("[SIGNUP] #{user[@dataKey][@emailKey]} has signed up for an account :highfive:")
+
+					# send response
+					return cb(req, res, user) if cb?
+					return res.send 202
+	#}}}
+
+	signupManual: (req, res) => #{{{ signup from admin tool
+		# validate user data and convert to account object, send error if validation fails
+		return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
+
+		# signup user
+		return @signup(req, res, recordToInsert)
+	#}}}
+	# public stranger APIs
+	signupTeaser: (req, res, data, cb) => #{{{ signup from teaser campaign
+		# validate user data and convert to account object, send error if validation fails
+		return unless recordToInsert = @schema.fromUser(req, res, 'invitation', req.body)
+
+		# signup user
+		return @signup(req, res, recordToInsert, data, cb)
+	#}}}
+	signupTrial: (req, res, data, cb) => #{{{ signup for free trial
+		# validate user data and convert to account object, send error if validation fails
+		return unless recordToInsert = @schema.fromUser(req, res, 'free', req.body)
+
+		# signup user
+		@signup req, res, recordToInsert, data, (req, res, user) =>
+	#}}}
+
+	upgrade: (req, res, userID, subscriptionID, args = {}, cb = null) => #{{{ if user type is free, change to premium
+		@findOneByKey req, res, @docKey, userID, @projection(), (req, res, user) =>
+			# sanity checks
+			return cb(req, res, null) if not user and cb
+			return res.send 404 if not user
+			return res.send 500 if not user[@dataKey]?
+
+			# create update object
+			dataset = {}
+
+			# upgrade user type to premium
+			dataset[@typeKey] = "premium" if user[@typeKey] == "free"
+
+			# get existing user data
+			dataset[@dataKey] = user[@dataKey]
+
+			# set new values
+			dataset[@dataKey][@schema.confirmedKey] = true
+			dataset[@dataKey][@schema.subscriptionCurrentIDKey] = subscriptionID
+			dataset[@dataKey][@schema.stripeCustomerIDKey] = args?.stripeCustomerID if args?.stripeCustomerID
+			dataset[@dataKey][@schema.amazonBillingAgreementIDKey] = args?.amazonBillingAgreementID if args?.amazonBillingAgreementID
+
+			# update account db
+			@updateCustomDatasetByID req, res, userID, dataset, (req2, res2, result2) =>
+				if result2?.result?.ok != 1
+					wiz.log.err 'DB Error while updating user data!'
+					console.log result2
+					return res.send 500
+
+				# get freshly updated user object from db
+				@findOneByKey req, res, @docKey, userID, @projection(), (req, res, result) =>
+					return cb(req, res, null) if not result and cb
+					return res.send 404 if not result
+					return res.send 500 if not result[@dataKey]?
+					@server.root.slack.notify("[UPGRADE] #{result[@dataKey][@emailKey]} has been upgraded to PREMIUM :sunglasses:")
+
+					# update user's radius db entries
+					@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
+						if err
+							wiz.log.err(err)
+							return res.send 500, 'Unable to update database'
+
+						return cb(req, res, result) if cb
+						return res.send 500 if not result2
+						return res.send 200
 	#}}}
 
 	myAccountPassword: (req, res) => #{{{
@@ -163,68 +313,6 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 	#}}}
 	myAccountDetails: (req, res) => #{{{
 		@update(req, res, req.session.account.id)
-	#}}}
-
-	# public stranger APIs
-	signup: (req, res, data, cb) => #{{{
-		return unless recordToInsert = @schema.fromSignup(req, res)
-		if data?[@schema.confirmedKey]?
-			recordToInsert[@dataKey][@schema.confirmedKey] = data[@schema.confirmedKey]
-		if data?[@schema.stripeCustomerIDKey]?
-			recordToInsert[@dataKey][@schema.stripeCustomerIDKey] = data[@schema.stripeCustomerIDKey]
-		if data?[@schema.amazonBillingAgreementIDKey]?
-			recordToInsert[@dataKey][@schema.amazonBillingAgreementIDKey] = data[@schema.amazonBillingAgreementIDKey]
-		if data?[@schema.subscriptionCurrentIDKey]?
-			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey]
-		@insertUniqueEmail req, res, recordToInsert, cb
-		@server.root.slack.notify("[SIGNUP] #{recordToInsert[@dataKey][@emailKey]} has signed up for an account :highfive:")
-	#}}}
-	teaser: (req, res, data, cb) => #{{{
-		return unless recordToInsert = @schema.fromTeaser(req, res)
-		if data?[@schema.confirmedKey]?
-			recordToInsert[@dataKey][@schema.confirmedKey] = data[@schema.confirmedKey]
-		if data?[@schema.stripeCustomerIDKey]?
-			recordToInsert[@dataKey][@schema.stripeCustomerIDKey] = data[@schema.stripeCustomerIDKey]
-		if data?[@schema.amazonBillingAgreementIDKey]?
-			recordToInsert[@dataKey][@schema.amazonBillingAgreementIDKey] = data[@schema.amazonBillingAgreementIDKey]
-		if data?[@schema.subscriptionCurrentIDKey]?
-			recordToInsert[@dataKey][@schema.subscriptionCurrentIDKey] = data[@schema.subscriptionCurrentIDKey]
-		@insertUniqueEmail req, res, recordToInsert, cb
-		@server.root.slack.notify("[TEASER] #{recordToInsert[@dataKey][@emailKey]} has signed up for an invitation :love_letter:")
-	#}}}
-	upgrade: (req, res, userID, subscriptionID, args = {}, cb = null) => #{{{ if user type is free, change to premium
-		@findOneByKey req, res, @docKey, userID, @projection(), (req, res, user) =>
-			return cb(req, res, null) if not user and cb
-			return res.send 404 if not user
-			return res.send 500 if not user[@dataKey]?
-			dataset = {}
-			dataset[@typeKey] = "premium" if user[@typeKey] == "free"
-			dataset[@dataKey] = user[@dataKey]
-			dataset[@dataKey][@schema.confirmedKey] = true
-			dataset[@dataKey][@schema.subscriptionCurrentIDKey] = subscriptionID
-			dataset[@dataKey][@schema.stripeCustomerIDKey] = args?.stripeCustomerID if args?.stripeCustomerID
-			dataset[@dataKey][@schema.amazonBillingAgreementIDKey] = args?.amazonBillingAgreementID if args?.amazonBillingAgreementID
-			@updateCustomDatasetByID req, res, userID, dataset, (req2, res2, result2) =>
-				if result2?.result?.ok != 1
-					wiz.log.err 'DB Error while updating user data!'
-					console.log result2
-					return res.send 500
-				# get freshly updated user object from db
-				@findOneByKey req, res, @docKey, userID, @projection(), (req, res, result) =>
-					return cb(req, res, null) if not result and cb
-					return res.send 404 if not result
-					return res.send 500 if not result[@dataKey]?
-					@server.root.slack.notify("[UPGRADE] #{result[@dataKey][@emailKey]} has been upgraded to PREMIUM :sunglasses:")
-
-					# pass updated db object to radius database method
-					@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
-						if err
-							wiz.log.err(err)
-							return res.send 500, 'Unable to update database'
-
-						return cb(req, res, result) if cb
-						return res.send 500 if not result2
-						return res.send 200
 	#}}}
 
 # vim: foldmethod=marker wrap

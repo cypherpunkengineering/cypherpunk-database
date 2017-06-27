@@ -223,12 +223,13 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 
 				# gather subscription data for insert() into db
 				subscriptionData =
+					accountID: user?.id
 					provider: 'stripe'
 					providerPlanID: stripeCustomerData?.subscriptions?.data?[0]?.plan?.id
 					providerSubscriptionID: stripeCustomerData?.subscriptions?.data?[0].id
-					currentPeriodStartTS: new Date().toISOString()
+					currentPeriodStartTS: new Date()
 					currentPeriodEndTS: subscriptionRenewal
-					purchaseTS: new Date().toISOString()
+					purchaseTS: new Date()
 					renewalTS: subscriptionRenewal
 					active: 'true'
 

@@ -11,102 +11,64 @@ class cypherpunk.backend.api.v0.account.register.signup extends cypherpunk.backe
 	level: cypherpunk.backend.server.power.level.stranger
 	mask: cypherpunk.backend.server.power.mask.public
 	handler: (req, res) => #{{{
-
+		# sanity checks on POST data
 		return res.send 400, 'missing parameters' unless req.body?.email?
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
 
-		@server.root.api.user.database.findOneByEmail req, res, req.body.email, (req, res, user) =>
+		# TODO XXX FIXME: validate and save referral code if any
+		referralData =
+			referralID: req.body?.referralCode # optional
 
-			return res.send 409, 'Email already registered' if user isnt null
+		# pass to signup method for processing
+		@server.root.api.user.database.signupTrial req, res, null, (req2, res2, user) =>
 
-			@server.root.api.user.database.signup req, res, null, (req2, res2, result) =>
+			# create authenticated session for new account
+			out = @parent.parent.doUserLogin(req, res, user)
 
-				if result instanceof Array
-					user = result[0]
-				else
-					user = result
-
-				return res.send 500, 'Unable to create account' unless user?.data?.email?
-
-				wiz.log.info "Registered new user account for #{user.data.email}"
-
-				@server.root.sendgrid.sendWelcomeMail user, (sendgridError) =>
-					if sendgridError
-						wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error"
-						console.log sendgridError
-						return
-					wiz.log.info "Sent welcome email to #{user.data.email}"
-
-				out = @parent.parent.doUserLogin(req, res, user)
-				res.send 202, out
+			# send account status with "created" response
+			return res.send 202, out
 	#}}}
 
 class cypherpunk.backend.api.v0.account.register.teaser extends cypherpunk.backend.base
 	level: cypherpunk.backend.server.power.level.stranger
 	mask: cypherpunk.backend.server.power.mask.public
 	handler: (req, res) => #{{{
-
+		# sanity checks on POST data
 		return res.send 400, 'missing parameters' unless req.body?.email?
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
 
-		@server.root.api.user.database.findOneByEmail req, res, req.body.email, (req, res, user) =>
+		# pass to signup method for processing
+		@server.root.api.user.database.signupTeaser req, res, null, (req2, res2, user) =>
 
-			return res.send 409, 'Email already registered' if user isnt null
+			# create authenticated session for new account
+			out = @parent.parent.doUserLogin(req, res, user)
 
-			@server.root.api.user.database.teaser req, res, null, (req2, res2, result) =>
-
-				if result instanceof Array
-					user = result[0]
-				else
-					user = result
-
-				return res.send 500, 'Unable to create account' unless user?.data?.email?
-
-				wiz.log.info "Registered new user account for #{user.data.email}"
-
-				@server.root.sendgrid.sendTeaserMail user, (sendgridError) =>
-					if sendgridError
-						wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error"
-						console.log sendgridError
-						return
-					wiz.log.info "Sent welcome email to #{user.data.email}"
-
-				out = @parent.parent.doUserLogin(req, res, user)
-				res.send 202, out
+			# send account status with "created" response
+			return res.send 202, out
 	#}}}
 
 class cypherpunk.backend.api.v0.account.register.teaserShare extends cypherpunk.backend.base
-	level: cypherpunk.backend.server.power.level.stranger
-	mask: cypherpunk.backend.server.power.mask.public
+	level: cypherpunk.backend.server.power.level.friend
+	mask: cypherpunk.backend.server.power.mask.auth
+	middleware: wiz.framework.http.account.session.base
 	handler: (req, res) => #{{{
-
+		# sanity checks on POST data
 		return res.send 400, 'missing parameters' unless req.body?.email?
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
 
-		@server.root.api.user.database.findOneByEmail req, res, req.body.email, (req, res, user) =>
+		# save referring friend id + name
+		referralData =
+			referralID: req.session.account.id # this user's account is sharing
+			referralName: req.body?.name # optional
 
-			return res.send 409, 'Email already registered' if user isnt null
+		# pass to signup method for processing
+		@server.root.api.user.database.signupTeaser req, res, referralData, (req2, res2, user) =>
 
-			@server.root.api.user.database.teaser req, res, null, (req2, res2, result) =>
+			# create authenticated session for new account
+			out = @parent.parent.doUserLogin(req, res, user)
 
-				if result instanceof Array
-					user = result[0]
-				else
-					user = result
-
-				return res.send 500, 'Unable to create account' unless user?.data?.email?
-
-				wiz.log.info "Registered new user account for #{user.data.email}"
-
-				@server.root.sendgrid.sendTeaserShareWithFriendMail user, req.body?.name, (sendgridError) =>
-					if sendgridError
-						wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error"
-						console.log sendgridError
-						return
-					wiz.log.info "Sent welcome email to #{user.data.email}"
-
-				out = @parent.parent.doUserLogin(req, res, user)
-				res.send 202, out
+			# send account status with "created" response
+			return res.send 202, out
 	#}}}
 
 class cypherpunk.backend.api.v0.account.register.resource extends cypherpunk.backend.base

@@ -43,67 +43,40 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 	@types:
 	#}}}
 
-		monthly: (new type 'monthly', 'Monthly Subscription', 'list', #{{{
-			provider:
-				label: 'subscription provider'
+		trial: (new type 'trial', 'Free Trial', 'list', #{{{
+			accountID:
+				label: 'cypherpunk customer id'
+				placeholder: '4XUYJWGG4LHKMHCLKL7OTIWP7O4UVBJCGO2PIPMXQVV2NZNO2UF'
 				type: 'asciiNoSpace'
-				maxlen: 50
+				maxlen: 90
 				required: true
 				disabled: true
 
-			providerSubscriptionID:
-				label: 'subscription provider subscription id'
-				type: 'asciiNoSpace'
-				maxlen: 50
+			startTS:
+				label: 'trial start'
+				type: 'isodate'
 				required: true
-				disabled: true
-
-			providerPlanID:
-				label: 'subscription plan'
-				type: 'asciiNoSpace'
-				maxlen: 25
-				required: true
-				disabled: true
-
-			purchaseTS:
-				label: 'subscription purchase'
-				type: 'asciiNoSpace'
-				required: true
-				disabled: true
-
-			renewalTS:
-				label: 'subscription renewal'
-				type: 'asciiNoSpace'
 				disabled: true
 
 			expirationTS:
-				label: 'subscription expiration'
-				type: 'asciiNoSpace'
-				disabled: true
-
-			cancellationTS:
-				label: 'subscription cancellation'
-				type: 'asciiNoSpace'
-				disabled: true
-
-			currentPeriodStartTS:
-				label: 'current period start'
-				type: 'asciiNoSpace'
-				required: true
-				disabled: true
-
-			currentPeriodEndTS:
-				label: 'curent period end'
-				type: 'asciiNoSpace'
-				required: true
+				label: 'trial expiration'
+				type: 'isodate'
 				disabled: true
 
 			active:
-				label: 'subscription active'
+				label: 'trial active'
 				type: 'boolean'
 				required: true
 		) #}}}
-		semiannually: (new type 'semiannually', 'Semiannual Subscription', 'list', #{{{
+		elite: (new type 'elite', 'Elite Subscription', 'list', #{{{
+			accountID:
+				label: 'cypherpunk customer id'
+				placeholder: '4XUYJWGG4LHKMHCLKL7OTIWP7O4UVBJCGO2PIPMXQVV2NZNO2UF'
+				type: 'asciiNoSpace'
+				maxlen: 90
+				required: true
+				disabled: true
+
 			provider:
 				label: 'subscription provider'
 				type: 'asciiNoSpace'
@@ -119,102 +92,42 @@ class cypherpunk.backend.db.subscription.schema extends wiz.framework.database.m
 				disabled: true
 
 			providerPlanID:
-				label: 'subscription plan'
-				type: 'asciiNoSpace'
-				maxlen: 25
-				required: true
-				disabled: true
-
-			purchaseTS:
-				label: 'subscription purchase'
-				type: 'asciiNoSpace'
-				required: true
-				disabled: true
-
-			renewalTS:
-				label: 'subscription renewal'
-				type: 'asciiNoSpace'
-				disabled: true
-
-			expirationTS:
-				label: 'subscription expiration'
-				type: 'asciiNoSpace'
-				disabled: true
-
-			cancellationTS:
-				label: 'subscription cancellation'
-				type: 'asciiNoSpace'
-				disabled: true
-
-			currentPeriodStartTS:
-				label: 'current period start'
-				type: 'asciiNoSpace'
-				required: true
-				disabled: true
-
-			currentPeriodEndTS:
-				label: 'curent period end'
-				type: 'asciiNoSpace'
-				required: true
-				disabled: true
-
-			active:
-				label: 'subscription active'
-				type: 'boolean'
-				required: true
-		) #}}}
-		annually: (new type 'annually', 'Annual Subscription', 'list', #{{{
-			provider:
-				label: 'subscription provider'
+				label: 'subscription provider plan id'
 				type: 'asciiNoSpace'
 				maxlen: 50
 				required: true
 				disabled: true
 
-			providerSubscriptionID:
-				label: 'subscription provider subscription id'
-				type: 'asciiNoSpace'
-				maxlen: 50
-				required: true
-				disabled: true
-
-			providerPlanID:
-				label: 'subscription plan'
-				type: 'asciiNoSpace'
-				maxlen: 25
-				required: true
-				disabled: true
-
 			purchaseTS:
 				label: 'subscription purchase'
-				type: 'asciiNoSpace'
+				type: 'isodate'
 				required: true
 				disabled: true
 
 			renewalTS:
 				label: 'subscription renewal'
-				type: 'asciiNoSpace'
+				type: 'isodate'
 				disabled: true
 
 			expirationTS:
 				label: 'subscription expiration'
-				type: 'asciiNoSpace'
+				type: 'isodate'
 				disabled: true
 
 			cancellationTS:
 				label: 'subscription cancellation'
-				type: 'asciiNoSpace'
+				type: 'isodate'
 				disabled: true
 
 			currentPeriodStartTS:
 				label: 'current period start'
-				type: 'asciiNoSpace'
+				type: 'isodate'
 				required: true
 				disabled: true
 
 			currentPeriodEndTS:
 				label: 'curent period end'
-				type: 'asciiNoSpace'
+				type: 'isodate'
 				required: true
 				disabled: true
 

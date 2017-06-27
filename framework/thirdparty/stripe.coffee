@@ -54,12 +54,37 @@ class wiz.framework.thirdparty.stripe
 	getInstance: () =>
 		@Stripe
 
+	customerCreateForAccount: (req, res, user, cb) => #{{{
+		console.log 'customerCreateForUser: '+user.id
+
+		# check if already set
+		if user?.data?.stripeCustomerID?
+			req.server.root.api.user.database.updateUserData req, res, user.id, user.data, cb
+			return
+
+		stripeArgs =
+			email: user?.data?.email
+			metadata:
+				id: user?.id
+
+		req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
+			return @onError(req, res, stripeError) if stripeError
+			user.data.stripeCustomerID = stripeCustomerData?.id
+			req.server.root.api.user.database.updateUserData req, res, user.id, user.data, cb
+	#}}}
 	customerCreate: (req, res, cb) => #{{{
 		console.log 'customerCreate'
+
+		# check if already set
+		if req.session?.account?.data?.stripeCustomerID?
+			req.server.root.api.user.database.updateCurrentUserData req, res, cb
+			return
+
 		stripeArgs =
 			email: req.session?.account?.data?.email
-#			metadata:
-#				id: req.session?.account?.id
+			metadata:
+				id: req.session?.account?.id
+
 		req.server.root.Stripe.customers.create stripeArgs, (stripeError, stripeCustomerData) =>
 			return @onError(req, res, stripeError) if stripeError
 			return res.send 500, "Unable to call stripe API" if stripeError
@@ -150,24 +175,22 @@ class wiz.framework.thirdparty.stripe
 	onError: (req, res, stripeError) => #{{{
 		defaultErrorMessage = "Hmm, something is wrong. Please try again later."
 		defaultDeclinedMessage = "Please try another card."
-		wiz.log.err "#{stripeError?.statusCode} #{stripeError?.type} #{stripeError?.code} #{stripeError?.decline_code} #{stripeError?.message}"
+		err = "#{stripeError?.statusCode} #{stripeError?.type} #{stripeError?.code} #{stripeError?.decline_code} #{stripeError?.message}"
 		switch stripeError?.type
 			when 'StripeCardError' # A declined card error
-				res.send 402, defaultDeclinedMessage # => e.g. "Your card's expiration year is invalid."
+				res.send 402, defaultDeclinedMessage, err # => e.g. "Your card's expiration year is invalid."
 			when 'RateLimitError' # Too many requests made to the API too quickly
-				res.send 500, defaultErrorMessage
+				res.send 500, defaultErrorMessage, err
 			when 'StripeInvalidRequestError' # Invalid parameters were supplied to Stripe's API
-				res.send 500, defaultErrorMessage
+				res.send 500, defaultErrorMessage, err
 			when 'StripeAPIError' # An error occurred internally with Stripe's API
-				res.send 500, defaultErrorMessage
+				res.send 500, defaultErrorMessage, err
 			when 'StripeConnectionError' # Some kind of error occurred during the HTTPS communication
-				res.send 500, defaultErrorMessage
+				res.send 500, defaultErrorMessage, err
 			when 'StripeAuthenticationError' # You probably used an incorrect API key
-				res.send 500, defaultErrorMessage
+				res.send 500, defaultErrorMessage, err
 			else # Handle any other types of unexpected errors
-				res.send 500, defaultErrorMessage
-				break
-
+				res.send 500, defaultErrorMessage, err
 	#}}}
 
 # vim: foldmethod=marker wrap
