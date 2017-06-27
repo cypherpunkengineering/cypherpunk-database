@@ -155,11 +155,11 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 						# store in output
 						outputData[field] = userData[field]
 				#}}}
-				else if typeof userData[field] == 'isodate' #{{{ field value is isodate
+				else if schemaType[@dataKey][field].type == 'isodate' and userData[field] instanceof Date #{{{ field value is isodate
 
 					isodate = null
 					try
-						isodate = ISODate userData[field]
+						isodate = userData[field].toISOString()
 					catch e
 						isodate = null
 
