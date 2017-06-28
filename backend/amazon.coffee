@@ -67,9 +67,9 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 						provider: 'amazon'
 						providerPlanID: req.body.plan
 						providerSubscriptionID: user?.data?.amazonBillingAgreementID
-						currentPeriodStartTS: new Date().toISOString()
+						currentPeriodStartTS: new Date()
 						currentPeriodEndTS: subscriptionRenewal
-						purchaseTS: new Date().toISOString()
+						purchaseTS: new Date()
 						renewalTS: subscriptionRenewal
 						active: 'true'
 
@@ -133,10 +133,10 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 				subscriptionData =
 					provider: 'amazon'
 					providerPlanID: req.body.plan
-					providerSubscriptionID: req.body.amazonBillingAgreementID
-					currentPeriodStartTS: new Date().toISOString()
+					providerSubscriptionID: req.body.AmazonBillingAgreementId
+					currentPeriodStartTS: new Date()
 					currentPeriodEndTS: subscriptionRenewal
-					purchaseTS: new Date().toISOString()
+					purchaseTS: new Date()
 					renewalTS: subscriptionRenewal
 					active: 'true'
 
