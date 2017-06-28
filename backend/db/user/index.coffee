@@ -228,7 +228,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 		return unless recordToInsert = @schema.fromUser(req, res, 'free', req.body)
 
 		# signup user
-		@signup req, res, recordToInsert, data, (req, res, user) =>
+		return @signup(req, res, recordToInsert, data, cb)
 	#}}}
 
 	upgrade: (req, res, userID, subscriptionID, args = {}, cb = null) => #{{{ if user type is free, change to premium
