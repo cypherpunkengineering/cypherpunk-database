@@ -74,6 +74,9 @@ class cypherpunk.backend.db.subscription extends wiz.framework.http.database.mon
 			return cb(req2, res2, result) if cb
 			res.send 200
 	#}}}
+	createElite: (req, res, subscriptionData = null, cb = null) => #{{{
+		@insert(req, res, 'elite', subscriptionData, cb)
+	#}}}
 	findOneByTXID: (req, res, txid, cb) => #{{{
 		@findOneByKey req, res, "#{@dataKey}.#{@txidKey}", txid, @projection(), cb
 	#}}}

@@ -68,6 +68,12 @@ class cypherpunk.backend.db.charge.schema extends wiz.framework.database.mongo.d
 				required: true
 				disabled: true
 
+			created:
+				label: 'stripe created timestamp'
+				type: 'isodate'
+				required: true
+				disabled: true
+
 			customer:
 				label: 'stripe customer id'
 				placeholder: 'cus_9djahSvYrD1w4w'
@@ -130,6 +136,28 @@ class cypherpunk.backend.db.charge.schema extends wiz.framework.database.mongo.d
 				type: 'asciiNoSpace'
 				maxlen: 50
 				required: true
+				disabled: true
+
+			sourceID:
+				label: 'stripe source card id'
+				placeholder: 'card_00000000000000'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+				disabled: true
+
+			sourceBrand:
+				label: 'stripe source brand'
+				placeholder: 'Visa'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				disabled: true
+
+			sourceLast4:
+				label: 'stripe source last 4'
+				placeholder: '4242'
+				type: 'asciiNoSpace'
+				maxlen: 50
 				disabled: true
 		) #}}}
 		paypal: (new type 'paypal', 'PayPal Payment', 'list', #{{{

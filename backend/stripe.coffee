@@ -125,34 +125,49 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 			# if not found, ignore
 			return res.send 200, 'Cypherpunk account not found!' unless user?.id?
 
-			# otherwise save it for later
-			data.user = user
-
 			# proceed based on event type
 			switch data.type
 				when 'charge.succeeded'
-					@onChargeSucceeded(req, res, data)
+					@onChargeSucceeded(req, res, data, user)
 				else
 					# send to billing channel on slack
-					#@sendSlackNotification(data)
+					#@sendSlackNotification(data, user)
 					res.send 200, "Unknown Stripe IPN type: #{data?.type}"
 	#}}}
 
-	onChargeSucceeded: (req, res, data) => #{{{
+	onChargeSucceeded: (req, res, data, user) => #{{{
 		return res.send 400, 'missing stripe IPN data object' unless data?.data?.object?
-		charge = data.data.object
-		charge.cypherpunk_account_id = data.user.id
-		@server.root.api.charge.database.saveFromIPN req, res, 'stripe', charge, (req, res, chargeObject) =>
-			chargeObject = chargeObject[0] if chargeObject instanceof Array
-			console.log chargeObject
+		chargeData = data.data.object
+		created = chargeData.created or data.created or Math.floor((new Date()).getTime() / 1000)
+		chargeData.created = new Date(created * 1000)
+		chargeData.cypherpunk_account_id = user?.id
+		chargeData.sourceID = chargeData.source?.id
+		chargeData.sourceBrand = chargeData.source?.brand
+		chargeData.sourceLast4 = chargeData.source?.last4
 
-			# send slack notification
-			@sendSlackNotification(data)
+		@server.root.api.charge.database.saveFromIPN req, res, 'stripe', chargeData, (req, res, charge) =>
+			charge = charge[0] if charge instanceof Array
+			console.log charge
 
-			res.send 200
+			receiptData =
+				accountID: charge?.data?.cypherpunk_account_id
+				transactionID: charge?.data?.id
+				paymentTS: new Date(charge?.data?.created)
+				description: "Cypherpunk Privacy Elite subscription"
+				method: "Stripe #{charge?.data?.sourceBrand} #{charge?.data?.sourceLast4}"
+				currency: charge?.data?.currency?.toUpperCase()
+				amount: (charge?.data?.amount / 100).toString()
+
+			@server.root.api.receipt.database.createChargeReceipt req, res, receiptData, (req, res, receipt) =>
+				receipt = receipt[0] if receipt instanceof Array
+				console.log receipt
+
+				# send slack notification
+				@sendSlackNotification(data, user)
+				res.send 200
 	#}}}
 
-	sendSlackNotification: (data) => #{{{
+	sendSlackNotification: (data, user) => #{{{
 		msg = "[*Stripe*] "
 
 		switch data.type
@@ -165,8 +180,8 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 		msg += "\r>>>\r"
 
 		# if present, append cypherpunk account email
-		if data.user?.data?.email?
-			msg += "\rCypherpunk account: `#{data.user.data.email}` (#{data.user.type})"
+		if user?.data?.email?
+			msg += "\rCypherpunk account: `#{user.data.email}` (#{user.type})"
 
 		# add invoice info
 		msg += "\r"
@@ -237,7 +252,7 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 				console.log subscriptionData
 
 				# save transaction in db
-				req.server.root.api.subscription.database.insert req, res, planType, subscriptionData, (req, res, subscription) =>
+				req.server.root.api.subscription.database.createElite req, res, subscriptionData, (req, res, subscription) =>
 					# set user's active subscription to this one
 					@onSuccessfulTransaction(req, res, subscription, req.session.account?.data?.stripeCustomerID)
 	#}}}
@@ -291,9 +306,9 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 				provider: 'stripe'
 				providerPlanID: stripeSubData?.plan?.id
 				providerSubscriptionID: stripeSubData?.id
-				currentPeriodStartTS: new Date().toISOString()
+				currentPeriodStartTS: new Date()
 				currentPeriodEndTS: subscriptionRenewal
-				purchaseTS: new Date().toISOString()
+				purchaseTS: new Date()
 				renewalTS: subscriptionRenewal
 				active: 'true'
 
@@ -301,7 +316,7 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 			console.log subscriptionData
 
 			# save transaction in db
-			req.server.root.api.subscription.database.insert req, res, planType, subscriptionData, (req, res, subscription) =>
+			req.server.root.api.subscription.database.createElite req, res, subscriptionData, (req, res, subscription) =>
 				# set user's active subscription to this one
 				@onSuccessfulTransaction(req, res, subscription, req.session.account?.data?.stripeCustomerID)
 	#}}}
@@ -329,9 +344,9 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 				provider: 'stripe'
 				providerPlanID: stripeCustomerData?.subscriptions?.data?[0]?.plan?.id
 				providerSubscriptionID: stripeCustomerData?.subscriptions?.data?[0].id
-				currentPeriodStartTS: new Date().toISOString()
+				currentPeriodStartTS: new Date()
 				currentPeriodEndTS: subscriptionRenewal
-				purchaseTS: new Date().toISOString()
+				purchaseTS: new Date()
 				renewalTS: subscriptionRenewal
 				active: 'true'
 
@@ -339,7 +354,7 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 			console.log subscriptionData
 
 			# save transaction in db
-			req.server.root.api.subscription.database.insert req, res, planType, subscriptionData, (req, res, subscription) =>
+			req.server.root.api.subscription.database.createElite req, res, subscriptionData, (req, res, subscription) =>
 				# set user's active subscription to this one
 				@onSuccessfulTransaction(req, res, subscription, stripeCustomerData?.id)
 	#}}}

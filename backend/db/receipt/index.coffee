@@ -14,7 +14,7 @@ class cypherpunk.backend.db.receipt extends wiz.framework.http.database.mongo.ba
 	debug: true
 	schema: cypherpunk.backend.db.receipt.schema
 	upsert: false
-	txidKey: 'txid'
+	transactionIDKey: 'transactionID'
 
 	# DataTable methods
 	list: (req, res, receiptType) => #{{{
@@ -51,17 +51,21 @@ class cypherpunk.backend.db.receipt extends wiz.framework.http.database.mongo.ba
 	#}}}
 
 	# custom APIs
-	saveFromStripe: (req, res, recordToInsert = null, cb = null) => #{{{
+	create: (req, res, recordToInsert = null, cb = null) => #{{{
 		if recordToInsert is null
-			return unless recordToInsert = @schema.fromUser(req, res, 'stripe', req.body[@dataKey])
+			return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
 
-		return super(req, res, recordToInsert, cb) if cb != null
+		return @insert(req, res, recordToInsert, cb) if cb != null
 
-		super req, res, recordToInsert, (result) =>
+		@insert req, res, recordToInsert, (result) =>
 			res.send 200
 	#}}}
-	findOneByTXID: (req, res, txid, cb) => #{{{
-		@findOneByKey req, res, "#{@dataKey}.#{@txidKey}", txid, @projection(), cb
+	createChargeReceipt: (req, res, receiptData = null, cb = null) => #{{{
+		return unless recordToInsert = @schema.fromUser(req, res, 'charge', receiptData)
+		@insert(req, res, recordToInsert, cb)
+	#}}}
+	findOneByTXID: (req, res, transactionID, cb) => #{{{
+		@findOneByKey req, res, "#{@dataKey}.#{@transactionIDKey}", transactionID, @projection(), cb
 	#}}}
 
 # vim: foldmethod=marker wrap

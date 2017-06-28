@@ -57,39 +57,51 @@ class cypherpunk.backend.db.receipt.schema extends wiz.framework.database.mongo.
 		constructor: (@type, @description, @verb, @data, @creatable = true) ->
 	@types:
 	#}}}
-#  id: 'cus_9djahSvYrD1w4w'
-#  object: 'customer'
-#  account_balance: 0
-#  created: 1480251078
-#  currency: 'usd'
-#  default_source: 'card_19KS7kCymPOZwO5rVFqdx2NF'
-#  delinquent: false
-#  description: null
-#  discount: null
-#  email: 'jmaurice+stripe2@cypherpunk.com'
-#  livemode: false
-#  metadata: {}
-#  shipping: null
-#  sources:
-#     object: 'list'
-#     data: [ [ Object ] ]
-#     has_more: false
-#     total_count: 1
-#     url: '/v1/customers/cus_9djahSvYrD1w4w/sources'
-#  receipts:
-#     object: 'list'
-#     data: [ [ Object ] ]
-#     has_more: false
-#     total_count: 1
-#     url: '/v1/customers/cus_9djahSvYrD1w4w/receipts'
 
-		customer: (new type 'customer', 'Customer Receipt', 'list', #{{{
-			id:
-				label: 'receipt id'
-				placeholder: 'cus_9djahSvYrD1w4w'
+		charge: (new type 'charge', 'Charge Receipt', 'list', #{{{
+			accountID:
+				label: 'cypherpunk customer id'
+				placeholder: '4XUYJWGG4LHKMHCLKL7OTIWP7O4UVBJCGO2PIPMXQVV2NZNO2UF'
 				type: 'asciiNoSpace'
-				maxlen: 30
+				maxlen: 90
 				required: true
+				disabled: true
+
+			transactionID:
+				label: 'payment provider transaction id'
+				placeholder: 'ch_1AUZvOCymPOZwO5r0eZRKSsx'
+				type: 'asciiNoSpace'
+				maxlen: 90
+				required: true
+				disabled: true
+
+			paymentTS:
+				label: 'transaction timestamp'
+				type: 'isodate'
+				required: true
+				disabled: true
+
+			description:
+				label: 'transaction description'
+				placeholder: 'monthly charges for June 2015'
+				type: 'ascii'
+				maxlen: 150
+				disabled: true
+
+			method:
+				label: 'payment method'
+				placeholder: 'Visa 1337'
+				type: 'ascii'
+				maxlen: 90
+				disabled: true
+
+			currency:
+				label: 'charge currency'
+				placeholder: 'succeeded'
+				type: 'asciiNoSpace'
+				maxlen: 50
+				required: true
+				disabled: true
 
 			amount:
 				label: 'receipt amount'
@@ -97,11 +109,7 @@ class cypherpunk.backend.db.receipt.schema extends wiz.framework.database.mongo.
 				maxlen: 50
 				placeholder: '$XX.XX'
 				required: true
-
-			paid:
-				label: 'paid or not'
-				type: 'boolean'
-				required: true
+				disabled: true
 		) #}}}
 
 # vim: foldmethod=marker wrap
