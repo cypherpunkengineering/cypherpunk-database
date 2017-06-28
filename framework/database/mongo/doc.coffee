@@ -178,7 +178,7 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 				err = "missing required field #{field}" unless not schemaType[@dataKey].required or updating
 
 			if err
-
+				console.log (new Error err).stack
 				wiz.log.err(err)
 				res.send(400, err)
 				return false
