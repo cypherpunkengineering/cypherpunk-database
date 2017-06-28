@@ -12,6 +12,13 @@ class type
 	constructor: (@type, @description, @verb, @data, @creatable = true) ->
 
 class cypherpunk.backend.db.receipt.schema extends wiz.framework.database.mongo.docMultiType
+	@accountIDkey: 'accountID'
+	@transactionIDKey: 'transactionID'
+	@paymentTSkey: 'paymentTS'
+	@descriptionKey: 'descriptionKey'
+	@methodKey: 'method'
+	@currencyKey: 'currency'
+	@amountKey: 'amount'
 
 	@fromUser: (req, res, receiptType, receiptData, updating = false) => #{{{
 
