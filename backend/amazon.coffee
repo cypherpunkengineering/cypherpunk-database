@@ -62,6 +62,25 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 					console.log "result is "+result
 					return res.send 402, result if result isnt "Closed"
 
+					# gather subscription data for insert() into db
+					subscriptionData =
+						provider: 'amazon'
+						providerPlanID: req.body.plan
+						providerSubscriptionID: user?.data?.amazonBillingAgreementID
+						currentPeriodStartTS: new Date().toISOString()
+						currentPeriodEndTS: subscriptionRenewal
+						purchaseTS: new Date().toISOString()
+						renewalTS: subscriptionRenewal
+						active: 'true'
+
+					console.log 'subscription data'
+					console.log subscriptionData
+
+					# save transaction in db
+					req.server.root.api.subscription.database.createElite req, res, subscriptionData, (req, res, subscription) =>
+
+					# set user's active subscription to this one
+					@onSuccessfulTransaction(req, res, subscription, user?.data?.amazonBillingAgreementID)
 					# create session for new account
 					out = req.server.root.account.doUserLogin(req, res, user)
 					res.send 200, out
@@ -100,7 +119,7 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 			# prepare arguments for authorization API call
 			authorizeArgs =
 				AmazonBillingAgreementId: req.body.AmazonBillingAgreementId
-				currency: "USD"
+				currency: 'USD'
 				price: plan.price
 				authorizationReference: wiz.framework.crypto.convert.biToBase32(randomBytes)
 				userId: user?.id
@@ -114,7 +133,7 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 				subscriptionData =
 					provider: 'amazon'
 					providerPlanID: req.body.plan
-					providerSubscriptionID: user?.data?.amazonBillingAgreementID
+					providerSubscriptionID: req.body.amazonBillingAgreementID
 					currentPeriodStartTS: new Date().toISOString()
 					currentPeriodEndTS: subscriptionRenewal
 					purchaseTS: new Date().toISOString()
@@ -125,7 +144,7 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 				console.log subscriptionData
 
 				# save transaction in db
-				req.server.root.api.subscription.database.insert req, res, planType, subscriptionData, (req, res, subscription) =>
+				req.server.root.api.subscription.database.createElite req, res, subscriptionData, (req, res, subscription) =>
 
 					# set user's active subscription to this one
 					@onSuccessfulTransaction(req, res, subscription, user?.data?.amazonBillingAgreementID)
