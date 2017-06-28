@@ -24,11 +24,15 @@ class wiz.framework.http.database.mongo.driver extends wiz.framework.database.mo
 		super(err)
 	#}}}
 	collection: (req, res, collectionName, cb) => #{{{
-		super collectionName, (err, collection) =>
-			# only call cb if we have collection
-			if err or not collection
-				wiz.log.err "Unable to access collection #{@mongoURI}.#{collectionName} #{err}"
-				return @onError(req, res, err)
+		# check if non-null db
+		return @onError req, res, 'No database connection!' unless @db
+
+		# retreive the collection
+		@db.collection collectionName, (err, collection) =>
+			# handle error
+			return @onError req, res, "db.collection(#{collectionName}) returned null: #{err}" if err
+
+			# no error, return the collection
 			cb collection
 	#}}}
 

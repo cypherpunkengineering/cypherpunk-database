@@ -13,9 +13,8 @@ class wiz.framework.database.mongo.driver
 	mongoURI: null
 	mongoOptions:
 		promiseLibrary: require('bluebird')
-		socketOptions:
-			keepAlive: 1
-			connectTimeoutMS: 30000
+		keepAlive: 1
+		connectTimeoutMS: 30000
 		reconnectTries: 10
 		reconnectInterval: 500
 	db: null
@@ -56,6 +55,8 @@ class wiz.framework.database.mongo.driver
 	#}}}
 
 	onError: (err) => #{{{ critical error
+		# log error
+		console.log (new Error err).stack
 		# try reset stuff
 		wiz.log.crit "Re-initializing mongo due to critical error: #{err}"
 		@init()
