@@ -1,5 +1,6 @@
 require './_framework'
 require './_framework/thirdparty/stripe'
+require './_framework/util/format'
 
 wiz.package 'cypherpunk.backend.stripe'
 
@@ -156,7 +157,7 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 				description: "Cypherpunk Privacy Elite subscription"
 				method: "Stripe #{charge?.data?.sourceBrand} #{charge?.data?.sourceLast4}"
 				currency: charge?.data?.currency?.toUpperCase()
-				amount: (charge?.data?.amount / 100).toString()
+				amount: wiz.framework.util.format.centsAsUSD(charge?.data?.amount)
 
 			@server.root.api.receipt.database.createChargeReceipt req, res, receiptData, (req, res, receipt) =>
 				receipt = receipt[0] if receipt instanceof Array
