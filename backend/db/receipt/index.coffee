@@ -71,29 +71,32 @@ class cypherpunk.backend.db.receipt extends wiz.framework.http.database.mongo.ba
 		opts =
 			#skip: parseInt(if req.params.iDisplayStart then req.params.iDisplayStart else 0)
 			#limit: parseInt(if req.params.iDisplayLength > 0 and req.params.iDisplayLength < 200 then req.params.iDisplayLength else 25)
-			sort: "#{@dataKey}.#{@schema.paymentTSkey}"
+			sort:
+				"#{@dataKey}.#{@schema.paymentTSkey}": -1
 
-		@find req, res, criteria, projection, opts, (req3, res3, results) =>
-			# prepare response structure
-			out =
-				receipts: []
+		@count req, res, criteria, projection, (req2, res2, recordCount) =>
+			@find req, res, criteria, projection, opts, (req3, res3, results) =>
+				# prepare response structure
+				out =
+					receiptCount: recordCount
+					receipts: []
 
-			# if no results just send empty structure
-			if not results or not results.length > 0
+				# if no results just send empty structure
+				if not results or not results.length > 0
+					return res.send 200, out
+
+				# iterate
+				for result in results
+					if result[@dataKey] and typeof result[@dataKey] is 'object'
+						out.receipts.push
+							id: result[@schema.docKey]
+							date: result[@dataKey][@schema.paymentTSkey] or 'unknown'
+							description: result[@dataKey][@schema.descriptionKey] or ''
+							method: result[@dataKey][@schema.methodKey] or ''
+							currency: result[@dataKey][@schema.currencyKey] or 0
+							amount: result[@dataKey][@schema.amountKey] or 0
+
 				return res.send 200, out
-
-			# iterate
-			for result in results
-				if result[@dataKey] and typeof result[@dataKey] is 'object'
-					out.receipts.push
-						id: result[@schema.docKey]
-						date: result[@dataKey][@schema.paymentTSkey] or 'unknown'
-						description: result[@dataKey][@schema.descriptionKey] or ''
-						method: result[@dataKey][@schema.methodKey] or ''
-						currency: result[@dataKey][@schema.currencyKey] or 0
-						amount: result[@dataKey][@schema.amountKey] or 0
-
-			return res.send 200, out
 	#}}}
 	findOneByTXID: (req, res, transactionID, cb) => #{{{
 		@findOneByKey req, res, "#{@dataKey}.#{@transactionIDKey}", transactionID, @projection(), cb
