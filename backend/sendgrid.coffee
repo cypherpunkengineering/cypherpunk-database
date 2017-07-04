@@ -4,7 +4,7 @@ require './_framework/thirdparty/sendgrid'
 wiz.package 'cypherpunk.backend.sendgrid'
 
 class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
-	sendTeaserMail: (user, cb) => #{{{
+	sendTeaserMail: (user) => #{{{
 		if not user?.data?.email?
 			wiz.log.err 'no user email!!'
 			return
@@ -24,15 +24,8 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 				'-buttonText-': "CONFIRM MY INVITATION"
 				'-buttonURL-': @generateTeaserConfirmationURL(user)
 
-		@mailTemplate mailData, (error, response) =>
-			if @debug
-				console.log 'got callback from sendgrid:'
-				console.log response.statusCode
-				console.log response.headers
-				console.log response.body
-			if error
-				console.log error?.response?.body?.errors
-			cb()
+		wiz.log.info "Sending teaser email to #{user.data.email}"
+		@sendMail(mailData)
 	#}}}
 	sendTeaserShareWithFriendMail: (user) => #{{{
 		if not user?.data?.email?
@@ -58,17 +51,8 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 			mailData.subject = "#{user.referralName} invited you to an early access preview of Cypherpunk Privacy"
 			mailData.substitutions['-regularText-'] = "Click the button below to accept your early access invitation from #{user.referralName}"
 
-		@mailTemplate mailData, (error, response) =>
-			if @debug
-				console.log 'got callback from sendgrid:'
-				console.log response.statusCode
-				console.log response.headers
-				console.log response.body
-			if error
-				wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error" if sendgridError?
-				console.log error?.response?.body?.errors
-
-			wiz.log.info "Sent invitation share with friends email to #{user.data.email}"
+		wiz.log.info "Sending invitation share with friends email to #{user.data.email}"
+		@sendMail(mailData)
 	#}}}
 
 	sendWelcomeMail: (user) => #{{{
@@ -159,7 +143,7 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 				console.log response.body
 			if error
 				console.log error?.response?.body?.errors
-			cb()
+			cb() if cb?
 	#}}}
 
 	generateConfirmationURL: (user) => #{{{
