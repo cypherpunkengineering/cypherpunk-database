@@ -179,7 +179,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 						@server.root.sendgrid.sendTeaserMail(user)
 
 					# send slack notification
-					@server.root.slack.notify("[TEASER] #{user[@dataKey][@emailKey]} has signed up for an invitation :love_letter:")
+					@server.root.slack.notify("[TEASER] #{user[@dataKey][@emailKey]} has signed up for a (priority #{user[@dataKey][@signupPriorityKey]}) invitation :highfive:")
 
 					# send response
 					return cb(req, res, user) if cb?
