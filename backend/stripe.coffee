@@ -108,8 +108,8 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 			console.log e
 			return res.send 400
 
-		console.log "got valid stripe data"
-		console.log data
+		#console.log "got valid stripe data"
+		#console.log data
 
 		# get stripe customer ID
 		stripeCustomerID = null

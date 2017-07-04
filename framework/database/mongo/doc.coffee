@@ -63,7 +63,7 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 
 			schemaRequired += 1 if schemaType[@dataKey].required is true
 
-			wiz.log.debug 'validating schema field ' + field
+			#wiz.log.debug 'validating schema field ' + field
 
 			errorIncorrectType = "field #{schemaType[@dataKey][field].label} must be type #{schemaType[@dataKey][field].type}"
 			errorTooShort = "field #{schemaType[@dataKey][field].label} is too short, cannot be less than #{schemaType[@dataKey][field].minlen} characters."
