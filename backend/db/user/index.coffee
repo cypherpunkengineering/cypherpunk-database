@@ -4,6 +4,7 @@ require './_framework'
 require './_framework/http/resource/base'
 require './_framework/http/account/session'
 require './_framework/http/db/mongo'
+require './_framework/util/world'
 
 require './schema'
 
@@ -15,6 +16,20 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 	upsert: false
 	passwordKey: 'password'
 	passwordOldKey: 'passwordOld'
+	signupPriorityKey: 'signupPriority'
+
+	# utility methods
+	assignSignupPriority: (req) => #{{{
+		try
+			country = req.headers['x-geolocation-country']
+			tier = wiz.framework.util.world.countryPricingTier[country]
+		catch e
+			country = "Unknown"
+			tier = 1
+
+		wiz.log.info "Country #{country} is tier #{tier}"
+		return tier
+	#}}}
 
 	# DataTable methods
 	findOneByID: (req, res, id, cb) => #{{{ removes password hash
@@ -123,7 +138,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 		# @dropMany req, res, req.session.account[@docKey], null, recordsToDelete
 	#}}}
 
-	# custom APIs
+	# custom methods
 	findOneByEmail: (req, res, email, cb) => #{{{
 		return cb(req, res, null) unless email?
 		@findOneByKey req, res, "#{@dataKey}.#{@emailKey}", email, @projection(), cb
@@ -208,6 +223,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					return res.send 202
 	#}}}
 
+	# admin tool methods
 	signupManual: (req, res) => #{{{ signup from admin tool
 		# validate user data and convert to account object, send error if validation fails
 		return unless recordToInsert = @schema.fromUser(req, res, req.body.insertSelect, req.body[@dataKey])
@@ -215,10 +231,14 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 		# signup user
 		return @signup(req, res, recordToInsert)
 	#}}}
+
 	# public stranger APIs
 	signupTeaser: (req, res, data, cb) => #{{{ signup from teaser campaign
 		# validate user data and convert to account object, send error if validation fails
 		return unless recordToInsert = @schema.fromUser(req, res, 'invitation', req.body)
+
+		# determine priority
+		recordToInsert[@dataKey][@signupPriorityKey] = @assignSignupPriority(req)
 
 		# signup user
 		return @signup(req, res, recordToInsert, data, cb)
@@ -226,6 +246,9 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 	signupTrial: (req, res, data, cb) => #{{{ signup for free trial
 		# validate user data and convert to account object, send error if validation fails
 		return unless recordToInsert = @schema.fromUser(req, res, 'free', req.body)
+
+		# determine priority
+		recordToInsert[@dataKey][@signupPriorityKey] = @assignSignupPriority(req)
 
 		# signup user
 		return @signup(req, res, recordToInsert, data, cb)

@@ -156,6 +156,12 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				type: 'ascii'
 				maxlen: 90
 				disabled: true
+
+			signupPriority:
+				label: 'Cypherpunk signup priority'
+				placeholder: '1, 2, or 3'
+				type: 'int'
+				maxlen: 2
 		) #}}}
 		invitation: (new type 'invitation', 'Pending Invitation', 'list', #{{{
 			email:
@@ -215,6 +221,12 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				type: 'ascii'
 				maxlen: 90
 				disabled: true
+
+			signupPriority:
+				label: 'Cypherpunk signup priority'
+				placeholder: '1, 2, or 3'
+				type: 'int'
+				maxlen: 2
 		) #}}}
 		expired: (new type 'expired', 'Expired Account', 'list', #{{{
 			email:
@@ -274,6 +286,12 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				type: 'ascii'
 				maxlen: 90
 				disabled: true
+
+			signupPriority:
+				label: 'Cypherpunk signup priority'
+				placeholder: '1, 2, or 3'
+				type: 'int'
+				maxlen: 2
 		) #}}}
 
 	# customer active accounts
@@ -335,6 +353,12 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				type: 'ascii'
 				maxlen: 90
 				disabled: true
+
+			signupPriority:
+				label: 'Cypherpunk signup priority'
+				placeholder: '1, 2, or 3'
+				type: 'int'
+				maxlen: 2
 		) #}}}
 		premium: (new type 'premium', 'Premium Account', 'list', #{{{
 			email:
@@ -394,6 +418,12 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				type: 'ascii'
 				maxlen: 90
 				disabled: true
+
+			signupPriority:
+				label: 'Cypherpunk signup priority'
+				placeholder: '1, 2, or 3'
+				type: 'int'
+				maxlen: 2
 		) #}}}
 		elite: (new type 'elite', 'Elite Account', 'list', #{{{
 			email:
@@ -453,6 +483,12 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				type: 'ascii'
 				maxlen: 90
 				disabled: true
+
+			signupPriority:
+				label: 'Cypherpunk signup priority'
+				placeholder: '1, 2, or 3'
+				type: 'int'
+				maxlen: 2
 		) #}}}
 
 	# cypherpunk staff accounts
