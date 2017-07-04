@@ -72,8 +72,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 	#}}}
 	createAccount: (req, res, recordToInsert = null, cb = null) => #{{{
 		@findOneByEmail req, res, recordToInsert?[@dataKey]?[@emailKey], (req, res, result) =>
-			wiz.log.err "Email already registered for #{recordToInsert?[@dataKey]?[@emailKey]}"
-			return res.send 409, 'Email already registered' if result isnt null
+			return res.send 409, "Email already registered for #{recordToInsert?[@dataKey]?[@emailKey]}" if result isnt null
 
 			@insert req, res, recordToInsert, (req2, res2, user) =>
 				# dereference array
