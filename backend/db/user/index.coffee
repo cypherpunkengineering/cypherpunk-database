@@ -21,8 +21,8 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 	# utility methods
 	assignSignupPriority: (req) => #{{{
 		try
-			country = req.headers['x-geolocation-country']
-			tier = wiz.framework.util.world.countryPricingTier[country]
+			country = req.headers['x-geolocation-country'] or 'Unknown'
+			tier = wiz.framework.util.world.countryPricingTier[country] or 1
 		catch e
 			country = "Unknown"
 			tier = 1
