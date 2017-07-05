@@ -8,6 +8,7 @@ require './_framework/http/db/mongo'
 require '../../../db/user'
 
 require './source'
+require './change'
 require './register'
 require './confirm'
 require './purchase'
@@ -60,6 +61,8 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 
 		# public account creation api
 		@routeAdd new cypherpunk.backend.api.v0.account.register.resource(@server, this, 'register')
+		# public account update api
+		@routeAdd new cypherpunk.backend.api.v0.account.change.resource(@server, this, 'change')
 		# public account confirmation api
 		@routeAdd new cypherpunk.backend.api.v0.account.confirm.resource(@server, this, 'confirm')
 		# public account purchase api

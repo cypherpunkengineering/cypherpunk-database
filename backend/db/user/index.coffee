@@ -130,6 +130,44 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 	updateCurrentUserData: (req, res, cb = null) => #{{{
 		@updateUserData(req, res, req.session.account.id, req.session.account.data, cb)
 	#}}}
+	updateCurrentUserPassword: (req, res, passwordOld, passwordNew) => #{{{
+		# mongo criteria is account id
+		criteria = @getDocKey(req, req.session.account.id)
+
+		# get full projection
+		projection = @projection()
+
+		# use findOne() instead of findOneByID() because latter removes password hash
+		@findOne req, res, criteria, projection, (req, res, userObj) =>
+
+			# abort if existing password doesn't exist
+			if not userObj?[@dataKey]?[@passwordKey]?
+				return res.send 500, 'missing user password from db'
+
+			# check if passwordOld is actually the account password
+			oldPasswordHash = wiz.framework.http.account.authenticate.userpasswd.pwHash(passwordOld)
+			dbPasswordHash = userObj[@dataKey][@passwordKey]
+			console.log oldPasswordHash
+			console.log dbPasswordHash
+
+			if oldPasswordHash != dbPasswordHash
+				return res.send 400, 'existing password is incorrect'
+
+			# create update object
+			userData = {}
+			userData[@passwordKey] = passwordNew
+
+			# use update() since updating raw password hash
+			@updateOneFromUser req, res, req.session.account.id, userData, (req2, res2, result2) =>
+				# check result
+				return res.send 500, 'DB Error while updating user data!', result2 if result2?.result?.ok != 1
+				return res.send 200
+	#}}}
+	updateCurrentUserEmail: (req, res, newEmail) => #{{{
+		userData =
+			email: newEmail
+		@updateUserData(req, res, req.session.account.id, userData)
+	#}}}
 	drop: (req, res) => #{{{
 		return res.send 501 # TODO: implement drop
 		# TODO: need extensible method (send event?) for other modules to delete related objects from their databases onUserDeleted
@@ -298,43 +336,6 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 						return cb(req, res, result) if cb
 						return res.send 500 if not result2
 						return res.send 200
-	#}}}
-
-	myAccountPassword: (req, res) => #{{{
-		# check if no session
-		#return res.send 401, 'missing session id' if not req.session?.account?.id?
-		if not passwordNew = req.body[@dataKey]?[@passwordKey]
-			return res.send 400, 'missing password'
-
-		# mongo criteria is account id
-		criteria = @getDocKey(req, req.session.account.id)
-		# get full projection
-		projection = @projection()
-		@findOne req, res, criteria, projection, (req, res, userObj) =>
-			# abort if existing password doesn't match
-			if not userObj?[@dataKey]?[@passwordKey]?
-				err = 'missing user password from db'
-				wiz.log.err err
-				return res.send 500, err
-
-			# check if required args supplied
-			if not passwordOld = req.body[@dataKey]?[@passwordOldKey]
-				err = 'need existing password to change password'
-				wiz.log.err err
-				return res.send 400, err
-
-			userPasswordHash = wiz.framework.http.account.authenticate.userpasswd.pwHash(passwordOld)
-			dbPasswordHash = userObj[@dataKey][@passwordKey]
-			if userPasswordHash != dbPasswordHash
-				err = 'existing password is incorrect'
-				wiz.log.err err
-				return res.send 400, err
-
-			# update
-			@update(req, res, req.session.account.id)
-	#}}}
-	myAccountDetails: (req, res) => #{{{
-		@update(req, res, req.session.account.id)
 	#}}}
 
 # vim: foldmethod=marker wrap
