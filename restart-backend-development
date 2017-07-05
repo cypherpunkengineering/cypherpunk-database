@@ -1,0 +1,2 @@
+#!/usr/local/bin/zsh
+for i in `ps auxwww|grep node_mod|grep development|grep -v grep|awk '{print $2}'`;do kill $i;sleep 9;done
