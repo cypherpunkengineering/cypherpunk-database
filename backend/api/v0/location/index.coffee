@@ -116,7 +116,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -96.7970
 				scale: 1
 
-				name: 'USA - Dallas, Texas'
+				name: 'US - Dallas, TX'
 				level: 'free'
 				servers: 3
 
@@ -169,7 +169,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -74.0059
 				scale: 1
 
-				name: 'USA - New York, New York'
+				name: 'US - New York, NY'
 				level: 'free'
 				servers: 10
 
@@ -195,7 +195,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -118.2437
 				scale: 1
 
-				name: 'USA - Los Angeles, California'
+				name: 'US - Los Angeles, CA'
 				level: 'free'
 				servers: 8
 
@@ -274,7 +274,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -84.3880
 				scale: 1
 
-				name: 'USA - Atlanta, Georgia'
+				name: 'US - Atlanta, GA'
 				level: 'premium'
 				servers: 3
 
@@ -326,7 +326,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -87.6298
 				scale: 1
 
-				name: 'USA - Chicago, Illinois'
+				name: 'US - Chicago, IL'
 				level: 'premium'
 				servers: 3
 
@@ -378,7 +378,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -80.1918
 				scale: 1
 
-				name: 'USA - Miami, Florida'
+				name: 'US - Miami, FL'
 				level: 'premium'
 				servers: 2
 
@@ -508,7 +508,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -74.4057
 				scale: 1
 
-				name: 'USA - Newark, New Jersey'
+				name: 'US - Newark, NJ'
 				level: 'premium'
 				servers: 2
 
@@ -585,7 +585,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -112.0740
 				scale: 1
 
-				name: 'USA - Phoenix, Arizona'
+				name: 'US - Phoenix, AZ'
 				level: 'premium'
 				servers: 2
 
@@ -610,7 +610,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -111.8910
 				scale: 1
 
-				name: 'USA - Salt Lake City, Utah'
+				name: 'US - Salt Lake City, UT'
 				level: 'premium'
 				servers: 2
 
@@ -661,7 +661,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -122.3321
 				scale: 1
 
-				name: 'USA - Seattle, Washington'
+				name: 'US - Seattle, WA'
 				level: 'premium'
 				servers: 3
 
@@ -687,7 +687,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -122.0575
 				scale: 1
 
-				name: 'USA - Silicon Valley, California'
+				name: 'US - Silicon Valley, CA'
 				level: 'premium'
 				servers: 8
 
@@ -843,7 +843,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -77.0369
 				scale: 1
 
-				name: 'USA - Washington D.C.'
+				name: 'US - Washington D.C.'
 				level: 'premium'
 				servers: 2
 
