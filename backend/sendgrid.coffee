@@ -16,11 +16,11 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 			to:
 				email: user?.data?.email
 			#subject: 'Welcome to Cypherpunk Privacy'
-			subject: 'Confirm your early access invitation to Cypherpunk Privacy'
+			subject: 'Confirm your free preview invitation to Cypherpunk Privacy'
 			template_id: '99f16955-a429-492b-8c45-5558d6c5b9a0'
 			substitutions:
 				'-titleText-': "You're only one step away"
-				'-regularText-': "Click the button below to confirm your early access invitation"
+				'-regularText-': "Click the button below to confirm your free preview invitation"
 				'-buttonText-': "CONFIRM MY INVITATION"
 				'-buttonURL-': @generateTeaserConfirmationURL(user)
 
