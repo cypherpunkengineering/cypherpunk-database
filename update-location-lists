@@ -1,0 +1,4 @@
+curl https://api.cypherpunk.com/api/v1/location/list/free?forceUpdate
+curl https://api.cypherpunk.com/api/v1/location/list/premium?forceUpdate
+curl https://api.cypherpunk.com/api/v1/location/list/staff?forceUpdate
+curl https://api.cypherpunk.com/api/v1/location/list/developer?forceUpdate
