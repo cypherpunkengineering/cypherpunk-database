@@ -65,6 +65,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Netherlands - Amsterdam'
+				nameFull: 'Netherlands - Amsterdam'
 				level: 'free'
 				servers: 6
 
@@ -91,6 +92,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Germany - Frankfurt'
+				nameFull: 'Germany - Frankfurt'
 				level: 'free'
 				servers: 3
 
@@ -117,6 +119,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - Dallas, TX'
+				nameFull: 'US - Dallas, TX'
 				level: 'free'
 				servers: 3
 
@@ -143,6 +146,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Hong Kong'
+				nameFull: 'Hong Kong'
 				level: 'free'
 				servers: 3
 
@@ -170,6 +174,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - New York, NY'
+				nameFull: 'US - New York, NY'
 				level: 'free'
 				servers: 10
 
@@ -196,6 +201,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - Los Angeles, CA'
+				nameFull: 'US - Los Angeles, CA'
 				level: 'free'
 				servers: 8
 
@@ -221,6 +227,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'UK - London'
+				nameFull: 'UK - London'
 				level: 'free'
 				servers: 6
 
@@ -247,6 +254,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'Canada - Vancouver'
+				nameFull: 'Canada - Vancouver'
 				level: 'free'
 				servers: 3
 
@@ -275,6 +283,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - Atlanta, GA'
+				nameFull: 'US - Atlanta, GA'
 				level: 'premium'
 				servers: 3
 
@@ -301,6 +310,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'India - Chennai'
+				nameFull: 'India - Chennai'
 				level: 'premium'
 				servers: 4
 
@@ -327,6 +337,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - Chicago, IL'
+				nameFull: 'US - Chicago, IL'
 				level: 'premium'
 				servers: 3
 
@@ -353,6 +364,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Turkey - Istanbul'
+				nameFull: 'Turkey - Istanbul'
 				level: 'premium'
 				servers: 2
 
@@ -379,6 +391,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - Miami, FL'
+				nameFull: 'US - Miami, FL'
 				level: 'premium'
 				servers: 2
 
@@ -405,6 +418,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'Australia - Melbourne'
+				nameFull: 'Australia - Melbourne'
 				level: 'premium'
 				servers: 2
 
@@ -431,6 +445,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Italy - Milan'
+				nameFull: 'Italy - Milan'
 				level: 'premium'
 				servers: 2
 
@@ -457,6 +472,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'Canada - Montreal'
+				nameFull: 'Canada - Montreal'
 				level: 'premium'
 				servers: 2
 
@@ -483,6 +499,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'Russia - Moscow'
+				nameFull: 'Russia - Moscow'
 				level: 'premium'
 				servers: 2
 
@@ -509,6 +526,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - Newark, NJ'
+				nameFull: 'US - Newark, NJ'
 				level: 'premium'
 				servers: 2
 
@@ -534,6 +552,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Norway - Oslo'
+				nameFull: 'Norway - Oslo'
 				level: 'premium'
 				servers: 2
 
@@ -560,6 +579,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'France - Paris'
+				nameFull: 'France - Paris'
 				level: 'premium'
 				servers: 3
 
@@ -586,6 +606,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - Phoenix, AZ'
+				nameFull: 'US - Phoenix, AZ'
 				level: 'premium'
 				servers: 2
 
@@ -611,6 +632,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - Salt Lake City, UT'
+				nameFull: 'US - Salt Lake City, UT'
 				level: 'premium'
 				servers: 2
 
@@ -636,6 +658,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'Brazil - Sao Paulo'
+				nameFull: 'Brazil - Sao Paulo'
 				level: 'premium'
 				servers: 3
 
@@ -662,6 +685,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - Seattle, WA'
+				nameFull: 'US - Seattle, WA'
 				level: 'premium'
 				servers: 3
 
@@ -688,6 +712,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - Silicon Valley, CA'
+				nameFull: 'US - Silicon Valley, CA'
 				level: 'premium'
 				servers: 8
 
@@ -714,6 +739,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Singapore'
+				nameFull: 'Singapore'
 				level: 'premium'
 				servers: 3
 
@@ -740,6 +766,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Sweden - Stockholm'
+				nameFull: 'Sweden - Stockholm'
 				level: 'premium'
 				servers: 2
 
@@ -766,6 +793,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'Australia - Sydney'
+				nameFull: 'Australia - Sydney'
 				level: 'premium'
 				servers: 2
 
@@ -792,6 +820,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Japan - Tokyo'
+				nameFull: 'Japan - Tokyo'
 				level: 'premium'
 				servers: 1
 
@@ -818,6 +847,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'Canada - Toronto'
+				nameFull: 'Canada - Toronto'
 				level: 'premium'
 				servers: 2
 
@@ -844,6 +874,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1
 
 				name: 'US - Washington D.C.'
+				nameFull: 'US - Washington D.C.'
 				level: 'premium'
 				servers: 2
 
@@ -870,6 +901,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Switzerland - Zurich'
+				nameFull: 'Switzerland - Zurich'
 				level: 'premium'
 				servers: 2
 
@@ -898,6 +930,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Tokyo Core Network'
+				nameFull: 'Tokyo Core Network'
 				level: 'developer'
 				servers: 1
 
@@ -926,6 +959,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Tokyo Test VM 3'
+				nameFull: 'Tokyo Test VM 3'
 				level: 'developer'
 				servers: 1
 
@@ -952,6 +986,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Tokyo Hatos VM'
+				nameFull: 'Tokyo Hatos VM'
 				level: 'developer'
 				servers: 1
 
@@ -978,6 +1013,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 1.5
 
 				name: 'Connection failure test'
+				nameFull: 'Connection failure test'
 				level: 'developer'
 				servers: 1
 
@@ -1004,6 +1040,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				scale: 4
 
 				name: 'Honolulu Test VM'
+				nameFull: 'Honolulu Test VM'
 				level: 'developer'
 				servers: 1
 
