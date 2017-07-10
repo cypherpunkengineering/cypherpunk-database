@@ -17,9 +17,22 @@ mongodump -o "${DIR}"
 # create tarball
 tar zcf "${ARCHIVE}" "${DIR}"
 
-# remove temp dir
+# encrypt tarball
+gpg -r F250FDC70FE40A5B -e "${ARCHIVE}"
+ARCHIVE_ENCRYPTED="${ARCHIVE}.gpg"
+
+# display archive tarball
+ls -la "${ARCHIVE_ENCRYPTED}"
+
+# upload archive tarball to google cloud bucket
+gcloud config set project cypherpunk-backup
+gsutil cp "${ARCHIVE_ENCRYPTED}" gs://cypherpunk-database-backup/mongodump/
+gsutil ls -la "gs://cypherpunk-database-backup/mongodump/${ARCHIVE_ENCRYPTED}"
+
+# remove temp dump folder + archive files
 rm -rf "${DIR}"
+rm -rf "${ARCHIVE}"
+rm -rf "${ARCHIVE_ENCRYPTED}"
 
 # done
-ls -la "${ARCHIVE}"
 exit 0
