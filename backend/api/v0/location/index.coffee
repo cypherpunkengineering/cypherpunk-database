@@ -929,7 +929,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				level: 'developer'
 				servers: 1
 
-				ovHostname: 'tokyo.cypherpunk.privacy.network'
+				ovHostname: 'freebsd-test.cypherpunk.privacy.network'
 				ovDefault: [ '185.176.52.34' ]
 				ovNone: [ '185.176.52.34' ]
 				ovStrong: [ '185.176.52.34' ]
