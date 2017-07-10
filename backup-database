@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -e
+
+# use /tmp for now
+cd /tmp
+
+# get current datetime as string
+TS=$(date "+%Y%m%d%H%M%S")
+
+# set temp backup path
+DIR="mongodb-backup-${TS}"
+ARCHIVE="${DIR}.tgz"
+
+# mongodump to temp dir
+mongodump -o "${DIR}"
+
+# create tarball
+tar zcf "${ARCHIVE}" "${DIR}"
+
+# remove temp dir
+rm -rf "${DIR}"
+
+# done
+ls -la "${ARCHIVE}"
+exit 0
