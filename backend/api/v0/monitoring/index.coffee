@@ -20,8 +20,14 @@ class cypherpunk.backend.api.v0.monitoring.hello extends cypherpunk.backend.api.
 	nav: false
 
 	handler: (req, res) =>
+		good =
+			status: "ok"
+		bad =
+			status: "fail"
+
 		req.server.root.api.user.database.count req, res, {}, {}, (req, res, count) =>
 			wiz.log.info "Current DB user count: #{count}"
-			res.send 200, "hi mike"
+			return res.send 500, bad if count < 1
+			return res.send 200, good
 
 # vim: foldmethod=marker wrap
