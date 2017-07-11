@@ -852,16 +852,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'toronto.cypherpunk.privacy.network'
-				ovDefault: [] #[ '172.98.66.194' ]
-				ovNone: [] #[ '172.98.66.194' ]
-				ovStrong: [] #[ '172.98.66.194' ]
-				ovStealth: [] #[ '172.98.66.197' ]
+				ovDefault: [ '209.95.57.40' ]
+				ovNone: [ '209.95.57.40' ]
+				ovStrong: [ '209.95.57.40' ]
+				ovStealth: [ '209.95.57.41' ]
 
 				ipsecHostname: 'toronto.cypherpunk.privacy.network'
-				ipsecDefault: [] #[ '172.98.66.194' ]
+				ipsecDefault: [ '209.95.57.40' ]
 
-				httpDefault: [] #[ '172.98.66.194' ]
-				socksDefault: [] #[ '172.98.66.194' ]
+				httpDefault: [ '209.95.57.40' ]
+				socksDefault: [ '209.95.57.40' ]
 
 			#}}}
 			washingtondc: #{{{
