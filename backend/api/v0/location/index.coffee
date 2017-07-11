@@ -70,16 +70,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 6
 
 				ovHostname: 'amsterdam.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [  ]
+				ovDefault: [ '185.80.220.94' ]
+				ovNone: [ '185.80.220.94' ]
+				ovStrong: [ '185.80.220.94' ]
+				ovStealth: [ '46.23.78.30' ]
 
 				ipsecHostname: 'amsterdam.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '185.80.220.94' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '185.80.220.94' ]
+				socksDefault: [ '185.80.220.94' ]
 
 			#}}}
 			frankfurt: #{{{
