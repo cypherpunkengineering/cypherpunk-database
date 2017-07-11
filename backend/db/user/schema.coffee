@@ -17,6 +17,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 
 	@passwordKey: 'password'
 	@userKey: 'user'
+	@emailKey: 'email'
 	@confirmedKey: 'confirmed'
 	@confirmationTokenKey: 'confirmationToken'
 	@amazonBillingAgreementIDKey: 'amazonBillingAgreementID'
@@ -41,6 +42,10 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 		if doc?[@dataKey]?[@passwordKey]? # hash password
 			doc[@dataKey][@passwordKey] = wiz.framework.http.account.authenticate.userpasswd.pwHash(doc[@dataKey][@passwordKey])
 
+		# normalize email address
+		if doc?[@docKey]?[@emailKey]? and typeof doc[@docKey][@emailKey] is 'string'
+			doc[@docKey][@emailKey] = doc[@docKey][@emailKey].toLowerCase()
+
 		return doc
 	#}}}
 	@fromUserUpdate: (req, res, userType, docOld, userData) => #{{{
@@ -57,6 +62,10 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			# only update password if valid new password specified
 			if userData[@passwordKey] == ''
 				delete userData[@passwordKey]
+
+		# normalize email address
+		if userData[@emailKey]? and typeof userData[@emailKey] is 'string'
+			userData[@emailKey] = userData[@emailKey].toLowerCase()
 
 		# make new doc
 		this.__super__.constructor.types = @types

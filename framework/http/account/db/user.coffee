@@ -30,7 +30,8 @@ class wiz.framework.http.account.db.user extends wiz.framework.http.database.mon
 	debug: true
 
 	findOneByEmail: (req, res, email, cb) => #{{{
-		@findOneByKey req, res, "#{@dataKey}.#{@emailKey}", email, @projection(), cb
+		return cb(req, res, null) unless email?
+		@findOneByKey req, res, "#{@dataKey}.#{@emailKey}", email.toLowerCase(), @projection(), cb
 	#}}}
 
 	updateLastLoginTS: (req, res, cb) => #{{{
