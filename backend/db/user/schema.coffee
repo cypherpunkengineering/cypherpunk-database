@@ -43,8 +43,8 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 			doc[@dataKey][@passwordKey] = wiz.framework.http.account.authenticate.userpasswd.pwHash(doc[@dataKey][@passwordKey])
 
 		# normalize email address
-		if doc?[@docKey]?[@emailKey]? and typeof doc[@docKey][@emailKey] is 'string'
-			doc[@docKey][@emailKey] = doc[@docKey][@emailKey].toLowerCase()
+		if doc?[@dataKey]?[@emailKey]? and typeof doc[@dataKey][@emailKey] is 'string'
+			doc[@dataKey][@emailKey] = doc[@dataKey][@emailKey].toLowerCase()
 
 		return doc
 	#}}}
