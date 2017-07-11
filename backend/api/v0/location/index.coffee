@@ -637,16 +637,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'saltlakecity.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '107.182.239.208' ]
+				ovNone: [ '107.182.239.208' ]
+				ovStrong: [ '107.182.239.208' ]
+				ovStealth: [ '107.182.239.209' ]
 
 				ipsecHostname: 'saltlakecity.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '107.182.239.208' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '107.182.239.208' ]
+				socksDefault: [ '107.182.239.208' ]
 			#}}}
 			saopaulo: #{{{
 				id: 'saopaulo'
