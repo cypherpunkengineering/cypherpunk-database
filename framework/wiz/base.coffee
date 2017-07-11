@@ -6,7 +6,7 @@ class wiz.base # base app object
 
 	constructor: () -> #{{{
 		@config =
-			workers: 2
+			workers: 4
 	#}}}
 	start: () => #{{{ main process
 		@master() if cluster.isMaster
