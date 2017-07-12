@@ -905,16 +905,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'washingtondc.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '67.213.214.48' ]
+				ovNone: [ '67.213.214.48' ]
+				ovStrong: [ '67.213.214.48' ]
+				ovStealth: [ '67.213.214.49' ]
 
 				ipsecHostname: 'washingtondc.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '67.213.214.48' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '67.213.214.48' ]
+				socksDefault: [ '67.213.214.48' ]
 
 			#}}}
 			zurich: #{{{
