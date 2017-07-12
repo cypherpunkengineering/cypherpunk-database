@@ -279,14 +279,15 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					@server.root.slack.notify("[SIGNUP] #{user[@dataKey][@emailKey]} has signed up for an account :highfive:")
 
 			@count req, res, {}, {}, (req, res, count) =>
+				@count req, res, { 'data.confirmed':true }, {}, (req, res, countConfirmed) =>
 
-				# send db user count to slack
-				if wiz.style isnt 'DEV'
-					@server.root.slack.notify("[COUNT] Currently #{count} users registered :alex:")
+					# send db user count to slack
+					if wiz.style isnt 'DEV'
+						@server.root.slack.notify("[COUNT] Currently #{count} users registered, #{countConfirmed} users confirmed :alex:")
 
-				# send response
-				return cb(req, res, user) if cb?
-				return res.send 202
+					# send response
+					return cb(req, res, user) if cb?
+					return res.send 202
 	#}}}
 	confirm: (req, res, accountID, confirmationToken, cb) => #{{{
 		@findOneByID req, res, accountID, (req, res, user) =>
