@@ -124,16 +124,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'dallas.cypherpunk.privacy.network'
-				ovDefault: [] #[ '104.200.142.50' ]
-				ovNone: [] #[ '104.200.142.50' ]
-				ovStrong: [] #[ '104.200.142.50' ]
-				ovStealth: [] #[ '104.200.142.53' ]
+				ovDefault: [ '173.255.138.20' ]
+				ovNone: [ '173.255.138.20' ]
+				ovStrong: [ '173.255.138.20' ]
+				ovStealth: [ '173.255.138.21' ]
 
 				ipsecHostname: 'dallas.cypherpunk.privacy.network'
-				ipsecDefault: [] #[ '104.200.142.50' ]
+				ipsecDefault: [ '173.255.138.20' ]
 
-				httpDefault: [] #[ '104.200.142.50' ]
-				socksDefault: [] #[ '104.200.142.50' ]
+				httpDefault: [ '173.255.138.20' ]
+				socksDefault: [ '173.255.138.20' ]
 
 			#}}}
 			hongkong: #{{{
