@@ -109,7 +109,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 	#}}}
 
 	# customer inactive accounts
-		pending: (new type 'pending', 'Queued Signup', 'list', #{{{
+		pending: (new type 'pending', 'Pending Invitation', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
@@ -174,7 +174,7 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 				type: 'int'
 				maxlen: 2
 		) #}}}
-		invitation: (new type 'invitation', 'Pending Invitation', 'list', #{{{
+		invitation: (new type 'invitation', 'Active Invitation', 'list', #{{{
 			email:
 				label: 'email address'
 				placeholder: 'satoshin@gmx.com'
