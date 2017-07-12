@@ -248,10 +248,6 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					# send slack notification
 					@server.root.slack.notify("[TEASER] #{user[@dataKey][@emailKey]} has signed up for a (priority #{user[@dataKey][@signupPriorityKey]}) invitation :highfive:")
 
-					# send response
-					return cb(req, res, user) if cb?
-					return res.send 202
-
 				# trial account
 				when 'free'
 
@@ -265,7 +261,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					console.log subscriptionData
 
 					# insert free trial subscription object into db
-					req.server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
+					@server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
 
 						# send welcome email
 						@server.root.sendgrid.sendWelcomeMail(user)
@@ -273,20 +269,24 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 						# send slack notification
 						@server.root.slack.notify("[SIGNUP] #{user[@dataKey][@emailKey]} has signed up for an account :highfive:")
 
-						# send response
-						return cb(req, res, user) if cb?
-						return res.send 202
-
+				# for other account types
 				else
+
 					# send welcome email
 					@server.root.sendgrid.sendWelcomeMail(user)
 
 					# send slack notification
 					@server.root.slack.notify("[SIGNUP] #{user[@dataKey][@emailKey]} has signed up for an account :highfive:")
 
-					# send response
-					return cb(req, res, user) if cb?
-					return res.send 202
+			@count req, res, {}, {}, (req, res, count) =>
+
+				# send db user count to slack
+				if wiz.style isnt 'DEV'
+					@server.root.slack.notify("[COUNT] Currently #{count} users registered :alex:")
+
+				# send response
+				return cb(req, res, user) if cb?
+				return res.send 202
 	#}}}
 	confirm: (req, res, accountID, confirmationToken, cb) => #{{{
 		@findOneByID req, res, accountID, (req, res, user) =>
