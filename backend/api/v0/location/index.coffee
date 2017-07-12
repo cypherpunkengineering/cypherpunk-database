@@ -716,16 +716,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'seattle.cypherpunk.privacy.network'
-				ovDefault: [] #[ '104.200.129.210' ]
-				ovNone: [] #[ '104.200.129.210' ]
-				ovStrong: [] #[ '104.200.129.210' ]
-				ovStealth: [] #[ '104.200.129.213' ]
+				ovDefault: [ '67.213.209.128' ]
+				ovNone: [ '67.213.209.128' ]
+				ovStrong: [ '67.213.209.128' ]
+				ovStealth: [ '67.213.209.129' ]
 
 				ipsecHostname: 'seattle.cypherpunk.privacy.network'
-				ipsecDefault: [] #[ '104.200.129.210' ]
+				ipsecDefault: [ '67.213.209.128' ]
 
-				httpDefault: [] #[ '104.200.129.210' ]
-				socksDefault: [] #[ '104.200.129.210' ]
+				httpDefault: [ '67.213.209.128' ]
+				socksDefault: [ '67.213.209.128' ]
 
 			#}}}
 			siliconvalley: #{{{
