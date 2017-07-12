@@ -24,6 +24,9 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 				@onSubscriptionCancel(req, res, data)
 			when 'subscr_payment'
 				@onSubscriptionPayment(req, res, data)
+			when 'subscr_eot'
+				@sendSlackNotification(data)
+				res.send 200
 			else
 				# send to billing channel on slack
 				@sendSlackNotification(data)
