@@ -648,6 +648,32 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				httpDefault: [ '107.182.239.208' ]
 				socksDefault: [ '107.182.239.208' ]
 			#}}}
+			sanjose: #{{{
+				id: 'sanjose'
+				region: 'NA'
+				country: 'US'
+
+				lat: 37.3382
+				lon: -121.8863
+				scale: 1
+
+				name: 'US - San Jose, CA'
+				nameFull: 'US - San Jose, CA'
+				level: 'free'
+				servers: 8
+
+				ovHostname: 'sanjose.cypherpunk.privacy.network'
+				ovDefault: [ '173.255.132.80' ]
+				ovNone: [ '173.255.132.80' ]
+				ovStrong: [ '173.255.132.80' ]
+				ovStealth: [ '173.255.132.81' ]
+
+				ipsecHostname: 'sanjose.cypherpunk.privacy.network'
+				ipsecDefault: [ '173.255.132.80' ]
+
+				httpDefault: [ '173.255.132.80' ]
+				socksDefault: [ '173.255.132.80' ]
+			#}}}
 			saopaulo: #{{{
 				id: 'saopaulo'
 				region: 'SA'
