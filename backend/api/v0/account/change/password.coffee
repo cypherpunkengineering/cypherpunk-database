@@ -2,7 +2,7 @@ require './_framework'
 require './_framework/http/resource/base'
 require './_framework/http/account/session'
 
-wiz.package 'cypherpunk.backend.api.v0.account.change'
+wiz.package 'cypherpunk.backend.api.v0.account.change.password'
 
 class cypherpunk.backend.api.v0.account.change.password extends cypherpunk.backend.api.base
 	level: cypherpunk.backend.server.power.level.friend

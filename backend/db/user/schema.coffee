@@ -20,6 +20,8 @@ class cypherpunk.backend.db.user.schema extends wiz.framework.database.mongo.doc
 	@emailKey: 'email'
 	@confirmedKey: 'confirmed'
 	@confirmationTokenKey: 'confirmationToken'
+	@pendingEmailKey: 'pendingEmail'
+	@pendingEmailConfirmationTokenKey: 'pendingEmailConfirmationToken'
 	@amazonBillingAgreementIDKey: 'amazonBillingAgreementID'
 	@stripeCustomerIDKey: 'stripeCustomerID'
 	@subscriptionCurrentIDKey: 'subscriptionCurrentID'

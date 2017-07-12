@@ -6,6 +6,9 @@ require './_framework/http/account/session'
 require './_framework/http/db/mongo'
 require './_framework/util/world'
 
+crypto = require 'crypto'
+BigInteger = require './_framework/crypto/jsbn'
+
 require './schema'
 
 wiz.package 'cypherpunk.backend.db.user'
@@ -147,26 +150,56 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			# check if passwordOld is actually the account password
 			oldPasswordHash = wiz.framework.http.account.authenticate.userpasswd.pwHash(passwordOld)
 			dbPasswordHash = userObj[@dataKey][@passwordKey]
-			console.log oldPasswordHash
-			console.log dbPasswordHash
-
-			if oldPasswordHash != dbPasswordHash
-				return res.send 400, 'existing password is incorrect'
+			return res.send 400, 'Current password is incorrect' if oldPasswordHash != dbPasswordHash
 
 			# create update object
 			userData = {}
 			userData[@passwordKey] = passwordNew
 
-			# use update() since updating raw password hash
-			@updateOneFromUser req, res, req.session.account.id, userData, (req2, res2, result2) =>
-				# check result
-				return res.send 500, 'DB Error while updating user data!', result2 if result2?.result?.ok != 1
-				return res.send 200
+			# use update() since updating one field only
+			@updateOneFromUser(req, res, req.session.account.id, userData)
 	#}}}
-	updateCurrentUserEmail: (req, res, newEmail) => #{{{
-		userData =
-			email: newEmail
-		@updateUserData(req, res, req.session.account.id, userData)
+	updateCurrentUserEmail: (req, res, password, pendingEmailAddress) => #{{{
+		# check if email is already in use
+		@findOneByEmail req, res, pendingEmailAddress, (req, res, resultUnused) =>
+			return res.send 409, "Email already in use for #{pendingEmailAddress}" if resultUnused isnt null
+
+			# mongo criteria is account id
+			criteria = @getDocKey(req, req.session.account.id)
+
+			# get full projection
+			projection = @projection()
+
+			# use findOne() instead of findOneByID() because latter removes password hash
+			@findOne req, res, criteria, projection, (req, res, userObj) =>
+
+				# check if password is actually the account password
+				oldPasswordHash = wiz.framework.http.account.authenticate.userpasswd.pwHash(password)
+				dbPasswordHash = userObj[@dataKey][@passwordKey]
+				return res.send 400, 'Password is incorrect' if oldPasswordHash != dbPasswordHash
+
+				# create update object
+				dataset = {}
+
+				# set new values
+				dataset[@schema.pendingEmailKey] = pendingEmailAddress
+
+				# generate pending email confirmation token
+				bits = new BigInteger(crypto.randomBytes(16))
+				dataset[@schema.pendingEmailConfirmationTokenKey] ?= wiz.framework.crypto.convert.biToBase32(bits)
+
+				# update account db
+				@updateCustomDatasetByID req, res, req.session.account.id, dataset, (req, res, writeResult) =>
+					return res.send 500, "Database error", writeResult.result if writeResult?.result?.ok != 1
+
+					# get updated user object
+					@findOneByID req, res, req.session.account.id, (req, res, user) =>
+
+						# send new confirmation email
+						@server.root.sendgrid.sendChangeConfirmationMail(user)
+
+						# done
+						res.send 200
 	#}}}
 	drop: (req, res) => #{{{
 		return res.send 501 # TODO: implement drop
@@ -256,11 +289,11 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					return res.send 202
 	#}}}
 	confirm: (req, res, accountID, confirmationToken, cb) => #{{{
-		@server.root.api.user.database.findOneByID req, res, accountID, (req, res, user) =>
+		@findOneByID req, res, accountID, (req, res, user) =>
 			# check for errors
 			return res.send 404 unless user?
-			return res.send 500 unless (user.confirmationToken? and typeof user.confirmationToken is "string")
-			return res.send 403 unless (user.confirmationToken.length > 1 && confirmationToken == user.confirmationToken)
+			return res.send 500 unless (user[@schema.confirmationTokenKey]? and typeof user[@schema.confirmationTokenKey] is "string")
+			return res.send 403 unless (user[@schema.confirmationTokenKey].length > 1 && confirmationToken == user[@schema.confirmationTokenKey])
 
 			# mark as confirmed
 			user[@dataKey][@confirmedKey] = true
@@ -270,11 +303,49 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 				return res.send 500, 'Unable to confirm account' if not result?
 
 				# send slack notification
-				@server.root.slack.notify("[CONFIRM] #{result[@dataKey][@emailKey]} has been confirmed via email :sunglasses:")
+				@server.root.slack.notify("[CONFIRM] User #{result[@dataKey][@emailKey]} has been confirmed :sunglasses:")
 
 				# done
 				return cb(req, res, user) if cb?
 				return res.send 200
+	#}}}
+	confirmChange: (req, res, accountID, confirmationToken, cb) => #{{{
+		@findOneByID req, res, accountID, (req, res, user) =>
+			# check for errors
+			return res.send 404 unless user?
+			return res.send 404 unless (user[@schema.pendingEmailKey]? and typeof user[@schema.pendingEmailKey] is "string")
+			return res.send 404 unless (user[@schema.pendingEmailConfirmationTokenKey]? and typeof user[@schema.pendingEmailConfirmationTokenKey] is "string")
+			return res.send 403 unless (user[@schema.pendingEmailConfirmationTokenKey].length > 1 && confirmationToken == user[@schema.pendingEmailConfirmationTokenKey])
+
+			# save old email address
+			emailOld = user[@dataKey][@emailKey]
+
+			# check again if new email isn't already in use
+			@findOneByEmail req, res, user[@schema.pendingEmailKey], (req, res, resultUnused) =>
+
+				# fail if the email they wanted is no longer available
+				return res.send 409, "Email already registered for #{user?[@schema.pendingEmailKey]}" if resultUnused isnt null
+
+				# update email address to pending change
+				user[@dataKey][@emailKey] = user[@schema.pendingEmailKey]
+				# mark as confirmed
+				user[@dataKey][@schema.confirmedKey] = true
+
+				# update user object in database
+				@server.root.api.user.database.updateUserData req, res, accountID, user[@dataKey], (req, res, result) =>
+					return res.send 500, 'Unable to confirm account' if not result?
+
+					# get stripe customer ID from session
+					stripeCustomerID = req.session?.account?.data?.stripeCustomerID
+					# update stripe customer with new email address
+					@server.root.stripe.customerUpdateEmail req, res, stripeCustomerID, result[@dataKey][@emailKey], (req, res) =>
+
+						# send slack notification
+						@server.root.slack.notify("[CHANGE] User email change from #{emailOld} to #{result[@dataKey][@emailKey]} has been confirmed :sunglasses:")
+
+						# done
+						return cb(req, res, user) if cb?
+						return res.send 200
 	#}}}
 
 	# admin tool methods

@@ -3,7 +3,7 @@ require './_framework/http/resource/base'
 require './_framework/http/account/session'
 require './_framework/http/db/mongo'
 
-#require './email'
+require './email'
 require './password'
 
 wiz.package 'cypherpunk.backend.api.v0.account.change'
@@ -19,7 +19,7 @@ class cypherpunk.backend.api.v0.account.change.resource extends cypherpunk.backe
 		super()
 
 		# public account creation api
-		#@routeAdd new cypherpunk.backend.api.v0.account.change.email(@server, this, 'email', 'POST')
+		@routeAdd new cypherpunk.backend.api.v0.account.change.email(@server, this, 'email', 'POST')
 		@routeAdd new cypherpunk.backend.api.v0.account.change.password(@server, this, 'password', 'POST')
 
 # vim: foldmethod=marker wrap

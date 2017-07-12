@@ -87,6 +87,37 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 
 			wiz.log.info "Sent welcome email to #{user.data.email}"
 	#}}}
+	sendChangeConfirmationMail: (user) => #{{{
+		if not user?.pendingEmail?
+			wiz.log.err 'no user pendingEmail!!'
+			return
+
+		mailData =
+			from:
+				name: "Cypherpunk Privacy"
+				email: "hello@cypherpunk.com"
+			to:
+				email: user?.pendingEmail
+			subject: 'Confirm your new email address'
+			template_id: '99f16955-a429-492b-8c45-5558d6c5b9a0'
+			substitutions:
+				'-titleText-': "You're almost done..."
+				'-regularText-': "Click the button below to confirm your new email address"
+				'-buttonText-': "CONFIRM MY EMAIL"
+				'-buttonURL-': @generateChangeConfirmationURL(user)
+
+		@mailTemplate mailData, (error, response) =>
+			if @debug
+				console.log 'got callback from sendgrid:'
+				console.log response.statusCode
+				console.log response.headers
+				console.log response.body
+			if error
+				wiz.log.err "Unable to send email to #{user.pendingEmail} due to sendgrid error" if sendgridError?
+				console.log error?.response?.body?.errors
+
+			wiz.log.info "Sent change confirmation email to #{user.pendingEmail}"
+	#}}}
 	sendPurchaseMail: (user, cb) => #{{{
 		if not user?.data?.email?
 			wiz.log.err 'no user email!!'
@@ -148,6 +179,9 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 
 	generateConfirmationURL: (user) => #{{{
 		"https://cypherpunk.com/confirm?accountId=#{user?.id}&confirmationToken=#{user?.confirmationToken}"
+	#}}}
+	generateChangeConfirmationURL: (user) => #{{{
+		"https://cypherpunk.com/confirmChange?accountId=#{user?.id}&confirmationToken=#{user?.pendingEmailConfirmationToken}"
 	#}}}
 	generateTeaserConfirmationURL: (user) => #{{{
 		"https://cypherpunk.com/confirmation?accountId=#{user?.id}&confirmationToken=#{user?.confirmationToken}"

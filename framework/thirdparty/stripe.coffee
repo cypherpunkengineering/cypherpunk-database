@@ -91,6 +91,19 @@ class wiz.framework.thirdparty.stripe
 			req.session.account.data.stripeCustomerID = stripeCustomerData?.id
 			req.server.root.api.user.database.updateCurrentUserData req, res, cb
 	#}}}
+	customerUpdateEmail: (req, res, stripeCustomerID, emailNew, cb) => #{{{
+		console.log 'customerUpdateEmail'
+
+		# prepare args for stripe
+		stripeArgs =
+			email: emailNew
+
+		# update customer object's default source using stripe API
+		req.server.root.Stripe.customers.update stripeCustomerID, stripeArgs, (stripeError, stripeCustomerData) =>
+			# check for error
+			return @onError(req, res, stripeError) if stripeError or not stripeCustomerData?.id?
+			return cb(req, res) if cb?
+	#}}}
 	sourceAdd: (req, res, source) => #{{{
 		console.log 'sourceAdd'
 		# get stripe customer ID from session
