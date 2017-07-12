@@ -296,7 +296,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			return res.send 403 unless (user[@schema.confirmationTokenKey].length > 1 && confirmationToken == user[@schema.confirmationTokenKey])
 
 			# mark as confirmed
-			user[@dataKey][@confirmedKey] = true
+			user[@dataKey][@schema.confirmedKey] = true
 
 			# update user object in database
 			@server.root.api.user.database.updateUserData req, res, accountID, user[@dataKey], (req, res, result) =>
