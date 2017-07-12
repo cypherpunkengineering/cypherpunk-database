@@ -112,7 +112,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			return res.send 500 if not result[@dataKey]?
 			# preserve password
 			userData[@passwordKey] = result[@dataKey][@passwordKey]
-			@updateDataByID req, res, userID, userData, (req2, res2, result2) =>
+			@updateDataByID req, res, userID, userData, (req, res, result2) =>
 				# check result
 				return res.send 500, 'DB Error while updating user data!', result2 if result2?.result?.ok != 1
 				# get freshly updated user object from db
@@ -123,7 +123,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					# pass updated db object to radius database method
 					@server.root.api.radius.database.updateUserAccess req, res, result, (err) =>
 						return res.send 500, 'Unable to update database', err if err?
-						return cb(req2, res2, result2) if cb?
+						return cb(req, res, result) if cb?
 						return res.send 500 if not result2
 						return res.send 200
 	#}}}
@@ -254,6 +254,27 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					# send response
 					return cb(req, res, user) if cb?
 					return res.send 202
+	#}}}
+	confirm: (req, res, accountID, confirmationToken, cb) => #{{{
+		@server.root.api.user.database.findOneByID req, res, accountID, (req, res, user) =>
+			# check for errors
+			return res.send 404 unless user?
+			return res.send 500 unless (user.confirmationToken? and typeof user.confirmationToken is "string")
+			return res.send 403 unless (user.confirmationToken.length > 1 && confirmationToken == user.confirmationToken)
+
+			# mark as confirmed
+			user[@dataKey][@confirmedKey] = true
+
+			# update user object in database
+			@server.root.api.user.database.updateUserData req, res, accountID, user[@dataKey], (req, res, result) =>
+				return res.send 500, 'Unable to confirm account' if not result?
+
+				# send slack notification
+				@server.root.slack.notify("[CONFIRM] #{result[@dataKey][@emailKey]} has been confirmed via email :sunglasses:")
+
+				# done
+				return cb(req, res, user) if cb?
+				return res.send 200
 	#}}}
 
 	# admin tool methods
