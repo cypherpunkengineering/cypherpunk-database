@@ -995,7 +995,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ovStrong: [ '185.176.52.34' ]
 				ovStealth: [ '185.176.52.34' ]
 
-				ipsecHostname: 'tokyo.cypherpunk.privacy.network'
+				ipsecHostname: 'test.tokyo.cypherpunk.privacy.network'
 				ipsecDefault: [ '185.176.52.34' ]
 
 				httpDefault: [ '185.176.52.34' ]
@@ -1096,6 +1096,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			out[id] = @locations[type][id]
 			out[id].enabled = enabled
 			out[id].authorized = enabled
+			#out[id].level = "free" if out[id].level is "premium" # temp hack for free preview period
 		return out
 	#}}}
 	getLocationsByType: (type) => #{{{
