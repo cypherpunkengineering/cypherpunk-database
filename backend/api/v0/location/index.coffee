@@ -163,6 +163,33 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ ]
 
 			#}}}
+			iceland: #{{{
+				id: 'iceland'
+				region: 'EU'
+				country: 'IS'
+
+				lat: 64.1265
+				lon: 21.8174
+				scale: 1.5
+
+				name: 'Iceland - Reykajvik'
+				nameFull: 'Iceland - Reykajvik'
+				level: 'free'
+				servers: 3
+
+				ovHostname: 'iceland.cypherpunk.privacy.network'
+				ovDefault: [ '82.221.133.184' ]
+				ovNone: [ '82.221.133.184' ]
+				ovStrong: [ '82.221.133.184' ]
+				ovStealth: [ '82.221.133.185' ]
+
+				ipsecHostname: 'iceland.cypherpunk.privacy.network'
+				ipsecDefault: [ '82.221.133.184' ]
+
+				httpDefault: [ '82.221.133.184' ]
+				socksDefault: [ '82.221.133.184' ]
+
+			#}}}
 			newyork: #{{{
 				default: true
 				id: 'newyork'
