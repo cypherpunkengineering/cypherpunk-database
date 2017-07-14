@@ -286,16 +286,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'vancouver.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '107.181.189.211' ]
+				ovNone: [ '107.181.189.211' ]
+				ovStrong: [ '107.181.189.211' ]
+				ovStealth: [ '107.181.189.212' ]
 
 				ipsecHostname: 'vancouver.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '107.181.189.211' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '107.181.189.211' ]
+				socksDefault: [ '107.181.189.211' ]
 
 			#}}}
 			atlanta: #{{{
