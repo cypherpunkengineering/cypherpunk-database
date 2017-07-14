@@ -959,16 +959,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'zurich.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '81.17.21.194' ]
+				ovNone: [ '81.17.21.194' ]
+				ovStrong: [ '81.17.21.194' ]
+				ovStealth: [ '81.17.21.195' ]
 
 				ipsecHostname: 'zurich.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '81.17.21.194' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '81.17.21.194' ]
+				socksDefault: [ '81.17.21.194' ]
 
 			#}}}
 
