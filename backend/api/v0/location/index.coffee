@@ -298,8 +298,6 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ ]
 
 			#}}}
-
-		premium:
 			atlanta: #{{{
 				id: 'atlanta'
 				region: 'NA'
@@ -311,7 +309,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'US - Atlanta, GA'
 				nameFull: 'US - Atlanta, GA'
-				level: 'premium'
+				level: 'free'
 				servers: 3
 
 				ovHostname: 'atlanta.cypherpunk.privacy.network'
@@ -338,7 +336,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'India - Chennai'
 				nameFull: 'India - Chennai'
-				level: 'premium'
+				level: 'free'
 				servers: 4
 
 				ovHostname: 'chennai.cypherpunk.privacy.network'
@@ -365,7 +363,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'US - Chicago, IL'
 				nameFull: 'US - Chicago, IL'
-				level: 'premium'
+				level: 'free'
 				servers: 3
 
 				ovHostname: 'chicago.cypherpunk.privacy.network'
@@ -392,7 +390,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 #
 #				name: 'Turkey - Istanbul'
 #				nameFull: 'Turkey - Istanbul'
-#				level: 'premium'
+#				level: 'free'
 #				servers: 2
 #
 #				ovHostname: 'istanbul.cypherpunk.privacy.network'
@@ -419,7 +417,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'US - Miami, FL'
 				nameFull: 'US - Miami, FL'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'miami.cypherpunk.privacy.network'
@@ -446,7 +444,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Australia - Melbourne'
 				nameFull: 'Australia - Melbourne'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'melbourne.cypherpunk.privacy.network'
@@ -473,7 +471,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Italy - Milan'
 				nameFull: 'Italy - Milan'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'milan.cypherpunk.privacy.network'
@@ -500,7 +498,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Canada - Montreal'
 				nameFull: 'Canada - Montreal'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'montreal.cypherpunk.privacy.network'
@@ -527,7 +525,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Russia - Moscow'
 				nameFull: 'Russia - Moscow'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'moscow.cypherpunk.privacy.network'
@@ -554,7 +552,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'US - Newark, NJ'
 				nameFull: 'US - Newark, NJ'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'newjersey.cypherpunk.privacy.network'
@@ -580,7 +578,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Norway - Oslo'
 				nameFull: 'Norway - Oslo'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'oslo.cypherpunk.privacy.network'
@@ -607,7 +605,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'France - Paris'
 				nameFull: 'France - Paris'
-				level: 'premium'
+				level: 'free'
 				servers: 3
 
 				ovHostname: 'paris.cypherpunk.privacy.network'
@@ -634,7 +632,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'US - Phoenix, AZ'
 				nameFull: 'US - Phoenix, AZ'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'phoenix.cypherpunk.privacy.network'
@@ -660,7 +658,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'US - Salt Lake City, UT'
 				nameFull: 'US - Salt Lake City, UT'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'saltlakecity.cypherpunk.privacy.network'
@@ -712,7 +710,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Brazil - Sao Paulo'
 				nameFull: 'Brazil - Sao Paulo'
-				level: 'premium'
+				level: 'free'
 				servers: 3
 
 				ovHostname: 'saopaulo.cypherpunk.privacy.network'
@@ -739,7 +737,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'US - Seattle, WA'
 				nameFull: 'US - Seattle, WA'
-				level: 'premium'
+				level: 'free'
 				servers: 3
 
 				ovHostname: 'seattle.cypherpunk.privacy.network'
@@ -766,7 +764,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 #
 #				name: 'US - Silicon Valley, CA'
 #				nameFull: 'US - Silicon Valley, CA'
-#				level: 'premium'
+#				level: 'free'
 #				servers: 8
 #
 #				ovHostname: 'siliconvalley.cypherpunk.privacy.network'
@@ -793,7 +791,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Singapore'
 				nameFull: 'Singapore'
-				level: 'premium'
+				level: 'free'
 				servers: 3
 
 				ovHostname: 'singapore.cypherpunk.privacy.network'
@@ -820,7 +818,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Sweden - Stockholm'
 				nameFull: 'Sweden - Stockholm'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'stockholm.cypherpunk.privacy.network'
@@ -847,7 +845,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Australia - Sydney'
 				nameFull: 'Australia - Sydney'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'sydney.cypherpunk.privacy.network'
@@ -874,7 +872,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Japan - Tokyo'
 				nameFull: 'Japan - Tokyo'
-				level: 'premium'
+				level: 'free'
 				servers: 1
 
 				ovHostname: 'tokyo.cypherpunk.privacy.network'
@@ -901,7 +899,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Canada - Toronto'
 				nameFull: 'Canada - Toronto'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'toronto.cypherpunk.privacy.network'
@@ -928,7 +926,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'US - Washington D.C.'
 				nameFull: 'US - Washington D.C.'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'washingtondc.cypherpunk.privacy.network'
@@ -955,7 +953,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Switzerland - Zurich'
 				nameFull: 'Switzerland - Zurich'
-				level: 'premium'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'zurich.cypherpunk.privacy.network'
@@ -969,6 +967,35 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				httpDefault: [ '81.17.21.194' ]
 				socksDefault: [ '81.17.21.194' ]
+
+			#}}}
+
+		premium:
+			honolulu: #{{{
+				id: 'honolulu'
+				region: 'OP'
+				country: 'US'
+
+				lat: 21.3069
+				lon: -157.8533
+				scale: 4
+
+				name: 'Honolulu, Hawaii'
+				nameFull: 'Honolulu, Hawaii'
+				level: 'premium'
+				servers: 1
+
+				ovHostname: 'honolulu.cypherpunk.privacy.network'
+				ovDefault: []
+				ovNone: []
+				ovStrong: []
+				ovStealth: []
+
+				ipsecHostname: 'honolulu.cypherpunk.privacy.network'
+				ipsecDefault: []
+
+				httpDefault: []
+				socksDefault: []
 
 			#}}}
 
