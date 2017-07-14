@@ -1092,16 +1092,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: 139.6917
 				scale: 1.5
 
-				name: 'Connection failure test'
-				nameFull: 'Connection failure test'
+				name: 'Connection failure multi'
+				nameFull: 'Connection failure multi'
 				level: 'developer'
 				servers: 1
 
 				ovHostname: 'fail.tokyo.cypherpunk.privacy.network'
-				ovDefault: [ '185.176.52.7' ]
-				ovNone: [ '185.176.52.7' ]
-				ovStrong: [ '185.176.52.7' ]
-				ovStealth: [ '185.176.52.7' ]
+				ovDefault: [ '185.176.52.7', '185.176.52.77', '185.176.52.177' ]
+				ovNone: [ '185.176.52.7', '185.176.52.77', '185.176.52.177' ]
+				ovStrong: [ '185.176.52.7', '185.176.52.77', '185.176.52.177' ]
+				ovStealth: [ '185.176.52.7', '185.176.52.77', '185.176.52.177' ]
 
 				ipsecHostname: 'fail.tokyo.cypherpunk.privacy.network'
 				ipsecDefault: [ '185.176.52.38' ]
