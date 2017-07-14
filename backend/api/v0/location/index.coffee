@@ -558,16 +558,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'newjersey.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '107.152.101.179' ]
+				ovNone: [ '107.152.101.179' ]
+				ovStrong: [ '107.152.101.179' ]
+				ovStealth: [ '107.152.101.180' ]
 
 				ipsecHostname: 'newjersey.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '107.152.101.179' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '107.152.101.179' ]
+				socksDefault: [ '107.152.101.179' ]
 			#}}}
 			oslo: #{{{
 				id: 'oslo'
