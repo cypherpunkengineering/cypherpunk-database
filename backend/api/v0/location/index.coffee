@@ -169,7 +169,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				country: 'IS'
 
 				lat: 64.1265
-				lon: 21.8174
+				lon: -21.8174
 				scale: 1.5
 
 				name: 'Iceland - Reykajvik'
