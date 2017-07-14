@@ -638,16 +638,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'phoenix.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '172.98.87.3' ]
+				ovNone: [ '172.98.87.3' ]
+				ovStrong: [ '172.98.87.3' ]
+				ovStealth: [ '172.98.87.4' ]
 
 				ipsecHostname: 'phoenix.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '172.98.87.3' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '172.98.87.3' ]
+				socksDefault: [ '172.98.87.3' ]
 			#}}}
 			saltlakecity: #{{{
 				id: 'saltlakecity'
