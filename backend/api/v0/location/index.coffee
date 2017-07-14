@@ -369,16 +369,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'chicago.cypherpunk.privacy.network'
-				ovDefault: [ '104.200.153.226' ]
-				ovNone: [ '104.200.153.226' ]
-				ovStrong: [ '104.200.153.226' ]
-				ovStealth: [ '104.200.153.229' ]
+				ovDefault: [ '104.200.153.226','184.170.250.91' ]
+				ovNone: [ '104.200.153.226','184.170.250.91' ]
+				ovStrong: [ '104.200.153.226','184.170.250.91' ]
+				ovStealth: [ '104.200.153.229','184.170.250.92' ]
 
 				ipsecHostname: 'chicago.cypherpunk.privacy.network'
-				ipsecDefault: [ '104.200.153.226' ]
+				ipsecDefault: [ '104.200.153.226','184.170.250.91' ]
 
-				httpDefault: [ '104.200.153.226' ]
-				socksDefault: [ '104.200.153.226' ]
+				httpDefault: [ '104.200.153.226','184.170.250.91' ]
+				socksDefault: [ '104.200.153.226','184.170.250.91' ]
 
 			#}}}
 			istanbul: #{{{
