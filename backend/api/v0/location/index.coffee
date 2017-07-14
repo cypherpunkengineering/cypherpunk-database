@@ -531,16 +531,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'moscow.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '158.255.1.89' ]
+				ovNone: [ '158.255.1.89' ]
+				ovStrong: [ '158.255.1.89' ]
+				ovStealth: [ '158.255.1.90' ]
 
 				ipsecHostname: 'moscow.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '158.255.1.89' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '158.255.1.89' ]
+				socksDefault: [ '158.255.1.89' ]
 
 			#}}}
 			newjersey: #{{{
