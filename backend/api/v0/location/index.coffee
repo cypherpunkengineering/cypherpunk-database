@@ -822,16 +822,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'stockholm.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '31.3.152.43' ]
+				ovNone: [ '31.3.152.43' ]
+				ovStrong: [ '31.3.152.43' ]
+				ovStealth: [ '31.3.152.44' ]
 
 				ipsecHostname: 'stockholm.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '31.3.152.43' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '31.3.152.43' ]
+				socksDefault: [ '31.3.152.43' ]
 
 			#}}}
 			sydney: #{{{
