@@ -755,33 +755,33 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ '67.213.209.128' ]
 
 			#}}}
-			siliconvalley: #{{{
-				id: 'siliconvalley'
-				region: 'NA'
-				country: 'US'
-
-				lat: 37.3875
-				lon: -122.0575
-				scale: 1
-
-				name: 'US - Silicon Valley, CA'
-				nameFull: 'US - Silicon Valley, CA'
-				level: 'premium'
-				servers: 8
-
-				ovHostname: 'siliconvalley.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
-
-				ipsecHostname: 'siliconvalley.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
-
-				httpDefault: [ ]
-				socksDefault: [ ]
-
-			#}}}
+#			siliconvalley: #{{{
+#				id: 'siliconvalley'
+#				region: 'NA'
+#				country: 'US'
+#
+#				lat: 37.3875
+#				lon: -122.0575
+#				scale: 1
+#
+#				name: 'US - Silicon Valley, CA'
+#				nameFull: 'US - Silicon Valley, CA'
+#				level: 'premium'
+#				servers: 8
+#
+#				ovHostname: 'siliconvalley.cypherpunk.privacy.network'
+#				ovDefault: [ ]
+#				ovNone: [ ]
+#				ovStrong: [ ]
+#				ovStealth: [ ]
+#
+#				ipsecHostname: 'siliconvalley.cypherpunk.privacy.network'
+#				ipsecDefault: [ ]
+#
+#				httpDefault: [ ]
+#				socksDefault: [ ]
+#
+#			#}}}
 			singapore: #{{{
 				id: 'singapore'
 				region: 'AS'
