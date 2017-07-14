@@ -315,16 +315,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'atlanta.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '66.71.252.3' ]
+				ovNone: [ '66.71.252.3' ]
+				ovStrong: [ '66.71.252.3' ]
+				ovStealth: [ '66.71.252.4' ]
 
 				ipsecHostname: 'atlanta.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '66.71.252.3' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '66.71.252.3' ]
+				socksDefault: [ '66.71.252.3' ]
 
 			#}}}
 			chennai: #{{{
