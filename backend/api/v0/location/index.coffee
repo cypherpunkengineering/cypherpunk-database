@@ -381,33 +381,33 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ '104.200.153.226','184.170.250.91' ]
 
 			#}}}
-			istanbul: #{{{
-				id: 'istanbul'
-				region: 'EU'
-				country: 'TR'
-
-				lat: 41.0082
-				lon: 28.9784
-				scale: 1.5
-
-				name: 'Turkey - Istanbul'
-				nameFull: 'Turkey - Istanbul'
-				level: 'premium'
-				servers: 2
-
-				ovHostname: 'istanbul.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
-
-				ipsecHostname: 'instanbul.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
-
-				httpDefault: [ ]
-				socksDefault: [ ]
-
-			#}}}
+#			istanbul: #{{{
+#				id: 'istanbul'
+#				region: 'EU'
+#				country: 'TR'
+#
+#				lat: 41.0082
+#				lon: 28.9784
+#				scale: 1.5
+#
+#				name: 'Turkey - Istanbul'
+#				nameFull: 'Turkey - Istanbul'
+#				level: 'premium'
+#				servers: 2
+#
+#				ovHostname: 'istanbul.cypherpunk.privacy.network'
+#				ovDefault: [ ]
+#				ovNone: [ ]
+#				ovStrong: [ ]
+#				ovStealth: [ ]
+#
+#				ipsecHostname: 'instanbul.cypherpunk.privacy.network'
+#				ipsecDefault: [ ]
+#
+#				httpDefault: [ ]
+#				socksDefault: [ ]
+#
+#			#}}}
 			miami: #{{{
 				id: 'miami'
 				region: 'NA'
