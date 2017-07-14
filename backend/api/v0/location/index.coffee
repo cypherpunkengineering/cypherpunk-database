@@ -423,16 +423,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'miami.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '172.98.76.171' ]
+				ovNone: [ '172.98.76.171' ]
+				ovStrong: [ '172.98.76.171' ]
+				ovStealth: [ '172.98.76.172' ]
 
 				ipsecHostname: 'miami.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '172.98.76.171' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '172.98.76.171' ]
+				socksDefault: [ '172.98.76.171' ]
 
 			#}}}
 			melbourne: #{{{
