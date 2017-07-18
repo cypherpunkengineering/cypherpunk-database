@@ -97,16 +97,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'frankfurt.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '158.177.73.128' ]
+				ovNone: [ '158.177.73.128' ]
+				ovStrong: [ '158.177.73.128' ]
+				ovStealth: [ '158.177.73.129' ]
 
 				ipsecHostname: 'frankfurt.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '158.177.73.128' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '158.177.73.128' ]
+				socksDefault: [ '158.177.73.128' ]
 
 			#}}}
 			dallas: #{{{
@@ -151,16 +151,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'hongkong.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '161.202.58.12' ]
+				ovNone: [ '161.202.58.12' ]
+				ovStrong: [ '161.202.58.12' ]
+				ovStealth: [ '161.202.58.13' ]
 
 				ipsecHostname: 'hongkong.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '161.202.58.12' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '161.202.58.12' ]
+				socksDefault: [ '161.202.58.12' ]
 
 			#}}}
 			iceland: #{{{
@@ -340,16 +340,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 4
 
 				ovHostname: 'chennai.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '169.38.93.4' ]
+				ovNone: [ '169.38.93.4' ]
+				ovStrong: [ '169.38.93.4' ]
+				ovStealth: [ '169.38.93.5' ]
 
 				ipsecHostname: 'chennai.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '169.38.93.4' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '169.38.93.4' ]
+				socksDefault: [ '169.38.93.4' ]
 
 			#}}}
 			chicago: #{{{
@@ -460,6 +460,33 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ '209.95.58.60' ]
 
 			#}}}
+			mexicocity: #{{{
+				id: 'mexicocity'
+				region: 'SA'
+				country: 'MX'
+
+				lat: -19.4326
+				lon: 99.1332
+				scale: 1
+
+				name: 'Mexico - Mexico City'
+				nameFull: 'Mexico - Mexico City'
+				level: 'free'
+				servers: 2
+
+				ovHostname: 'mexicocity.cypherpunk.privacy.network'
+				ovDefault: [ '169.57.13.0' ]
+				ovNone: [ '169.57.13.0' ]
+				ovStrong: [ '169.57.13.0' ]
+				ovStealth: [ '169.57.13.1' ]
+
+				ipsecHostname: 'melbourne.cypherpunk.privacy.network'
+				ipsecDefault: [ '169.57.13.0' ]
+
+				httpDefault: [ '169.57.13.0']
+				socksDefault: [ '169.57.13.0' ]
+
+			#}}}
 			milan: #{{{
 				id: 'milan'
 				region: 'EU'
@@ -475,16 +502,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'milan.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '159.122.156.44' ]
+				ovNone: [ '159.122.156.44' ]
+				ovStrong: [ '159.122.156.44' ]
+				ovStealth: [ '159.122.156.45' ]
 
 				ipsecHostname: 'milan.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '159.122.156.44' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '159.122.156.44' ]
+				socksDefault: [ '159.122.156.44' ]
 
 			#}}}
 			montreal: #{{{
@@ -502,16 +529,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'montreal.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '169.54.90.16' ]
+				ovNone: [ '169.54.90.16' ]
+				ovStrong: [ '169.54.90.16' ]
+				ovStealth: [ '169.54.90.17' ]
 
 				ipsecHostname: 'montreal.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '169.54.90.16' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '169.54.90.16' ]
+				socksDefault: [ '169.54.90.16' ]
 
 			#}}}
 			moscow: #{{{
@@ -582,16 +609,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'oslo.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '169.51.69.84' ]
+				ovNone: [ '169.51.69.84' ]
+				ovStrong: [ '169.51.69.84' ]
+				ovStealth: [ '169.51.69.85' ]
 
 				ipsecHostname: 'oslo.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '169.51.69.84' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '169.51.69.84' ]
+				socksDefault: [ '169.51.69.84' ]
 
 			#}}}
 			paris: #{{{
@@ -609,16 +636,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'paris.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '159.8.98.164' ]
+				ovNone: [ '159.8.98.164' ]
+				ovStrong: [ '159.8.98.164' ]
+				ovStealth: [ '159.8.98.165' ]
 
 				ipsecHostname: 'paris.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '159.8.98.164' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '159.8.98.164' ]
+				socksDefault: [ '159.8.98.164' ]
 
 			#}}}
 			phoenix: #{{{
@@ -714,16 +741,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 3
 
 				ovHostname: 'saopaulo.cypherpunk.privacy.network'
-				ovDefault: [ ]
-				ovNone: [ ]
-				ovStrong: [ ]
-				ovStealth: [ ]
+				ovDefault: [ '169.57.159.16' ]
+				ovNone: [ '169.57.159.16' ]
+				ovStrong: [ '169.57.159.16' ]
+				ovStealth: [ '169.57.159.17' ]
 
 				ipsecHostname: 'saopaulo.cypherpunk.privacy.network'
-				ipsecDefault: [ ]
+				ipsecDefault: [ '169.57.159.16' ]
 
-				httpDefault: [ ]
-				socksDefault: [ ]
+				httpDefault: [ '169.57.159.16' ]
+				socksDefault: [ '169.57.159.16' ]
 
 			#}}}
 			seattle: #{{{
@@ -751,6 +778,33 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				httpDefault: [ '67.213.209.128' ]
 				socksDefault: [ '67.213.209.128' ]
+
+			#}}}
+			seoul: #{{{
+				id: 'seoul'
+				region: 'AS'
+				country: 'KR'
+
+				lat: 37.5665
+				lon: 126.9780
+				scale: 1
+
+				name: 'Korea - Seoul'
+				nameFull: 'Korea - Seoul'
+				level: 'free'
+				servers: 3
+
+				ovHostname: 'seoul.cypherpunk.privacy.network'
+				ovDefault: [ '169.56.86.192' ]
+				ovNone: [ '169.56.86.192' ]
+				ovStrong: [ '169.56.86.192' ]
+				ovStealth: [ '169.56.86.193' ]
+
+				ipsecHostname: 'seoul.cypherpunk.privacy.network'
+				ipsecDefault: [ '169.56.86.192' ]
+
+				httpDefault: [ '169.56.86.192' ]
+				socksDefault: [ '169.56.86.192' ]
 
 			#}}}
 #			siliconvalley: #{{{
@@ -822,16 +876,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 2
 
 				ovHostname: 'stockholm.cypherpunk.privacy.network'
-				ovDefault: [ '31.3.152.43' ]
-				ovNone: [ '31.3.152.43' ]
-				ovStrong: [ '31.3.152.43' ]
-				ovStealth: [ '31.3.152.44' ]
+				ovDefault: [ '31.3.152.44' ]
+				ovNone: [ '31.3.152.44' ]
+				ovStrong: [ '31.3.152.44' ]
+				ovStealth: [ '31.3.152.45' ]
 
 				ipsecHostname: 'stockholm.cypherpunk.privacy.network'
-				ipsecDefault: [ '31.3.152.43' ]
+				ipsecDefault: [ '31.3.152.44' ]
 
-				httpDefault: [ '31.3.152.43' ]
-				socksDefault: [ '31.3.152.43' ]
+				httpDefault: [ '31.3.152.44' ]
+				socksDefault: [ '31.3.152.44' ]
 
 			#}}}
 			sydney: #{{{
