@@ -480,7 +480,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				ovStrong: [ '169.57.13.0' ]
 				ovStealth: [ '169.57.13.1' ]
 
-				ipsecHostname: 'melbourne.cypherpunk.privacy.network'
+				ipsecHostname: 'mexicocity.cypherpunk.privacy.network'
 				ipsecDefault: [ '169.57.13.0' ]
 
 				httpDefault: [ '169.57.13.0']
