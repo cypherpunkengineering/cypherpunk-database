@@ -44,7 +44,7 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 				subscription:
 					active: (if data?.subscriptionActive?.toString() == "false" then false else true)
 					renews: (if data?.subscriptionRenews?.toString() == "true" then true else false)
-					type: (if data?.subscriptionType? then data?.subscriptionType else "forever")
+					type: (if data?.subscriptionType? then data?.subscriptionType else (if account?.type is "free" or account?.type is "invitation" then "preview" else "forever"))
 					expiration: (if data?.subscriptionExpiration? then data?.subscriptionExpiration else "0")
 					# deprecated
 					renewal: (if data?.subscriptionRenewal? then data?.subscriptionRenewal else "forever")
