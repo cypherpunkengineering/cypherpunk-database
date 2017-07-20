@@ -118,6 +118,37 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 
 			wiz.log.info "Sent change confirmation email to #{user.pendingEmail}"
 	#}}}
+	sendAccountRecoveryMail: (user) => #{{{
+		if not user?.data?.email?
+			wiz.log.err 'no user pendingEmail!!'
+			return
+
+		mailData =
+			from:
+				name: "Cypherpunk Privacy"
+				email: "hello@cypherpunk.com"
+			to:
+				email: user?.data?.email
+			subject: 'Reset your password'
+			template_id: '99f16955-a429-492b-8c45-5558d6c5b9a0'
+			substitutions:
+				'-titleText-': "Reset your account password"
+				'-regularText-': "Click the button below to set your new account password"
+				'-buttonText-': "RESET MY PASSWORD"
+				'-buttonURL-': @generateAccountRecoveryURL(user)
+
+		@mailTemplate mailData, (error, response) =>
+			if @debug
+				console.log 'got callback from sendgrid:'
+				console.log response.statusCode
+				console.log response.headers
+				console.log response.body
+			if error
+				wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error" if sendgridError?
+				console.log error?.response?.body?.errors
+
+			wiz.log.info "Sent account recovery email to #{user?.data?.email}"
+	#}}}
 	sendPurchaseMail: (user, cb) => #{{{
 		if not user?.data?.email?
 			wiz.log.err 'no user email!!'
@@ -182,6 +213,9 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 	#}}}
 	generateChangeConfirmationURL: (user) => #{{{
 		"https://cypherpunk.com/confirmChange?accountId=#{user?.id}&confirmationToken=#{user?.pendingEmailConfirmationToken}"
+	#}}}
+	generateAccountRecoveryURL: (user) => #{{{
+		"https://cypherpunk.com/recover?accountId=#{user?.id}&recoveryToken=#{user?.recoveryToken}"
 	#}}}
 	generateTeaserConfirmationURL: (user) => #{{{
 		"https://cypherpunk.com/confirmation?accountId=#{user?.id}&confirmationToken=#{user?.confirmationToken}"

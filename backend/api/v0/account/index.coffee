@@ -7,11 +7,12 @@ require './_framework/http/db/mongo'
 
 require '../../../db/user'
 
-require './source'
 require './change'
-require './register'
 require './confirm'
 require './purchase'
+require './recover'
+require './register'
+require './source'
 require './upgrade'
 
 wiz.package 'cypherpunk.backend.api.v0.account'
@@ -59,18 +60,12 @@ class cypherpunk.backend.api.v0.account.module extends wiz.framework.http.accoun
 	load: () => #{{{
 		super()
 
-		# public account creation api
-		@routeAdd new cypherpunk.backend.api.v0.account.register.resource(@server, this, 'register')
-		# public account update api
 		@routeAdd new cypherpunk.backend.api.v0.account.change.resource(@server, this, 'change')
-		# public account confirmation api
 		@routeAdd new cypherpunk.backend.api.v0.account.confirm.resource(@server, this, 'confirm')
-		# public account purchase api
 		@routeAdd new cypherpunk.backend.api.v0.account.purchase.resource(@server, this, 'purchase')
-		# public account upgrade api
+		@routeAdd new cypherpunk.backend.api.v0.account.recover.resource(@server, this, 'recover')
+		@routeAdd new cypherpunk.backend.api.v0.account.register.resource(@server, this, 'register')
 		@routeAdd new cypherpunk.backend.api.v0.account.upgrade.resource(@server, this, 'upgrade')
-
-		# customer source api (proxy to stripe)
 		@routeAdd new cypherpunk.backend.api.v0.account.source.resource(@server, this, 'source')
 	#}}}
 	init: () => #{{{

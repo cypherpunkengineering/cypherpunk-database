@@ -289,6 +289,44 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					return cb(req, res, user) if cb?
 					return res.send 202
 	#}}}
+	recoverEmail: (req, res, email, cb) => #{{{
+		@findOneByEmail req, res, email, (req, res, user) =>
+			# check for errors
+			return res.send 404, 'email not registered' unless user?.id?
+
+			# re-send confirmation email if account is not yet confirmed
+			if user[@dataKey]?[@schema.confirmedKey]?.toString() is 'false'
+				@server.root.sendgrid.sendWelcomeMail(user)
+				@server.root.slack.notify("[RECOVER] User #{user[@dataKey][@emailKey]} has requested re-send of confirmation email :love_letter:")
+				return res.send 200
+
+			# create update object
+			dataset = {}
+
+			# generate random recovery token
+			bits = new BigInteger(crypto.randomBytes(16))
+			dataset[@schema.recoveryTokenKey] ?= wiz.framework.crypto.convert.biToBase32(bits)
+
+			# update account db
+			@updateCustomDatasetByID req, res, user.id, dataset, (req, res, writeResult) =>
+				return res.send 500, 'Database error', writeResult.result if writeResult?.result?.ok != 1
+
+				# get updated user object
+				@findOneByID req, res, user.id, (req, res, user) =>
+
+					# send new confirmation email
+					@server.root.sendgrid.sendAccountRecoveryMail(user)
+
+					# send slack notification
+					@server.root.slack.notify("[RECOVER] User #{user[@dataKey][@emailKey]} has requested account recovery by email :love_letter:")
+
+					# done
+					return cb(req, res, user) if cb?
+					return res.send 200
+	#}}}
+	recoverUser: (req, res, email, cb) => #{{{
+		return res.send 500, 'not yet implemented'
+	#}}}
 	confirm: (req, res, accountID, confirmationToken, cb) => #{{{
 		@findOneByID req, res, accountID, (req, res, user) =>
 			# check for errors
