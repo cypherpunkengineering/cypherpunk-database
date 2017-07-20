@@ -361,23 +361,23 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 	# public stranger APIs
 	signupTeaser: (req, res, data, cb) => #{{{ signup from teaser campaign
 		# validate user data and convert to account object, send error if validation fails
-		return unless recordToInsert = @schema.fromUser(req, res, 'invitation', req.body)
+		return unless recordToInsert = @schema.fromUser(req, res, 'invitation', data)
 
 		# determine priority
 		recordToInsert[@dataKey][@signupPriorityKey] = @assignSignupPriority(req)
 
 		# signup user
-		return @signup(req, res, recordToInsert, data, cb)
+		return @signup(req, res, recordToInsert, null, cb)
 	#}}}
 	signupTrial: (req, res, data, cb) => #{{{ signup for free trial
 		# validate user data and convert to account object, send error if validation fails
-		return unless recordToInsert = @schema.fromUser(req, res, 'free', req.body)
+		return unless recordToInsert = @schema.fromUser(req, res, 'free', data)
 
 		# determine priority
 		recordToInsert[@dataKey][@signupPriorityKey] = @assignSignupPriority(req)
 
 		# signup user
-		return @signup(req, res, recordToInsert, data, cb)
+		return @signup(req, res, recordToInsert, null, cb)
 	#}}}
 
 	upgrade: (req, res, userID, subscriptionID, args = {}, cb = null) => #{{{ if user type is free, change to premium

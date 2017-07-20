@@ -12,15 +12,19 @@ class cypherpunk.backend.api.v0.account.register.signup extends cypherpunk.backe
 	mask: cypherpunk.backend.server.power.mask.public
 	handler: (req, res) => #{{{
 		# sanity checks on POST data
-		return res.send 400, 'missing parameters' unless req.body?.email?
+		return res.send 400, 'missing email' unless req.body?.email?
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
+		return res.send 400, 'missing password' unless req.body?.password?
+		return res.send 400, 'missing or invalid password' unless wiz.framework.util.strval.ascii_valid(req.body.password)
 
 		# TODO XXX FIXME: validate and save referral code if any
-		referralData =
-			referralID: req.body?.referralCode # optional
+		data =
+			email: req.body.email
+			password: req.body.password
+			#referralID: req.body?.referralCode # optional
 
 		# pass to signup method for processing
-		@server.root.api.user.database.signupTrial req, res, null, (req2, res2, user) =>
+		@server.root.api.user.database.signupTeaser req, res, data, (req2, res2, user) =>
 
 			# create authenticated session for new account
 			out = @parent.parent.doUserLogin(req, res, user)
@@ -37,8 +41,13 @@ class cypherpunk.backend.api.v0.account.register.teaser extends cypherpunk.backe
 		return res.send 400, 'missing parameters' unless req.body?.email?
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
 
+		# TODO XXX FIXME: validate and save referral code if any
+		data =
+			email: req.body.email
+			#referralID: req.body?.referralCode # optional
+
 		# pass to signup method for processing
-		@server.root.api.user.database.signupTeaser req, res, null, (req2, res2, user) =>
+		@server.root.api.user.database.signupTeaser req, res, data, (req2, res2, user) =>
 
 			# create authenticated session for new account
 			out = @parent.parent.doUserLogin(req, res, user)
@@ -57,12 +66,13 @@ class cypherpunk.backend.api.v0.account.register.teaserShare extends cypherpunk.
 		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.email_valid(req.body.email)
 
 		# save referring friend id + name
-		referralData =
+		data =
+			email: req.body.email
 			referralID: req.session.account.id # this user's account is sharing
 			referralName: req.body?.name # optional
 
 		# pass to signup method for processing
-		@server.root.api.user.database.signupTeaser req, res, referralData, (req2, res2, user) =>
+		@server.root.api.user.database.signupTeaser req, res, data, (req2, res2, user) =>
 
 			# create authenticated session for new account
 			out = @parent.parent.doUserLogin(req, res, user)
