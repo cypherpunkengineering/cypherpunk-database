@@ -134,7 +134,7 @@ class wiz.framework.database.mongo.docMultiType extends wiz.framework.database.m
 
 					else
 						# store in output
-						outputData[field] = userData[field]
+						outputData[field] = (if userData[field].toString() is 'true' then true else false)
 
 				#}}}
 				else if typeof userData[field] == 'string' #{{{ field value is string
