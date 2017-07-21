@@ -215,7 +215,7 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 		"https://cypherpunk.com/confirmChange?accountId=#{user?.id}&confirmationToken=#{user?.pendingEmailConfirmationToken}"
 	#}}}
 	generateAccountRecoveryURL: (user) => #{{{
-		"https://cypherpunk.com/recover?accountId=#{user?.id}&recoveryToken=#{user?.recoveryToken}"
+		"https://cypherpunk.com/reset?accountId=#{user?.id}&recoveryToken=#{user?.recoveryToken}"
 	#}}}
 	generateTeaserConfirmationURL: (user) => #{{{
 		"https://cypherpunk.com/confirmation?accountId=#{user?.id}&confirmationToken=#{user?.confirmationToken}"
