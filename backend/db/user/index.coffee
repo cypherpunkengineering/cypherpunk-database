@@ -335,17 +335,21 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			# check for errors
 			return res.send 404 unless user?
 			return res.send 500 unless (user[@schema.recoveryTokenKey]? and typeof user[@schema.recoveryTokenKey] is "string")
+
+			# return 403 if valid recovery token exists and if given token matches
 			return res.send 403 unless (user[@schema.recoveryTokenKey].length > 1 && token == user[@schema.recoveryTokenKey])
 
-			# mark as confirmed
-			user[@dataKey][@schema.confirmedKey] = true
+			# delete recovery token
+			dataset = {}
+			dataset[@schema.recoveryTokenKey] = ""
 
-			# update user object in database
-			@server.root.api.user.database.updateUserData req, res, accountID, user[@dataKey], (req, res, result) =>
+			# update account db
+			@updateCustomDatasetByID req, res, accountID, dataset, (req, res, result) =>
 				return res.send 500, 'Unable to confirm account' if not result?
 
 				# create update object
 				userData = {}
+				userData[@schema.confirmedKey] = true
 				userData[@passwordKey] = passwordNew
 
 				# use update() since updating one field only
