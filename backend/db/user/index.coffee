@@ -330,7 +330,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					return cb(req, res, user) if cb?
 					return res.send 200
 	#}}}
-	recoverReset: (req, res, accountID, token, password, cb) => #{{{
+	recoverReset: (req, res, accountID, token, passwordNew, cb) => #{{{
 		@findOneByID req, res, accountID, (req, res, user) =>
 			# check for errors
 			return res.send 404 unless user?
