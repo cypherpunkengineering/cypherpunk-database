@@ -349,7 +349,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 				userData[@passwordKey] = passwordNew
 
 				# use update() since updating one field only
-				@updateOneFromUser req, res, req.session.account.id, userData, (req, res, result2) =>
+				@updateOneFromUser req, res, accountID, userData, (req, res, result2) =>
 					if result2?.result?.ok != 1
 						wiz.log.err 'DB Error while updating user data!'
 						console.log result2
