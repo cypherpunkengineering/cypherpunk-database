@@ -465,7 +465,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				region: 'SA'
 				country: 'MX'
 
-				lat: -19.4326
+				lat: 19.4326
 				lon: 99.1332
 				scale: 1
 
