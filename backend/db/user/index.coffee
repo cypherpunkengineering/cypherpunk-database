@@ -335,7 +335,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			# check for errors
 			return res.send 404 unless user?
 			return res.send 500 unless (user[@schema.recoveryTokenKey]? and typeof user[@schema.recoveryTokenKey] is "string")
-			return res.send 403 unless (user[@schema.recoveryTokenKey].length > 1 && recoveryToken == user[@schema.recoveryTokenKey])
+			return res.send 403 unless (user[@schema.recoveryTokenKey].length > 1 && token == user[@schema.recoveryTokenKey])
 
 			# mark as confirmed
 			user[@dataKey][@schema.confirmedKey] = true
