@@ -289,7 +289,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					return cb(req, res, user) if cb?
 					return res.send 202
 	#}}}
-	recoverEmail: (req, res, email, cb) => #{{{
+	resendConfirmationEmail: (req, res, email, cb) => #{{{
 		@findOneByEmail req, res, email, (req, res, user) =>
 			# check for errors
 			return res.send 404, 'email not registered' unless user?.id?
@@ -297,8 +297,14 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			# re-send confirmation email if account is not yet confirmed
 			if user[@dataKey]?[@schema.confirmedKey]?.toString() is 'false'
 				@server.root.sendgrid.sendWelcomeMail(user)
-				@server.root.slack.notify("[RECOVER] User #{user[@dataKey][@emailKey]} has requested re-send of confirmation email :love_letter:")
-				return res.send 200
+				@server.root.slack.notify("[RESEND] User #{user[@dataKey][@emailKey]} has requested re-send of confirmation email :love_letter:")
+
+			return res.send 200
+	#}}}
+	recoverEmail: (req, res, email, cb) => #{{{
+		@findOneByEmail req, res, email, (req, res, user) =>
+			# check for errors
+			return res.send 404, 'email not registered' unless user?.id?
 
 			# create update object
 			dataset = {}
@@ -324,8 +330,37 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 					return cb(req, res, user) if cb?
 					return res.send 200
 	#}}}
-	recoverUser: (req, res, email, cb) => #{{{
-		return res.send 500, 'not yet implemented'
+	recoverReset: (req, res, accountID, token, password, cb) => #{{{
+		@findOneByID req, res, accountID, (req, res, user) =>
+			# check for errors
+			return res.send 404 unless user?
+			return res.send 500 unless (user[@schema.recoveryTokenKey]? and typeof user[@schema.recoveryTokenKey] is "string")
+			return res.send 403 unless (user[@schema.recoveryTokenKey].length > 1 && recoveryToken == user[@schema.recoveryTokenKey])
+
+			# mark as confirmed
+			user[@dataKey][@schema.confirmedKey] = true
+
+			# update user object in database
+			@server.root.api.user.database.updateUserData req, res, accountID, user[@dataKey], (req, res, result) =>
+				return res.send 500, 'Unable to confirm account' if not result?
+
+				# create update object
+				userData = {}
+				userData[@passwordKey] = passwordNew
+
+				# use update() since updating one field only
+				@updateOneFromUser req, res, req.session.account.id, userData, (req, res, result2) =>
+					if result2?.result?.ok != 1
+						wiz.log.err 'DB Error while updating user data!'
+						console.log result2
+						return res.send 500
+
+					# send slack notification
+					@server.root.slack.notify("[RECOVER] User #{user[@dataKey][@emailKey]} has completed account recovery by email :+1:")
+
+					# done
+					return cb(req, res, user) if cb?
+					return res.send 200
 	#}}}
 	confirm: (req, res, accountID, confirmationToken, cb) => #{{{
 		@findOneByID req, res, accountID, (req, res, user) =>

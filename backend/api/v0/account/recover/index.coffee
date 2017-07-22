@@ -22,11 +22,11 @@ class cypherpunk.backend.api.v0.account.recover.reset extends cypherpunk.backend
 	nav: false
 
 	handler: (req, res) => # public account reset by token api
-		return res.send 400, 'missing parameters' unless (req.body?.token? and req.body?.password?)
-		return res.send 400, 'missing or invalid token' unless wiz.framework.util.strval.alphanumeric_valid(req.body.token)
-		return res.send 400, 'missing or invalid password' unless wiz.framework.util.strval.ascii_valid(req.body.password)
+		return res.send 400, 'missing or invalid accountId' unless req.body?.accountId? and wiz.framework.util.strval.alphanumeric_valid(req.body.accountId)
+		return res.send 400, 'missing or invalid token' unless req.body?.token? and wiz.framework.util.strval.alphanumeric_valid(req.body.token)
+		return res.send 400, 'missing or invalid password' unless req.body?.password? and wiz.framework.util.strval.ascii_valid(req.body.password)
 
-		@server.root.api.user.database.recoverReset req, res, req.body.token, req.body.password, (req, res, user) =>
+		@server.root.api.user.database.recoverReset req, res, req.body.accountId, req.body.token, req.body.password, (req, res, user) =>
 			# start new session for recovered user
 			out = @parent.parent.doUserLogin(req, res, user)
 			res.send 200, out

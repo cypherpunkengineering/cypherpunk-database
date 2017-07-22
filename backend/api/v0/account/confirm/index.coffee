@@ -7,6 +7,16 @@ require './_framework/thirdparty/stripe'
 
 wiz.package 'cypherpunk.backend.api.v0.account.confirm'
 
+class cypherpunk.backend.api.v0.account.confirm.resend extends cypherpunk.backend.base
+	level: cypherpunk.backend.server.power.level.stranger
+	mask: cypherpunk.backend.server.power.mask.public
+	nav: false
+
+	handler: (req, res) => # public account recovery by email api
+		return res.send 400, 'missing parameters' unless req.body?.email?
+		return res.send 400, 'missing or invalid email' unless wiz.framework.util.strval.ascii_valid(req.body.email)
+		@server.root.api.user.database.resendConfirmationEmail(req, res, req.body.email)
+
 class cypherpunk.backend.api.v0.account.confirm.email extends cypherpunk.backend.base
 	level: cypherpunk.backend.server.power.level.stranger
 	mask: cypherpunk.backend.server.power.mask.public
@@ -47,6 +57,7 @@ class cypherpunk.backend.api.v0.account.confirm.resource extends cypherpunk.back
 		super()
 
 		# public account creation api
+		@routeAdd new cypherpunk.backend.api.v0.account.confirm.resend(@server, this, 'resend', 'POST')
 		@routeAdd new cypherpunk.backend.api.v0.account.confirm.email(@server, this, 'email', 'POST')
 		@routeAdd new cypherpunk.backend.api.v0.account.confirm.emailChange(@server, this, 'emailChange', 'POST')
 
