@@ -235,7 +235,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			switch user.type
 
 				# teaser campaign
-				when 'invitation'
+				when 'invitation', 'pending'
 
 					# send different email depending if referred or not
 
@@ -246,7 +246,7 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 						@server.root.sendgrid.sendTeaserMail(user)
 
 					# send slack notification
-					@server.root.slack.notify("[TEASER] #{user[@dataKey][@emailKey]} has signed up for a (priority #{user[@dataKey][@signupPriorityKey]}) invitation :highfive:")
+					@server.root.slack.notify("[QUEUE] #{user[@dataKey][@emailKey]} has requested a (priority #{user[@dataKey][@signupPriorityKey]}) invitation :highfive:")
 
 				# trial account
 				when 'free'
@@ -258,7 +258,6 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 						startTS: new Date()
 						expirationTS: cypherpunk.backend.db.subscription.calculateRenewal(subscriptionType)
 						active: 'true'
-					console.log subscriptionData
 
 					# insert free trial subscription object into db
 					@server.root.api.subscription.database.insert req, res, subscriptionType, subscriptionData, (req, res, subscription) =>
@@ -484,11 +483,16 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 		return @signup(req, res, recordToInsert, null, cb)
 	#}}}
 	signupTrial: (req, res, data, cb) => #{{{ signup for free trial
-		# validate user data and convert to account object, send error if validation fails
-		return unless recordToInsert = @schema.fromUser(req, res, 'free', data)
+		# calculate priority
+		data[@signupPriorityKey] = @assignSignupPriority(req)
 
-		# determine priority
-		recordToInsert[@dataKey][@signupPriorityKey] = @assignSignupPriority(req)
+		# determine account type from signup priority
+		accountType = "free"
+		accountType = "pending" if data[@signupPriorityKey] > 2
+		accountType = "pending" if data[@emailKey] is "wiz+pending1@cypherpunk.com"
+
+		# validate user data and convert to account object, send error if validation fails
+		return unless recordToInsert = @schema.fromUser(req, res, accountType, data)
 
 		# signup user
 		return @signup(req, res, recordToInsert, null, cb)

@@ -24,7 +24,7 @@ class cypherpunk.backend.api.v0.account.register.signup extends cypherpunk.backe
 			#referralID: req.body?.referralCode # optional
 
 		# pass to signup method for processing
-		@server.root.api.user.database.signupTeaser req, res, data, (req2, res2, user) =>
+		@server.root.api.user.database.signupTrial req, res, data, (req2, res2, user) =>
 
 			# create authenticated session for new account
 			out = @parent.parent.doUserLogin(req, res, user)
