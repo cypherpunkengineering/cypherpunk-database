@@ -21,6 +21,7 @@ class cypherpunk.backend.api.user.resource extends cypherpunk.backend.api.base
 		@routeAdd new cypherpunk.backend.api.user.findByType(@server, this, 'findByType')
 		@routeAdd new cypherpunk.backend.api.user.findOneByID(@server, this, 'findOneByID')
 		@routeAdd new cypherpunk.backend.api.user.signupManual(@server, this, 'insert', 'POST')
+		@routeAdd new cypherpunk.backend.api.user.grantInvitation(@server, this, 'grantInvitation', 'POST')
 		@routeAdd new cypherpunk.backend.api.user.update(@server, this, 'update', 'POST')
 		super()
 	#}}}
@@ -51,6 +52,12 @@ class cypherpunk.backend.api.user.signupManual extends cypherpunk.backend.api.ba
 	# XXX: add permissions
 	handler: (req, res) => #{{{
 		@parent.database.signupManual(req, res)
+	#}}}
+class cypherpunk.backend.api.user.grantInvitation extends cypherpunk.backend.api.base
+	# XXX: add permissions
+	handler: (req, res) => #{{{
+		return res.send 400, 'missing email' unless req.body?.email?
+		@parent.database.grantInvitation(req, res, req.body.email)
 	#}}}
 class cypherpunk.backend.api.user.update extends cypherpunk.backend.api.base
 	catchall: (req, res, routeWord) => #{{{

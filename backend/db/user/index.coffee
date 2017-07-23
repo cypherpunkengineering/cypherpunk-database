@@ -73,6 +73,23 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 
 				@listResponse(req, res, responseData, recordCount)
 	#}}}
+	update: (req, res, userID) => #{{{
+		# TODO: return res.send 400, 'invalid type' if not schemaPlan = @schema.types[userPlan]
+		super req, res, userID, (req2, res2, result) =>
+			return res.send 500, "update database failed" if not result
+			@findOneByKey req, res, @docKey, userID, @projection(), (req, res, user) =>
+				@server.root.api.radius.database.updateUserAccess req, res, user, (err) =>
+					return res.send 500, "update database failed" if err
+					return res.send 200
+	#}}}
+	drop: (req, res) => #{{{
+		return res.send 501 # TODO: implement drop
+		# TODO: need extensible method (send event?) for other modules to delete related objects from their databases onUserDeleted
+		# return res.send 400 if not recordsToDelete = req.body.recordsToDelete or typeof recordsToDelete isnt 'object' # only proceed if object
+		# @dropMany req, res, req.session.account[@docKey], null, recordsToDelete
+	#}}}
+
+	# custom methods
 	createAccount: (req, res, recordToInsert = null, cb = null) => #{{{
 		@findOneByEmail req, res, recordToInsert?[@dataKey]?[@emailKey], (req, res, result) =>
 			return res.send 409, "Email already registered for #{recordToInsert?[@dataKey]?[@emailKey]}" if result isnt null
@@ -97,15 +114,6 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 
 				return cb(req2, res2, user) if cb
 				return res.send 200
-	#}}}
-	update: (req, res, userID) => #{{{
-		# TODO: return res.send 400, 'invalid type' if not schemaPlan = @schema.types[userPlan]
-		super req, res, userID, (req2, res2, result) =>
-			return res.send 500, "update database failed" if not result
-			@findOneByKey req, res, @docKey, userID, @projection(), (req, res, user) =>
-				@server.root.api.radius.database.updateUserAccess req, res, user, (err) =>
-					return res.send 500, "update database failed" if err
-					return res.send 200
 	#}}}
 	updateUserData: (req, res, userID, userData, cb = null) => #{{{ restores password hash
 		@findOneByKey req, res, @docKey, userID, @projection(), (req, res, result) =>
@@ -201,14 +209,6 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 						# done
 						res.send 200
 	#}}}
-	drop: (req, res) => #{{{
-		return res.send 501 # TODO: implement drop
-		# TODO: need extensible method (send event?) for other modules to delete related objects from their databases onUserDeleted
-		# return res.send 400 if not recordsToDelete = req.body.recordsToDelete or typeof recordsToDelete isnt 'object' # only proceed if object
-		# @dropMany req, res, req.session.account[@docKey], null, recordsToDelete
-	#}}}
-
-	# custom methods
 	findOneByStripeCustomerID: (req, res, stripeCustomerID, cb) => #{{{
 		return cb(req, res, null) unless stripeCustomerID?
 		@findOneByKey req, res, "#{@dataKey}.#{@schema.stripeCustomerIDKey}", stripeCustomerID, @projection(), cb
@@ -423,6 +423,37 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 
 						# done
 						return cb(req, res, user) if cb?
+						return res.send 200
+	#}}}
+	grantInvitation: (req, res, email) => #{{{
+		@findOneByEmail req, res, email, (req, res, user) =>
+			# check for errors
+			return res.send 404, 'email not registered' unless user?.id?
+			return res.send 409, 'not a pending invitation' if user[@typeKey] isnt 'invitation' and user[@typeKey] isnt 'pending'
+
+			# create update object
+			dataset = {}
+
+			# upgrade user type to free
+			dataset[@typeKey] = "free"
+
+			# generate random recovery token
+			bits = new BigInteger(crypto.randomBytes(16))
+			dataset[@schema.recoveryTokenKey] ?= wiz.framework.crypto.convert.biToBase32(bits)
+
+			# update account db
+			@updateCustomDatasetByID req, res, user.id, dataset, (req, res, result) =>
+				if result?.result?.ok != 1
+					wiz.log.err 'DB Error while updating user data!'
+					console.log result
+					return res.send 500
+
+				# get freshly updated db object
+				@findOneByKey req, res, @docKey, user.id, @projection(), (req, res, user) =>
+					@server.root.api.radius.database.updateUserAccess req, res, user, (err) =>
+						return res.send 500, "update database failed" if err
+						@server.root.sendgrid.sendActivateInvitationMail(user)
+						@server.root.slack.notify("[GRANT] User #{user[@dataKey][@emailKey]} has been granted an invitation to a free preview account! :highfive:")
 						return res.send 200
 	#}}}
 

@@ -87,6 +87,38 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 
 			wiz.log.info "Sent welcome email to #{user.data.email}"
 	#}}}
+	sendActivateInvitationMail: (user) => #{{{
+		if not user?.data?.email?
+			wiz.log.err 'no user email!!'
+			return
+
+		mailData =
+			from:
+				name: "Cypherpunk Privacy"
+				email: "hello@cypherpunk.com"
+			to:
+				email: user?.data?.email
+			#subject: 'Welcome to Cypherpunk Privacy'
+			subject: 'Activate your account to get started with Cypherpunk Privacy'
+			template_id: '99f16955-a429-492b-8c45-5558d6c5b9a0'
+			substitutions:
+				'-titleText-': "Here's your Free Preview access!"
+				'-regularText-': "Click the button below to activate your account"
+				'-buttonText-': "ACTIVATE MY ACCOUNT"
+				'-buttonURL-': @generateActivateInvitationURL(user)
+
+		@mailTemplate mailData, (error, response) =>
+			if @debug
+				console.log 'got callback from sendgrid:'
+				console.log response.statusCode
+				console.log response.headers
+				console.log response.body
+			if error
+				wiz.log.err "Unable to send email to #{user.data.email} due to sendgrid error" if sendgridError?
+				console.log error?.response?.body?.errors
+
+			wiz.log.info "Sent welcome email to #{user.data.email}"
+	#}}}
 	sendChangeConfirmationMail: (user) => #{{{
 		if not user?.pendingEmail?
 			wiz.log.err 'no user pendingEmail!!'
@@ -208,6 +240,9 @@ class cypherpunk.backend.sendgrid extends wiz.framework.thirdparty.sendgrid
 			cb() if cb?
 	#}}}
 
+	generateActivateInvitationURL: (user) => #{{{
+		"https://cypherpunk.com/activate?accountId=#{user?.id}&recoveryToken=#{user?.recoveryToken}"
+	#}}}
 	generateConfirmationURL: (user) => #{{{
 		"https://cypherpunk.com/confirm?accountId=#{user?.id}&confirmationToken=#{user?.confirmationToken}"
 	#}}}
