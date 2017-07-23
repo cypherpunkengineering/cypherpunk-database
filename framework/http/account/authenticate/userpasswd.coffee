@@ -28,6 +28,7 @@ class wiz.framework.http.account.authenticate.userpasswd extends wiz.framework.h
 		return hash
 	#}}}
 	pwValidate: (req, res, user, plaintextPW) => #{{{
+		return false if not plaintextPW? or plaintextPW.length < 6
 		userPW = @constructor.pwHash(plaintextPW)
 		return true if user?[@dataKey]?[@passwordKey]? and userPW? and user[@dataKey][@passwordKey] == userPW
 		return false
