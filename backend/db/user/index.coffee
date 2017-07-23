@@ -359,12 +359,18 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 						console.log result2
 						return res.send 500
 
-					# send slack notification
-					@server.root.slack.notify("[RECOVER] User #{user[@dataKey][@emailKey]} has completed account recovery by email :+1:")
+				# get freshly updated db object
+				@findOneByKey req, res, @docKey, accountID, @projection(), (req, res, user) =>
+					# must update radius DB again because account might now be confirmed when it previously wasn't confirmed
+					@server.root.api.radius.database.updateUserAccess req, res, user, (err) =>
+						return res.send 500, "update database failed" if err
 
-					# done
-					return cb(req, res, user) if cb?
-					return res.send 200
+						# send slack notification
+						@server.root.slack.notify("[RECOVER] User #{user[@dataKey][@emailKey]} has completed account recovery by email :+1:")
+
+						# done
+						return cb(req, res, user) if cb?
+						return res.send 200
 	#}}}
 	confirm: (req, res, accountID, confirmationToken, cb) => #{{{
 		@findOneByID req, res, accountID, (req, res, user) =>
