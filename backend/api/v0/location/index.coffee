@@ -996,6 +996,33 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ '67.213.214.48' ]
 
 			#}}}
+			zurich: #{{{
+				id: 'zurich'
+				region: 'EU'
+				country: 'CH'
+
+				lat: 47.3769
+				lon: 8.5417
+				scale: 1.5
+
+				name: 'Switzerland - Zurich'
+				nameFull: 'Switzerland - Zurich'
+				level: 'free'
+				servers: 2
+
+				ovHostname: 'zurich.cypherpunk.privacy.network'
+				ovDefault: [ '81.17.21.194' ]
+				ovNone: [ '81.17.21.194' ]
+				ovStrong: [ '81.17.21.194' ]
+				ovStealth: [ '81.17.21.195' ]
+
+				ipsecHostname: 'zurich.cypherpunk.privacy.network'
+				ipsecDefault: [ '81.17.21.194' ]
+
+				httpDefault: [ '81.17.21.194' ]
+				socksDefault: [ '81.17.21.194' ]
+
+			#}}}
 
 		premium:
 			honolulu: #{{{
@@ -1056,33 +1083,6 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			#}}}
 
 		developer:
-			zurich: #{{{
-				id: 'zurich'
-				region: 'EU'
-				country: 'CH'
-
-				lat: 47.3769
-				lon: 8.5417
-				scale: 1.5
-
-				name: 'Switzerland - Zurich'
-				nameFull: 'Switzerland - Zurich'
-				level: 'free'
-				servers: 2
-
-				ovHostname: 'zurich.cypherpunk.privacy.network'
-				ovDefault: [ '81.17.21.194' ]
-				ovNone: [ '81.17.21.194' ]
-				ovStrong: [ '81.17.21.194' ]
-				ovStealth: [ '81.17.21.195' ]
-
-				ipsecHostname: 'zurich.cypherpunk.privacy.network'
-				ipsecDefault: [ '81.17.21.194' ]
-
-				httpDefault: [ '81.17.21.194' ]
-				socksDefault: [ '81.17.21.194' ]
-
-			#}}}
 			devtokyo3: #{{{
 				id: 'devtokyo3'
 				region: 'DEV'
