@@ -378,6 +378,9 @@ class cypherpunk.backend.db.user extends wiz.framework.http.account.db.user
 			return res.send 500 unless (user[@schema.confirmationTokenKey]? and typeof user[@schema.confirmationTokenKey] is "string")
 			return res.send 403 unless (user[@schema.confirmationTokenKey].length > 1 && confirmationToken == user[@schema.confirmationTokenKey])
 
+			# return 200 if already confirmed
+			return res.send 200 if user[@dataKey]?[@schema.confirmedKey]?.toString() == 'true'
+
 			# mark as confirmed
 			user[@dataKey][@schema.confirmedKey] = true
 
