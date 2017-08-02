@@ -193,8 +193,6 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 	#}}}
 
 	purchase: (req, res) => #{{{
-		console.log req.body
-
 		return res.send 400, 'missing parameters' unless (req.body?.token? and req.body?.plan?)
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.token is 'string'
 		return res.send 400, 'missing or invalid parameters' unless typeof req.body.plan is 'string'
@@ -224,13 +222,15 @@ class cypherpunk.backend.stripe extends wiz.framework.thirdparty.stripe
 			console.log stripeCustomerData
 
 			userData =
+				email: req.body.email
+				password: req.body.password
 				confirmed: true
 				stripeCustomerID: stripeCustomerData?.id
 
 			console.log 'user data'
 			console.log userData
 
-			req.server.root.api.user.database.signup req, res, userData, (req2, res2, result) =>
+			req.server.root.api.user.database.signupPurchase req, res, userData, (req2, res2, result) =>
 				# get 0th result
 				if result instanceof Array then user = result[0] else user = result
 
