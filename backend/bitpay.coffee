@@ -101,9 +101,9 @@ class cypherpunk.backend.bitpay extends wiz.framework.thirdparty.bitpay
 					provider: 'bitpay'
 					providerPlanID: planID
 					providerSubscriptionID: data.invoice_id
-					currentPeriodStartTS: new Date().toISOString()
+					currentPeriodStartTS: new Date()
 					currentPeriodEndTS: subscriptionRenewal
-					purchaseTS: new Date().toISOString()
+					purchaseTS: new Date()
 					renewalTS: subscriptionRenewal
 					active: 'true'
 
@@ -111,7 +111,7 @@ class cypherpunk.backend.bitpay extends wiz.framework.thirdparty.bitpay
 				console.log subscriptionData
 
 				# create subscription object in db
-				@server.root.api.subscription.database.insert req, res, planType, subscriptionData, (req, res, subscription) =>
+				@server.root.api.subscription.database.createElite req, res, subscriptionData, (req, res, subscription) =>
 
 					# prepare args
 					upgradeArgs =
