@@ -38,10 +38,12 @@ class cypherpunk.backend.amazon extends wiz.framework.thirdparty.amazon
 			console.log(util.inspect(amazonResponse, false, null))
 
 			userData =
+				email: req.body.email
+				password: req.body.password
 				confirmed: true
 				amazonBillingAgreementID: req.body.AmazonBillingAgreementId
 
-			req.server.root.api.user.database.signup req, res, userData, (req2, res2, result) =>
+			req.server.root.api.user.database.signupPurchase req, res, userData, (req2, res2, result) =>
 				# get 0th result
 				if result instanceof Array then user = result[0] else user = result
 				console.log user
