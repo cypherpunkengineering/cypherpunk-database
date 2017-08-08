@@ -33,7 +33,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 				res.send 500, 'Unknown PayPal IPN type!'
 		#}}}
 
-	sendSlackNotification: (data) => #{{{
+	sendSlackNotification: (data, user) => #{{{
 		msg = "[*PayPal*] "
 
 		switch data.txn_type
