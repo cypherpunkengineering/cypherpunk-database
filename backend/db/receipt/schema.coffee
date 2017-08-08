@@ -15,7 +15,7 @@ class cypherpunk.backend.db.receipt.schema extends wiz.framework.database.mongo.
 	@accountIDkey: 'accountID'
 	@transactionIDKey: 'transactionID'
 	@paymentTSkey: 'paymentTS'
-	@descriptionKey: 'descriptionKey'
+	@descriptionKey: 'description'
 	@methodKey: 'method'
 	@currencyKey: 'currency'
 	@amountKey: 'amount'
