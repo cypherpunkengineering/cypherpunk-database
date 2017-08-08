@@ -53,15 +53,15 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 		msg += "\rPayPal account: `#{data.payer_email}` :#{data.residence_country}: (#{data.payer_status})"
 
 		# if present, append cypherpunk account email
-		if data.user?.data?.email?
-			msg += "\rCypherpunk account: `#{data.user.data.email}` (#{data.user.type})"
+		if user?.data?.email?
+			msg += "\rCypherpunk account: `#{user.data.email}` (#{user.type})"
 
 		switch data.txn_type
 			when 'subscr_signup'
 				msg += "\rPayPal subscription `#{data.subscr_id}` to plan `#{data.item_number}`"
 				msg += "\rAutomatically renews every `#{data.period3}` for `#{data.mc_amount3} #{data.mc_currency}` starting on #{data.subscr_date}"
 			when 'subscr_payment'
-				msg += "\rPayPal Payment received for subscription `#{data.subscr_id}` to plan `#{data.item_number}`!"
+				msg += "\rPayPal Payment `#{data.mc_gross}` received for subscription `#{data.subscr_id}` to plan `#{data.item_number}`!"
 			when 'subscr_cancel'
 				msg += "\rCancelled their PayPal subscription `#{data.subscr_id}` to plan `#{data.item_number}`"
 
@@ -165,8 +165,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 							console.log sendgridError
 
 					# send slack notification
-					data.user = user
-					@sendSlackNotification(data)
+					@sendSlackNotification(data, user)
 
 					# finally return OK
 					res.send 200
@@ -211,15 +210,28 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 			# if not found, return error
 			return res.send 404, 'Cypherpunk ID not found!' if not user?
 
-			@server.root.api.charge.database.saveFromIPN req, res, 'paypal', data, (req, res, chargeObject) =>
-				chargeObject = chargeObject[0] if chargeObject instanceof Array
-				#console.log chargeObject
+			@server.root.api.charge.database.saveFromIPN req, res, 'paypal', data, (req, res, charge) =>
+				charge = charge[0] if charge instanceof Array
+				console.log charge
 
-				# send slack notification
-				data.user = user
-				@sendSlackNotification(data)
+				#TODO: check payment_status == "Completed"
 
-				res.send 200
+				receiptData =
+					accountID: user?.id
+					transactionID: charge?.data?.txn_id
+					paymentTS: new Date(Date.parse(charge?.data?.payment_date))
+					description: "Cypherpunk Privacy Elite subscription"
+					method: "PayPal #{charge?.data?.txn_id}"
+					currency: charge?.data?.mc_currency
+					amount: charge?.data?.mc_gross
+
+				@server.root.api.receipt.database.createChargeReceipt req, res, receiptData, (req, res, receipt) =>
+					receipt = receipt[0] if receipt instanceof Array
+					console.log receipt
+
+					# send slack notification
+					@sendSlackNotification(data, user)
+					res.send 200
 	#}}}
 	onSubscriptionCancel: (req, res, data) => #{{{
 # {{{ sample data
@@ -261,8 +273,7 @@ class cypherpunk.backend.paypal extends wiz.framework.thirdparty.paypal
 			return res.send 404, 'Cypherpunk ID not found!' if not user?
 
 			# send slack notification
-			data.user = user
-			@sendSlackNotification(data)
+			@sendSlackNotification(data, user)
 
 			res.send 200
 	#}}}
