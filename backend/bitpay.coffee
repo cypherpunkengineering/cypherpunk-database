@@ -50,7 +50,7 @@ class cypherpunk.backend.bitpay extends wiz.framework.thirdparty.bitpay
 
 		# add invoice info
 		msg += "\rBitPay invoice `#{data?.invoice_id}` is #{data?.status}"
-		msg += "\rAmount: &#x0e3f; #{data?.btcPaid} BTC -> #{data?.amount} USD"
+		msg += "\rAmount: ₿ #{data?.btcPaid} BTC -> #{data?.amount} USD"
 
 		# send to slack
 		@server.root.slack.notify(msg)
@@ -82,55 +82,72 @@ class cypherpunk.backend.bitpay extends wiz.framework.thirdparty.bitpay
 		plan = cypherpunk.backend.pricing.getPlanByTypeAndID(planType, planID)
 		return res.send 400, "plan price #{plan.price} doesnt match bitpay invoice amount #{data.amount}" unless +plan.price == +data.amount
 
-		@server.root.api.charge.database.saveFromIPN req, res, 'bitpay', data, (req, res, chargeObject) =>
-			#console.log chargeObject
+		# calculate renewal date
+		subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal planID
+		return res.send 500, 'unable to calculate subscription period' if not subscriptionRenewal?
+		console.log subscriptionRenewal
 
-			# lookup account object by given account id
-			@server.root.api.user.database.findOneByID req, res, data.cypherpunk_account_id, (req, res, user) =>
+		# lookup account object by given account id
+		@server.root.api.user.database.findOneByID req, res, data.cypherpunk_account_id, (req, res, user) =>
 
-				# if not found, return error
-				return res.send 404, 'Cypherpunk ID not found!' if not user?
+			# if not found, return error
+			return res.send 404, 'Cypherpunk ID not found!' if not user?
 
-				# calculate renewal date
-				subscriptionRenewal = cypherpunk.backend.db.subscription.calculateRenewal planID
-				return res.send 500, 'unable to calculate subscription period' if not subscriptionRenewal
-				console.log subscriptionRenewal
+			# create charge object in DB
+			@server.root.api.charge.database.saveFromIPN req, res, 'bitpay', data, (req, res, charge) =>
+				charge = charge[0] if charge instanceof Array
+				#console.log charge
 
-				# gather subscription data for insert() into db
-				subscriptionData =
-					provider: 'bitpay'
-					providerPlanID: planID
-					providerSubscriptionID: data.invoice_id
-					currentPeriodStartTS: new Date()
-					currentPeriodEndTS: subscriptionRenewal
-					purchaseTS: new Date()
-					renewalTS: subscriptionRenewal
-					active: 'true'
+				# normalize charge data for receipt object
+				receiptData =
+					accountID: user?.id
+					transactionID: charge?.data?.invoice_id
+					paymentTS: new Date() # FIXME: wtf, no date in IPN from bitpay?
+					description: "#{planType} subscription"
+					method: "BitPay #{charge?.data?.invoice_id}"
+					currency: charge?.data?.currency
+					amount: charge?.data?.amount
 
-				console.log 'subscription data'
-				console.log subscriptionData
+				# create receipt object in DB
+				@server.root.api.receipt.database.createChargeReceipt req, res, receiptData, (req, res, receipt) =>
+					receipt = receipt[0] if receipt instanceof Array
+					#console.log receipt
 
-				# create subscription object in db
-				@server.root.api.subscription.database.createElite req, res, subscriptionData, (req, res, subscription) =>
+					# gather subscription data for insert() into db
+					subscriptionData =
+						provider: 'bitpay'
+						providerPlanID: planID
+						providerSubscriptionID: data.invoice_id
+						currentPeriodStartTS: new Date()
+						currentPeriodEndTS: subscriptionRenewal
+						purchaseTS: new Date()
+						renewalTS: subscriptionRenewal
+						active: 'true'
 
-					# prepare args
-					upgradeArgs =
-						bitpayInvoiceID: data.invoice_id
+					console.log 'subscription data'
+					console.log subscriptionData
 
-					# set user's active subscription to this new one, pass updated db object to radius database method
-					req.server.root.api.user.database.upgrade req, res, user.id, subscription.id, upgradeArgs, (req, res, user) =>
+					# create subscription object in db
+					@server.root.api.subscription.database.createElite req, res, subscriptionData, (req, res, subscription) =>
 
-						# send purchase mail
-						req.server.root.sendgrid.sendPurchaseMail user, (sendgridError) =>
-							if sendgridError
-								wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
-								console.log sendgridError
+						# prepare args
+						upgradeArgs =
+							bitpayInvoiceID: data.invoice_id
 
-						# send slack notification
-						@sendSlackNotification(data, user)
+						# set user's active subscription to this new one, pass updated db object to radius database method
+						req.server.root.api.user.database.upgrade req, res, user.id, subscription.id, upgradeArgs, (req, res, user) =>
 
-						# finally return OK
-						res.send 200
+							# send purchase mail
+							req.server.root.sendgrid.sendPurchaseMail user, (sendgridError) =>
+								if sendgridError
+									wiz.log.err "Unable to send email to #{user?.data?.email} due to sendgrid error"
+									console.log sendgridError
+
+							# send slack notification
+							@sendSlackNotification(data, user)
+
+							# finally return OK
+							res.send 200
 	#}}}
 
 # vim: foldmethod=marker wrap
