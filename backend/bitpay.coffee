@@ -29,7 +29,7 @@ class cypherpunk.backend.bitpay extends wiz.framework.thirdparty.bitpay
 				res.send 500, 'Unknown BitPay IPN type!'
 	#}}}
 
-	sendSlackNotification: (data) => #{{{
+	sendSlackNotification: (data, user) => #{{{
 		msg = "[*BitPay*] "
 
 		switch data.action
@@ -45,8 +45,8 @@ class cypherpunk.backend.bitpay extends wiz.framework.thirdparty.bitpay
 		msg += "\r>>>\r"
 
 		# if present, append cypherpunk account email
-		if data.user?.data?.email?
-			msg += "\rCypherpunk account: `#{data.user.data.email}` (#{data.user.type})"
+		if user?.data?.email?
+			msg += "\rCypherpunk account: `#{user.data.email}` (#{user.type})"
 
 		# add invoice info
 		msg += "\rBitPay invoice `#{data?.invoice_id}` is #{data?.status}"
@@ -127,8 +127,7 @@ class cypherpunk.backend.bitpay extends wiz.framework.thirdparty.bitpay
 								console.log sendgridError
 
 						# send slack notification
-						data.user = user
-						@sendSlackNotification(data)
+						@sendSlackNotification(data, user)
 
 						# finally return OK
 						res.send 200
