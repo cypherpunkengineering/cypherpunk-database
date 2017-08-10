@@ -1164,6 +1164,33 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ ]
 
 			#}}}
+			yanzm: #{{{
+				id: 'yanzm'
+				region: 'NA'
+				country: 'US'
+
+				lat: 41.8781
+				lon: -87.6298
+				scale: 1
+
+				name: 'Yanzm Multi Test'
+				nameFull: 'Yanzm Multi Test'
+				level: 'developer'
+				servers: 3
+
+				ovHostname: 'chicago.cypherpunk.privacy.network'
+				ovDefault: [ '104.200.153.226','184.170.250.91','104.200.153.226','184.170.250.91','104.200.153.226' ]
+				ovNone: [ '104.200.153.226','184.170.250.91','104.200.153.226','184.170.250.91','104.200.153.226' ]
+				ovStrong: [ '104.200.153.226','184.170.250.91','104.200.153.226','184.170.250.91','104.200.153.226' ]
+				ovStealth: [ '104.200.153.226','184.170.250.91','104.200.153.226','184.170.250.91','104.200.153.226' ]
+
+				ipsecHostname: 'chicago.cypherpunk.privacy.network'
+				ipsecDefault: [ '104.200.153.226','184.170.250.91','104.200.153.226','184.170.250.91','104.200.153.226' ]
+
+				httpDefault: [ '104.200.153.226','184.170.250.91','104.200.153.226','184.170.250.91','104.200.153.226' ]
+				socksDefault: [ '104.200.153.226','184.170.250.91','104.200.153.226','184.170.250.91','104.200.153.226' ]
+
+			#}}}
 			devhonolulu: #{{{
 				id: 'devhonolulu'
 				region: 'DEV'
