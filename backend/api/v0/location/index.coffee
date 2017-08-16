@@ -926,7 +926,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Japan - Tokyo'
 				nameFull: 'Japan - Tokyo'
-				level: 'free'
+				level: 'developer'
 				servers: 1
 
 				ovHostname: 'tokyo.cypherpunk.privacy.network'
