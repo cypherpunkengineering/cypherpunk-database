@@ -1139,7 +1139,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			#}}}
 			devams1: #{{{
 				id: 'devams1'
-				region: 'EU'
+				region: 'DEV'
 				country: 'NL'
 
 				lat: 52.3702
@@ -1166,7 +1166,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 			#}}}
 			devams2: #{{{
 				id: 'devams2'
-				region: 'EU'
+				region: 'DEV'
 				country: 'NL'
 
 				lat: 52.3702
