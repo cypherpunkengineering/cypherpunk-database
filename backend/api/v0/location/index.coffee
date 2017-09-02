@@ -1178,13 +1178,13 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				level: 'developer'
 				servers: 1
 
-				ovHostname: 'tokyo.cypherpunk.privacy.network'
+				ovHostname: 'amsterdam.cypherpunk.privacy.network'
 				ovDefault: [ '185.80.220.38' ]
 				ovNone: [ '185.80.220.38' ]
 				ovStrong: [ '185.80.220.39' ]
 				ovStealth: [ '185.80.220.39' ]
 
-				ipsecHostname: 'tokyo.cypherpunk.privacy.network'
+				ipsecHostname: 'amsterdam.cypherpunk.privacy.network'
 				ipsecDefault: [ '185.80.220.38' ]
 
 				httpDefault: [ '185.80.220.38' ]
