@@ -1164,6 +1164,33 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ ]
 
 			#}}}
+			devams2: #{{{
+				id: 'devams2'
+				region: 'EU'
+				country: 'NL'
+
+				lat: 52.3702
+				lon: 4.8952
+				scale: 1.5
+
+				name: 'Amsterdam Test VM'
+				nameFull: 'Amsterdam Test VM'
+				level: 'developer'
+				servers: 1
+
+				ovHostname: 'tokyo.cypherpunk.privacy.network'
+				ovDefault: [ '185.80.220.38' ]
+				ovNone: [ '185.80.220.38' ]
+				ovStrong: [ '185.80.220.39' ]
+				ovStealth: [ '185.80.220.39' ]
+
+				ipsecHostname: 'tokyo.cypherpunk.privacy.network'
+				ipsecDefault: [ '185.80.220.38' ]
+
+				httpDefault: [ '185.80.220.38' ]
+				socksDefault: [ '185.80.220.38' ]
+
+			#}}}
 			devkim: #{{{
 				id: 'devkim'
 				region: 'DEV'
