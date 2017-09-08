@@ -872,7 +872,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Sweden - Stockholm'
 				nameFull: 'Sweden - Stockholm'
-				level: 'developer'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'stockholm.cypherpunk.privacy.network'
