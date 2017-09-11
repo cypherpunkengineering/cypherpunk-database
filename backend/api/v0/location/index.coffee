@@ -674,6 +674,32 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				httpDefault: [ '172.98.87.3' ]
 				socksDefault: [ '172.98.87.3' ]
 			#}}}
+			romania: #{{{
+				id: 'romania'
+				region: 'EU'
+				country: 'RO'
+
+				lat: 44.417
+				lon: 26.100
+				scale: 1
+
+				name: 'Romania - Bucharest'
+				nameFull: 'Romania - Bucharest'
+				level: 'developer'
+				servers: 2
+
+				ovHostname: 'romania.cypherpunk.privacy.network'
+				ovDefault: [ '185.100.87.67' ]
+				ovNone: [ '185.100.87.67' ]
+				ovStrong: [ '185.100.87.67' ]
+				ovStealth: [ '185.100.87.68' ]
+
+				ipsecHostname: 'romania.cypherpunk.privacy.network'
+				ipsecDefault: [ '185.100.87.67' ]
+
+				httpDefault: [ '185.100.87.67' ]
+				socksDefault: [ '185.100.87.67' ]
+			#}}}
 			saltlakecity: #{{{
 				id: 'saltlakecity'
 				region: 'NA'
