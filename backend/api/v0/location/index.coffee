@@ -685,7 +685,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Romania - Bucharest'
 				nameFull: 'Romania - Bucharest'
-				level: 'developer'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'romania.cypherpunk.privacy.network'
