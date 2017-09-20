@@ -1033,7 +1033,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Switzerland - Zurich'
 				nameFull: 'Switzerland - Zurich'
-				level: 'free'
+				level: 'developer'
 				servers: 2
 
 				ovHostname: 'zurich.cypherpunk.privacy.network'
