@@ -172,8 +172,8 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				lon: -21.8174
 				scale: 1.5
 
-				name: 'Iceland - Reykajvik'
-				nameFull: 'Iceland - Reykajvik'
+				name: 'Iceland - Reykjavik'
+				nameFull: 'Iceland - Reykjavik'
 				level: 'free'
 				servers: 3
 
@@ -1033,7 +1033,7 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 
 				name: 'Switzerland - Zurich'
 				nameFull: 'Switzerland - Zurich'
-				level: 'developer'
+				level: 'free'
 				servers: 2
 
 				ovHostname: 'zurich.cypherpunk.privacy.network'
