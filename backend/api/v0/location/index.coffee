@@ -1205,16 +1205,16 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				servers: 1
 
 				ovHostname: 'amsterdam-test.cypherpunk.privacy.network'
-				ovDefault: [ '185.80.220.38' ]
-				ovNone: [ '185.80.220.38' ]
-				ovStrong: [ '185.80.220.39' ]
-				ovStealth: [ '185.80.220.39' ]
+				ovDefault: [ '185.80.220.37' ]
+				ovNone: [ '185.80.220.37' ]
+				ovStrong: [ '185.80.220.38' ]
+				ovStealth: [ '185.80.220.38' ]
 
 				ipsecHostname: 'amsterdam-test.cypherpunk.privacy.network'
-				ipsecDefault: [ '185.80.220.38' ]
+				ipsecDefault: [ '185.80.220.37' ]
 
-				httpDefault: [ '185.80.220.38' ]
-				socksDefault: [ '185.80.220.38' ]
+				httpDefault: [ '185.80.220.37' ]
+				socksDefault: [ '185.80.220.37' ]
 
 			#}}}
 			devkim: #{{{
