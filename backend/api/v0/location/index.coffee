@@ -163,33 +163,33 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ '161.202.58.12' ]
 
 			#}}}
-			iceland: #{{{
-				id: 'iceland'
-				region: 'EU'
-				country: 'IS'
-
-				lat: 64.1265
-				lon: -21.8174
-				scale: 1.5
-
-				name: 'Iceland - Reykjavik'
-				nameFull: 'Iceland - Reykjavik'
-				level: 'free'
-				servers: 3
-
-				ovHostname: 'iceland.cypherpunk.privacy.network'
-				ovDefault: [ '82.221.133.184' ]
-				ovNone: [ '82.221.133.184' ]
-				ovStrong: [ '82.221.133.184' ]
-				ovStealth: [ '82.221.133.185' ]
-
-				ipsecHostname: 'iceland.cypherpunk.privacy.network'
-				ipsecDefault: [ '82.221.133.184' ]
-
-				httpDefault: [ '82.221.133.184' ]
-				socksDefault: [ '82.221.133.184' ]
-
-			#}}}
+			#iceland: #{{{
+				#id: 'iceland'
+				#region: 'EU'
+				#country: 'IS'
+#
+				#lat: 64.1265
+				#lon: -21.8174
+				#scale: 1.5
+#
+				#name: 'Iceland - Reykjavik'
+				#nameFull: 'Iceland - Reykjavik'
+				#level: 'free'
+				#servers: 3
+#
+				#ovHostname: 'iceland.cypherpunk.privacy.network'
+				#ovDefault: [ '82.221.133.184' ]
+				#ovNone: [ '82.221.133.184' ]
+				#ovStrong: [ '82.221.133.184' ]
+				#ovStealth: [ '82.221.133.185' ]
+#
+				#ipsecHostname: 'iceland.cypherpunk.privacy.network'
+				#ipsecDefault: [ '82.221.133.184' ]
+#
+				#httpDefault: [ '82.221.133.184' ]
+				#socksDefault: [ '82.221.133.184' ]
+#
+			##}}}
 			newyork: #{{{
 				default: true
 				id: 'newyork'
@@ -541,33 +541,33 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ '169.54.90.16' ]
 
 			#}}}
-			moscow: #{{{
-				id: 'moscow'
-				region: 'EU'
-				country: 'RU'
-
-				lat: 55.7558
-				lon: 37.6173
-				scale: 1
-
-				name: 'Russia - Moscow'
-				nameFull: 'Russia - Moscow'
-				level: 'free'
-				servers: 2
-
-				ovHostname: 'moscow.cypherpunk.privacy.network'
-				ovDefault: [ '158.255.1.89' ]
-				ovNone: [ '158.255.1.89' ]
-				ovStrong: [ '158.255.1.89' ]
-				ovStealth: [ '158.255.1.90' ]
-
-				ipsecHostname: 'moscow.cypherpunk.privacy.network'
-				ipsecDefault: [ '158.255.1.89' ]
-
-				httpDefault: [ '158.255.1.89' ]
-				socksDefault: [ '158.255.1.89' ]
-
-			#}}}
+			#moscow: #{{{
+				#id: 'moscow'
+				#region: 'EU'
+				#country: 'RU'
+#
+				#lat: 55.7558
+				#lon: 37.6173
+				#scale: 1
+#
+				#name: 'Russia - Moscow'
+				#nameFull: 'Russia - Moscow'
+				#level: 'free'
+				#servers: 2
+#
+				#ovHostname: 'moscow.cypherpunk.privacy.network'
+				#ovDefault: [ '158.255.1.89' ]
+				#ovNone: [ '158.255.1.89' ]
+				#ovStrong: [ '158.255.1.89' ]
+				#ovStealth: [ '158.255.1.90' ]
+#
+				#ipsecHostname: 'moscow.cypherpunk.privacy.network'
+				#ipsecDefault: [ '158.255.1.89' ]
+#
+				#httpDefault: [ '158.255.1.89' ]
+				#socksDefault: [ '158.255.1.89' ]
+#
+			##}}}
 			newjersey: #{{{
 				id: 'newjersey'
 				region: 'NA'
@@ -674,32 +674,32 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				httpDefault: [ '172.98.87.3' ]
 				socksDefault: [ '172.98.87.3' ]
 			#}}}
-			romania: #{{{
-				id: 'romania'
-				region: 'EU'
-				country: 'RO'
-
-				lat: 44.417
-				lon: 26.100
-				scale: 1
-
-				name: 'Romania - Bucharest'
-				nameFull: 'Romania - Bucharest'
-				level: 'free'
-				servers: 2
-
-				ovHostname: 'romania.cypherpunk.privacy.network'
-				ovDefault: [ '185.100.87.67' ]
-				ovNone: [ '185.100.87.67' ]
-				ovStrong: [ '185.100.87.67' ]
-				ovStealth: [ '185.100.87.68' ]
-
-				ipsecHostname: 'romania.cypherpunk.privacy.network'
-				ipsecDefault: [ '185.100.87.67' ]
-
-				httpDefault: [ '185.100.87.67' ]
-				socksDefault: [ '185.100.87.67' ]
-			#}}}
+			#romania: #{{{
+				#id: 'romania'
+				#region: 'EU'
+				#country: 'RO'
+#
+				#lat: 44.417
+				#lon: 26.100
+				#scale: 1
+#
+				#name: 'Romania - Bucharest'
+				#nameFull: 'Romania - Bucharest'
+				#level: 'free'
+				#servers: 2
+#
+				#ovHostname: 'romania.cypherpunk.privacy.network'
+				#ovDefault: [ '185.100.87.67' ]
+				#ovNone: [ '185.100.87.67' ]
+				#ovStrong: [ '185.100.87.67' ]
+				#ovStealth: [ '185.100.87.68' ]
+#
+				#ipsecHostname: 'romania.cypherpunk.privacy.network'
+				#ipsecDefault: [ '185.100.87.67' ]
+#
+				#httpDefault: [ '185.100.87.67' ]
+				#socksDefault: [ '185.100.87.67' ]
+			##}}}
 			saltlakecity: #{{{
 				id: 'saltlakecity'
 				region: 'NA'
