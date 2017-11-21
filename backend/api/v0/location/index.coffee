@@ -887,33 +887,33 @@ class cypherpunk.backend.api.v0.location.list extends cypherpunk.backend.api.bas
 				socksDefault: [ '173.255.143.60' ]
 
 			#}}}
-			stockholm: #{{{
-				id: 'stockholm'
-				region: 'EU'
-				country: 'SE'
-
-				lat: 59.3293
-				lon: 18.0686
-				scale: 1.5
-
-				name: 'Sweden - Stockholm'
-				nameFull: 'Sweden - Stockholm'
-				level: 'free'
-				servers: 2
-
-				ovHostname: 'stockholm.cypherpunk.privacy.network'
-				ovDefault: [ '31.3.152.44' ]
-				ovNone: [ '31.3.152.44' ]
-				ovStrong: [ '31.3.152.44' ]
-				ovStealth: [ '31.3.152.45' ]
-
-				ipsecHostname: 'stockholm.cypherpunk.privacy.network'
-				ipsecDefault: [ '31.3.152.44' ]
-
-				httpDefault: [ '31.3.152.44' ]
-				socksDefault: [ '31.3.152.44' ]
-
-			#}}}
+			#stockholm: #{{{
+				#id: 'stockholm'
+				#region: 'EU'
+				#country: 'SE'
+#
+				#lat: 59.3293
+				#lon: 18.0686
+				#scale: 1.5
+#
+				#name: 'Sweden - Stockholm'
+				#nameFull: 'Sweden - Stockholm'
+				#level: 'free'
+				#servers: 2
+#
+				#ovHostname: 'stockholm.cypherpunk.privacy.network'
+				#ovDefault: [ '31.3.152.44' ]
+				#ovNone: [ '31.3.152.44' ]
+				#ovStrong: [ '31.3.152.44' ]
+				#ovStealth: [ '31.3.152.45' ]
+#
+				#ipsecHostname: 'stockholm.cypherpunk.privacy.network'
+				#ipsecDefault: [ '31.3.152.44' ]
+#
+				#httpDefault: [ '31.3.152.44' ]
+				#socksDefault: [ '31.3.152.44' ]
+#
+			##}}}
 			sydney: #{{{
 				id: 'sydney'
 				region: 'OP'
